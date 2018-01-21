@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic", "ClashersRepublic.Magic", "{FA91CD4C-F7CA-4192-B627-ACC023DC70B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Proxy", "ClashersRepublic.Magic\ClashersRepublic.Magic.Proxy\ClashersRepublic.Magic.Proxy.csproj", "{F3EB0AB7-4430-4DA7-B59C-F2C94534A8C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Logic", "ClashersRepublic.Magic\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj", "{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Titan", "ClashersRepublic.Magic\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj", "{43215ECC-9F60-49FF-81C3-CD801DE09CF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Services", "ClashersRepublic.Magic.Services", "{C8EB6250-54E2-4979-8733-E08F89AD6A43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Logic", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj", "{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Account", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services.Account\ClashersRepublic.Magic.Services.Account.csproj", "{6983994D-EA62-44EA-B949-6EDB848C1DA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3EB0AB7-4430-4DA7-B59C-F2C94534A8C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3EB0AB7-4430-4DA7-B59C-F2C94534A8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3EB0AB7-4430-4DA7-B59C-F2C94534A8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3EB0AB7-4430-4DA7-B59C-F2C94534A8C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F3EB0AB7-4430-4DA7-B59C-F2C94534A8C2} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
+		{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
+		{43215ECC-9F60-49FF-81C3-CD801DE09CF3} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
+		{C8EB6250-54E2-4979-8733-E08F89AD6A43} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
+		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{6983994D-EA62-44EA-B949-6EDB848C1DA8} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9AC9358-C999-40A2-8BE8-E0A1C68DF50A}
+	EndGlobalSection
+EndGlobal

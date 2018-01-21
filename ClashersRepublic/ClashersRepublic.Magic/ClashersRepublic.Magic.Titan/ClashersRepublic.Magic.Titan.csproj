@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{43215ECC-9F60-49FF-81C3-CD801DE09CF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClashersRepublic.Magic.Titan</RootNamespace>
+    <AssemblyName>ClashersRepublic.Magic.Titan</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Build\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Build\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CSV\CSVColumn.cs" />
+    <Compile Include="CSV\CSVNode.cs" />
+    <Compile Include="CSV\CSVRow.cs" />
+    <Compile Include="CSV\CSVTable.cs" />
+    <Compile Include="DataStream\ByteStream.cs" />
+    <Compile Include="DataStream\ChecksumEncoder.cs" />
+    <Compile Include="Debug\Debugger.cs" />
+    <Compile Include="Json\LogicJSONArray.cs" />
+    <Compile Include="Json\LogicJSONBoolean.cs" />
+    <Compile Include="Json\LogicJSONNode.cs" />
+    <Compile Include="Json\LogicJSONNull.cs" />
+    <Compile Include="Json\LogicJSONNumber.cs" />
+    <Compile Include="Json\LogicJSONObject.cs" />
+    <Compile Include="Json\LogicJSONParser.cs" />
+    <Compile Include="Json\LogicJSONString.cs" />
+    <Compile Include="Math\LogicLong.cs" />
+    <Compile Include="Math\LogicMath.cs" />
+    <Compile Include="Math\LogicMersenneTwister.cs" />
+    <Compile Include="Math\LogicRandom.cs" />
+    <Compile Include="Math\LogicVector2.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\LogicArrayList.cs" />
+    <Compile Include="Util\LogicTimeUtil.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
