@@ -86,15 +86,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
       <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
       <Name>ClashersRepublic.Magic.Logic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj">
+    <ProjectReference Include="..\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj">
       <Project>{4ac76f21-4318-4bff-9eb8-35ad3c11bc3a}</Project>
       <Name>ClashersRepublic.Magic.Services.Logic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
       <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
       <Name>ClashersRepublic.Magic.Titan</Name>
     </ProjectReference>

@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Logic", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj", "{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Account", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services.Account\ClashersRepublic.Magic.Services.Account.csproj", "{6983994D-EA62-44EA-B949-6EDB848C1DA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Account", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Account\ClashersRepublic.Magic.Services.Account.csproj", "{6983994D-EA62-44EA-B949-6EDB848C1DA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
