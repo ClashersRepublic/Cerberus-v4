@@ -132,7 +132,7 @@
             {
                 if (message.ClientMajorVersion == LogicVersion.MajorVersion && message.ClientBuildVersion == LogicVersion.BuildVersion)
                 {
-                    if (message.PassToken == ResourceManager.FingerprintSha)
+                    if (message.ResourceSha == ResourceManager.FingerprintSha)
                     {
                         if (message.AccountId.IsZero())
                         {
