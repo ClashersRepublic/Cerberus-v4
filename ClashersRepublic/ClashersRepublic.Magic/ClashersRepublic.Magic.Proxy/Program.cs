@@ -9,6 +9,10 @@
     using ClashersRepublic.Magic.Proxy.Handler;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.Service;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message.Account;
+    using ClashersRepublic.Magic.Services.Logic.Resource;
+    using ClashersRepublic.Magic.Services.Logic.Util;
 
     internal class Program
     {
@@ -38,12 +42,20 @@
 
             Logging.Initialize();
             LogicDataTables.Initialize();
-            ServiceConnectionProcessor.Initialize();
+            ResourceManager.Initialize();
+            ServiceProcessor.Initialize();
+            ServiceMessaging.Initialize();
             ServiceConnection.Initialize();
             NetworkProcessor.Initialize();
             NetworkGateway.Initialize();
             ExitHandler.Initialize();
             
+            ServiceMessaging.SendMessage(new CreateAccountMessage
+            {
+                ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, 1),
+                StartSession = false
+            }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
+
             Thread.Sleep(-1);
         }
     }

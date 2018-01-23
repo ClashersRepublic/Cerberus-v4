@@ -3,85 +3,57 @@
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Services.Account.Logic.Account;
     using ClashersRepublic.Magic.Services.Account.Service;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Account;
+    using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
+    using ClashersRepublic.Magic.Services.Logic.Util;
+
+    using RabbitMQ.Client.Events;
 
     internal static class MessageManager
     {
         /// <summary>
         ///     Receives a service message.
         /// </summary>
-        internal static void ReceiveMessage(PiranhaMessage message, string routingKey)
+        internal static void ReceiveMessage(PiranhaMessage message, BasicDeliverEventArgs args)
         {
             switch (message.GetMessageType())
             {
-                case 10200:
+                case 10105:
                 {
-                    MessageManager.StartSessionReceived((StartSessionMessage) message, routingKey);
+                    MessageManager.CreateAccountMessageReceived((CreateAccountMessage) message, args);
                     break;
                 }
             }
         }
 
         /// <summary>
-        ///     Called when a <see cref="StartSessionMessage"/> has been received.
+        ///     Sends the specified message to service.
         /// </summary>
-        private static void StartSessionReceived(StartSessionMessage message, string routingKey)
+        private static void SendMessage(MagicServiceMessage message, string exchangeKey, string routingKey)
         {
-            if (message.AccountId.IsZero())
-            {
-                if (message.PassToken == null)
-                {
-                    GameAccount account = GameAccountManager.GetAccount(message.AccountId);
-
-                    if (account != null)
-                    {
-                        if (account.PassToken.Equals(message.PassToken))
-                        {
-                            MessageManager.SendMessage(new StartSessionOkMessage
-                            {
-                                Account = account,
-                                SessionId = message.SessionId
-                            }, routingKey);
-                        }
-                        else
-                        {
-                            MessageManager.SendMessage(new StartSessionFailedMessage
-                            {
-                                ErrorCode = 3
-                            }, routingKey);
-                        }
-                    }
-                    else
-                    {
-                        MessageManager.SendMessage(new StartSessionFailedMessage
-                        {
-                            ErrorCode = 2
-                        }, routingKey);
-                    }
-                }
-                else
-                {
-                    MessageManager.SendMessage(new StartSessionFailedMessage
-                    {
-                        ErrorCode = 1
-                    }, routingKey);
-
-                    return;
-                }
-            }
-            else
-            {
-
-            }
+            ServiceMessaging.SendMessage(message, exchangeKey, routingKey);
         }
 
         /// <summary>
-        ///     Sends the specified message to service.
+        ///     Called when a <see cref="CreateAccountMessage"/> has been received.
         /// </summary>
-        private static void SendMessage(PiranhaMessage message, string routingKey)
+        private static void CreateAccountMessageReceived(CreateAccountMessage message, BasicDeliverEventArgs args)
         {
-            ServiceConnectionProcessor.EnqueueSentMessage(message, string.Empty, routingKey);
+            GameAccount createAccount = GameAccountManager.CreateAccount();
+
+            if (createAccount != null)
+            {
+                createAccount.StartSession(message.ProxySessionId);
+
+                SessionUtil.DecodeSessionId(message.ProxySessionId, out int proxyId, out long _);
+                MessageManager.SendMessage(new CreateAccountOkMessage
+                {
+                    ProxySessionId = message.ProxySessionId,
+                    Account = createAccount
+                }, ServiceExchangeName.PROXY_EXCHANGE_NAME, ServiceExchangeName.PROXY_ROUTING_KEY_PREFIX + proxyId);
+            }
         }
     }
 }

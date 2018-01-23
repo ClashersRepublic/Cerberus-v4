@@ -52,5 +52,21 @@
         {
             return GameDatabase._accounts.Find(T => T.HighId == accountId.GetHigherInt() && T.LowId == accountId.GetLowerInt()).Limit(1).SingleOrDefault();
         }
+
+        /// <summary>
+        ///     Inserts the specified account to database.
+        /// </summary>
+        internal static void InsertAccount(GameAccount account)
+        {
+            GameDatabase._accounts.InsertOne(account);
+        }
+
+        /// <summary>
+        ///     Saves the specified account.
+        /// </summary>
+        internal static void SaveAccount(GameAccount account)
+        {
+            GameDatabase._accounts.ReplaceOne(T => T._id == account._id, account);
+        }
     }
 }

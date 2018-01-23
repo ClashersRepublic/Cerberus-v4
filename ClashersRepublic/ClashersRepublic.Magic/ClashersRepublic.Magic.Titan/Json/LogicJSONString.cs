@@ -15,7 +15,7 @@
         }
         
         /// <summary>
-        ///     Gets the integer value.
+        ///     Gets the string value.
         /// </summary>
         public string GetStringValue()
         {

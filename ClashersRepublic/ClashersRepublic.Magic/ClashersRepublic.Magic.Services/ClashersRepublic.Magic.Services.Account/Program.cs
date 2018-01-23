@@ -10,6 +10,7 @@
     using ClashersRepublic.Magic.Services.Account.Handler;
     using ClashersRepublic.Magic.Services.Account.Logic.Account;
     using ClashersRepublic.Magic.Services.Account.Service;
+    using ClashersRepublic.Magic.Services.Logic.Resource;
 
     internal class Program
     {
@@ -39,9 +40,11 @@
 
             Logging.Initialize();
             LogicDataTables.Initialize();
+            ResourceManager.Initialize();
             GameDatabase.Initialize();
             GameAccountManager.Initialize();
-            ServiceConnectionProcessor.Initialize();
+            ServiceProcessor.Initialize();
+            ServiceMessaging.Initialize();
             ServiceConnection.Initialize();
             ExitHandler.Initialize();
 

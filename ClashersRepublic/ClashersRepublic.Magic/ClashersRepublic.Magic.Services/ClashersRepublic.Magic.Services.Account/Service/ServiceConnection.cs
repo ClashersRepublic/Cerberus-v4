@@ -1,24 +1,15 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Service
 {
     using System;
-
-    using ClashersRepublic.Magic.Logic;
-    using ClashersRepublic.Magic.Logic.Message;
-    using ClashersRepublic.Magic.Logic.Message.Factory;
+    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Services.Logic;
-    using ClashersRepublic.Magic.Services.Logic.Message.Factory;
-
     using RabbitMQ.Client;
     using RabbitMQ.Client.Events;
 
-    internal class ServiceConnection
+    internal static class ServiceConnection
     {
         private static bool _initialized;
-        private static string _queueName;
-        private static string _exchangeName;
-        private static IModel _channel;
-
-        private static LogicMessageFactory _messageFactory;
+        private static IModel _model;
 
         /// <summary>
         ///     Initializes this instance.
@@ -32,72 +23,78 @@
 
             ServiceConnection._initialized = true;
 
-            ServiceConnection._messageFactory = MagicServiceMessageFactory.Instance;
-            ServiceConnection._channel = new ConnectionFactory
-            {
-                HostName = "127.0.0.1"
-            }.CreateConnection().CreateModel();
+            IConnection connection = new ConnectionFactory {HostName = "127.0.0.1"}.CreateConnection();
 
-            ServiceConnection._exchangeName = ServiceExchangeName.ACCOUNT_EXCHANGE_NAME;
-            ServiceConnection._queueName = ServiceConnection._exchangeName + '.' + Config.ServerId;
+            ServiceConnection._model = connection.CreateModel();
 
-            ServiceConnection._channel.ExchangeDeclare(ServiceConnection._exchangeName, ExchangeType.Topic);
-            ServiceConnection._channel.QueueDeclare(ServiceConnection._queueName);
-            ServiceConnection._channel.QueueBind(ServiceConnection._queueName, ServiceConnection._exchangeName, Config.ServerId.ToString());
-
-            EventingBasicConsumer consumer = new EventingBasicConsumer(ServiceConnection._channel);
-            consumer.Received += ServiceConnection.ConsumerOnReceived;
-            ServiceConnection._channel.BasicConsume(ServiceConnection._queueName, true, consumer);
+            ServiceConnection.DeclareExchange(ServiceExchangeName.ACCOUNT_EXCHANGE_NAME);
+            ServiceConnection.DeclareQueue(ServiceExchangeName.ACCOUNT_QUEUE_PREFIX + Config.ServerId);
+            ServiceConnection.DeclareQueue(ServiceExchangeName.ACCOUNT_COMMON_QUEUE, false);
+            ServiceConnection.BindQueue(ServiceExchangeName.ACCOUNT_EXCHANGE_NAME,
+                ServiceExchangeName.ACCOUNT_QUEUE_PREFIX + Config.ServerId,
+                ServiceExchangeName.ACCOUNT_ROUTING_KEY_PREFIX + Config.ServerId);
+            ServiceConnection.ListenQueue(ServiceExchangeName.ACCOUNT_QUEUE_PREFIX + Config.ServerId);
+            ServiceConnection.ListenQueue(ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
         }
 
         /// <summary>
-        ///     Called when a message has been received.
+        ///     Declares the exchange.
         /// </summary>
-        private static void ConsumerOnReceived(object sender, BasicDeliverEventArgs args)
+        internal static void DeclareExchange(string exchange)
+        {
+            ServiceConnection._model.ExchangeDeclare(exchange, ExchangeType.Direct, true);
+        }
+
+        /// <summary>
+        ///     Declares the queue.
+        /// </summary>
+        internal static void DeclareQueue(string queueName, bool isEsclusive = true)
+        {
+            ServiceConnection._model.QueueDeclare(queueName, true, isEsclusive);
+        }
+
+        /// <summary>
+        ///     Binds the queue to specified exchange.
+        /// </summary>
+        internal static void BindQueue(string exchange, string queue, params string[] routingKeys)
+        {
+            for (int i = 0; i < routingKeys.Length; i++)
+            {
+                ServiceConnection._model.QueueBind(queue, exchange, routingKeys[i]);
+            }
+        }
+        
+        /// <summary>
+        ///     Listens the specified queue.
+        /// </summary>
+        internal static void ListenQueue(string queue)
+        {
+            EventingBasicConsumer consumer = new EventingBasicConsumer(ServiceConnection._model);
+            consumer.Received += ServiceConnection.ReceiveCallback;
+            ServiceConnection._model.BasicConsume(queue, true, consumer);
+        }
+
+        /// <summary>
+        ///     Sends the message to specified client.
+        /// </summary>
+        internal static void Send(byte[] content, string exchange, string routingKey)
+        {
+            ServiceConnection._model.BasicPublish(exchange, routingKey, ServiceConnection._model.CreateBasicProperties(), content);
+        }
+
+        /// <summary>
+        ///     Called when a content has been received.
+        /// </summary>
+        private static void ReceiveCallback(object sender, BasicDeliverEventArgs args)
         {
             try
             {
-                byte[] packet = args.Body;
-
-                if (packet.Length < 4)
-                {
-                    Logging.Error(typeof(ServiceConnection), "Invalid message body.");
-                    return;
-                }
-
-                int messageType = packet[1] | (packet[0] << 8);
-                int messageVersion = packet[3] | (packet[2] << 8);
-                byte[] messageBytes = new byte[packet.Length - 4];
-
-                Array.Copy(packet, 4, messageBytes, 0, messageBytes.Length);
-                PiranhaMessage message = ServiceConnection._messageFactory.CreateMessageByType(messageType);
-
-                if (message != null)
-                {
-                    message.SetMessageVersion((short) messageVersion);
-                    message.GetByteStream().SetByteArray(messageBytes, messageBytes.Length);
-
-                    ServiceConnectionProcessor.EnqueueReceivedMessage(message, args.RoutingKey);
-                }
-                else
-                {
-                    Logging.Error(typeof(ServiceConnection), "A unknown message type has been received. type: " + messageType);
-                }
+                ServiceMessaging.ReceiveMessage(args.Body, args);
             }
             catch (Exception exception)
             {
-                Logging.Error(typeof(ServiceConnection), "An exception has been thorwed when the handle of service message. trace: " + exception);
+                Logging.Error(typeof(ServiceConnection), "An exception has been thrown when the handle of service message. trace: " + exception);
             }
-        }
-
-        /// <summary>
-        ///     Sends the content to specified node.
-        /// </summary>
-        internal static void SendToService(string exchange, string routingKey, byte[] content)
-        {
-            IBasicProperties props = ServiceConnection._channel.CreateBasicProperties();
-            props.ReplyTo = ServiceConnection._queueName;
-            ServiceConnection._channel.BasicPublish(exchange, routingKey, props, content);
         }
     }
 }

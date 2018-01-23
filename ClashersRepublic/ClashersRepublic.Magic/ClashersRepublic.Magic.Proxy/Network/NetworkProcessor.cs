@@ -53,7 +53,7 @@
                     message.Decode();
                     messaging.Token.Client.MessageManager.ReceiveMessage(message);
 
-                    Logging.Info(typeof(NetworkMessaging), message.GetType().Name);
+                    Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " Received");
                 }
             }
             catch (Exception exception)
@@ -91,7 +91,7 @@
                     Array.Copy(messageBytes, 0, packet, 7, messageLength);
                     NetworkGateway.Send(packet, messaging.Token);
 
-                    Logging.Info(typeof(NetworkMessaging), message.GetType().Name);
+                    Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " Sent");
                 }
             }
             catch (Exception exception)

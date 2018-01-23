@@ -4,30 +4,24 @@
     using ClashersRepublic.Magic.Logic.Message.Factory;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
 
-    public sealed class MagicServiceMessageFactory : LogicMessageFactory
+    public sealed class MagicServiceMessageFactory
     {
-        public static readonly LogicMessageFactory Instance = new MagicServiceMessageFactory();
+        public static readonly MagicServiceMessageFactory Instance = new MagicServiceMessageFactory();
 
         /// <summary>
         ///     Creates a message by type.
         /// </summary>
-        public override PiranhaMessage CreateMessageByType(int type)
+        public MagicServiceMessage CreateMessageByType(int type)
         {
-            PiranhaMessage message = null;
+            MagicServiceMessage message = null;
 
             if (type < 20000)
             {
                 switch (type)
                 {
-                    case 10200:
+                    case 10105:
                     {
-                        message = new StartSessionMessage();
-                        break;
-                    }
-
-                    case 10210:
-                    {
-                        message = new StopSessionMessage();
+                        message = new CreateAccountMessage();
                         break;
                     }
                 }
@@ -36,21 +30,15 @@
             {
                 switch (type)
                 {
-                    case 20200:
+                    case 20101:
                     {
-                        message = new StartSessionOkMessage();
+                        message = new CreateAccountOkMessage();
                         break;
                     }
 
-                    case 20201:
+                    case 20102:
                     {
-                        message = new StartSessionFailedMessage();
-                        break;
-                    }
-
-                    case 20250:
-                    {
-                        message = new DisconnectMessage();
+                        message = new CreateAccountFailedMessage();
                         break;
                     }
                 }

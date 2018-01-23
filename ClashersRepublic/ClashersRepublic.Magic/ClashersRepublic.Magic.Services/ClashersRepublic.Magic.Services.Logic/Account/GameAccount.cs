@@ -7,8 +7,14 @@
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization.Attributes;
+
     public class GameAccount
     {
+        [BsonId]
+        public ObjectId _id;
+
         public int HighId;
         public int LowId;
 

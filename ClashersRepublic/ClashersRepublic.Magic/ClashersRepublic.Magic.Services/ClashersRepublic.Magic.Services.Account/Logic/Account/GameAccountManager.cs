@@ -1,18 +1,24 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Logic.Account
 {
     using System.Collections.Concurrent;
-
+    using System.Threading;
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Logic.Account;
+
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal static class GameAccountManager
     {
         private static bool _initialized;
         private static int _lastLowId;
 
+        private static LogicMersenneTwister _passTokenGenerator;
+
         private static ConcurrentDictionary<long, GameAccount> _accounts;
         private static ConcurrentDictionary<string, GameAccount> _sessions;
+
+        private static string PassTokenChars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
         /// <summary>
         ///     Initializes this instance.
@@ -27,8 +33,11 @@
             GameAccountManager._initialized = true;
 
             GameAccountManager._lastLowId = GameDatabase.GetHigherLowId();
+            GameAccountManager._passTokenGenerator = new LogicMersenneTwister(LogicTimeUtil.GetTimestamp());
             GameAccountManager._accounts = new ConcurrentDictionary<long, GameAccount>();
             GameAccountManager._sessions = new ConcurrentDictionary<string, GameAccount>();
+
+            GameAccountManager.LoadAccountsFromDB();
         }
 
         /// <summary>
@@ -43,13 +52,38 @@
         }
 
         /// <summary>
+        ///     Generates a pass token.
+        /// </summary>
+        internal static string GeneratePassToken()
+        {
+            string passToken = null;
+
+            for (int i = 0; i < 40; i++)
+            {
+                passToken += GameAccountManager.PassTokenChars[GameAccountManager._passTokenGenerator.NextInt() % GameAccountManager.PassTokenChars.Length];
+            }
+
+            return passToken;
+        }
+
+        /// <summary>
+        ///     Creates a new account.
+        /// </summary>
+        internal static GameAccount CreateAccount()
+        {
+            GameAccount account = new GameAccount(Config.ServerId, Interlocked.Increment(ref GameAccountManager._lastLowId), GameAccountManager.GeneratePassToken());
+            GameDatabase.InsertAccount(account);
+            return account;
+        }
+
+        /// <summary>
         ///     Gets the account instance by id.
         /// </summary>
         internal static GameAccount GetAccount(LogicLong accountId)
         {
             if (!GameAccountManager._accounts.TryGetValue(accountId, out GameAccount account))
             {
-                account = GameAccountManager.GetAccount(accountId);
+                account = GameAccountManager.LoadAccountFromDB(accountId);
 
                 if (account != null)
                 {

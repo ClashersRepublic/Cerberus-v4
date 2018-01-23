@@ -4,6 +4,11 @@
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Proxy.Logic;
+    using ClashersRepublic.Magic.Proxy.Service;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message.Account;
+    using ClashersRepublic.Magic.Services.Logic.Resource;
+    using ClashersRepublic.Magic.Titan.ZLib;
 
     internal class MessageManager
     {
@@ -91,23 +96,20 @@
         /// <summary>
         ///     Sends a <see cref="LoginFailedMessage"/> to client.
         /// </summary>
-        internal void SendLoginFailedMessage(int errorCode, params object[] args)
+        internal void SendLoginFailedMessage(int errorCode, string reason)
         {
-            LoginFailedMessage message = new LoginFailedMessage {ErrorCode = errorCode};
-
-            if (args.Length > 0)
+            LoginFailedMessage message = new LoginFailedMessage
             {
-                message.Reason = (string) args[0];
-            }
+                ErrorCode = errorCode,
+                Reason = reason
+            };
 
             switch (errorCode)
             {
                 case 7:
                 {
-                    if (args.Length > 1)
-                    {
-                        message.EndMaintenanceTime = (int) args[1];
-                    }
+                    message.ContentUrlList = ResourceManager.ContentUrlList;
+                    message.ResourceFingerprintData = ZLibHelper.CompressString(ResourceManager.FingerprintJson);
 
                     break;
                 }
@@ -130,11 +132,36 @@
             {
                 if (message.ClientMajorVersion == LogicVersion.MajorVersion && message.ClientBuildVersion == LogicVersion.BuildVersion)
                 {
-
+                    if (message.PassToken == ResourceManager.FingerprintSha)
+                    {
+                        if (message.AccountId.IsZero())
+                        {
+                            if (message.PassToken == null)
+                            {
+                                ServiceMessaging.SendMessage(new CreateAccountMessage
+                                {
+                                    ProxySessionId = this.Client.SessionId,
+                                    StartSession = true
+                                }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
+                            }
+                            else
+                            {
+                                this.SendLoginFailedMessage(1, null);
+                            }
+                        }
+                        else
+                        {
+                            this.SendLoginFailedMessage(1, null);
+                        }
+                    }
+                    else
+                    {
+                        this.SendLoginFailedMessage(7, null);
+                    }
                 }
                 else
                 {
-                    this.SendLoginFailedMessage(8, null, this.DeviceType);
+                    this.SendLoginFailedMessage(8, null);
                 }
             }
         }

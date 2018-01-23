@@ -15,9 +15,9 @@
         public string UpdateUrl;
         public string Reason;
 
-        public LogicArrayList<string> ContentUrlList;
-
         public byte[] ResourceFingerprintData;
+
+        public LogicArrayList<string> ContentUrlList;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoginFailedMessage"/>

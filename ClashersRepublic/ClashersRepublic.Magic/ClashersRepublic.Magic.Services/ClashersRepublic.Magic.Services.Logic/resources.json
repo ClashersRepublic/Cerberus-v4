@@ -1,0 +1,22 @@
+﻿{
+    "content": [
+        "https://raw.githubusercontent.com/Mimi8298/magic-assets/master/",
+        "https://raw.githubusercontent.com/BerkanYildiz/Patchs/master/ClashOfClans/"
+    ],
+    "chronosContent": [
+
+    ],
+    "appstore": [
+        "APPSTORE_LINK",
+        "GOOGLE_LINK",
+        "KUNLUN_LINK"
+    ],
+    "home": {
+        "starting_home": "level/starting_home.json",
+        "event_file": "events.json",
+        "global_file": "globals_definition.json"
+    },
+    "avatar" : {
+        "starting_avatar_name": "Mike"
+    } 
+}

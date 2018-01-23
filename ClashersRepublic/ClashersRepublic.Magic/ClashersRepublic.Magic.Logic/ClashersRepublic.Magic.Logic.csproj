@@ -103,6 +103,7 @@
     <Compile Include="Data\LogicVillageObjectData.cs" />
     <Compile Include="Data\LogicWarData.cs" />
     <Compile Include="Helper\ByteStreamHelper.cs" />
+    <Compile Include="Helper\LogicJSONHelper.cs" />
     <Compile Include="LogicVersion.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />

@@ -1,27 +1,26 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
 {
-    using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Account;
+    using ClashersRepublic.Magic.Titan.Math;
 
-    public class StartSessionOkMessage : PiranhaMessage
+    public class CreateAccountOkMessage : MagicServiceMessage
     {
-        public string SessionId;
         public GameAccount Account;
-
+        
         /// <summary>
-        ///     Initializes a new instance of the <see cref="StartSessionOkMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountOkMessage"/> class.
         /// </summary>
-        public StartSessionOkMessage() : this(0)
+        public CreateAccountOkMessage() : this(0)
         {
-            // StartSessionOkMessage.
+            // CreateAccountOkMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="StartSessionOkMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountOkMessage"/> class.
         /// </summary>
-        public StartSessionOkMessage(short messageVersion) : base(messageVersion)
+        public CreateAccountOkMessage(short messageVersion) : base(messageVersion)
         {
-            // StartSessionOkMessage.
+            // CreateAccountOkMessage.
         }
 
         /// <summary>
@@ -30,7 +29,6 @@
         public override void Decode()
         {
             base.Decode();
-            this.SessionId = this.Stream.ReadString(64);
             this.Account = new GameAccount();
             this.Account.Decode(this.Stream);
         }
@@ -41,20 +39,19 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteString(this.SessionId);
             this.Account.Encode(this.Stream);
         }
 
         /// <summary>
-        ///     Gets the message type of this message.
+        ///     Gets the message type of this instance.
         /// </summary>
         public override short GetMessageType()
         {
-            return 20200;
+            return 20101;
         }
 
         /// <summary>
-        ///     Gets the service node type of this message.
+        ///     Gets the service node type of this instance.
         /// </summary>
         public override int GetServiceNodeType()
         {

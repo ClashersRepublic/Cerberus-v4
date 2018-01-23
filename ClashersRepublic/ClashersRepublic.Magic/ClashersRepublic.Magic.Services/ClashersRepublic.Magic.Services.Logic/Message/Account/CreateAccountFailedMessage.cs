@@ -1,25 +1,25 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
 {
-    using ClashersRepublic.Magic.Logic.Message;
+    using ClashersRepublic.Magic.Titan.Math;
 
-    public class DisconnectMessage : PiranhaMessage
+    public class CreateAccountFailedMessage : MagicServiceMessage
     {
-        public string SessionId;
+        public int ErrorCode;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DisconnectMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountFailedMessage"/> class.
         /// </summary>
-        public DisconnectMessage() : this(0)
+        public CreateAccountFailedMessage() : this(0)
         {
-            // DisconnectMessage.
+            // CreateAccountFailedMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DisconnectMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountFailedMessage"/> class.
         /// </summary>
-        public DisconnectMessage(short messageVersion) : base(messageVersion)
+        public CreateAccountFailedMessage(short messageVersion) : base(messageVersion)
         {
-            // DisconnectMessage.
+            // CreateAccountFailedMessage.
         }
 
         /// <summary>
@@ -28,7 +28,7 @@
         public override void Decode()
         {
             base.Decode();
-            this.SessionId = this.Stream.ReadString(64);
+            this.ErrorCode = this.Stream.ReadInt();
         }
 
         /// <summary>
@@ -37,19 +37,19 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteString(this.SessionId);
+            this.Stream.WriteInt(this.ErrorCode);
         }
 
         /// <summary>
-        ///     Gets the message type of this message.
+        ///     Gets the message type of this instance.
         /// </summary>
         public override short GetMessageType()
         {
-            return 20250;
+            return 20102;
         }
 
         /// <summary>
-        ///     Gets the service node type of this message.
+        ///     Gets the service node type of this instance.
         /// </summary>
         public override int GetServiceNodeType()
         {
