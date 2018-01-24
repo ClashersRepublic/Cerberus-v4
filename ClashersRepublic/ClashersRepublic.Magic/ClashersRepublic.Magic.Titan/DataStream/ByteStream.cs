@@ -440,10 +440,8 @@
 
                     return;
                 }
-
-                this._offset += 1;
-
-                this._buffer[this._offset - 1] = (byte) (value & 0x3F);
+                
+                this._buffer[this._offset++] = (byte) (value & 0x3F);
             }
             else
             {
@@ -471,7 +469,7 @@
                             this._buffer[this._offset - 4] = (byte) ((value & 0x3F) | 0xC0);
                             this._buffer[this._offset - 3] = (byte) (((value >> 6) & 0x7F) | 0x80);
                             this._buffer[this._offset - 2] = (byte) (((value >> 13) & 0x7F) | 0x80);
-                            this._buffer[this._offset - 1] = (byte) (((value >> 20) & 0x7F) | 0x80);
+                            this._buffer[this._offset - 1] = (byte) ((value >> 20) & 0x7F);
 
                             return;
                         }
@@ -480,7 +478,7 @@
 
                         this._buffer[this._offset - 3] = (byte) ((value & 0x3F) | 0xC0);
                         this._buffer[this._offset - 2] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                        this._buffer[this._offset - 1] = (byte) (((value >> 13) & 0x7F) | 0x80);
+                        this._buffer[this._offset - 1] = (byte) ((value >> 13) & 0x7F);
 
                         return;
                     }
@@ -488,14 +486,12 @@
                     this._offset += 2;
 
                     this._buffer[this._offset - 2] = (byte) ((value & 0x3F) | 0xC0);
-                    this._buffer[this._offset - 1] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                    this._buffer[this._offset - 1] = (byte) ((value >> 6) & 0x7F);
 
                     return;
                 }
-
-                this._offset += 1;
-
-                this._buffer[this._offset - 1] = (byte) ((value & 0x3F) | 0x40);
+                
+                this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x40);
             }
         }
 

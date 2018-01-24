@@ -49,12 +49,15 @@
             NetworkProcessor.Initialize();
             NetworkGateway.Initialize();
             ExitHandler.Initialize();
-            
-            ServiceMessaging.SendMessage(new CreateAccountMessage
+
+            for (int i = 0; i < 1000; i++)
             {
-                ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, 1),
-                StartSession = false
-            }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
+                ServiceMessaging.SendMessage(new CreateAccountMessage
+                {
+                    ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, 1),
+                    StartSession = false
+                }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
+            }
 
             Thread.Sleep(-1);
         }
