@@ -97,11 +97,10 @@
         /// </summary>
         internal static void InternalReceiveMessage(PiranhaMessage message, BasicDeliverEventArgs args)
         {
-            Console.WriteLine("Ok");
+            Logging.Info(typeof(ServiceProcessor), "Message " + message.GetType().Name + " Received");
 
             message.Decode();
             MessageManager.ReceiveMessage(message, args);
-            Logging.Info(typeof(ServiceProcessor), "Message " + message.GetType().Name + " Received");
         }
 
         /// <summary>

@@ -33,8 +33,8 @@
         {
             if (content.Length > 5)
             {
-                int messageType = (byte) (content[0] << 8 | content[1]);
-                int messageLenght = (byte) (content[2] << 16 | content[3] << 8 | content[4]);
+                int messageType = content[0] << 8 | content[1];
+                int messageLenght = content[2] << 16 | content[3] << 8 | content[4];
 
                 if (content.Length - 5 >= messageLenght)
                 {

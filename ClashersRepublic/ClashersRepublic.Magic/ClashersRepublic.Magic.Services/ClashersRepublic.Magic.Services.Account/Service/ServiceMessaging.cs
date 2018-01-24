@@ -33,8 +33,6 @@
         {
             if (content.Length > 5)
             {
-                Console.WriteLine(BitConverter.ToString(content));
-
                 int messageType = content[0] << 8 | content[1];
                 int messageLenght = content[2] << 16 | content[3] << 8 | content[4];
 
