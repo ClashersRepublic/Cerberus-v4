@@ -1,13 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Network
 {
     using System;
-
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Logic.Message.Factory;
 
     internal class NetworkMessaging
     {
         private readonly LogicMessageFactory _messageFactory;
+
         internal NetworkToken Token;
 
         /// <summary>
@@ -38,7 +38,7 @@
                     {
                         byte[] messageBytes = new byte[messageLength];
                         Array.Copy(packet, 7, messageBytes, 0, messageLength);
-
+                        
                         PiranhaMessage message = this._messageFactory.CreateMessageByType(messageType);
 
                         if (message != null)

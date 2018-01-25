@@ -3,6 +3,7 @@
     using System;
     using System.Net;
     using System.Net.Sockets;
+    using ClashersRepublic.Magic.Services.Logic;
 
     internal static class NetworkGateway
     {

@@ -7,7 +7,7 @@
         public string ProxySessionId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MagicServiceMessage"/>
+        ///     Initializes a new instance of the <see cref="MagicServiceMessage" />
         /// </summary>
         public MagicServiceMessage(short messageVersion) : base(messageVersion)
         {

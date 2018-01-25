@@ -1,8 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Database
 {
+    using System;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Account;
     using ClashersRepublic.Magic.Titan.Math;
-
     using MongoDB.Driver;
 
     internal class GameDatabase
@@ -24,10 +25,26 @@
             }
 
             GameDatabase._initialized = true;
+            
+            GameDatabase._client = new MongoClient("mongodb://" + Config.MongodUser + ":" + Config.MongodPassword + "@" + Config.MongodServer + ":27017");
+            GameDatabase._database = GameDatabase._client.GetDatabase(Config.MongodDbName);
+            GameDatabase._accounts = GameDatabase._database.GetCollection<GameAccount>(Config.MongodDbCollection);
 
-            GameDatabase._client = new MongoClient(Config.GameDatabaseUrl);
-            GameDatabase._database = GameDatabase._client.GetDatabase(Config.GameDatabaseName);
-            GameDatabase._accounts = GameDatabase._database.GetCollection<GameAccount>(Config.GameDatabaseCollection);
+            if (GameDatabase._accounts == null)
+            {
+                GameDatabase._database.CreateCollection(Config.MongodDbCollection);
+                GameDatabase._accounts = GameDatabase._database.GetCollection<GameAccount>(Config.MongodDbCollection);
+            }
+
+            GameDatabase._accounts.Indexes.CreateOne(Builders<GameAccount>.IndexKeys.Combine(
+                    Builders<GameAccount>.IndexKeys.Ascending(T => T.HighId),
+                    Builders<GameAccount>.IndexKeys.Descending(T => T.LowId)),
+                new CreateIndexOptions
+                {
+                    Name = "entityIds",
+                    Background = true
+                }
+            );
         }
 
         /// <summary>

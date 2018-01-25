@@ -6,8 +6,9 @@
 
     internal class ConsoleWriter : TextWriter
     {
-        internal readonly TextWriter Original;
         internal static bool WriteMiddle = true;
+        internal readonly TextWriter Original;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ConsoleWriter" /> class.
         /// </summary>

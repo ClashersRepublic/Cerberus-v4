@@ -34,9 +34,9 @@
             }
 
             ExitHandler._initialized = true;
-            ExitHandler.DeleteMenu(ExitHandler.GetSystemMenu(ExitHandler.GetConsoleWindow(), false), ExitHandler.SC_CLOSE, 0);
             ExitHandler._exitHandler += ExitHandler.OnQuit;
             ExitHandler.SetConsoleCtrlHandler(ExitHandler._exitHandler, true);
+            ExitHandler.DeleteMenu(ExitHandler.GetSystemMenu(ExitHandler.GetConsoleWindow(), false), ExitHandler.SC_CLOSE, 0);
         }
 
         /// <summary>

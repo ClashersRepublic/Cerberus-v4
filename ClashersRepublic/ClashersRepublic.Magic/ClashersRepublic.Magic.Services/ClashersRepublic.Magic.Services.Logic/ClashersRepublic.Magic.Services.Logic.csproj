@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Account\GameAccount.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Message\Account\CreateAccountFailedMessage.cs" />
     <Compile Include="Message\Account\CreateAccountOkMessage.cs" />
     <Compile Include="Message\Account\CreateAccountMessage.cs" />
@@ -72,6 +73,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="resources.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

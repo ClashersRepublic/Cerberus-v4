@@ -63,7 +63,7 @@
         {
             return this.Version;
         }
-        
+
         /// <summary>
         ///     Sets the version of message.
         /// </summary>
@@ -71,7 +71,7 @@
         {
             this.Version = version;
         }
-        
+
         /// <summary>
         ///     Gets a value indicating whether this message is a server to client message.
         /// </summary>

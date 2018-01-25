@@ -7,13 +7,13 @@
         private readonly int _value;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONNumber"/> class.
+        ///     Initializes a new instance of the <see cref="LogicJSONNumber" /> class.
         /// </summary>
         public LogicJSONNumber(int value)
         {
             this._value = value;
         }
-        
+
         /// <summary>
         ///     Gets the integer value.
         /// </summary>

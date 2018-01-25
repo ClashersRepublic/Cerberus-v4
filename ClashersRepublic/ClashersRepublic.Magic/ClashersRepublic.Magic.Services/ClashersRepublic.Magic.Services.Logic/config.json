@@ -1,0 +1,20 @@
+{
+    "serverId": 0,
+    "serverVersion": "9.256",
+    "serverEnvironment": "integration",
+    "rabbit": {
+        "server":  "142.44.181.111",
+        "user": "Magic-Server",
+        "password": "9q2g1vhrga8hspjycw6rl3f6rocco0rr7n1ultdoivfnnr5ig98x90k7f0y0ew40sff9d9v4fyef3rqokt8pwk9ozyuvf3tjkul3ou04h8j4fdffcmf0ivfvap15sc08"
+    },
+    "mongod": {
+        "server": "142.44.181.111",
+        "user": "ClashersRepublic.Magic.Services",
+        "password": "pCv2axluvYHGPFf8L1RYzrRUnvOjuPz6blkbUTVdtDY7vwbTQ95geCFJaQFL168uhQf82QhxgsUbeLUroaBv8nFFZSyvLRT9FaNLv9rfe2JgjFFR94AyzzAwukBerEGPHgjqCaOp4sG0GIYB8jTGLZCZay80SvgLJHtNqAqnb7MGcrvpKwRxsKh7WLHYv201KQ4wOObdmPezafeTY8gLl1IRxedjeeDR1eIbQ6a7X1B3ibgV7l4LHbVBuUgv32Km",
+        "db_name": "ClashersRepublic-Magic",
+        "db_collection_name": "Accounts"
+    },
+    "network": {
+        "buffer_size": 8192 
+    } 
+}

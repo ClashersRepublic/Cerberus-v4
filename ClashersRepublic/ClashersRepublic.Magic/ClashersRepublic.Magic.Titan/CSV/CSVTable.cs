@@ -7,14 +7,14 @@
     {
         public LogicArrayList<string> ColumnNames;
         public LogicArrayList<CSVColumn> Columns;
-        public LogicArrayList<CSVRow> Rows;
-        
+
         public CSVNode Node;
+        public LogicArrayList<CSVRow> Rows;
 
         public int Size;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSVTable"/> class.
+        ///     Initializes a new instance of the <see cref="CSVTable" /> class.
         /// </summary>
         public CSVTable(CSVNode node, int size)
         {
@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Adds and converts the specified value to list.
+        ///     Adds and converts the specified value to list.
         /// </summary>
         public void AddAndConvertValue(string value, int columnIndex)
         {
@@ -78,7 +78,7 @@
         }
 
         /// <summary>
-        /// Adds a new column name to array list.
+        ///     Adds a new column name to array list.
         /// </summary>
         public void AddColumn(string name)
         {
@@ -86,7 +86,7 @@
         }
 
         /// <summary>
-        /// Adds a new column to array list.
+        ///     Adds a new column to array list.
         /// </summary>
         public void AddColumnType(int type)
         {
@@ -94,7 +94,7 @@
         }
 
         /// <summary>
-        /// Adds a new row instance to array list.
+        ///     Adds a new row instance to array list.
         /// </summary>
         public void AddRow(CSVRow row)
         {
@@ -102,7 +102,7 @@
         }
 
         /// <summary>
-        /// Called when the column names has been loaded.
+        ///     Called when the column names has been loaded.
         /// </summary>
         public void ColumnNamesLoaded()
         {
@@ -118,7 +118,7 @@
         }
 
         /// <summary>
-        /// Gets the array size at specified column.
+        ///     Gets the array size at specified column.
         /// </summary>
         public int GetArraySizeAt(CSVRow row, int columnIdx)
         {
@@ -147,9 +147,9 @@
 
             return 0;
         }
-        
+
         /// <summary>
-        /// Gets the column name by index.
+        ///     Gets the column name by index.
         /// </summary>
         public string GetColumnName(int idx)
         {
@@ -157,7 +157,7 @@
         }
 
         /// <summary>
-        /// Gets the index of column by name.
+        ///     Gets the index of column by name.
         /// </summary>
         public int GetColumnIndexByName(string name)
         {
@@ -165,7 +165,7 @@
         }
 
         /// <summary>
-        /// Gets the number of columns.
+        ///     Gets the number of columns.
         /// </summary>
         public int GetColumnCount()
         {
@@ -173,7 +173,7 @@
         }
 
         /// <summary>
-        /// Gets the number of rows.
+        ///     Gets the number of rows.
         /// </summary>
         public int GetColumnRowCount()
         {
@@ -181,7 +181,7 @@
         }
 
         /// <summary>
-        /// Gets the number of type.
+        ///     Gets the number of type.
         /// </summary>
         public int GetColumnTypeCount()
         {
@@ -189,7 +189,7 @@
         }
 
         /// <summary>
-        /// Gets the file name of csv.
+        ///     Gets the file name of csv.
         /// </summary>
         public string GetFileName()
         {
@@ -197,7 +197,7 @@
         }
 
         /// <summary>
-        /// Gets the boolean value at specified column and specified value index.
+        ///     Gets the boolean value at specified column and specified value index.
         /// </summary>
         public bool GetBooleanValue(string name, int index)
         {
@@ -212,7 +212,7 @@
         }
 
         /// <summary>
-        /// Gets the boolean value at specified column index and specified value index.
+        ///     Gets the boolean value at specified column index and specified value index.
         /// </summary>
         public bool GetBooleanValueAt(int columnIndex, int index)
         {
@@ -225,7 +225,7 @@
         }
 
         /// <summary>
-        /// Gets the integer value at specified column and specified value index.
+        ///     Gets the integer value at specified column and specified value index.
         /// </summary>
         public int GetIntegerValue(string name, int index)
         {
@@ -240,7 +240,7 @@
         }
 
         /// <summary>
-        /// Gets the integer value at specified column index and specified value index.
+        ///     Gets the integer value at specified column index and specified value index.
         /// </summary>
         public int GetIntegerValueAt(int columnIndex, int index)
         {
@@ -253,7 +253,7 @@
         }
 
         /// <summary>
-        /// Gets the value at specified column and specified value index.
+        ///     Gets the value at specified column and specified value index.
         /// </summary>
         public string GetValue(string name, int index)
         {
@@ -268,7 +268,7 @@
         }
 
         /// <summary>
-        /// Gets the value at specified column index and specified value index.
+        ///     Gets the value at specified column index and specified value index.
         /// </summary>
         public string GetValueAt(int columnIndex, int index)
         {
@@ -281,7 +281,7 @@
         }
 
         /// <summary>
-        /// Gets the integer value at specified index.
+        ///     Gets the integer value at specified index.
         /// </summary>
         public CSVRow GetRowAt(int index)
         {
@@ -289,7 +289,7 @@
         }
 
         /// <summary>
-        /// Gets the number of rows.
+        ///     Gets the number of rows.
         /// </summary>
         public int GetRowCount()
         {
@@ -297,7 +297,7 @@
         }
 
         /// <summary>
-        /// Validates the column types.
+        ///     Validates the column types.
         /// </summary>
         public void ValidateColumnTypes()
         {

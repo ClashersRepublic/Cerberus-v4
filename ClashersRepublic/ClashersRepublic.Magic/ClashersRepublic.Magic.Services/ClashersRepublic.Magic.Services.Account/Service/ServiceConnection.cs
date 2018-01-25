@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Service
 {
     using System;
-    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Services.Logic;
     using RabbitMQ.Client;
     using RabbitMQ.Client.Events;
@@ -23,7 +22,7 @@
 
             ServiceConnection._initialized = true;
 
-            IConnection connection = new ConnectionFactory {HostName = "127.0.0.1"}.CreateConnection();
+            IConnection connection = new ConnectionFactory {HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword}.CreateConnection();
 
             ServiceConnection._model = connection.CreateModel();
 
@@ -63,7 +62,7 @@
                 ServiceConnection._model.QueueBind(queue, exchange, routingKeys[i]);
             }
         }
-        
+
         /// <summary>
         ///     Listens the specified queue.
         /// </summary>

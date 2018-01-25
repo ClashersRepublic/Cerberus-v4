@@ -6,18 +6,19 @@
     public class LogicArrayList<T>
     {
         private T[] _items;
-        private int _index;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LogicArrayList{T}" /> class.
+        /// </summary>
+        public LogicArrayList()
+        {
+            this._items = new T[0];
+        }
 
         /// <summary>
         ///     Gets a value indicating the number of items in list.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return this._index;
-            }
-        }
+        public int Count { get; private set; }
 
         /// <summary>
         ///     Gets the item at specified index.
@@ -26,9 +27,9 @@
         {
             get
             {
-                if (index >= this._index || index < 0)
+                if (index >= this.Count || index < 0)
                 {
-                    Debugger.Error("LogicArrayList.get out of bounds " + index + "/" + this._index);
+                    Debugger.Error("LogicArrayList.get out of bounds " + index + "/" + this.Count);
                     return default(T);
                 }
 
@@ -36,22 +37,14 @@
             }
             set
             {
-                if (index >= this._index || index < 0)
+                if (index >= this.Count || index < 0)
                 {
-                    Debugger.Error("LogicArrayList.set out of bounds " + index + "/" + this._index);
+                    Debugger.Error("LogicArrayList.set out of bounds " + index + "/" + this.Count);
                     return;
                 }
 
                 this._items[index] = value;
             }
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicArrayList{T}"/> class.
-        /// </summary>
-        public LogicArrayList()
-        {
-            this._items = new T[0];
         }
 
         /// <summary>
@@ -61,12 +54,12 @@
         {
             int size = this._items.Length;
 
-            if (size == this._index)
+            if (size == this.Count)
             {
                 this.EnsureCapacity(size != 0 ? size * 2 : 5);
             }
 
-            this._items[this._index++] = item;
+            this._items[this.Count++] = item;
         }
 
         /// <summary>
@@ -74,7 +67,7 @@
         /// </summary>
         public int IndexOf(T item)
         {
-            for (int i = 0; i < this._index; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 if (this._items[i].Equals(item))
                 {
@@ -90,18 +83,18 @@
         /// </summary>
         public void Remove(int index)
         {
-            if (index > this._index || index < 0)
+            if (index > this.Count || index < 0)
             {
-                Debugger.Error("LogicArrayList.remove out of bounds " + index + "/" + this._index);
+                Debugger.Error("LogicArrayList.remove out of bounds " + index + "/" + this.Count);
                 return;
             }
 
-            if (index != this._index - 1)
+            if (index != this.Count - 1)
             {
-                Array.Copy(this._items, index + 1, this._items, index, this._index - index - 1);
+                Array.Copy(this._items, index + 1, this._items, index, this.Count - index - 1);
             }
 
-            this._items[--this._index] = default(T);
+            this._items[--this.Count] = default(T);
         }
 
         /// <summary>
@@ -125,7 +118,7 @@
         ~LogicArrayList()
         {
             this._items = null;
-            this._index = 0;
+            this.Count = 0;
         }
     }
 }

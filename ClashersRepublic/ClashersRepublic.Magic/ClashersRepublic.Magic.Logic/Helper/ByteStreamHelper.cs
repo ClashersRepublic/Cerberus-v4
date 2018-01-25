@@ -1,7 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Helper
 {
+    using System;
     using System.Linq;
-
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Titan.DataStream;
 
@@ -42,9 +42,9 @@
         {
             hexa = hexa.Replace("-", string.Empty);
 
-            byte[] bytes = System.Linq.Enumerable.Range(0, hexa.Length)
+            byte[] bytes = Enumerable.Range(0, hexa.Length)
                 .Where(x => x % 2 == 0)
-                .Select(x => System.Convert.ToByte(hexa.Substring(x, 2), 16))
+                .Select(x => Convert.ToByte(hexa.Substring(x, 2), 16))
                 .ToArray();
 
             for (int i = 0; i < bytes.Length; i++)

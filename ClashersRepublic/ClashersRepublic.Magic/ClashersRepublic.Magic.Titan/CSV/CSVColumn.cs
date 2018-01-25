@@ -5,14 +5,12 @@
 
     public class CSVColumn
     {
-        private LogicArrayList<int> _intValue;
-        private LogicArrayList<bool> _boolValue;
-        private LogicArrayList<string> _stringValue;
-
-        public int ColumnType { get; private set; }
+        private readonly LogicArrayList<bool> _boolValue;
+        private readonly LogicArrayList<int> _intValue;
+        private readonly LogicArrayList<string> _stringValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSVColumn"/> class.
+        ///     Initializes a new instance of the <see cref="CSVColumn" /> class.
         /// </summary>
         public CSVColumn(int type, int size)
         {
@@ -56,8 +54,10 @@
             }
         }
 
+        public int ColumnType { get; }
+
         /// <summary>
-        /// Adds a empty value to column.
+        ///     Adds a empty value to column.
         /// </summary>
         public void AddEmptyValue()
         {
@@ -90,7 +90,7 @@
         }
 
         /// <summary>
-        /// Adds the specified boolean value to column.
+        ///     Adds the specified boolean value to column.
         /// </summary>
         public void AddBooleanValue(bool value)
         {
@@ -98,7 +98,7 @@
         }
 
         /// <summary>
-        /// Adds the specified int value to column.
+        ///     Adds the specified int value to column.
         /// </summary>
         public void AddIntegerValue(int value)
         {
@@ -106,7 +106,7 @@
         }
 
         /// <summary>
-        /// Adds the specified string value to column.
+        ///     Adds the specified string value to column.
         /// </summary>
         public void AddStringValue(string value)
         {
@@ -114,7 +114,7 @@
         }
 
         /// <summary>
-        /// Gets the array size.
+        ///     Gets the array size.
         /// </summary>
         public int GetArraySize(int startOffset, int endOffset)
         {
@@ -144,7 +144,7 @@
         }
 
         /// <summary>
-        /// Gets the boolean value at specified index.
+        ///     Gets the boolean value at specified index.
         /// </summary>
         public bool GetBooleanValue(int index)
         {
@@ -152,7 +152,7 @@
         }
 
         /// <summary>
-        /// Gets the integer value at specified index.
+        ///     Gets the integer value at specified index.
         /// </summary>
         public int GetIntegerValue(int index)
         {
@@ -160,7 +160,7 @@
         }
 
         /// <summary>
-        /// Gets the string value at specified index.
+        ///     Gets the string value at specified index.
         /// </summary>
         public string GetStringValue(int index)
         {
@@ -168,7 +168,7 @@
         }
 
         /// <summary>
-        /// Gets the column size.
+        ///     Gets the column size.
         /// </summary>
         public int GetSize()
         {

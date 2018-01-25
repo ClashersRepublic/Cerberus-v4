@@ -52,7 +52,7 @@
 
             if (ResourceManager.FingerprintJson != null)
             {
-                LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(ResourceManager.FingerprintJson);
+                LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(ResourceManager.FingerprintJson);
 
                 ResourceManager.FingerprintSha = LogicJSONHelper.GetJSONString(jsonObject, "sha");
                 ResourceManager.FingerprintVersion = LogicJSONHelper.GetJSONString(jsonObject, "version");
@@ -123,7 +123,7 @@
         {
             if (File.Exists("Assets/" + file))
             {
-                return File.ReadAllText(file);
+                return File.ReadAllText("Assets/" + file);
             }
 
             return null;

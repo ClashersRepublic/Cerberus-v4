@@ -6,7 +6,25 @@
 
     public class LogicJSONArray : LogicJSONNode
     {
-        private LogicArrayList<LogicJSONNode> _items;
+        private readonly LogicArrayList<LogicJSONNode> _items;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LogicJSONArray" /> class.
+        /// </summary>
+        public LogicJSONArray()
+        {
+            this._items = new LogicArrayList<LogicJSONNode>();
+            this._items.EnsureCapacity(20);
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LogicJSONArray" /> class.
+        /// </summary>
+        public LogicJSONArray(int capacity)
+        {
+            this._items = new LogicArrayList<LogicJSONNode>();
+            this._items.EnsureCapacity(capacity);
+        }
 
         /// <summary>
         ///     Gets the items at specified index.
@@ -17,24 +35,6 @@
             {
                 return this._items[index];
             }
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONArray"/> class.
-        /// </summary>
-        public LogicJSONArray()
-        {
-            this._items = new LogicArrayList<LogicJSONNode>();
-            this._items.EnsureCapacity(20);
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONArray"/> class.
-        /// </summary>
-        public LogicJSONArray(int capacity)
-        {
-            this._items = new LogicArrayList<LogicJSONNode>();
-            this._items.EnsureCapacity(capacity);
         }
 
         /// <summary>

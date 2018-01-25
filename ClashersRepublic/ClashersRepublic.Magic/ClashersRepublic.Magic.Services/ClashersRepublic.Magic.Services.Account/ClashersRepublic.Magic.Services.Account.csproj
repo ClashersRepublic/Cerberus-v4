@@ -55,7 +55,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
     <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Database\GameDatabase.cs" />
     <Compile Include="Handler\ExitHandler.cs" />

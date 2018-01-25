@@ -71,6 +71,8 @@
     <Compile Include="Math\LogicRandom.cs" />
     <Compile Include="Math\LogicVector2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RC4Encrypter.cs" />
+    <Compile Include="StreamEncrypter.cs" />
     <Compile Include="Util\LogicArrayList.cs" />
     <Compile Include="Util\LogicTimeUtil.cs" />
     <Compile Include="ZLib\CRC32.cs" />

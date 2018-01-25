@@ -6,11 +6,11 @@
 
     public class CSVNode
     {
-        private string _fileName;
+        private readonly string _fileName;
         private CSVTable _table;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSVNode"/> class.
+        ///     Initializes a new instance of the <see cref="CSVNode" /> class.
         /// </summary>
         public CSVNode(string[] lines, string fileName)
         {
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Loads the csv file.
+        ///     Loads the csv file.
         /// </summary>
         public void Load(string[] lines)
         {
@@ -62,7 +62,7 @@
                             Debugger.Error("Invalid column type '" + columnTypes[i] + "', column name " + columnNames[i] + ", file " + this._fileName + ". Expecting: int/string/boolean.");
                         }
                     }
-                    
+
                     this._table.AddColumnType(columnType);
                 }
 
@@ -92,7 +92,7 @@
         }
 
         /// <summary>
-        /// Parses the specified line.
+        ///     Parses the specified line.
         /// </summary>
         public LogicArrayList<string> ParseLine(string line)
         {
@@ -133,12 +133,12 @@
                     readField += currentChar;
                 }
             }
-            
+
             return fields;
         }
 
         /// <summary>
-        /// Gets the file name.
+        ///     Gets the file name.
         /// </summary>
         public string GetFileName()
         {
@@ -146,7 +146,7 @@
         }
 
         /// <summary>
-        /// Gets the csv table.
+        ///     Gets the csv table.
         /// </summary>
         public CSVTable GetTable()
         {

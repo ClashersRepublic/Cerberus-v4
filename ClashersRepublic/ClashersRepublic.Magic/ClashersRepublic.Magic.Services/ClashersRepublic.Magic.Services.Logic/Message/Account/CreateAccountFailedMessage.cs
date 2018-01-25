@@ -1,13 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
 {
-    using ClashersRepublic.Magic.Titan.Math;
-
     public class CreateAccountFailedMessage : MagicServiceMessage
     {
         public int ErrorCode;
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountFailedMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountFailedMessage" /> class.
         /// </summary>
         public CreateAccountFailedMessage() : this(0)
         {
@@ -15,7 +13,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountFailedMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountFailedMessage" /> class.
         /// </summary>
         public CreateAccountFailedMessage(short messageVersion) : base(messageVersion)
         {

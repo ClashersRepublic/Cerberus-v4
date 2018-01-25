@@ -4,11 +4,11 @@
 
     public class CSVRow
     {
-        private int _rowOffset;
-        private CSVTable _table;
+        private readonly int _rowOffset;
+        private readonly CSVTable _table;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSVRow"/> class.
+        ///     Initializes a new instance of the <see cref="CSVRow" /> class.
         /// </summary>
         public CSVRow(CSVTable table)
         {
@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        /// Gets the array size of specified column.
+        ///     Gets the array size of specified column.
         /// </summary>
         public int GetBiggestArraySize(string column)
         {
@@ -32,7 +32,7 @@
         }
 
         /// <summary>
-        /// Gets the biggest array size.
+        ///     Gets the biggest array size.
         /// </summary>
         public int GetBiggestArraySize()
         {
@@ -48,7 +48,7 @@
         }
 
         /// <summary>
-        /// Gets the number of columns.
+        ///     Gets the number of columns.
         /// </summary>
         public int GetColumnCount()
         {
@@ -56,7 +56,7 @@
         }
 
         /// <summary>
-        /// Gets the index of specified column.
+        ///     Gets the index of specified column.
         /// </summary>
         public int GetColumnIndexByName(string name)
         {
@@ -64,7 +64,7 @@
         }
 
         /// <summary>
-        /// Gets the boolean value at specified column and specified index.
+        ///     Gets the boolean value at specified column and specified index.
         /// </summary>
         public bool GetBooleanValue(string columnName, int index)
         {
@@ -72,7 +72,7 @@
         }
 
         /// <summary>
-        /// Gets the boolean value at specified column index and specified index.
+        ///     Gets the boolean value at specified column index and specified index.
         /// </summary>
         public bool GetBooleanValueAt(int columnIndex, int index)
         {
@@ -80,7 +80,7 @@
         }
 
         /// <summary>
-        /// Gets the integer value at specified column and specified index.
+        ///     Gets the integer value at specified column and specified index.
         /// </summary>
         public int GetIntegerValue(string columnName, int index)
         {
@@ -88,7 +88,7 @@
         }
 
         /// <summary>
-        /// Gets the integer value at specified column index and specified index.
+        ///     Gets the integer value at specified column index and specified index.
         /// </summary>
         public int GetIntegerValueAt(int columnIndex, int index)
         {
@@ -96,7 +96,7 @@
         }
 
         /// <summary>
-        /// Gets the value at specified column and specified index.
+        ///     Gets the value at specified column and specified index.
         /// </summary>
         public string GetValue(string columnName, int index)
         {
@@ -104,7 +104,7 @@
         }
 
         /// <summary>
-        /// Gets the value at specified column index and specified index.
+        ///     Gets the value at specified column index and specified index.
         /// </summary>
         public string GetValueAt(int columnIndex, int index)
         {
@@ -112,7 +112,7 @@
         }
 
         /// <summary>
-        /// Gets the name of this row.
+        ///     Gets the name of this row.
         /// </summary>
         public string GetName()
         {
@@ -120,7 +120,7 @@
         }
 
         /// <summary>
-        /// Gets the row offset.
+        ///     Gets the row offset.
         /// </summary>
         public int GetRowOffset()
         {

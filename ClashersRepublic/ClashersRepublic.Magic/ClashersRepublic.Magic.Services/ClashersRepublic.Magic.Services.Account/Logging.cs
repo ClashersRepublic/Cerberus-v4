@@ -3,7 +3,6 @@
     using System;
     using System.Diagnostics;
     using System.IO;
-
     using Debugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
 
     public static class Logging

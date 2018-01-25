@@ -1,36 +1,33 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Account
 {
     using System.Collections.Generic;
-
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
-
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
 
     public class GameAccount
     {
-        [BsonId]
-        public ObjectId _id;
-
-        public int HighId;
-        public int LowId;
-
-        public string PassToken;
+        [BsonId] public ObjectId _id;
 
         public Ban CurrentBan;
         public Session CurrentSession;
 
+        public int HighId;
+        public int LowId;
+
         public List<Ban> OldBans;
         public List<Session> OldSessions;
+
+        public string PassToken;
 
         public int PlayTimeSeconds;
         public int SessionCount;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameAccount"/> class.
+        ///     Initializes a new instance of the <see cref="GameAccount" /> class.
         /// </summary>
         public GameAccount()
         {
@@ -39,7 +36,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameAccount"/> class.
+        ///     Initializes a new instance of the <see cref="GameAccount" /> class.
         /// </summary>
         public GameAccount(int highId, int lowId, string passToken) : this()
         {
@@ -66,7 +63,7 @@
             }
 
             int timestamp = LogicTimeUtil.GetTimestamp();
-            
+
             this.CurrentBan = new Ban(timestamp, LogicMath.Max(totalSecs + timestamp, 1), reason);
         }
 
@@ -192,7 +189,7 @@
                 this.CurrentBan = new Ban();
                 this.CurrentBan.Decode(stream);
             }
-            
+
             for (int arraySize = stream.ReadVInt(); arraySize > 0; arraySize--)
             {
                 Session session = new Session();
@@ -207,7 +204,7 @@
                 this.OldBans.Add(ban);
             }
         }
-        
+
         /// <summary>
         ///     Encodes this instance.
         /// </summary>
@@ -255,13 +252,13 @@
 
     public class Ban
     {
-        public int StartBanTime;
         public int EndBanTime;
 
         public string Reason;
+        public int StartBanTime;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Ban"/> class.
+        ///     Initializes a new instance of the <see cref="Ban" /> class.
         /// </summary>
         public Ban()
         {
@@ -269,7 +266,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Ban"/> class.
+        ///     Initializes a new instance of the <see cref="Ban" /> class.
         /// </summary>
         public Ban(int startBanTime, int endBanTime, string reason)
         {
@@ -314,14 +311,14 @@
 
     public class Session
     {
-        public int State;
-        public int StartTime;
         public int EndTime;
-        
+
         public string ProxySessionId;
+        public int StartTime;
+        public int State;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Session"/> class.
+        ///     Initializes a new instance of the <see cref="Session" /> class.
         /// </summary>
         public Session()
         {
@@ -329,7 +326,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Session"/> class.
+        ///     Initializes a new instance of the <see cref="Session" /> class.
         /// </summary>
         public Session(string proxySessionId)
         {

@@ -1,10 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Logic.Account
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Threading;
     using ClashersRepublic.Magic.Services.Account.Database;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Account;
-
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -18,7 +19,7 @@
         private static ConcurrentDictionary<long, GameAccount> _accounts;
         private static ConcurrentDictionary<string, GameAccount> _sessions;
 
-        private static string PassTokenChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        private static readonly string PassTokenChars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
         /// <summary>
         ///     Initializes this instance.
@@ -49,6 +50,8 @@
             {
                 GameAccountManager.GetAccount(new LogicLong(Config.ServerId, i));
             }
+
+            Console.WriteLine("In-Memory Accounts : " + GameAccountManager._accounts.Count);
         }
 
         /// <summary>

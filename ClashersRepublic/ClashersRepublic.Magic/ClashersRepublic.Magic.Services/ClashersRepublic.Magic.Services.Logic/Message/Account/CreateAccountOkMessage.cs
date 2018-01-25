@@ -1,14 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
 {
     using ClashersRepublic.Magic.Services.Logic.Account;
-    using ClashersRepublic.Magic.Titan.Math;
 
     public class CreateAccountOkMessage : MagicServiceMessage
     {
         public GameAccount Account;
-        
+
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountOkMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountOkMessage" /> class.
         /// </summary>
         public CreateAccountOkMessage() : this(0)
         {
@@ -16,7 +15,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountOkMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountOkMessage" /> class.
         /// </summary>
         public CreateAccountOkMessage(short messageVersion) : base(messageVersion)
         {

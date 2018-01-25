@@ -549,8 +549,8 @@
 
         private class CharStream
         {
-            private int _offset;
             private readonly string _string;
+            private int _offset;
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="CharStream" /> class.

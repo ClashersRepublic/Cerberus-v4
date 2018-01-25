@@ -94,7 +94,7 @@
         }
 
         /// <summary>
-        ///     Sends a <see cref="LoginFailedMessage"/> to client.
+        ///     Sends a <see cref="LoginFailedMessage" /> to client.
         /// </summary>
         internal void SendLoginFailedMessage(int errorCode, string reason)
         {
@@ -120,9 +120,9 @@
                 }
             }
         }
-        
+
         /// <summary>
-        ///     Called when a <see cref="LoginMessage"/> has been received.
+        ///     Called when a <see cref="LoginMessage" /> has been received.
         /// </summary>
         internal void LoginMessageReceived(LoginMessage message)
         {

@@ -4,23 +4,22 @@
 
     public class LoginFailedMessage : PiranhaMessage
     {
-        public int ErrorCode;
-        public int EndMaintenanceTime;
-
         public bool BannedShowHelpshiftContact;
-
-        public string ResourceFingerprintContent;
         public string ContentUrl;
-        public string RedirectDomain;
-        public string UpdateUrl;
-        public string Reason;
-
-        public byte[] ResourceFingerprintData;
 
         public LogicArrayList<string> ContentUrlList;
+        public int EndMaintenanceTime;
+        public int ErrorCode;
+        public string Reason;
+        public string RedirectDomain;
+
+        public string ResourceFingerprintContent;
+
+        public byte[] ResourceFingerprintData;
+        public string UpdateUrl;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginFailedMessage"/>
+        ///     Initializes a new instance of the <see cref="LoginFailedMessage" />
         /// </summary>
         public LoginFailedMessage() : this(9)
         {
@@ -28,7 +27,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginFailedMessage"/>
+        ///     Initializes a new instance of the <see cref="LoginFailedMessage" />
         /// </summary>
         public LoginFailedMessage(short messageVersion) : base(messageVersion)
         {

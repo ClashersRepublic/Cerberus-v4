@@ -440,7 +440,7 @@
 
                     return;
                 }
-                
+
                 this._buffer[this._offset++] = (byte) (value & 0x3F);
             }
             else
@@ -490,7 +490,7 @@
 
                     return;
                 }
-                
+
                 this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x40);
             }
         }

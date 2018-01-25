@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Logic
 {
     using System;
-    
     using ClashersRepublic.Magic.Proxy.Message;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Services.Logic.Account;
@@ -13,8 +12,8 @@
         internal string SessionId;
 
         internal GameAccount Account;
-        internal NetworkToken Token;
         internal MessageManager MessageManager;
+        internal NetworkToken Token;
 
 
         /// <summary>
@@ -23,7 +22,6 @@
         internal Client(NetworkToken token)
         {
             this.Token = token;
-            this.SessionId = Config.ServerId.ToString("X") + Guid.NewGuid().ToString("N").Substring(1);
 
             ClientManager.AddClient(this);
         }

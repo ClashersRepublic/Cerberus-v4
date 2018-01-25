@@ -1,10 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
     using System;
-    
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Factory;
-
     using RabbitMQ.Client.Events;
 
     public static class ServiceMessaging
@@ -25,7 +23,7 @@
             ServiceMessaging._initialized = true;
             ServiceMessaging._messageFactory = MagicServiceMessageFactory.Instance;
         }
-        
+
         /// <summary>
         ///     Called when a service message has been received.
         /// </summary>
@@ -33,8 +31,8 @@
         {
             if (content.Length > 5)
             {
-                int messageType = content[0] << 8 | content[1];
-                int messageLenght = content[2] << 16 | content[3] << 8 | content[4];
+                int messageType = (content[0] << 8) | content[1];
+                int messageLenght = (content[2] << 16) | (content[3] << 8) | content[4];
 
                 if (content.Length - 5 >= messageLenght)
                 {

@@ -3,8 +3,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-
-    using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
     using RabbitMQ.Client.Events;
@@ -123,10 +121,10 @@
             Array.Copy(messageBytes, 0, packet, 5, messageBytes.Length);
 
             packet[0] = (byte) (messageType >> 8);
-            packet[1] = (byte) (messageType);
+            packet[1] = (byte) messageType;
             packet[2] = (byte) (messageLength >> 16);
             packet[3] = (byte) (messageLength >> 8);
-            packet[4] = (byte) (messageLength);
+            packet[4] = (byte) messageLength;
 
             ServiceConnection.Send(packet, exchangeKey, routingKey);
             Logging.Info(typeof(ServiceProcessor), "Message " + message.GetType().Name + " Sent");
@@ -152,14 +150,14 @@
 
         private class QueueItem
         {
-            internal MagicServiceMessage Message;
-            internal BasicDeliverEventArgs Args;
+            internal readonly BasicDeliverEventArgs Args;
 
-            internal string ExchangeKey;
-            internal string RoutingKey;
+            internal readonly string ExchangeKey;
+            internal readonly MagicServiceMessage Message;
+            internal readonly string RoutingKey;
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="QueueItem"/> class.
+            ///     Initializes a new instance of the <see cref="QueueItem" /> class.
             /// </summary>
             internal QueueItem(MagicServiceMessage message, BasicDeliverEventArgs args)
             {
@@ -168,7 +166,7 @@
             }
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="QueueItem"/> class.
+            ///     Initializes a new instance of the <see cref="QueueItem" /> class.
             /// </summary>
             internal QueueItem(MagicServiceMessage message, string exchangeKey, string routingKey)
             {
@@ -177,7 +175,7 @@
                 this.RoutingKey = routingKey;
             }
         }
-        
+
         private static class MessageManager
         {
             /// <summary>
@@ -203,11 +201,10 @@
             }
 
             /// <summary>
-            ///     Called when a <see cref="CreateAccountOkMessage"/> has been received.
+            ///     Called when a <see cref="CreateAccountOkMessage" /> has been received.
             /// </summary>
             private static void CreateAccountOkMessageReceived(MagicServiceMessage message, BasicDeliverEventArgs args)
             {
-
             }
         }
     }

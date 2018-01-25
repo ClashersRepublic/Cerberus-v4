@@ -4,7 +4,6 @@
         "https://raw.githubusercontent.com/BerkanYildiz/Patchs/master/ClashOfClans/"
     ],
     "chronosContent": [
-
     ],
     "appstore": [
         "APPSTORE_LINK",
@@ -16,7 +15,7 @@
         "event_file": "events.json",
         "global_file": "globals_definition.json"
     },
-    "avatar" : {
+    "avatar": {
         "starting_avatar_name": "Mike"
-    } 
+    }
 }

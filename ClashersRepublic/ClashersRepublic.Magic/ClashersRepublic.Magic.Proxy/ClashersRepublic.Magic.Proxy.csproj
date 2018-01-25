@@ -52,7 +52,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
     <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
     <Compile Include="Logging.cs" />

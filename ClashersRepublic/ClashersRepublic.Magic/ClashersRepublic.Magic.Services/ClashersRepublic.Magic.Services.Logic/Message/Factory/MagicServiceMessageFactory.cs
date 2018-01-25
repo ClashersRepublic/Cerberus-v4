@@ -1,7 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Factory
 {
-    using ClashersRepublic.Magic.Logic.Message;
-    using ClashersRepublic.Magic.Logic.Message.Factory;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
 
     public sealed class MagicServiceMessageFactory

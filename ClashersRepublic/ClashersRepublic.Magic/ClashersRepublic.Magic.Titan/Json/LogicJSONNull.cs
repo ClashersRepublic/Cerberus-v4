@@ -5,14 +5,6 @@
     public class LogicJSONNull : LogicJSONNode
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONNull"/> class.
-        /// </summary>
-        public LogicJSONNull()
-        {
-            // LogicJSONNull.
-        }
-        
-        /// <summary>
         ///     Gets the json node type.
         /// </summary>
         public override int GetJSONNodeType()

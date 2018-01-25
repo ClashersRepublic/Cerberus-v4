@@ -6,9 +6,11 @@
     using System.Threading;
 
     using ClashersRepublic.Magic.Logic.Data;
+
     using ClashersRepublic.Magic.Proxy.Handler;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.Service;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Logic.Resource;
@@ -21,7 +23,6 @@
 
         private static void Main(string[] args)
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name;
             Console.SetOut(new ConsoleWriter());
             Console.SetWindowSize(Program.Width, Program.Height);
 
@@ -41,6 +42,13 @@
             ConsoleWriter.WriteMiddle = false;
 
             Logging.Initialize();
+            Config.Initialize();
+
+            if (args.Length > 0)
+            {
+                Config.ServerId = int.Parse(args[0]);
+            }
+
             LogicDataTables.Initialize();
             ResourceManager.Initialize();
             ServiceProcessor.Initialize();
@@ -50,16 +58,33 @@
             NetworkGateway.Initialize();
             ExitHandler.Initialize();
 
-            for (int i = 0; i < 1000; i++)
+            Program.UpdateConsoleTitle();
+            Program.Test();
+
+            Thread.Sleep(-1);
+        }
+
+        /// <summary>
+        ///     Updates the console title.
+        /// </summary>
+        internal static void UpdateConsoleTitle()
+        {
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - " + Config.ServerId;
+        }
+
+        /// <summary>
+        ///     Test part.
+        /// </summary>
+        internal static void Test()
+        {
+            for (int i = 0; i < 150000; i++)
             {
                 ServiceMessaging.SendMessage(new CreateAccountMessage
                 {
-                    ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, 1),
+                    ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, i),
                     StartSession = false
                 }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
             }
-
-            Thread.Sleep(-1);
         }
     }
 }

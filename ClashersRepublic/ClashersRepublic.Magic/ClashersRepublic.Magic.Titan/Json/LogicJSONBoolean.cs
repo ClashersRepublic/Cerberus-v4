@@ -7,13 +7,13 @@
         private readonly bool _value;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONBoolean"/> class.
+        ///     Initializes a new instance of the <see cref="LogicJSONBoolean" /> class.
         /// </summary>
         public LogicJSONBoolean(bool value)
         {
             this._value = value;
         }
-        
+
         /// <summary>
         ///     Gets a value indicating whether the value is true.
         /// </summary>

@@ -5,7 +5,7 @@
         public bool StartSession;
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountMessage" /> class.
         /// </summary>
         public CreateAccountMessage() : this(0)
         {
@@ -13,7 +13,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountMessage"/> class.
+        ///     Initializes a new instance <see cref="CreateAccountMessage" /> class.
         /// </summary>
         public CreateAccountMessage(short messageVersion) : base(messageVersion)
         {

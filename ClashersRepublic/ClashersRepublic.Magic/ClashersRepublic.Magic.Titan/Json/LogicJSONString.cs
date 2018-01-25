@@ -7,13 +7,13 @@
         private readonly string _value;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONString"/> class.
+        ///     Initializes a new instance of the <see cref="LogicJSONString" /> class.
         /// </summary>
         public LogicJSONString(string value)
         {
             this._value = value;
         }
-        
+
         /// <summary>
         ///     Gets the string value.
         /// </summary>

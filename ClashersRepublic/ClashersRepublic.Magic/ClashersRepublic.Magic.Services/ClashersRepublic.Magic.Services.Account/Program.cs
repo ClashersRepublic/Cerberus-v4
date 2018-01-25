@@ -6,10 +6,12 @@
     using System.Threading;
 
     using ClashersRepublic.Magic.Logic.Data;
+
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Handler;
     using ClashersRepublic.Magic.Services.Account.Logic.Account;
     using ClashersRepublic.Magic.Services.Account.Service;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Resource;
 
     internal class Program
@@ -19,7 +21,8 @@
 
         private static void Main(string[] args)
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name;
+            Program.UpdateConsoleTitle();
+
             Console.SetOut(new ConsoleWriter());
             Console.SetWindowSize(Program.Width, Program.Height);
 
@@ -39,6 +42,13 @@
             ConsoleWriter.WriteMiddle = false;
 
             Logging.Initialize();
+            Config.Initialize();
+
+            if (args.Length > 0)
+            {
+                Config.ServerId = int.Parse(args[0]);
+            }
+
             LogicDataTables.Initialize();
             ResourceManager.Initialize();
             GameDatabase.Initialize();
@@ -48,7 +58,17 @@
             ServiceConnection.Initialize();
             ExitHandler.Initialize();
 
+            Program.UpdateConsoleTitle();
+
             Thread.Sleep(-1);
+        }
+
+        /// <summary>
+        ///     Updates the console title.
+        /// </summary>
+        internal static void UpdateConsoleTitle()
+        {
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - " + Config.ServerId;
         }
     }
 }

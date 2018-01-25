@@ -6,11 +6,11 @@
 
     public class LogicJSONObject : LogicJSONNode
     {
-        private LogicArrayList<string> _keys;
-        private LogicArrayList<LogicJSONNode> _items;
-        
+        private readonly LogicArrayList<LogicJSONNode> _items;
+        private readonly LogicArrayList<string> _keys;
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONObject"/> class.
+        ///     Initializes a new instance of the <see cref="LogicJSONObject" /> class.
         /// </summary>
         public LogicJSONObject()
         {
@@ -22,7 +22,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJSONObject"/> class.
+        ///     Initializes a new instance of the <see cref="LogicJSONObject" /> class.
         /// </summary>
         public LogicJSONObject(int capacity)
         {

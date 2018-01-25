@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Net.Sockets;
-
     using ClashersRepublic.Magic.Proxy.Logic;
+    using ClashersRepublic.Magic.Services.Logic;
 
     internal class NetworkToken : IDisposable
     {

@@ -1,10 +1,14 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Logic
 {
     using System.Collections.Concurrent;
+    using System.Threading;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Util;
 
     internal static class ClientManager
     {
         private static bool _initialized;
+        private static long _lastConnectionId;
         private static ConcurrentDictionary<string, Client> _clients;
 
         /// <summary>
@@ -26,6 +30,8 @@
         /// </summary>
         internal static void AddClient(Client client)
         {
+            client.SessionId = SessionUtil.CreateSessionId(Config.ServerId, Interlocked.Increment(ref ClientManager._lastConnectionId));
+
             if (!ClientManager._clients.TryAdd(client.SessionId, client))
             {
                 Logging.Error(typeof(ClientManager), "AddClient client with same session id already added");

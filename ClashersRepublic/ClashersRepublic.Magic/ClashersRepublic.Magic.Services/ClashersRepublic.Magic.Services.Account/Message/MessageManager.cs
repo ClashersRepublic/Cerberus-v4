@@ -8,7 +8,6 @@
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Logic.Util;
-
     using RabbitMQ.Client.Events;
 
     internal static class MessageManager
@@ -37,7 +36,7 @@
         }
 
         /// <summary>
-        ///     Called when a <see cref="CreateAccountMessage"/> has been received.
+        ///     Called when a <see cref="CreateAccountMessage" /> has been received.
         /// </summary>
         private static void CreateAccountMessageReceived(CreateAccountMessage message, BasicDeliverEventArgs args)
         {
@@ -49,10 +48,10 @@
 
                 SessionUtil.DecodeSessionId(message.ProxySessionId, out int proxyId, out long _);
                 MessageManager.SendMessage(new CreateAccountOkMessage
-                {
-                    ProxySessionId = message.ProxySessionId,
-                    Account = createAccount
-                }, ServiceExchangeName.PROXY_EXCHANGE_NAME, ServiceExchangeName.PROXY_ROUTING_KEY_PREFIX + proxyId);
+                    {
+                        ProxySessionId = message.ProxySessionId,
+                        Account = createAccount
+                    }, ServiceExchangeName.PROXY_EXCHANGE_NAME, ServiceExchangeName.PROXY_ROUTING_KEY_PREFIX + proxyId);
             }
         }
     }

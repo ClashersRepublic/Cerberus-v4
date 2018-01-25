@@ -7,28 +7,28 @@
     public class LoginMessage : PiranhaMessage
     {
         public LogicLong AccountId;
-        public LogicData PreferredLanguage;
-
-        public string PassToken;
-        public string ResourceSha;
-        public string UDID;
-        public string OpenUDID;
         public string ADID;
-        public string IMEI;
-        public string OSVersion;
-        public string MacAddress;
-        public string Device;
-        public string PreferredDeviceLanguage;
-        public string AndroidID;
-
-        public int ClientMajorVersion;
-        public int ClientBuildVersion;
-        public int ScramblerSeed;
 
         public bool AndroidClient;
+        public string AndroidID;
+        public int ClientBuildVersion;
+
+        public int ClientMajorVersion;
+        public string Device;
+        public string IMEI;
+        public string MacAddress;
+        public string OpenUDID;
+        public string OSVersion;
+
+        public string PassToken;
+        public string PreferredDeviceLanguage;
+        public LogicData PreferredLanguage;
+        public string ResourceSha;
+        public int ScramblerSeed;
+        public string UDID;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginMessage"/> class.
+        ///     Initializes a new instance of the <see cref="LoginMessage" /> class.
         /// </summary>
         public LoginMessage() : this(8)
         {
@@ -36,7 +36,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginMessage"/> class.
+        ///     Initializes a new instance of the <see cref="LoginMessage" /> class.
         /// </summary>
         public LoginMessage(short messageVersion) : base(messageVersion)
         {
