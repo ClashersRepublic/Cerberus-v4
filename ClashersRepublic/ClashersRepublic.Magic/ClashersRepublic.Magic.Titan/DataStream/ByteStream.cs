@@ -618,7 +618,7 @@
         public byte[] RemoveByteArray()
         {
             byte[] byteArray = this._buffer;
-            this._buffer = null;
+            this._buffer = new byte[0];
             return byteArray;
         }
 
@@ -638,7 +638,18 @@
         }
 
         /// <summary>
-        ///     Destructes this instance.
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._buffer = new byte[0];
+            this._bitIdx = 0;
+            this._length = 0;
+            this._offset = 0;
+        }
+
+        /// <summary>
+        ///     Deconstructor for this instance.
         /// </summary>
         ~ByteStream()
         {

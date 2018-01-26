@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message
 {
-    using ClashersRepublic.Magic.Logic.Message;
+    using ClashersRepublic.Magic.Titan.Message;
 
     public class MagicServiceMessage : PiranhaMessage
     {

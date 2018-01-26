@@ -1,14 +1,18 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Message
 {
     using ClashersRepublic.Magic.Logic;
-    using ClashersRepublic.Magic.Logic.Message;
+    using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Message.Account;
+
     using ClashersRepublic.Magic.Proxy.Logic;
     using ClashersRepublic.Magic.Proxy.Service;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Logic.Resource;
-    using ClashersRepublic.Magic.Titan.ZLib;
+
+    using ClashersRepublic.Magic.Titan.Message;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal class MessageManager
     {
@@ -109,7 +113,7 @@
                 case 7:
                 {
                     message.ContentUrlList = ResourceManager.ContentUrlList;
-                    message.ResourceFingerprintData = ZLibHelper.CompressString(ResourceManager.FingerprintJson);
+                    ZLibHelper.ConpressInZLibFormat(LogicStringUtil.GetBytes(ResourceManager.FingerprintJson), out message.ResourceFingerprintData);
 
                     break;
                 }
@@ -151,7 +155,10 @@
                         }
                         else
                         {
-                            this.SendLoginFailedMessage(1, null);
+                            if (message.PassToken != null)
+                            {
+
+                            }
                         }
                     }
                     else

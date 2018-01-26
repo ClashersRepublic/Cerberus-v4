@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-    using ClashersRepublic.Magic.Logic.Message;
+
     using ClashersRepublic.Magic.Services.Account.Message;
     using ClashersRepublic.Magic.Services.Logic.Message;
+    using ClashersRepublic.Magic.Titan.Message;
+
     using RabbitMQ.Client.Events;
 
     internal static class ServiceProcessor

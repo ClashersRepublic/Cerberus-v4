@@ -1,13 +1,16 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Message
 {
-    using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Services.Account.Logic.Account;
     using ClashersRepublic.Magic.Services.Account.Service;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Account;
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Logic.Util;
+
+    using ClashersRepublic.Magic.Titan.Message;
+
     using RabbitMQ.Client.Events;
 
     internal static class MessageManager

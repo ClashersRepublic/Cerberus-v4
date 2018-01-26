@@ -50,6 +50,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
+    <Compile Include="Command\LogicCommand.cs" />
     <Compile Include="Data\GlobalID.cs" />
     <Compile Include="Data\LogicAchievementData.cs" />
     <Compile Include="Data\LogicAllianceBadgeData.cs" />
@@ -104,12 +106,14 @@
     <Compile Include="Data\LogicWarData.cs" />
     <Compile Include="Helper\ByteStreamHelper.cs" />
     <Compile Include="Helper\LogicJSONHelper.cs" />
+    <Compile Include="Helper\ZLibHelper.cs" />
+    <Compile Include="Home\LogicClientHome.cs" />
     <Compile Include="LogicVersion.cs" />
+    <Compile Include="Message\Account\KeepAliveServerMessage.cs" />
+    <Compile Include="Message\Account\KeepAliveMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
-    <Compile Include="Message\Factory\LogicMessageFactory.cs" />
-    <Compile Include="Message\Factory\LogicMagicMessageFactory.cs" />
-    <Compile Include="Message\PiranhaMessage.cs" />
+    <Compile Include="Message\LogicMagicMessageFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +600,32 @@
     <None Include="Assets\logic\war.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Avatar\" />
+    <Folder Include="Battle\" />
+    <Folder Include="Command\Battle\" />
+    <Folder Include="Command\Home\" />
+    <Folder Include="Command\Server\" />
+    <Folder Include="GameObject\" />
+    <Folder Include="Message\Alliance\Stream\" />
+    <Folder Include="Message\Avatar\Stream\" />
+    <Folder Include="Message\Battle\" />
+    <Folder Include="Message\DeviceLink\" />
+    <Folder Include="Message\Facebook\" />
+    <Folder Include="Message\Friend\" />
+    <Folder Include="Message\Gamecenter\" />
+    <Folder Include="Message\Google\" />
+    <Folder Include="Message\Home\" />
+    <Folder Include="Message\Inbox\" />
+    <Folder Include="Message\Kunlun\" />
+    <Folder Include="Message\Notification\" />
+    <Folder Include="Message\Scoring\" />
+    <Folder Include="Mode\" />
+    <Folder Include="TileMap\" />
+    <Folder Include="Time\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

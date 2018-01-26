@@ -4,6 +4,8 @@
     using System.Collections.Concurrent;
     using System.Threading;
     using ClashersRepublic.Magic.Logic.Message;
+    using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Message;
 
     internal static class NetworkProcessor
     {
@@ -70,24 +72,52 @@
             {
                 if (messaging.Token.IsConnected())
                 {
-                    byte[] messageBytes = message.GetByteStream().GetBytes();
-                    int messageType = message.GetMessageType();
-                    int messageVersion = message.GetMessageVersion();
-                    int messageLength = messageBytes.Length;
+                    byte[] messageBytes = message.GetByteStream().RemoveByteArray();
+                    byte[] encryptedBytes;
+                    
+                    if (messaging.UsePepper)
+                    {
+                        if (!messaging.CryptoScrambled)
+                        {
+                            encryptedBytes = messageBytes;
+                        }
+                        else
+                        {
+                            int encryptionResult = messaging.SendEncrypter.Encrypt(messageBytes,
+                                                                                   encryptedBytes = new byte[messageBytes.Length + messaging.ReceiveEncrypter.GetOverheadEncryption()],
+                                                                                   messageBytes.Length);
 
-                    byte[] packet = new byte[7 + messageLength];
+                            if (encryptionResult != 0)
+                            {
+                                Logging.Error(typeof(NetworkMessaging), "Message encryption failure, result: " + encryptionResult);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!messaging.CryptoScrambled)
+                        {
+                            messaging.CryptoScrambled = true;
 
-                    packet[1] = (byte) messageType;
-                    packet[0] = (byte) (messageType >> 8);
+                            LogicMersenneTwisterRandom rnd = new LogicMersenneTwisterRandom(messaging.ScramblerSeed);
+                            
+                        }
 
-                    packet[4] = (byte) messageLength;
-                    packet[3] = (byte) (messageLength >> 8);
-                    packet[2] = (byte) (messageLength >> 16);
+                        int encryptionResult = messaging.SendEncrypter.Encrypt(messageBytes,
+                                                                               encryptedBytes = new byte[messageBytes.Length + messaging.ReceiveEncrypter.GetOverheadEncryption()],
+                                                                               messageBytes.Length);
 
-                    packet[6] = (byte) messageVersion;
-                    packet[5] = (byte) (messageVersion >> 8);
+                        if (encryptionResult != 0)
+                        {
+                            Logging.Error(typeof(NetworkMessaging), "Message encryption failure, result: " + encryptionResult);
+                        }
+                    }
 
-                    Array.Copy(messageBytes, 0, packet, 7, messageLength);
+                    int encryptedLength = encryptedBytes.Length;
+                    byte[] packet = new byte[7 + encryptedLength];
+
+                    NetworkMessaging.WriteHeader(message, packet, encryptedLength);
+                    Array.Copy(messageBytes, 0, packet, 7, encryptedLength);
                     NetworkGateway.Send(packet, messaging.Token);
 
                     Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " Sent");

@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Titan.Math
 {
     using ClashersRepublic.Magic.Titan.DataStream;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicVector2
     {
@@ -264,7 +265,7 @@
         }
 
         /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="String" /> that represents this instance.
         /// </summary>
         public override string ToString()
         {

@@ -7,21 +7,21 @@
         /// <summary>
         ///     Decryptes this instance.
         /// </summary>
-        public virtual byte[] Decrypt(byte[] stream)
+        public virtual int Decrypt(byte[] input, byte[] output, int length)
         {
-            byte[] decrypted = new byte[stream.Length];
-            Array.Copy(stream, decrypted, stream.Length);
-            return decrypted;
+            byte[] decrypted = new byte[input.Length];
+            Array.Copy(input, decrypted, length);
+            return 0;
         }
 
         /// <summary>
         ///     Encryptes this instance.
         /// </summary>
-        public virtual byte[] Encrypt(byte[] stream)
+        public virtual int Encrypt(byte[] input, byte[] output, int length)
         {
-            byte[] encrypted = new byte[stream.Length];
-            Array.Copy(stream, encrypted, stream.Length);
-            return encrypted;
+            byte[] encrypted = new byte[input.Length];
+            Array.Copy(input, encrypted, length);
+            return 0;
         }
 
         /// <summary>

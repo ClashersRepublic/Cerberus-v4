@@ -3,17 +3,21 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Message;
 
     public class LoginMessage : PiranhaMessage
     {
         public LogicLong AccountId;
-        public string ADID;
+        public LogicData PreferredLanguage;
 
         public bool AndroidClient;
-        public string AndroidID;
+
+        public int ScramblerSeed;
+        public int ClientMajorVersion;
         public int ClientBuildVersion;
 
-        public int ClientMajorVersion;
+        public string AndroidID;
+        public string ADID;
         public string Device;
         public string IMEI;
         public string MacAddress;
@@ -22,9 +26,7 @@
 
         public string PassToken;
         public string PreferredDeviceLanguage;
-        public LogicData PreferredLanguage;
         public string ResourceSha;
-        public int ScramblerSeed;
         public string UDID;
 
         /// <summary>
@@ -133,6 +135,42 @@
         public override int GetServiceNodeType()
         {
             return 1;
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            this.ADID = null;
+            this.PassToken = null;
+            this.Device = null;
+            this.IMEI = null;
+            this.MacAddress = null;
+            this.OSVersion = null;
+            this.AndroidID = null;
+            this.OpenUDID = null;
+            this.PreferredDeviceLanguage = null;
+            this.ResourceSha = null;
+            this.UDID = null;
+        }
+
+        /// <summary>
+        ///     Destructors of this instance.
+        /// </summary>
+        ~LoginMessage()
+        {
+            this.ADID = null;
+            this.PassToken = null;
+            this.Device = null;
+            this.IMEI = null;
+            this.MacAddress = null;
+            this.OSVersion = null;
+            this.AndroidID = null;
+            this.OpenUDID = null;
+            this.PreferredDeviceLanguage = null;
+            this.ResourceSha = null;
+            this.UDID = null;
         }
     }
 }

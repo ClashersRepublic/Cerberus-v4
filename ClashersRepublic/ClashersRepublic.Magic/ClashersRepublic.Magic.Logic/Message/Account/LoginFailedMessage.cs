@@ -1,22 +1,24 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message.Account
 {
+    using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Util;
 
     public class LoginFailedMessage : PiranhaMessage
     {
-        public bool BannedShowHelpshiftContact;
-        public string ContentUrl;
-
         public LogicArrayList<string> ContentUrlList;
-        public int EndMaintenanceTime;
+
+        public bool BannedShowHelpshiftContact;
+        
         public int ErrorCode;
-        public string Reason;
-        public string RedirectDomain;
+        public int EndMaintenanceTime;
 
         public string ResourceFingerprintContent;
+        public string RedirectDomain;
+        public string Reason;
+        public string UpdateUrl;
+        public string ContentUrl;
 
         public byte[] ResourceFingerprintData;
-        public string UpdateUrl;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoginFailedMessage" />
@@ -93,6 +95,32 @@
         public override int GetServiceNodeType()
         {
             return 1;
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            this.ContentUrl = null;
+            this.ContentUrlList = null;
+            this.Reason = null;
+            this.RedirectDomain = null;
+            this.ResourceFingerprintContent = null;
+            this.UpdateUrl = null;
+        }
+
+        /// <summary>
+        ///     Destructors of this instance.
+        /// </summary>
+        ~LoginFailedMessage()
+        {
+            this.ContentUrl = null;
+            this.ContentUrlList = null;
+            this.Reason = null;
+            this.RedirectDomain = null;
+            this.ResourceFingerprintContent = null;
+            this.UpdateUrl = null;
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System.Runtime.InteropServices;
     using ClashersRepublic.Magic.Titan.DataStream;
+    using ClashersRepublic.Magic.Titan.Util;
 
     [ComVisible(true)]
     [StructLayout(LayoutKind.Sequential, Size = 8)]
@@ -90,7 +91,7 @@
         }
 
         /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance.
+        ///     Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         public override string ToString()
         {
@@ -104,7 +105,7 @@
 
         public static implicit operator long(LogicLong Long)
         {
-            return Long._highInteger | (uint) Long._lowInteger;
+            return (long) Long._highInteger | (uint) Long._lowInteger;
         }
     }
 }

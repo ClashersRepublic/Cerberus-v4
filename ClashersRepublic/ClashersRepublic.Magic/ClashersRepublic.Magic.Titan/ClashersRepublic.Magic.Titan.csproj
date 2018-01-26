@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -65,31 +66,24 @@
     <Compile Include="Json\LogicJSONObject.cs" />
     <Compile Include="Json\LogicJSONParser.cs" />
     <Compile Include="Json\LogicJSONString.cs" />
+    <Compile Include="Libs\ZLib\ZLibCompressors.cs" />
+    <Compile Include="Libs\ZLib\ZLibNative.cs" />
+    <Compile Include="Libs\ZLib\ZLibStreams.cs" />
     <Compile Include="Math\LogicLong.cs" />
     <Compile Include="Math\LogicMath.cs" />
-    <Compile Include="Math\LogicMersenneTwister.cs" />
+    <Compile Include="Math\LogicMersenneTwisterRandom.cs" />
     <Compile Include="Math\LogicRandom.cs" />
     <Compile Include="Math\LogicVector2.cs" />
+    <Compile Include="Message\LogicMessageFactory.cs" />
+    <Compile Include="Message\PiranhaMessage.cs" />
+    <Compile Include="Message\Security\ServerHelloMessage.cs" />
+    <Compile Include="Message\Security\ClientHelloMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RC4Encrypter.cs" />
     <Compile Include="StreamEncrypter.cs" />
     <Compile Include="Util\LogicArrayList.cs" />
+    <Compile Include="Util\LogicStringUtil.cs" />
     <Compile Include="Util\LogicTimeUtil.cs" />
-    <Compile Include="ZLib\CRC32.cs" />
-    <Compile Include="ZLib\Deflate.cs" />
-    <Compile Include="ZLib\DeflateStream.cs" />
-    <Compile Include="ZLib\GZipStream.cs" />
-    <Compile Include="ZLib\Inflate.cs" />
-    <Compile Include="ZLib\InfTree.cs" />
-    <Compile Include="ZLib\Iso8859Dash1Encoding.cs" />
-    <Compile Include="ZLib\ParallelDeflateOutputStream.cs" />
-    <Compile Include="ZLib\Tree.cs" />
-    <Compile Include="ZLib\Zlib.cs" />
-    <Compile Include="ZLib\ZlibBaseStream.cs" />
-    <Compile Include="ZLib\ZlibCodec.cs" />
-    <Compile Include="ZLib\ZlibConstants.cs" />
-    <Compile Include="ZLib\ZLibHelper.cs" />
-    <Compile Include="ZLib\ZlibStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

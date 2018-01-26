@@ -1,10 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Account
 {
     using System.Collections.Generic;
+
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
+
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
 

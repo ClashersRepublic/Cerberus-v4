@@ -14,7 +14,7 @@
         private static bool _initialized;
         private static int _lastLowId;
 
-        private static LogicMersenneTwister _passTokenGenerator;
+        private static LogicMersenneTwisterRandom _passTokenGenerator;
 
         private static ConcurrentDictionary<long, GameAccount> _accounts;
         private static ConcurrentDictionary<string, GameAccount> _sessions;
@@ -34,7 +34,7 @@
             GameAccountManager._initialized = true;
 
             GameAccountManager._lastLowId = GameDatabase.GetHigherLowId();
-            GameAccountManager._passTokenGenerator = new LogicMersenneTwister(LogicTimeUtil.GetTimestamp());
+            GameAccountManager._passTokenGenerator = new LogicMersenneTwisterRandom(LogicTimeUtil.GetTimestamp());
             GameAccountManager._accounts = new ConcurrentDictionary<long, GameAccount>();
             GameAccountManager._sessions = new ConcurrentDictionary<string, GameAccount>();
 

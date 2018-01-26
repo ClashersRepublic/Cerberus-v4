@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Logic.Message
+﻿namespace ClashersRepublic.Magic.Titan.Message
 {
     using ClashersRepublic.Magic.Titan.DataStream;
 
@@ -49,6 +49,15 @@
         }
 
         /// <summary>
+        ///     Destructs this message.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            this.Stream.Destruct();
+            this.Version = 0;
+        }
+
+        /// <summary>
         ///     Gets the service node type of this instance.
         /// </summary>
         public virtual int GetServiceNodeType()
@@ -94,6 +103,15 @@
         public ByteStream GetByteStream()
         {
             return this.Stream;
+        }
+
+        /// <summary>
+        ///     Destructors of this instance.
+        /// </summary>
+        ~PiranhaMessage()
+        {
+            this.Stream = null;
+            this.Version = 0;
         }
     }
 }

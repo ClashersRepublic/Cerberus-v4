@@ -22,6 +22,7 @@
         internal Client(NetworkToken token)
         {
             this.Token = token;
+            this.MessageManager = new MessageManager(this);
 
             ClientManager.AddClient(this);
         }

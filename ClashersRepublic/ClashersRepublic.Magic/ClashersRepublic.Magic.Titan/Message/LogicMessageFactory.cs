@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Logic.Message.Factory
+﻿namespace ClashersRepublic.Magic.Titan.Message
 {
     public class LogicMessageFactory
     {
@@ -9,13 +9,7 @@
         /// </summary>
         public virtual PiranhaMessage CreateMessageByType(int type)
         {
-            PiranhaMessage message = null;
-
-            if (type < 20000)
-            {
-            }
-
-            return message;
+            return null;
         }
     }
 }
