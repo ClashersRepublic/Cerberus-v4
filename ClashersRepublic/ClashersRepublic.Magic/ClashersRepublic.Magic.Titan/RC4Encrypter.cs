@@ -18,6 +18,7 @@
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
+        public void InitState(string baseKey, string nonce)
         {
             string key = baseKey + nonce;
 
