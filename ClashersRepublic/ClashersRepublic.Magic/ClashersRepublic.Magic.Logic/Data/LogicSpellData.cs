@@ -85,7 +85,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            this.LoadingFinished();
+            base.LoadingFinished();
         }
 
         public int GetSpellForgeLevel(int index)
