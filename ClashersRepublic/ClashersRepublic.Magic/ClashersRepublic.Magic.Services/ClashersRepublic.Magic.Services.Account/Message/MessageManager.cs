@@ -50,11 +50,11 @@
                 createAccount.StartSession(message.ProxySessionId);
 
                 SessionUtil.DecodeSessionId(message.ProxySessionId, out int proxyId, out long _);
-                MessageManager.SendMessage(new CreateAccountOkMessage
+                /*MessageManager.SendMessage(new CreateAccountOkMessage
                     {
                         ProxySessionId = message.ProxySessionId,
                         Account = createAccount
-                    }, ServiceExchangeName.PROXY_EXCHANGE_NAME, ServiceExchangeName.PROXY_ROUTING_KEY_PREFIX + proxyId);
+                    }, ServiceExchangeName.PROXY_EXCHANGE_NAME, ServiceExchangeName.PROXY_ROUTING_KEY_PREFIX + proxyId);*/
             }
         }
     }

@@ -81,10 +81,10 @@
         {
             for (int i = 0; i < 0; i++)
             {
-                ServiceMessaging.SendMessage(new CreateAccountMessage
+                /*ServiceMessaging.SendMessage(new CreateAccountMessage
                 {
                     ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, i)
-                }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
+                }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);*/
             }
         }
     }
