@@ -108,12 +108,12 @@
 
                 for (int i = 0; i < chronosContentArray.Size(); i++)
                 {
-                    ResourceManager.ChronosContentUrlList.Add(contentArray.GetJSONString(i).GetStringValue());
+                    ResourceManager.ChronosContentUrlList.Add(chronosContentArray.GetJSONString(i).GetStringValue());
                 }
 
                 for (int i = 0; i < appStoreArray.Size(); i++)
                 {
-                    ResourceManager.AppStoreUrlList.Add(contentArray.GetJSONString(i).GetStringValue());
+                    ResourceManager.AppStoreUrlList.Add(appStoreArray.GetJSONString(i).GetStringValue());
                 }
 
                 if (homeObject != null)
