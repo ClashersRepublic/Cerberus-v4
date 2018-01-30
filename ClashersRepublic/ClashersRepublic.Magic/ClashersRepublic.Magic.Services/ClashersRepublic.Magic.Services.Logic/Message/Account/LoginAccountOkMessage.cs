@@ -1,23 +1,30 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
 {
-    public class CreateAccountMessage : MagicServiceMessage
+    using ClashersRepublic.Magic.Titan.Math;
+
+    public class LoginAccountOkMessage : MagicServiceMessage
     {
-        public bool StartSession;
+        public LogicLong AccountId;
+        public LogicLong HomeId;
+
+        public string PassToken;
+
+
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountMessage" /> class.
+        ///     Initializes a new instance <see cref="LoginAccountOkMessage" /> class.
         /// </summary>
-        public CreateAccountMessage() : this(0)
+        public LoginAccountOkMessage() : this(0)
         {
-            // CreateAccountMessage.
+            // LoginAccountOkMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountMessage" /> class.
+        ///     Initializes a new instance <see cref="LoginAccountOkMessage" /> class.
         /// </summary>
-        public CreateAccountMessage(short messageVersion) : base(messageVersion)
+        public LoginAccountOkMessage(short messageVersion) : base(messageVersion)
         {
-            // CreateAccountMessage.
+            // LoginAccountOkMessage.
         }
 
         /// <summary>
@@ -26,7 +33,8 @@
         public override void Decode()
         {
             base.Decode();
-            this.StartSession = this.Stream.ReadBoolean();
+            this.AccountId = this.Stream.ReadLong();
+            this.PassToken = this.Stream.ReadString(900000);
         }
 
         /// <summary>
@@ -35,7 +43,8 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteBoolean(this.StartSession);
+            this.Stream.WriteLong(this.AccountId);
+            this.Stream.WriteString(this.PassToken);
         }
 
         /// <summary>
@@ -43,7 +52,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 10105;
+            return 10150;
         }
 
         /// <summary>

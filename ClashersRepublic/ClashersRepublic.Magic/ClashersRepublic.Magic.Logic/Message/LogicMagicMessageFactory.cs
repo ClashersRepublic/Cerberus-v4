@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Titan.Message;
+    using ClashersRepublic.Magic.Titan.Message.Security;
 
     public sealed class LogicMagicMessageFactory : LogicMessageFactory
     {
@@ -19,6 +20,12 @@
             {
                 switch (type)
                 {
+                    case 10100:
+                    {
+                        message = new ClientHelloMessage();
+                        break;
+                    }
+
                     case 10101:
                     {
                         message = new LoginMessage();
@@ -36,6 +43,12 @@
             {
                 switch (type)
                 {
+                    case 20100:
+                    {
+                        message = new ServerHelloMessage();
+                        break;
+                    }
+
                     case 20103:
                     {
                         message = new LoginFailedMessage();

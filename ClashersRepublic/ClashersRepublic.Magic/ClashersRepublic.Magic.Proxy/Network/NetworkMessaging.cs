@@ -3,9 +3,10 @@
     using System;
 
     using ClashersRepublic.Magic.Logic.Message;
-
+    using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Titan;
     using ClashersRepublic.Magic.Titan.Message;
+    using ClashersRepublic.Magic.Titan.Message.Security;
 
     internal class NetworkMessaging
     {
@@ -15,10 +16,12 @@
         internal StreamEncrypter ReceiveEncrypter;
         internal NetworkToken Token;
 
+        internal byte[] PepperSessionKey;
+
         internal int ScramblerSeed;
+        internal int EncryptionState;
 
         internal bool UsePepper;
-        internal bool CryptoScrambled;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkMessaging" /> class.
@@ -56,16 +59,49 @@
                 {
                     if (messageLength < 0x3F0000)
                     {
-                        byte[] messageBytes = new byte[messageLength];
-                        Array.Copy(packet, 7, messageBytes, 0, messageLength);
-
                         PiranhaMessage message = this._messageFactory.CreateMessageByType(messageType);
 
                         if (message != null)
                         {
                             message.SetMessageVersion((short) messageVersion);
+                            byte[] messageBytes = new byte[messageLength];
+                            Array.Copy(packet, 7, messageBytes, 0, messageLength);
                             message.GetByteStream().SetByteArray(messageBytes, messageLength);
 
+                            if (this.ReceiveEncrypter == null)
+                            {
+                                if (messageType == 10100)
+                                {
+                                    if (this.EncryptionState == 0)
+                                    {
+                                        this.HandlePepperAuthentificationMessage(message);
+                                    }
+                                }
+                                else
+                                {
+                                    if (messageType == 10101)
+                                    {
+                                        if (this.EncryptionState == 2)
+                                        {
+                                            this.HandlePepperLoginMessage((LoginMessage) message);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                byte[] encryptedBytes = message.GetByteStream().RemoveByteArray();
+                                byte[] decryptedBytes = new byte[encryptedBytes.Length - this.ReceiveEncrypter.GetOverheadEncryption()];
+                                int result = this.ReceiveEncrypter.Decrypt(encryptedBytes, decryptedBytes, encryptedBytes.Length);
+
+                                if (result != 0)
+                                {
+                                    Logging.Error(this.GetType(), "Encryption failure for message type " + messageType + ", length: " + messageLength + ", encrypter: " + this.ReceiveEncrypter.GetType().Name);
+                                }
+
+                                message.GetByteStream().SetByteArray(decryptedBytes, decryptedBytes.Length);
+                            }
+                            
                             NetworkProcessor.EnqueueReceivedMessage(message, this);
                         }
                         else
@@ -103,6 +139,36 @@
             {
                 if (message.IsServerToClientMessage())
                 {
+                    int messageType = message.GetMessageType();
+
+                    if (this.SendEncrypter == null)
+                    {
+                        if (this.EncryptionState == 1)
+                        {
+                            this.SendPepperAuthentificationResponseMessage(message);
+                        }
+                        else
+                        {
+                            if (this.EncryptionState == 3)
+                            {
+                                this.SendPepperLoginResponseMessage(message);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        byte[] decryptedBytes = message.GetByteStream().RemoveByteArray();
+                        byte[] encryptedBytes = new byte[decryptedBytes.Length - this.SendEncrypter.GetOverheadEncryption()];
+                        int result = this.SendEncrypter.Encrypt(decryptedBytes, encryptedBytes, decryptedBytes.Length);
+
+                        if (result != 0)
+                        {
+                            Logging.Error(this.GetType(), "Encryption failure for message type " + messageType + ", encrypter: " + this.SendEncrypter.GetType().Name);
+                        }
+
+                        message.GetByteStream().SetByteArray(encryptedBytes, encryptedBytes.Length);
+                    }
+
                     NetworkProcessor.EnqueueSentMessage(message, this);
                 }
                 else
@@ -110,6 +176,40 @@
                     Logging.Error(this.GetType(), "Trying to send a client to server message.");
                 }
             }
+        }
+
+        /// <summary>
+        ///     Handles the pepper authentification message.
+        /// </summary>
+        internal void HandlePepperAuthentificationMessage(PiranhaMessage message)
+        {
+            this.SendEncrypter = null;
+            this.ReceiveEncrypter = null;
+            this.EncryptionState = 1;
+        }
+
+        /// <summary>
+        ///     Handles the pepper login message.
+        /// </summary>
+        internal void HandlePepperLoginMessage(LoginMessage message)
+        {
+            this.EncryptionState = 3;
+        }
+
+        /// <summary>
+        ///     Sends the pepper authentification response message to client.
+        /// </summary>
+        internal void SendPepperAuthentificationResponseMessage(PiranhaMessage message)
+        {
+            this.EncryptionState = 2;
+        }
+
+        /// <summary>
+        ///     Sends the pepper login response message to client.
+        /// </summary>
+        internal void SendPepperLoginResponseMessage(PiranhaMessage message)
+        {
+            this.EncryptionState = 4;
         }
 
         /// <summary>

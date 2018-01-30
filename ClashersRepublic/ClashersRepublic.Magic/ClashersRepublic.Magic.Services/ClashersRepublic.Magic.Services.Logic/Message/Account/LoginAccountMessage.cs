@@ -1,25 +1,26 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
 {
-    using ClashersRepublic.Magic.Services.Logic.Account;
+    using ClashersRepublic.Magic.Titan.Math;
 
-    public class CreateAccountOkMessage : MagicServiceMessage
+    public class LoginAccountMessage : MagicServiceMessage
     {
-        public GameAccount Account;
+        public LogicLong AccountId;
+        public string PassToken;
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountOkMessage" /> class.
+        ///     Initializes a new instance <see cref="LoginAccountMessage" /> class.
         /// </summary>
-        public CreateAccountOkMessage() : this(0)
+        public LoginAccountMessage() : this(0)
         {
-            // CreateAccountOkMessage.
+            // LoginMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountOkMessage" /> class.
+        ///     Initializes a new instance <see cref="LoginAccountMessage" /> class.
         /// </summary>
-        public CreateAccountOkMessage(short messageVersion) : base(messageVersion)
+        public LoginAccountMessage(short messageVersion) : base(messageVersion)
         {
-            // CreateAccountOkMessage.
+            // LoginMessage.
         }
 
         /// <summary>
@@ -28,8 +29,8 @@
         public override void Decode()
         {
             base.Decode();
-            this.Account = new GameAccount();
-            this.Account.Decode(this.Stream);
+            this.AccountId = this.Stream.ReadLong();
+            this.PassToken = this.Stream.ReadString(900000);
         }
 
         /// <summary>
@@ -38,7 +39,8 @@
         public override void Encode()
         {
             base.Encode();
-            this.Account.Encode(this.Stream);
+            this.Stream.WriteLong(this.AccountId);
+            this.Stream.WriteString(this.PassToken);
         }
 
         /// <summary>
@@ -46,7 +48,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 20101;
+            return 10150;
         }
 
         /// <summary>

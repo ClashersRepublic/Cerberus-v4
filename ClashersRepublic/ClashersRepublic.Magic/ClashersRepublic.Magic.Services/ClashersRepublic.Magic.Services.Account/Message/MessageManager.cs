@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Message
 {
-    using ClashersRepublic.Magic.Services.Account.Logic.Account;
+    using ClashersRepublic.Magic.Services.Account.Account;
     using ClashersRepublic.Magic.Services.Account.Service;
 
     using ClashersRepublic.Magic.Services.Logic;
@@ -22,9 +22,9 @@
         {
             switch (message.GetMessageType())
             {
-                case 10105:
+                case 10150:
                 {
-                    MessageManager.CreateAccountMessageReceived((CreateAccountMessage) message, args);
+                    MessageManager.CreateAccountMessageReceived((LoginAccountMessage) message, args);
                     break;
                 }
             }
@@ -41,7 +41,7 @@
         /// <summary>
         ///     Called when a <see cref="CreateAccountMessage" /> has been received.
         /// </summary>
-        private static void CreateAccountMessageReceived(CreateAccountMessage message, BasicDeliverEventArgs args)
+        private static void CreateAccountMessageReceived(LoginAccountMessage message, BasicDeliverEventArgs args)
         {
             GameAccount createAccount = GameAccountManager.CreateAccount();
 

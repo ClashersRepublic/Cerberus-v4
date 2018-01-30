@@ -52,10 +52,12 @@
   <ItemGroup>
     <Compile Include="Account\GameAccount.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="Message\Account\CreateAccountFailedMessage.cs" />
-    <Compile Include="Message\Account\CreateAccountOkMessage.cs" />
-    <Compile Include="Message\Account\CreateAccountMessage.cs" />
-    <Compile Include="Message\Factory\MagicServiceMessageFactory.cs" />
+    <Compile Include="Message\Account\LoginAccountOkMessage.cs" />
+    <Compile Include="Message\Account\LoginAccountMessage.cs" />
+    <Compile Include="Message\Session\ForwardClientMessage.cs" />
+    <Compile Include="Message\Session\CreateSessionMessage.cs" />
+    <Compile Include="Message\Avatar\CreateAvatarMessage.cs" />
+    <Compile Include="Message\MagicServiceMessageFactory.cs" />
     <Compile Include="Message\MagicServiceMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
@@ -86,5 +88,6 @@
       <HintPath>..\..\..\packages\MongoDB.Bson.2.5.0\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,23 +1,25 @@
-﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Account
+﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Session
 {
-    public class CreateAccountFailedMessage : MagicServiceMessage
+    using ClashersRepublic.Magic.Titan.Math;
+
+    public class CreateSessionMessage : MagicServiceMessage
     {
-        public int ErrorCode;
+        public LogicLong AccountId;
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountFailedMessage" /> class.
+        ///     Initializes a new instance <see cref="CreateSessionMessage" /> class.
         /// </summary>
-        public CreateAccountFailedMessage() : this(0)
+        public CreateSessionMessage() : this(0)
         {
-            // CreateAccountFailedMessage.
+            // CreateSessionMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance <see cref="CreateAccountFailedMessage" /> class.
+        ///     Initializes a new instance <see cref="CreateSessionMessage" /> class.
         /// </summary>
-        public CreateAccountFailedMessage(short messageVersion) : base(messageVersion)
+        public CreateSessionMessage(short messageVersion) : base(messageVersion)
         {
-            // CreateAccountFailedMessage.
+            // CreateSessionMessage.
         }
 
         /// <summary>
@@ -26,7 +28,7 @@
         public override void Decode()
         {
             base.Decode();
-            this.ErrorCode = this.Stream.ReadInt();
+            this.AccountId = this.Stream.ReadLong();
         }
 
         /// <summary>
@@ -35,7 +37,7 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteInt(this.ErrorCode);
+            this.Stream.WriteLong(this.AccountId);
         }
 
         /// <summary>
@@ -43,7 +45,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 20102;
+            return 10500;
         }
 
         /// <summary>
@@ -51,7 +53,7 @@
         /// </summary>
         public override int GetServiceNodeType()
         {
-            return 2;
+            return 15;
         }
     }
 }

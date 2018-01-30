@@ -1,8 +1,9 @@
-﻿namespace ClashersRepublic.Magic.Services.Account.Logic.Account
+﻿namespace ClashersRepublic.Magic.Services.Account.Account
 {
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
+
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Account;

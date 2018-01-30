@@ -12,8 +12,8 @@
     ],
     "home": {
         "starting_home": "level/starting_home.json",
-        "event_file": "events.json",
-        "global_file": "globals_definition.json"
+        "starting_shield_duration_secs": 86400,
+        "starting_guard_duration_secs":  43200
     },
     "avatar": {
         "starting_avatar_name": "Mike"

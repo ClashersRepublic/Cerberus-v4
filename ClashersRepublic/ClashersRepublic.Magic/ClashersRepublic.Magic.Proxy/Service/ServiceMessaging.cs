@@ -2,7 +2,6 @@
 {
     using System;
     using ClashersRepublic.Magic.Services.Logic.Message;
-    using ClashersRepublic.Magic.Services.Logic.Message.Factory;
     using RabbitMQ.Client.Events;
 
     public static class ServiceMessaging

@@ -8,6 +8,7 @@
     using ClashersRepublic.Magic.Logic.Data;
 
     using ClashersRepublic.Magic.Proxy.Handler;
+    using ClashersRepublic.Magic.Proxy.Logic;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.Service;
 
@@ -54,6 +55,7 @@
             ServiceProcessor.Initialize();
             ServiceMessaging.Initialize();
             ServiceConnection.Initialize();
+            ClientManager.Initialize();
             NetworkProcessor.Initialize();
             NetworkGateway.Initialize();
             ExitHandler.Initialize();
@@ -77,12 +79,11 @@
         /// </summary>
         internal static void Test()
         {
-            for (int i = 0; i < 150000; i++)
+            for (int i = 0; i < 0; i++)
             {
                 ServiceMessaging.SendMessage(new CreateAccountMessage
                 {
-                    ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, i),
-                    StartSession = false
+                    ProxySessionId = SessionUtil.CreateSessionId(Config.ServerId, i)
                 }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
             }
         }

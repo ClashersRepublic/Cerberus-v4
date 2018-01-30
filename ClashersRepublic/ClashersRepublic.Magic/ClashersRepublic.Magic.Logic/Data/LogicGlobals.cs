@@ -10,6 +10,10 @@
         private int _startingGold2;
         private bool _useNewTraining;
 
+        private bool _dragInTraining;
+        private bool _dragInTrainingFix;
+        private bool _dragInTrainingFix2;
+
         /// <summary>
         ///     Creates references.
         /// </summary>
@@ -22,6 +26,9 @@
             this._startingElixir2 = this.GetIntValue("STARTING_ELIXIR2");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
+            this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
+            this._dragInTrainingFix = this.GetBoolValue("DRAG_IN_TRAINING_FIX");
+            this._dragInTrainingFix2 = this.GetBoolValue("DRAG_IN_TRAINING_FIX2");
         }
 
         /// <summary>
@@ -102,6 +109,21 @@
         public bool UseNewTraining()
         {
             return this._useNewTraining;
+        }
+
+        public bool UseDragInTraining()
+        {
+            return this._dragInTraining;
+        }
+
+        public bool UseDragInTrainingFix()
+        {
+            return this._dragInTrainingFix;
+        }
+
+        public bool UseDragInTrainingFix2()
+        {
+            return this._dragInTrainingFix2;
         }
     }
 }

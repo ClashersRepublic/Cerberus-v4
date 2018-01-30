@@ -16,6 +16,14 @@
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="LogicArrayList{T}" /> class.
+        /// </summary>
+        public LogicArrayList(int initialCapacity)
+        {
+            this._items = new T[initialCapacity];
+        }
+
+        /// <summary>
         ///     Gets a value indicating the number of items in list.
         /// </summary>
         public int Count { get; private set; }

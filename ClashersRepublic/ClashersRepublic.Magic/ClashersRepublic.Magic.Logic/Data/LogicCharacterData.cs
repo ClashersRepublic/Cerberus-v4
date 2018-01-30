@@ -2,18 +2,15 @@ namespace ClashersRepublic.Magic.Logic.Data
 {
     using ClashersRepublic.Magic.Titan.CSV;
 
-    public class LogicCharacterData : LogicData
+    public class LogicCharacterData : LogicCombatItemData
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicCharacterData" /> class.
         /// </summary>
         public LogicCharacterData(CSVRow row, LogicDataTable table) : base(row, table)
         {
-            this.CombatItemData = new LogicCombatItemData(row, table);
         }
-
-        public LogicCombatItemData CombatItemData { get; set; }
-
+        
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
         public string SWF { get; protected set; }
@@ -136,7 +133,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            this.CombatItemData.LoadingFinished();
+            base.LoadingFinished();
         }
 
         public int GetHitpoints(int index)

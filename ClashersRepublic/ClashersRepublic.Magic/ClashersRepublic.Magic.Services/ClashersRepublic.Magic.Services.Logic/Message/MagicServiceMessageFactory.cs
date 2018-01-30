@@ -1,6 +1,8 @@
-﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Factory
+﻿namespace ClashersRepublic.Magic.Services.Logic.Message
 {
     using ClashersRepublic.Magic.Services.Logic.Message.Account;
+    using ClashersRepublic.Magic.Services.Logic.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Logic.Message.Session;
 
     public sealed class MagicServiceMessageFactory
     {
@@ -17,9 +19,27 @@
             {
                 switch (type)
                 {
-                    case 10105:
+                    case 10150:
                     {
-                        message = new CreateAccountMessage();
+                        message = new LoginAccountMessage();
+                        break;
+                    }
+
+                    case 10200:
+                    {
+                        message = new CreateAvatarMessage();
+                        break;
+                    }
+
+                    case 10500:
+                    {
+                        message = new CreateSessionMessage();
+                        break;
+                    }
+
+                    case 10501:
+                    {
+                        message = new ForwardClientMessage();
                         break;
                     }
                 }
@@ -28,17 +48,7 @@
             {
                 switch (type)
                 {
-                    case 20101:
-                    {
-                        message = new CreateAccountOkMessage();
-                        break;
-                    }
 
-                    case 20102:
-                    {
-                        message = new CreateAccountFailedMessage();
-                        break;
-                    }
                 }
             }
 

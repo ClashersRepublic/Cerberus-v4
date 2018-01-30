@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic", "ClashersRepublic.Magic", "{FA91CD4C-F7CA-4192-B627-ACC023DC70B3}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Logic", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj", "{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Account", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Account\ClashersRepublic.Magic.Services.Account.csproj", "{6983994D-EA62-44EA-B949-6EDB848C1DA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Home", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services.Home\ClashersRepublic.Magic.Services.Home.csproj", "{AA80B073-EEFF-4AE8-A248-04F50939BA30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,14 @@ Global
 		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Release|x64.ActiveCfg = Release|x64
 		{6983994D-EA62-44EA-B949-6EDB848C1DA8}.Release|x64.Build.0 = Release|x64
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +86,7 @@ Global
 		{C8EB6250-54E2-4979-8733-E08F89AD6A43} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 		{6983994D-EA62-44EA-B949-6EDB848C1DA8} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{AA80B073-EEFF-4AE8-A248-04F50939BA30} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9AC9358-C999-40A2-8BE8-E0A1C68DF50A}

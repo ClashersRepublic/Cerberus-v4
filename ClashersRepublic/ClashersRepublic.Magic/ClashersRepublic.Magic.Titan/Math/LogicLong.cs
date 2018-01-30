@@ -2,7 +2,6 @@
 {
     using System.Runtime.InteropServices;
     using ClashersRepublic.Magic.Titan.DataStream;
-    using ClashersRepublic.Magic.Titan.Util;
 
     [ComVisible(true)]
     [StructLayout(LayoutKind.Sequential, Size = 8)]

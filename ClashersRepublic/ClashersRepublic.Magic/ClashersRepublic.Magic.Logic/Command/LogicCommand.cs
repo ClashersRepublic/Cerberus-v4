@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Command
 {
+    using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
@@ -17,6 +18,14 @@
         }
 
         /// <summary>
+        ///     Gets the command type.
+        /// </summary>
+        public virtual int GetCommandType()
+        {
+            return 0;
+        }
+
+        /// <summary>
         ///     Encodes this instance.
         /// </summary>
         public virtual void Encode(ChecksumEncoder encoder)
@@ -30,6 +39,14 @@
         public virtual void Decode(ByteStream stream)
         {
             this._executeSubTick = stream.ReadInt();
+        }
+
+        /// <summary>
+        ///     Executes this command.
+        /// </summary>
+        public virtual int Execute(LogicLevel level)
+        {
+            return 0;
         }
 
         /// <summary>

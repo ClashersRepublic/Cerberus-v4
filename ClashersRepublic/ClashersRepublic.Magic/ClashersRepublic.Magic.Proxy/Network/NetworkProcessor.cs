@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-    using ClashersRepublic.Magic.Logic.Message;
+    using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
@@ -49,13 +49,10 @@
         {
             try
             {
-                if (messaging.Token.IsConnected())
-                {
-                    message.Decode();
-                    messaging.Token.Client.MessageManager.ReceiveMessage(message);
+                message.Decode();
+                messaging.Token.Client.MessageManager.ReceiveMessage(message);
 
-                    Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " Received");
-                }
+                Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " received");
             }
             catch (Exception exception)
             {
@@ -73,54 +70,13 @@
                 if (messaging.Token.IsConnected())
                 {
                     byte[] messageBytes = message.GetByteStream().RemoveByteArray();
-                    byte[] encryptedBytes;
-                    
-                    if (messaging.UsePepper)
-                    {
-                        if (!messaging.CryptoScrambled)
-                        {
-                            encryptedBytes = messageBytes;
-                        }
-                        else
-                        {
-                            int encryptionResult = messaging.SendEncrypter.Encrypt(messageBytes,
-                                                                                   encryptedBytes = new byte[messageBytes.Length + messaging.ReceiveEncrypter.GetOverheadEncryption()],
-                                                                                   messageBytes.Length);
+                    byte[] packet = new byte[7 + messageBytes.Length];
 
-                            if (encryptionResult != 0)
-                            {
-                                Logging.Error(typeof(NetworkMessaging), "Message encryption failure, result: " + encryptionResult);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!messaging.CryptoScrambled)
-                        {
-                            messaging.CryptoScrambled = true;
-
-                            LogicMersenneTwisterRandom rnd = new LogicMersenneTwisterRandom(messaging.ScramblerSeed);
-                            
-                        }
-
-                        int encryptionResult = messaging.SendEncrypter.Encrypt(messageBytes,
-                                                                               encryptedBytes = new byte[messageBytes.Length + messaging.ReceiveEncrypter.GetOverheadEncryption()],
-                                                                               messageBytes.Length);
-
-                        if (encryptionResult != 0)
-                        {
-                            Logging.Error(typeof(NetworkMessaging), "Message encryption failure, result: " + encryptionResult);
-                        }
-                    }
-
-                    int encryptedLength = encryptedBytes.Length;
-                    byte[] packet = new byte[7 + encryptedLength];
-
-                    NetworkMessaging.WriteHeader(message, packet, encryptedLength);
-                    Array.Copy(messageBytes, 0, packet, 7, encryptedLength);
+                    NetworkMessaging.WriteHeader(message, packet, messageBytes.Length);
+                    Array.Copy(messageBytes, 0, packet, 7, messageBytes.Length);
                     NetworkGateway.Send(packet, messaging.Token);
 
-                    Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " Sent");
+                    Logging.Info(typeof(NetworkMessaging), "Message " + message.GetType().Name + " sent");
                 }
             }
             catch (Exception exception)

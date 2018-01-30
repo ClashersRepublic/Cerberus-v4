@@ -12,6 +12,7 @@
     using ClashersRepublic.Magic.Services.Logic.Resource;
 
     using ClashersRepublic.Magic.Titan.Message;
+    using ClashersRepublic.Magic.Titan.Message.Security;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal class MessageManager
@@ -126,6 +127,26 @@
         }
 
         /// <summary>
+        ///     Called when a <see cref="ClientHelloMessage"/> has been received.
+        /// </summary>
+        internal void ClientHelloMessageReceived(ClientHelloMessage message)
+        {
+            if (message.Protocol == 1)
+            {
+                if (message.MajorVersion == LogicVersion.MajorVersion)
+                {
+                    if (message.BuildVersion == LogicVersion.BuildVersion)
+                    {
+                        if (message.ContentHash == ResourceManager.FingerprintSha)
+                        {
+                            this.SendMessage(new ServerHelloMessage());
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Called when a <see cref="LoginMessage" /> has been received.
         /// </summary>
         internal void LoginMessageReceived(LoginMessage message)
@@ -142,11 +163,7 @@
                         {
                             if (message.PassToken == null)
                             {
-                                ServiceMessaging.SendMessage(new CreateAccountMessage
-                                {
-                                    ProxySessionId = this.Client.SessionId,
-                                    StartSession = true
-                                }, string.Empty, ServiceExchangeName.ACCOUNT_COMMON_QUEUE);
+
                             }
                             else
                             {

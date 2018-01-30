@@ -59,7 +59,7 @@
     <Compile Include="Database\GameDatabase.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
     <Compile Include="Logging.cs" />
-    <Compile Include="Logic\Account\GameAccountManager.cs" />
+    <Compile Include="Account\GameAccountManager.cs" />
     <Compile Include="Message\MessageManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

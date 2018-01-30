@@ -2,18 +2,15 @@ namespace ClashersRepublic.Magic.Logic.Data
 {
     using ClashersRepublic.Magic.Titan.CSV;
 
-    public class LogicSpellData : LogicData
+    public class LogicSpellData : LogicCombatItemData
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicSpellData" /> class.
         /// </summary>
         public LogicSpellData(CSVRow row, LogicDataTable table) : base(row, table)
         {
-            this.CombatItemData = new LogicCombatItemData(row, table);
         }
-
-        public LogicCombatItemData CombatItemData { get; set; }
-
+        
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
         protected int[] SpellForgeLevel { get; set; }
@@ -88,7 +85,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            this.CombatItemData.LoadingFinished();
+            this.LoadingFinished();
         }
 
         public int GetSpellForgeLevel(int index)

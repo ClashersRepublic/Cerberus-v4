@@ -6,10 +6,9 @@
     using System.Threading;
 
     using ClashersRepublic.Magic.Logic.Data;
-
+    using ClashersRepublic.Magic.Services.Account.Account;
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Handler;
-    using ClashersRepublic.Magic.Services.Account.Logic.Account;
     using ClashersRepublic.Magic.Services.Account.Service;
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Resource;

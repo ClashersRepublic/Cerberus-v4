@@ -618,7 +618,7 @@
         public byte[] RemoveByteArray()
         {
             byte[] byteArray = this._buffer;
-            this._buffer = new byte[0];
+            this._buffer = null;
             return byteArray;
         }
 

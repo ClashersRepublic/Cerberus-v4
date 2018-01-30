@@ -17,5 +17,13 @@
         {
             // CommandExecuted.
         }
+
+        /// <summary>
+        ///     Called when the specified command has not been executed correctly.
+        /// </summary>
+        public virtual void CommandExecuteFailed(LogicCommand command, string log)
+        {
+            // CommandExecuteFailed.
+        }
     }
 }
