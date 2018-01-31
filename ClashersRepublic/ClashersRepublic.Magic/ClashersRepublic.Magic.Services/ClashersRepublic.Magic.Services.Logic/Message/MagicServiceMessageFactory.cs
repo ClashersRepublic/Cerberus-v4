@@ -1,8 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message
 {
-    using ClashersRepublic.Magic.Services.Logic.Message.Account;
-    using ClashersRepublic.Magic.Services.Logic.Message.Avatar;
-    using ClashersRepublic.Magic.Services.Logic.Message.Session;
+    using ClashersRepublic.Magic.Services.Logic.Message.Client;
+    using ClashersRepublic.Magic.Services.Logic.Message.Debug;
+    using ClashersRepublic.Magic.Services.Logic.Message.Home;
+    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
 
     public sealed class MagicServiceMessageFactory
     {
@@ -19,27 +20,33 @@
             {
                 switch (type)
                 {
-                    case 10150:
+                    case 10130:
                     {
-                        message = new LoginAccountMessage();
+                        message = new AskForMaintenanceStateMessage();
+                        break;
+                    }
+                        
+                    case 10140:
+                    {
+                        message = new ForwardServerMessage();
                         break;
                     }
 
-                    case 10200:
-                    {
-                        message = new CreateAvatarMessage();
-                        break;
-                    }
-
-                    case 10500:
-                    {
-                        message = new CreateSessionMessage();
-                        break;
-                    }
-
-                    case 10501:
+                    case 10141:
                     {
                         message = new ForwardClientMessage();
+                        break;
+                    }
+
+                    case 10198:
+                    {
+                        message = new ClientConnectedMessage();
+                        break;
+                    }
+
+                    case 10199:
+                    {
+                        message = new ClientDisconnectedMessage();
                         break;
                     }
                 }
@@ -48,7 +55,17 @@
             {
                 switch (type)
                 {
+                    case 20130:
+                    {
+                        message = new MaintenanceStateDataMessage();
+                        break;
+                    }
 
+                    case 20190:
+                    {
+                        message = new UpdateHomeQueueNameMessage();
+                        break;
+                    }
                 }
             }
 

@@ -2,14 +2,16 @@
 {
     public class ServiceExchangeName
     {
-        public const string PROXY_EXCHANGE_NAME = "ClashersRepublic.magic.services.proxy";
-        public const string ACCOUNT_EXCHANGE_NAME = "ClashersRepublic.magic.services.account";
+        public const string PROXY_EXCHANGE = "magic.int.services.proxy";
+        public const string HOME_EXCHANGE = "magic.int.services.home";
 
-        public const string PROXY_QUEUE_PREFIX = "ClashersRepublic.magic.services.queue.proxy_";
-        public const string ACCOUNT_QUEUE_PREFIX = "ClashersRepublic.magic.services.queue.account_";
-        public const string ACCOUNT_COMMON_QUEUE = "ClashersRepublic.magic.services.commonqueue_account";
+        public const string START_PROXY_QUEUE_NAME = "magic.int.services.proxy.queue_";
+        public const string START_HOME_QUEUE_NAME = "magic.int.services.home.queue_";
 
-        public const string PROXY_ROUTING_KEY_PREFIX = "ym0ghia2lmvoj5kz";
-        public const string ACCOUNT_ROUTING_KEY_PREFIX = "fbz9t7l6pol1wonl";
+        public const string START_PROXY_ROUTING_KEY_NAME = "magic.int.services.rk.proxy_";
+        public const string START_HOME_ROUTING_KEY_NAME = "magic.int.services.rk.proxy_";
+
+        public const string PROXY_COMMON_QUEUE = "magic.int.services.com.proxy";
+        public const string HOME_COMMON_QUEUE = "magic.int.services.com.home";
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Helper
 {
+    using System;
     using System.IO;
     using ClashersRepublic.Magic.Titan.Libs.ZLib;
 
@@ -40,13 +41,9 @@
                 outputStream.WriteByte((byte) (input.Length >> 16));
                 outputStream.WriteByte((byte) (input.Length >> 24));
 
-                using (MemoryStream inputStream = new MemoryStream(input))
-                {
-                    using (ZLibStream stream = new ZLibStream(inputStream, CompressionMode.Compress, CompressionLevel.Default, true))
-                    {
-                        stream.CopyTo(outputStream);
-                    }
-                }
+                byte[] compressed = ZLibCompressor.Compress(input, CompressionLevel.Default);
+
+                outputStream.Write(compressed, 0, compressed.Length);
 
                 output = outputStream.GetBuffer();
             }

@@ -120,9 +120,9 @@
                 {
                     string startingHomeFile = LogicJSONHelper.GetJSONString(homeObject, "starting_home");
 
-                    if (File.Exists(startingHomeFile))
+                    if (ResourceManager.LoadAssetFile(startingHomeFile) != null)
                     {
-                        ResourceManager.StartingHomeJson = File.ReadAllText(startingHomeFile);
+                        ResourceManager.StartingHomeJson = ResourceManager.LoadAssetFile(startingHomeFile);
                         ResourceManager.StartingHomeShieldDurationSeconds = LogicJSONHelper.GetJSONNumber(homeObject, "shield_duration_secs");
                         ResourceManager.StartingHomeGuardDurationSeconds = LogicJSONHelper.GetJSONNumber(homeObject, "guard_duration_secs");
                     }
@@ -174,6 +174,22 @@
             }
 
             return "about:blank";
+        }
+
+        /// <summary>
+        ///     Gets the content url.
+        /// </summary>
+        public static string GetAppStoreUrl(int deviceType)
+        {
+            if (deviceType != 0)
+            {
+                if (ResourceManager.AppStoreUrlList.Count > deviceType - 1)
+                {
+                    return ResourceManager.AppStoreUrlList[deviceType - 1];
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

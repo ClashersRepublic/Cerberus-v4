@@ -4,10 +4,10 @@
 
     public class MagicServiceMessage : PiranhaMessage
     {
-        public string ProxySessionId;
+        private string _proxySessionId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MagicServiceMessage" />
+        ///     Initializes a new instance of the <see cref="MagicServiceMessage" /> class.
         /// </summary>
         public MagicServiceMessage(short messageVersion) : base(messageVersion)
         {
@@ -20,7 +20,6 @@
         public override void Decode()
         {
             base.Decode();
-            this.ProxySessionId = this.Stream.ReadString(64);
         }
 
         /// <summary>
@@ -29,7 +28,6 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteString(this.ProxySessionId);
         }
 
         /// <summary>
@@ -46,6 +44,22 @@
         public override int GetServiceNodeType()
         {
             return base.GetServiceNodeType();
+        }
+
+        /// <summary>
+        ///     Gets the proxy session id.
+        /// </summary>
+        public string GetProxySessionId()
+        {
+            return this._proxySessionId;
+        }
+
+        /// <summary>
+        ///     Sets the proxy session id.
+        /// </summary>
+        public void SetProxySessionId(string sessionId)
+        {
+            this._proxySessionId = sessionId;
         }
     }
 }

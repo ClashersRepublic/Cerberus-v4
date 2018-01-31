@@ -58,8 +58,6 @@
             {
                 Debugger.Warning("LogicWorkerManager::allocateWorker called twice for same target!");
             }
-
-            this.AllocateWorker(gameObject);
         }
 
         /// <summary>
@@ -96,7 +94,7 @@
         /// </summary>
         public void DecreaseWorkerCount()
         {
-            if (++this._workerCount <= 0)
+            if (--this._workerCount <= 0)
             {
                 Debugger.Error("LogicWorkerManager - Total worker count below 0");
             }

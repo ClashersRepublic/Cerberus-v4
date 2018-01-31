@@ -69,7 +69,7 @@
         /// <summary>
         ///     Gets the byte array.
         /// </summary>
-        public byte[] GetBytes()
+        public byte[] GetByteArray()
         {
             byte[] array = new byte[this._offset];
             Array.Copy(this._buffer, array, this._offset);

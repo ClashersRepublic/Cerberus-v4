@@ -18,7 +18,7 @@
         {
             if (!assertion)
             {
-                Debugger.ErrorEvent(Path.GetFileName(callerFilePath) + ":" + callerLineNumber, new DebugEventArgs(assertionError));
+                Debugger.ErrorEvent(typeof(Debugger), new DebugEventArgs(assertionError, Path.GetFileName(callerFilePath), callerLineNumber));
             }
 
             return assertion;
@@ -29,7 +29,7 @@
         /// </summary>
         public static void Log(string log, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
-            Debugger.LogEvent(Path.GetFileName(callerFilePath) + ":" + callerLineNumber, new DebugEventArgs(log));
+            Debugger.LogEvent(typeof(Debugger), new DebugEventArgs(log, Path.GetFileName(callerFilePath), callerLineNumber));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@
         /// </summary>
         public static void Warning(string log, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
-            Debugger.WarningEvent(Path.GetFileName(callerFilePath) + ":" + callerLineNumber, new DebugEventArgs(log));
+            Debugger.WarningEvent(typeof(Debugger), new DebugEventArgs(log, Path.GetFileName(callerFilePath), callerLineNumber));
         }
 
         /// <summary>
@@ -45,20 +45,24 @@
         /// </summary>
         public static void Error(string log, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
-            Debugger.ErrorEvent(Path.GetFileName(callerFilePath) + ":" + callerLineNumber, new DebugEventArgs(log));
+            Debugger.ErrorEvent(typeof(Debugger), new DebugEventArgs(log, Path.GetFileName(callerFilePath), callerLineNumber));
         }
     }
 
     public class DebugEventArgs
     {
         public string Text;
+        public string FileName;
+        public int Line;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DebugEventArgs" /> class.
         /// </summary>
-        public DebugEventArgs(string text)
+        public DebugEventArgs(string text, string fileName, int line)
         {
             this.Text = text;
+            this.FileName = fileName;
+            this.Line = line;
         }
     }
 }

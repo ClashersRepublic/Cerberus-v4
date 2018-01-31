@@ -21,7 +21,7 @@
         public static string RabbitUser;
         public static string RabbitPassword;
 
-        public static string MongodServer;
+        public static string[] MongodServers;
         public static string MongodUser;
         public static string MongodPassword;
         public static string MongodDbName;
@@ -75,7 +75,22 @@
 
                 if (mongodObject != null)
                 {
-                    Config.MongodServer = LogicJSONHelper.GetJSONString(mongodObject, "server");
+                    LogicJSONArray serverArray = mongodObject.GetJSONArray("servers");
+
+                    if (serverArray.Size() > 0)
+                    {
+                        Config.MongodServers = new string[serverArray.Size()];
+
+                        for (int i = 0; i < serverArray.Size(); i++)
+                        {
+                            Config.MongodServers[i] = serverArray.GetJSONString(i).GetStringValue();
+                        }
+                    }
+                    else
+                    {
+                        Debugger.Error("Config::loadConfig 'servers' array is empty");
+                    }
+                    
                     Config.MongodUser = LogicJSONHelper.GetJSONString(mongodObject, "user");
                     Config.MongodPassword = LogicJSONHelper.GetJSONString(mongodObject, "password");
                     Config.MongodDbName = LogicJSONHelper.GetJSONString(mongodObject, "db_name");
