@@ -17,27 +17,6 @@
         }
 
         /// <summary>
-        ///     Encodes this instance.
-        /// </summary>
-        public override void Encode()
-        {
-            base.Encode();
-
-            if (this.Message == null)
-            {
-                this.Stream.WriteBoolean(false);
-            }
-            else
-            {
-                this.Stream.WriteBoolean(true);
-                this.Stream.WriteShort(this.Message.GetMessageType());
-                this.Stream.WriteShort(this.Message.GetMessageVersion());
-                this.Stream.WriteVInt(this.Message.GetEncodingLength());
-                this.Stream.WriteBytes(this.Message.GetByteStream().GetByteArray(), this.Message.GetEncodingLength());
-            }
-        }
-
-        /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public override void Decode()
@@ -55,13 +34,34 @@
 
                 if (this.Message == null)
                 {
-                    Debugger.Error("ForwardClientMessage::encode message is NULL");
+                    Debugger.Error("ForwardClientMessage::decode message is NULL");
                 }
                 else
                 {
                     this.Message.SetMessageVersion(messageVersion);
                     this.Message.GetByteStream().SetByteArray(messageBytes, messageEncodingLength);
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Encodes this instance.
+        /// </summary>
+        public override void Encode()
+        {
+            base.Encode();
+
+            if (this.Message == null)
+            {
+                this.Stream.WriteBoolean(false);
+            }
+            else
+            {
+                this.Stream.WriteBoolean(true);
+                this.Stream.WriteShort(this.Message.GetMessageType());
+                this.Stream.WriteShort(this.Message.GetMessageVersion());
+                this.Stream.WriteVInt(this.Message.GetEncodingLength());
+                this.Stream.WriteBytes(this.Message.GetByteStream().GetByteArray(), this.Message.GetEncodingLength());
             }
         }
 
