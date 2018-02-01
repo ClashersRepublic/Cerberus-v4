@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic", "ClashersRepublic.Magic", "{FA91CD4C-F7CA-4192-B627-ACC023DC70B3}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Proxy", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Proxy\ClashersRepublic.Magic.Proxy.csproj", "{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Home", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services.Home\ClashersRepublic.Magic.Services.Home.csproj", "{D5642E1F-164A-4A9E-8321-C933FF01ACCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Home", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Home\ClashersRepublic.Magic.Services.Home.csproj", "{D5642E1F-164A-4A9E-8321-C933FF01ACCC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Tools", "ClashersRepublic.Magic.Tools", "{1C5149FC-D86C-4627-8F25-05AF103CE36E}"
 EndProject
