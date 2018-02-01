@@ -1,7 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Helper
 {
-    using System;
     using System.IO;
+
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Libs.ZLib;
 
     public class ZLibHelper
@@ -13,19 +14,19 @@
         {
             int decompressedLength = input[0] | input[1] << 8 | input[2] << 16 | input[3] << 24;
 
-            using (MemoryStream outputStream = new MemoryStream())
+            using (MemoryStream inputStream = new MemoryStream(input, 4, input.Length - 4))
             {
-                outputStream.Capacity = decompressedLength;
-
-                using (MemoryStream inputStream = new MemoryStream(input, 0, length))
+                using (MemoryStream outputStream = ZLibCompressor.Decompress(inputStream))
                 {
-                    using (ZLibStream stream = new ZLibStream(inputStream, CompressionMode.Decompress, true))
-                    {
-                        stream.CopyTo(outputStream, decompressedLength);
-                    }
-                }
+                    byte[] decompressedByteArray = outputStream.ToArray();
 
-                output = outputStream.GetBuffer();
+                    if (decompressedByteArray.Length != decompressedLength)
+                    {
+                        Debugger.Error("ZLibHelper::decompressInMySQLFormat decompressed byte array is corrupted");
+                    }
+
+                    output = decompressedByteArray;
+                }
             }
         }
 

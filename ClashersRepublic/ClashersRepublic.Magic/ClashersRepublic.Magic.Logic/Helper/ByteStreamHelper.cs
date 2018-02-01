@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Titan.DataStream;
 
@@ -22,7 +23,7 @@
         {
             int globalId = stream.ReadInt();
 
-            if (GlobalID.GetClassID(tableIndex) == tableIndex)
+            if (GlobalID.GetClassID(globalId) == tableIndex + 1)
             {
                 return LogicDataTables.GetDataById(globalId);
             }

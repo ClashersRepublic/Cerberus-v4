@@ -63,7 +63,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
     <Compile Include="ServiceExchangeName.cs" />
-    <Compile Include="Util\SessionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">

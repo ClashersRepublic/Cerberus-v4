@@ -17,11 +17,11 @@
         }
 
         /// <summary>
-        ///     Decodes this instance.
+        ///     Encodes this instance.
         /// </summary>
-        public override void Decode()
+        public override void Encode()
         {
-            base.Decode();
+            base.Encode();
 
             if (this.Message == null)
             {
@@ -38,11 +38,11 @@
         }
 
         /// <summary>
-        ///     Encodes this instance.
+        ///     Decodes this instance.
         /// </summary>
-        public override void Encode()
+        public override void Decode()
         {
-            base.Encode();
+            base.Decode();
 
             if (this.Stream.ReadBoolean())
             {
