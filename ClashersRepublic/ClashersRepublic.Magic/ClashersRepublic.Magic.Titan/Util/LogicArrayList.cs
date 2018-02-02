@@ -42,23 +42,25 @@
         {
             get
             {
-                if (index >= this._count || index < 0)
+                if (index < this._count && index > -1)
                 {
-                    Debugger.Error("LogicArrayList.get out of bounds " + index + "/" + this._count);
-                    return default(T);
+                    return this._items[index];
                 }
 
-                return this._items[index];
+                Debugger.Error(string.Format("LogicArrayList.get out of bounds {0}/{1}", index, this._count));
+
+                return default(T);
             }
             set
             {
-                if (index >= this._count || index < 0)
+                if (index < this._count && index > -1)
                 {
-                    Debugger.Error("LogicArrayList.set out of bounds " + index + "/" + this._count);
-                    return;
+                    this._items[index] = value;
                 }
-
-                this._items[index] = value;
+                else
+                {
+                    Debugger.Error(string.Format("LogicArrayList.set out of bounds {0}/{1}", index, this._count));
+                }
             }
         }
 
@@ -98,18 +100,19 @@
         /// </summary>
         public void Remove(int index)
         {
-            if (index > this._count || index < 0)
+            if (index < this._count && index > -1)
             {
-                Debugger.Error("LogicArrayList.remove out of bounds " + index + "/" + this._count);
-                return;
-            }
+                if (index != this._count - 1)
+                {
+                    Array.Copy(this._items, index + 1, this._items, index, this._count - index - 1);
+                }
 
-            if (index != this._count - 1)
+                this._items[index] = default(T);
+            }
+            else
             {
-                Array.Copy(this._items, index + 1, this._items, index, this._count - index - 1);
+                Debugger.Error(string.Format("LogicArrayList.remove out of bounds {0}/{1}", index, this._count));
             }
-
-            this._items[--this._count] = default(T);
         }
 
         /// <summary>
