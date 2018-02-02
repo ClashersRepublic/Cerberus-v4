@@ -12,7 +12,7 @@
     using ClashersRepublic.Magic.Logic.Worker;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
-    using Supercell.Magic.Logic;
+    using ClashersRepublic.Magic.Logic;
 
     public class LogicLevel
     {
