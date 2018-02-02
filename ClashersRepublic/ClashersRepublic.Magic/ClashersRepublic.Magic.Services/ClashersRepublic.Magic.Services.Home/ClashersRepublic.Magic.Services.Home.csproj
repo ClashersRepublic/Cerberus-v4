@@ -85,12 +85,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleOut.cs" />
+    <Compile Include="Database\GameDatabase.cs" />
+    <Compile Include="Debug\Logging.cs" />
+    <Compile Include="Handler\ExitHandler.cs" />
+    <Compile Include="Helper\BitHelper.cs" />
+    <Compile Include="Player\GamePlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="Service\ServiceGateway.cs" />
+    <Compile Include="Service\ServiceMessageManager.cs" />
+    <Compile Include="Service\ServiceMessaging.cs" />
+    <Compile Include="Service\ServiceProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
+      <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
+      <Name>ClashersRepublic.Magic.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
+      <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
+      <Name>ClashersRepublic.Magic.Titan</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj">
+      <Project>{4ac76f21-4318-4bff-9eb8-35ad3c11bc3a}</Project>
+      <Name>ClashersRepublic.Magic.Services.Logic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

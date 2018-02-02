@@ -4,7 +4,7 @@
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Message;
 
-    public class ForwardServerMessage : MagicServiceMessage
+    public class ForwardServerMessage : ServiceMessage
     {
         public PiranhaMessage Message;
 

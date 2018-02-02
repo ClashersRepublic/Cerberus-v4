@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic", "ClashersRepublic.Magic", "{FA91CD4C-F7CA-4192-B627-ACC023DC70B3}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Tools", "ClashersRepublic.Magic.Tools", "{1C5149FC-D86C-4627-8F25-05AF103CE36E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Tools.PatchGen", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools.PatchGen\ClashersRepublic.Magic.Tools.PatchGen.csproj", "{473D4436-1D76-4204-99F7-74E2934FB079}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Client", "ClashersRepublic.Magic\ClashersRepublic.Magic.Client\ClashersRepublic.Magic.Client.csproj", "{2AEE0ABF-3302-47A0-9481-898E191C122F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,14 @@ Global
 		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|Any CPU.Build.0 = Release|Any CPU
 		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|x64.ActiveCfg = Release|Any CPU
 		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|x64.Build.0 = Release|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|x64.Build.0 = Debug|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|x64.ActiveCfg = Release|Any CPU
+		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +100,7 @@ Global
 		{D5642E1F-164A-4A9E-8321-C933FF01ACCC} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 		{1C5149FC-D86C-4627-8F25-05AF103CE36E} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{473D4436-1D76-4204-99F7-74E2934FB079} = {1C5149FC-D86C-4627-8F25-05AF103CE36E}
+		{2AEE0ABF-3302-47A0-9481-898E191C122F} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9AC9358-C999-40A2-8BE8-E0A1C68DF50A}

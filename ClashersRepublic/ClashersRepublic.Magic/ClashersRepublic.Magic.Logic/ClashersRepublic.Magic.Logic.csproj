@@ -88,6 +88,7 @@
     <Compile Include="Data\LogicFaqData.cs" />
     <Compile Include="Data\LogicGemBundleData.cs" />
     <Compile Include="Data\LogicGlobalData.cs" />
+    <Compile Include="Data\LogicClientGlobals.cs" />
     <Compile Include="Data\LogicGlobals.cs" />
     <Compile Include="Data\LogicHelpshiftData.cs" />
     <Compile Include="Data\LogicHeroData.cs" />

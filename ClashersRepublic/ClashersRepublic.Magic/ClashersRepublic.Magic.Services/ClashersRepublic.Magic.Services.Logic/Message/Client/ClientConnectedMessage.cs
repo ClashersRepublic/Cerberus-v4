@@ -2,7 +2,7 @@
 {
     using ClashersRepublic.Magic.Titan.Math;
 
-    public class ClientConnectedMessage : MagicServiceMessage
+    public class ClientConnectedMessage : ServiceMessage
     {
         public LogicLong AccountId;
         public bool IsNewClient;

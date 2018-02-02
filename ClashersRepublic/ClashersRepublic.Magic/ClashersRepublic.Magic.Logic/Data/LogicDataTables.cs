@@ -8,6 +8,7 @@
     {
         private static LogicDataTable[] _dataTables;
         private static LogicGlobals _globals;
+        private static LogicClientGlobals _clientGlobals;
 
         private static LogicResourceData _diamondsData;
         private static LogicResourceData _goldData;
@@ -58,8 +59,8 @@
             LogicDataTables.Load("logic/leagues.csv", 28);
             LogicDataTables.Load("csv/news.csv", 29);
             LogicDataTables.Load("logic/war.csv", 30);
-            LogicDataTables.Load("logic/achievements.csv", 31);
-            LogicDataTables.Load("logic/regions.csv", 32);
+            LogicDataTables.Load("logic/regions.csv", 31);
+            LogicDataTables.Load("logic/client_globals.csv", 32);
             LogicDataTables.Load("logic/alliance_badge_layers.csv", 33);
             LogicDataTables.Load("logic/alliance_levels.csv", 34);
             // LogicDataTables.Load("csv/helpshift.csv", 35);
@@ -73,6 +74,7 @@
             LogicDataTables.Load("logic/leagues2.csv", 43);
 
             LogicDataTables._globals = new LogicGlobals();
+            LogicDataTables._clientGlobals = new LogicClientGlobals();
 
             for (int i = 0; i < LogicDataTables._dataTables.Length; i++)
             {
@@ -170,11 +172,19 @@
         }
 
         /// <summary>
+        ///     Gets the client global data by name.
+        /// </summary>
+        public static LogicGlobalData GetClientGlobalByName(string name)
+        {
+            return (LogicGlobalData) LogicDataTables._dataTables[32].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the global data by name.
         /// </summary>
         public static LogicGlobalData GetGlobalByName(string name)
         {
-            return (LogicGlobalData) LogicDataTables._dataTables[13].GetDataByName(name);
+            return (LogicGlobalData)LogicDataTables._dataTables[13].GetDataByName(name);
         }
 
         /// <summary>
@@ -183,6 +193,14 @@
         public static LogicBuildingClassData GetBuildingClassData(string name)
         {
             return (LogicBuildingClassData) LogicDataTables._dataTables[6].GetDataByName(name);
+        }
+
+        /// <summary>
+        ///     Gets the globals instance.
+        /// </summary>
+        public static LogicClientGlobals GetClientGlobalsInstance()
+        {
+            return LogicDataTables._clientGlobals;
         }
 
         /// <summary>

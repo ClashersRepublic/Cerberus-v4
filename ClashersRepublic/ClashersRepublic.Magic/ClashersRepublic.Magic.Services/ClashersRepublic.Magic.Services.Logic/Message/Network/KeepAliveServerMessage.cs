@@ -1,13 +1,13 @@
-﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Debug
+﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Network
 {
-    public class AskForMaintenanceStateMessage : ServiceMessage
+    public class KeepAliveServerMessage : ServiceMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AskForMaintenanceStateMessage"/> class.
+        ///     Initializes a new instance of the <see cref="KeepAliveServerMessage"/> class.
         /// </summary>
-        public AskForMaintenanceStateMessage() : base(0)
+        public KeepAliveServerMessage() : base(0)
         {
-            // AskForMaintenanceStateMessage.
+            // KeepAliveServerMessage.
         }
 
         /// <summary>
@@ -39,7 +39,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 10130;
+            return 20108;
         }
 
         /// <summary>

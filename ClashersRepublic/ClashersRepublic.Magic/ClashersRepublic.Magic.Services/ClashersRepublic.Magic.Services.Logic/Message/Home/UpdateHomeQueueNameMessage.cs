@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Home
 {
-    public class UpdateHomeQueueNameMessage : MagicServiceMessage
+    public class UpdateHomeQueueNameMessage : ServiceMessage
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="UpdateHomeQueueNameMessage"/> class.

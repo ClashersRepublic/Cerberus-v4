@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Client
 {
-    public class ClientDisconnectedMessage : MagicServiceMessage
+    public class ClientDisconnectedMessage : ServiceMessage
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ClientDisconnectedMessage"/> class.

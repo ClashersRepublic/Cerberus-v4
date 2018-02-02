@@ -128,7 +128,7 @@
                         }
                         catch (Exception exception)
                         {
-                            Logging.Error(this, "NetworkMessaging::onReceive Message decodage exception, trace: " + exception);
+                            Logging.Error(this, "NetworkMessaging::onReceive Message decode exception, trace: " + exception);
                         }
                     }
                     else

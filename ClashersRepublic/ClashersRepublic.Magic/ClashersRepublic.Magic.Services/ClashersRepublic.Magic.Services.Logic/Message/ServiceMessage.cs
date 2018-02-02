@@ -2,16 +2,13 @@
 {
     using ClashersRepublic.Magic.Titan.Message;
 
-    public class MagicServiceMessage : PiranhaMessage
+    public class ServiceMessage : PiranhaMessage
     {
-        private string _proxySessionId;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MagicServiceMessage" /> class.
+        ///     Initializes a new instance of the <see cref="ServiceMessage" /> class.
         /// </summary>
-        public MagicServiceMessage(short messageVersion) : base(messageVersion)
+        public ServiceMessage(short messageVersion) : base(messageVersion)
         {
-            // MagicServiceMessage.
         }
 
         /// <summary>
@@ -44,22 +41,6 @@
         public override int GetServiceNodeType()
         {
             return base.GetServiceNodeType();
-        }
-
-        /// <summary>
-        ///     Gets the proxy session id.
-        /// </summary>
-        public string GetProxySessionId()
-        {
-            return this._proxySessionId;
-        }
-
-        /// <summary>
-        ///     Sets the proxy session id.
-        /// </summary>
-        public void SetProxySessionId(string sessionId)
-        {
-            this._proxySessionId = sessionId;
         }
     }
 }

@@ -1,12 +1,9 @@
-﻿namespace ClashersRepublic.Magic.Services.Home
+﻿namespace ClashersRepublic.Magic.Client
 {
     using System;
     using System.Drawing;
     using System.Reflection;
-
-    using ClashersRepublic.Magic.Services.Home.Debug;
-    using ClashersRepublic.Magic.Services.Home.Handler;
-    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Client.Game;
 
     internal class Program
     {
@@ -34,15 +31,7 @@
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
-            Logging.Initialize();
-            Config.Initialize();
-            
-            if (args.Length > 0)
-            {
-                Config.ServerId = int.Parse(args[0]);
-            }
-
-            Resources.Initialize();
+            GameMain.Initialize();
 
             while (true)
             {
@@ -52,21 +41,9 @@
                 {
                     switch (cmd.Substring(1))
                     {
-                        case "close":
-                        case "stop":
-                        case "shutdown":
-                        {
-                            ExitHandler.OnQuit();
-                            return;
-                        }
-
                         case "test":
                         {
-                            for (int i = 0; i < 1000; i++)
-                            {
-                                // GameAccountManager.CreateAccount();
-                            }
-
+                            new GameMain();
                             break;
                         }
                     }
@@ -79,7 +56,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - " + Config.ServerId;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Debug
 {
-    public class MaintenanceStateDataMessage : MagicServiceMessage
+    public class MaintenanceStateDataMessage : ServiceMessage
     {
         public int MaintenanceState;
         public int MaintenanceTime;

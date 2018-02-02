@@ -4,6 +4,7 @@
     using ClashersRepublic.Magic.Services.Logic.Message.Debug;
     using ClashersRepublic.Magic.Services.Logic.Message.Home;
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
+    using ClashersRepublic.Magic.Services.Logic.Message.Network;
 
     public sealed class MagicServiceMessageFactory
     {
@@ -12,14 +13,20 @@
         /// <summary>
         ///     Creates a message by type.
         /// </summary>
-        public MagicServiceMessage CreateMessageByType(int type)
+        public ServiceMessage CreateMessageByType(int type)
         {
-            MagicServiceMessage message = null;
+            ServiceMessage message = null;
 
             if (type < 20000)
             {
                 switch (type)
                 {
+                    case 10108:
+                    {
+                        message = new KeepAliveMessage();
+                        break;
+                    }
+
                     case 10130:
                     {
                         message = new AskForMaintenanceStateMessage();
@@ -55,6 +62,12 @@
             {
                 switch (type)
                 {
+                    case 20108:
+                    {
+                        message = new KeepAliveServerMessage();
+                        break;
+                    }
+
                     case 20130:
                     {
                         message = new MaintenanceStateDataMessage();

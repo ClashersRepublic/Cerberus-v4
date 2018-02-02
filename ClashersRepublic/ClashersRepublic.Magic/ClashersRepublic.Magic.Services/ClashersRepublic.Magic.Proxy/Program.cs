@@ -2,9 +2,8 @@
 {
     using System;
     using System.Drawing;
-    using System.Linq;
     using System.Reflection;
-    using System.Threading;
+
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Handler;
@@ -38,6 +37,8 @@
 
             Logging.Initialize();
             Config.Initialize();
+
+            Console.WriteLine('1' + '1');
 
             if (args.Length > 0)
             {

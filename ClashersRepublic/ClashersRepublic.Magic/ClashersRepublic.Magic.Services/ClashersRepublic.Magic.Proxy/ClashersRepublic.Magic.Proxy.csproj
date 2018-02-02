@@ -94,6 +94,7 @@
     <Compile Include="Database\GameDatabase.cs" />
     <Compile Include="Debug\Logging.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
+    <Compile Include="Helper\BitHelper.cs" />
     <Compile Include="Message\MessageManager.cs" />
     <Compile Include="Network\NetworkGateway.cs" />
     <Compile Include="Network\NetworkMessaging.cs" />
@@ -114,9 +115,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Listener\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
       <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
