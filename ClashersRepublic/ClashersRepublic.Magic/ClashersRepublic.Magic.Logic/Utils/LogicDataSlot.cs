@@ -1,4 +1,4 @@
-﻿namespace Supercell.Magic.Logic
+﻿namespace ClashersRepublic.Magic.Logic
 {
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
