@@ -27,6 +27,8 @@
         /// </summary>
         internal MessageManager(Client client, NetworkMessaging messaging)
         {
+            this.LastKeepAliveTime = LogicTimeUtil.GetTimestamp();
+
             this.Client = client;
             this.Messaging = messaging;
         }

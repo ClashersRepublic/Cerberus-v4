@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Network
 {
+    using System;
     using System.Net;
     using System.Net.Sockets;
     using ClashersRepublic.Magic.Proxy.Debug;
@@ -104,7 +105,14 @@
                     {
                         if (token.Socket.Available == 0)
                         {
-                            if (!token.HandleData())
+                            try
+                            {
+                                if (!token.HandleData())
+                                {
+                                    NetworkGateway.Disconnect(asyncEvent);
+                                }
+                            }
+                            catch (Exception)
                             {
                                 NetworkGateway.Disconnect(asyncEvent);
                             }
@@ -165,10 +173,6 @@
                     NetworkGateway.OnSendCompleted(null, writeEvent);
                 }
             }
-            else
-            {
-                NetworkGateway.Disconnect(token.AsyncEvent);
-            }
         }
 
         /// <summary>
@@ -198,10 +202,11 @@
                         {
                             token.Dispose();
                         }
-
-                        asyncEvent.Dispose();
                     }
                 }
+
+                asyncEvent.UserToken = null;
+                asyncEvent.Dispose();
             }
         }
     }

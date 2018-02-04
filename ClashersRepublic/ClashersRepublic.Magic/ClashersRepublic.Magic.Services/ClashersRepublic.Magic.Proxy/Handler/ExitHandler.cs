@@ -34,7 +34,7 @@
         /// </summary>
         internal static void OnQuit()
         {
-            Resources.InMaintenance = true;
+            Environment.Exit(0);
         }
 
         private delegate void EventHandler();

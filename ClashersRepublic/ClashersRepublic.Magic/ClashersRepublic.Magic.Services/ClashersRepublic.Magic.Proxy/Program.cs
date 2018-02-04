@@ -3,8 +3,10 @@
     using System;
     using System.Drawing;
     using System.Reflection;
+
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Handler;
+    using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message.Network;
@@ -16,8 +18,6 @@
 
         private static void Main(string[] args)
         {
-            Program.UpdateConsoleTitle();
-
             Console.SetOut(new ConsoleOut());
             Console.SetWindowSize(Program.Width, Program.Height);
 
@@ -33,48 +33,21 @@
             Console.ForegroundColor = ConsoleColor.White;
 
             Console.WriteLine(Environment.NewLine);
-            Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
             Logging.Initialize();
             Config.Initialize();
-
-            Console.WriteLine('1' + '1');
-
+            
             if (args.Length > 0)
             {
                 Config.ServerId = int.Parse(args[0]);
             }
 
             Resources.Initialize();
+            ExitHandler.Initialize();
 
-            while (true)
-            {
-                string cmd = Console.ReadLine();
+            Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
-                if (cmd.StartsWith("/"))
-                {
-                    switch (cmd.Substring(1))
-                    {
-                        case "close":
-                        case "stop":
-                        case "shutdown":
-                        {
-                            ExitHandler.OnQuit();
-                            return;
-                        }
-
-                        case "test":
-                        {
-                            for (int i = 0; i < 10000; i++)
-                            {
-                                ServiceMessageManager.SendRequestMessage(new KeepAliveMessage(), ServiceExchangeName.BuildExchangeName("home"), ServiceExchangeName.BuildQueueName("home", 0));
-                            }
-
-                            break;
-                        }
-                    }
-                }
-            }
+            CmdHandler.Initialize();
         }
 
         /// <summary>
@@ -82,7 +55,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - " + Config.ServerId;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - " + Config.ServerId + " - Connections: " + NetworkManager.TotalConnections;
         }
     }
 }

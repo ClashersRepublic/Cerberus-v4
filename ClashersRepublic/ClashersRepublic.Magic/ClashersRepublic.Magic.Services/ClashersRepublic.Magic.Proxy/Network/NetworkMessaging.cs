@@ -13,10 +13,14 @@
         private StreamEncrypter _receiveEncrypter;
         private StreamEncrypter _sendEncrypter;
         private readonly LogicMessageFactory _factory;
-        private readonly NetworkToken _token;
         private readonly Client _client;
 
         private int _pepperStep;
+
+        /// <summary>
+        ///     Gets the token instance.
+        /// </summary>
+        internal NetworkToken Token { get; }
 
         /// <summary>
         ///     Gets the message manager instance.
@@ -29,7 +33,7 @@
         internal NetworkMessaging(Client client, NetworkToken token)
         {
             this._client = client;
-            this._token = token;
+            this.Token = token;
             this._factory = LogicMagicMessageFactory.Instance;
             this.MessageManager = new MessageManager(this._client, this);
         }
@@ -202,7 +206,7 @@
             Array.Copy(messageByteArray, 0, packet, 7, encodingLength);
             this.WriteHeader(message, packet, encodingLength);
 
-            this._token.WriteData(packet);
+            this.Token.WriteData(packet);
 
             Logging.Log(this, "NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
         }

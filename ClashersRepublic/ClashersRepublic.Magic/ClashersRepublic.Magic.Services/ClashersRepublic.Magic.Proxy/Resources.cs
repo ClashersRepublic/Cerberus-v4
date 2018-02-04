@@ -20,8 +20,7 @@
             30000,
             843
         };
-
-        internal static bool InMaintenance;
+        
         internal static NetworkGateway[] Gateways;
         internal static LogicMersenneTwisterRandom Random;
 

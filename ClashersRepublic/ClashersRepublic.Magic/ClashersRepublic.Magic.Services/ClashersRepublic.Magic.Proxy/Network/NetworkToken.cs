@@ -143,9 +143,6 @@
 
             this.AsyncEvent = null;
             this.Messaging = null;
-            this._receivedBytes = null;
-            this.Socket = null;
-            this._client = null;
 
             this._receivedOffset = 0;
         }

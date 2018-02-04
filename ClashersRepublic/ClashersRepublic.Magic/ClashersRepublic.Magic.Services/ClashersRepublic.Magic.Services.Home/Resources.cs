@@ -11,7 +11,6 @@
 
     internal static class Resources
     {
-        internal static bool InMaintenance;
         internal static LogicMersenneTwisterRandom Random;
 
         /// <summary>
@@ -39,7 +38,6 @@
         private static void InitializeGames()
         {
             Resources.Random = new LogicMersenneTwisterRandom(LogicTimeUtil.GetTimestamp());
-
             GameDatabase.Initialize();
         }
 

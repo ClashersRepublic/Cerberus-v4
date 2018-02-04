@@ -27,7 +27,7 @@
                 {
                     if (filePath.EndsWith(".json"))
                     {
-                        if (filePath.StartsWith("Assets/level/") || filePath.StartsWith("Assets/offline/") || filePath.EndsWith("fingerprint.json"))
+                        if (filePath.StartsWith("Assets\\level\\") || filePath.StartsWith("Assets\\offline\\") || filePath.StartsWith("Assets\\backup\\") || Path.GetFileName(filePath) == "fingerprint.json")
                         {
                             continue;
                         }
@@ -143,7 +143,11 @@
                 Program._files[i].WriteTo("Patchs/" + Program._sha);
             }
 
-            File.Copy("Assets/fingerprint.json", $"Assets/backup/fingerprint-{Program._currentSha}.json");
+            if (!File.Exists($"Assets/backup/fingerprint-{Program._currentSha}.json"))
+            {
+                File.Copy("Assets/fingerprint.json", $"Assets/backup/fingerprint-{Program._currentSha}.json");
+            }
+
             File.WriteAllText("Patchs/" + Program._sha + "/fingerprint.json", Program._fingerprint);
             File.WriteAllText("Assets/fingerprint.json", Program._fingerprint);
         }

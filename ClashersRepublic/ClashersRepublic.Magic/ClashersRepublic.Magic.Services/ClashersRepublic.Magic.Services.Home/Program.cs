@@ -34,7 +34,6 @@
             Console.ForegroundColor = ConsoleColor.White;
 
             Console.WriteLine(Environment.NewLine);
-            Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
             Logging.Initialize();
             Config.Initialize();
@@ -45,31 +44,11 @@
             }
 
             Resources.Initialize();
+            ExitHandler.Initialize();
 
-            while (true)
-            {
-                string cmd = Console.ReadLine();
+            Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
-                if (cmd.StartsWith("/"))
-                {
-                    switch (cmd.Substring(1))
-                    {
-                        case "close":
-                        case "stop":
-                        case "shutdown":
-                        {
-                            ExitHandler.OnQuit();
-                            return;
-                        }
-
-                        case "test":
-                        {
-                            ServiceMessageManager.SendRequestMessage(new KeepAliveMessage(), ServiceExchangeName.BuildExchangeName("home"), ServiceExchangeName.BuildQueueName("home", 0));
-                            break;
-                        }
-                    }
-                }
-            }
+            CmdHandler.Initialize();
         }
 
         /// <summary>

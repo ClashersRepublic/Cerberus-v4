@@ -130,7 +130,10 @@
             {
                 while (NetworkManager._receiveMessageQueue.TryDequeue(out QueueItem item))
                 {
-                    item.Messaging.MessageManager.ReceiveMessage(item.Message);
+                    if (!item.Messaging.Token.Aborted)
+                    {
+                        item.Messaging.MessageManager.ReceiveMessage(item.Message);
+                    }
                 }
 
                 Thread.Sleep(1);
@@ -146,7 +149,10 @@
             {
                 while (NetworkManager._sendMessageQueue.TryDequeue(out QueueItem item))
                 {
-                    item.Messaging.OnWakeup(item.Message);
+                    if (!item.Messaging.Token.Aborted)
+                    {
+                        item.Messaging.OnWakeup(item.Message);
+                    }
                 }
 
                 Thread.Sleep(1);
@@ -158,20 +164,24 @@
         /// </summary>
         private static void Update()
         {
-            NetworkToken[] tokens = NetworkManager._connections.Values.ToArray();
-
-            for (int i = 0, timestamp = LogicTimeUtil.GetTimestamp(); i < tokens.Length; i++)
+            while (true)
             {
-                NetworkToken token = tokens[i];
-                MessageManager messageManager = token.Messaging.MessageManager;
+                NetworkToken[] tokens = NetworkManager._connections.Values.ToArray();
 
-                if (timestamp - messageManager.LastKeepAliveTime >= 30)
+                for (int i = 0, timestamp = LogicTimeUtil.GetTimestamp(); i < tokens.Length; i++)
                 {
-                    NetworkGateway.Disconnect(token.AsyncEvent);
-                }
-            }
+                    NetworkToken token = tokens[i];
+                    MessageManager messageManager = token.Messaging.MessageManager;
 
-            Thread.Sleep(50);
+                    if (timestamp - messageManager.LastKeepAliveTime >= 30)
+                    {
+                        NetworkGateway.Disconnect(token.AsyncEvent);
+                    }
+                }
+
+                Program.UpdateConsoleTitle();
+                Thread.Sleep(50);
+            }
         }
 
         private class QueueItem
