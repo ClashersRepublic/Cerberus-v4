@@ -3,7 +3,7 @@
     "serverVersion": "9.256",
     "serverEnvironment": "integration",
     "rabbit": {
-        "server": "142.44.181.111",
+        "server": "127.0.0.1",
         "user": "Magic-Server",
         "password":
             "9q2g1vhrga8hspjycw6rl3f6rocco0rr7n1ultdoivfnnr5ig98x90k7f0y0ew40sff9d9v4fyef3rqokt8pwk9ozyuvf3tjkul3ou04h8j4fdffcmf0ivfvap15sc08"

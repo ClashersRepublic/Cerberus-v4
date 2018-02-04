@@ -94,7 +94,7 @@
         /// </summary>
         public int GetEncodingLength()
         {
-            return this.Stream.Length;
+            return this.Stream.GetLength();
         }
 
         /// <summary>

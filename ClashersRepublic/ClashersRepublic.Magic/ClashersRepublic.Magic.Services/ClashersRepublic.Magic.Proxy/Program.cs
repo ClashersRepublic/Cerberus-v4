@@ -3,11 +3,11 @@
     using System;
     using System.Drawing;
     using System.Reflection;
-
-    using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Handler;
+    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message.Network;
 
     internal class Program
     {
@@ -65,9 +65,9 @@
 
                         case "test":
                         {
-                            for (int i = 0; i < 1000; i++)
+                            for (int i = 0; i < 10000; i++)
                             {
-                                GameAccountManager.CreateAccount();
+                                ServiceMessageManager.SendRequestMessage(new KeepAliveMessage(), ServiceExchangeName.BuildExchangeName("home"), ServiceExchangeName.BuildQueueName("home", 0));
                             }
 
                             break;

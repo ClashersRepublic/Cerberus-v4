@@ -34,28 +34,22 @@
         /// <summary>
         ///     Gets the length of this stream.
         /// </summary>
-        public int Length
+        public int GetLength()
         {
-            get
+            if (this._offset < this._length)
             {
-                if (this._offset < this._length)
-                {
-                    return this._length;
-                }
-
-                return this._offset;
+                return this._length;
             }
+
+            return this._offset;
         }
 
         /// <summary>
-        ///     Gets the length of this stream.
+        ///     Gets a value indicating whether the stream is at end.
         /// </summary>
-        public bool IsAtEnd
+        public bool IsAtEnd()
         {
-            get
-            {
-                return this._offset >= this._length;
-            }
+            return this._offset >= this._length;
         }
 
         /// <summary>
@@ -257,10 +251,7 @@
         /// </summary>
         public string ReadString(int maxCapacity)
         {
-            this._bitIdx = 0;
-            this._offset += 4;
-
-            int length = this._buffer[this._offset - 1] | (this._buffer[this._offset - 2] << 8) | (this._buffer[this._offset - 3] << 16) | (this._buffer[this._offset - 4] << 24);
+            int length = this.ReadBytesLength();
 
             if (length <= -1)
             {
@@ -268,19 +259,19 @@
                 {
                     Debugger.Warning("Negative String length encountered.");
                 }
-
-                return null;
             }
-
-            if (length <= maxCapacity)
+            else
             {
-                string value = Encoding.UTF8.GetString(this._buffer, this._offset, length);
-                this._offset += length;
-                return value;
+                if (length <= maxCapacity)
+                {
+                    string value = Encoding.UTF8.GetString(this._buffer, this._offset, length);
+                    this._offset += length;
+                    return value;
+                }
+
+                Debugger.Warning("Too long String encountered, max " + maxCapacity);
             }
-
-            Debugger.Warning("Too long String encountered, max " + maxCapacity);
-
+            
             return null;
         }
 
@@ -289,27 +280,25 @@
         /// </summary>
         public string ReadStringReference(int maxCapacity)
         {
-            this._bitIdx = 0;
-            this._offset += 4;
-
-            int length = this._buffer[this._offset - 1] | (this._buffer[this._offset - 2] << 8) | (this._buffer[this._offset - 3] << 16) | (this._buffer[this._offset - 4] << 24);
+            int length = this.ReadBytesLength();
 
             if (length <= -1)
             {
                 Debugger.Warning("Negative String length encountered.");
-                return string.Empty;
             }
-
-            if (length <= maxCapacity)
+            else
             {
-                string value = Encoding.UTF8.GetString(this._buffer, this._offset, length);
-                this._offset += length;
-                return value;
+                if (length <= maxCapacity)
+                {
+                    string value = Encoding.UTF8.GetString(this._buffer, this._offset, length);
+                    this._offset += length;
+                    return value;
+                }
+
+                Debugger.Warning("Too long String encountered, max " + maxCapacity);
             }
-
-            Debugger.Warning("Too long String encountered, max " + maxCapacity);
-
-            return null;
+            
+            return string.Empty;
         }
 
         /// <summary>

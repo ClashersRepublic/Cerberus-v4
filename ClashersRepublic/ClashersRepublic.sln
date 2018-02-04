@@ -17,11 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Prox
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Home", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Home\ClashersRepublic.Magic.Services.Home.csproj", "{D5642E1F-164A-4A9E-8321-C933FF01ACCC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Tools", "ClashersRepublic.Magic.Tools", "{1C5149FC-D86C-4627-8F25-05AF103CE36E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Tools.PatchGen", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools.PatchGen\ClashersRepublic.Magic.Tools.PatchGen.csproj", "{473D4436-1D76-4204-99F7-74E2934FB079}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Client", "ClashersRepublic.Magic\ClashersRepublic.Magic.Client\ClashersRepublic.Magic.Client.csproj", "{2AEE0ABF-3302-47A0-9481-898E191C122F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Patcher", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Patcher\ClashersRepublic.Magic.Patcher.csproj", "{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Downloader", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Downloader\ClashersRepublic.Magic.Downloader.csproj", "{E2101C54-1CED-4DF7-9312-BB2D16273875}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Tools", "ClashersRepublic.Magic.Tools", "{B3E8571A-CDD2-4EE9-A21E-435C0418EE11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,14 +73,6 @@ Global
 		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|x64.ActiveCfg = Release|Any CPU
 		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|x64.Build.0 = Release|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Debug|x64.Build.0 = Debug|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|Any CPU.Build.0 = Release|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|x64.ActiveCfg = Release|Any CPU
-		{473D4436-1D76-4204-99F7-74E2934FB079}.Release|x64.Build.0 = Release|Any CPU
 		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -87,6 +81,22 @@ Global
 		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|x64.ActiveCfg = Release|Any CPU
 		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|x64.Build.0 = Release|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|x64.Build.0 = Debug|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Release|x64.Build.0 = Release|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Debug|x64.Build.0 = Debug|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Release|x64.ActiveCfg = Release|Any CPU
+		{E2101C54-1CED-4DF7-9312-BB2D16273875}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,9 +108,10 @@ Global
 		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 		{D5642E1F-164A-4A9E-8321-C933FF01ACCC} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
-		{1C5149FC-D86C-4627-8F25-05AF103CE36E} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
-		{473D4436-1D76-4204-99F7-74E2934FB079} = {1C5149FC-D86C-4627-8F25-05AF103CE36E}
-		{2AEE0ABF-3302-47A0-9481-898E191C122F} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{2AEE0ABF-3302-47A0-9481-898E191C122F} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
+		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55} = {B3E8571A-CDD2-4EE9-A21E-435C0418EE11}
+		{E2101C54-1CED-4DF7-9312-BB2D16273875} = {B3E8571A-CDD2-4EE9-A21E-435C0418EE11}
+		{B3E8571A-CDD2-4EE9-A21E-435C0418EE11} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9AC9358-C999-40A2-8BE8-E0A1C68DF50A}

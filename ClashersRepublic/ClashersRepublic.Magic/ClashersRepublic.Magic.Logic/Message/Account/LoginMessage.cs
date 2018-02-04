@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message.Account
 {
+    using System;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Math;
@@ -15,6 +16,7 @@
         public int ScramblerSeed;
         public int ClientMajorVersion;
         public int ClientBuildVersion;
+        public int AppStore;
 
         public string AndroidID;
         public string ADID;
@@ -28,6 +30,9 @@
         public string PreferredDeviceLanguage;
         public string ResourceSha;
         public string UDID;
+
+        public string KunlunSSO;
+        public string KunlunUID;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoginMessage" /> class.
@@ -52,6 +57,28 @@
         public override void Encode()
         {
             base.Encode();
+
+            this.Stream.WriteLong(this.AccountId);
+            this.Stream.WriteString(this.PassToken);
+            this.Stream.WriteInt(this.ClientMajorVersion);
+            this.Stream.WriteInt(0);
+            this.Stream.WriteInt(this.ClientBuildVersion);
+            this.Stream.WriteString(this.ResourceSha);
+            this.Stream.WriteString(this.UDID);
+            this.Stream.WriteString(this.OpenUDID);
+            this.Stream.WriteString(this.MacAddress);
+            this.Stream.WriteString(this.Device);
+            this.Stream.WriteDataReference(this.PreferredLanguage);
+            this.Stream.WriteString(this.PreferredDeviceLanguage);
+            this.Stream.WriteString(this.ADID);
+            this.Stream.WriteString(this.OSVersion);
+            this.Stream.WriteBoolean(this.AndroidClient);
+            this.Stream.WriteStringReference(this.IMEI);
+            this.Stream.WriteStringReference(this.AndroidID);
+            this.Stream.WriteString("");
+            this.Stream.WriteBoolean(false);
+            this.Stream.WriteString("");
+            this.Stream.WriteInt(this.ScramblerSeed);
         }
 
         /// <summary>
@@ -72,7 +99,7 @@
             this.MacAddress = this.Stream.ReadString(900000);
             this.Device = this.Stream.ReadString(900000);
 
-            if (!this.Stream.IsAtEnd)
+            if (!this.Stream.IsAtEnd())
             {
                 this.PreferredLanguage = this.Stream.ReadDataReference(1);
                 this.PreferredDeviceLanguage = this.Stream.ReadString(900000);
@@ -82,35 +109,56 @@
                     this.PreferredDeviceLanguage = string.Empty;
                 }
 
-                if (!this.Stream.IsAtEnd)
+                if (!this.Stream.IsAtEnd())
                 {
                     this.ADID = this.Stream.ReadString(900000);
 
-                    if (!this.Stream.IsAtEnd)
+                    if (!this.Stream.IsAtEnd())
                     {
                         this.OSVersion = this.Stream.ReadString(900000);
 
-                        if (!this.Stream.IsAtEnd)
+                        if (!this.Stream.IsAtEnd())
                         {
                             this.AndroidClient = this.Stream.ReadBoolean();
 
-                            if (!this.Stream.IsAtEnd)
+                            if (!this.Stream.IsAtEnd())
                             {
                                 this.IMEI = this.Stream.ReadStringReference(900000);
                                 this.AndroidID = this.Stream.ReadStringReference(900000);
-
-                                if (!this.Stream.IsAtEnd)
+                                
+                                if (!this.Stream.IsAtEnd())
                                 {
                                     this.Stream.ReadString(900000);
 
-                                    if (!this.Stream.IsAtEnd)
+                                    if (!this.Stream.IsAtEnd())
                                     {
                                         this.Stream.ReadBoolean();
                                         this.Stream.ReadString(900000);
 
-                                        if (!this.Stream.IsAtEnd)
+                                        if (!this.Stream.IsAtEnd())
                                         {
                                             this.ScramblerSeed = this.Stream.ReadInt();
+
+                                            if (!this.Stream.IsAtEnd())
+                                            {
+                                                this.AppStore = this.Stream.ReadVInt();
+
+                                                Console.WriteLine("1:" + this.Stream.ReadStringReference(900000));
+                                                Console.WriteLine("2:" + this.Stream.ReadStringReference(900000));
+
+                                                if (!this.Stream.IsAtEnd())
+                                                {
+                                                    Console.WriteLine("3:" + this.Stream.ReadStringReference(900000));
+
+                                                    if (!this.Stream.IsAtEnd())
+                                                    {
+                                                        this.KunlunSSO = this.Stream.ReadStringReference(900000);
+                                                        this.KunlunUID = this.Stream.ReadStringReference(900000);
+
+                                                        this.Stream.ReadVInt();
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }

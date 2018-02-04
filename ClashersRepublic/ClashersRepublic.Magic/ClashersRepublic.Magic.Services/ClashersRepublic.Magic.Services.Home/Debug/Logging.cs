@@ -1,7 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Debug
 {
     using System;
+    using System.Diagnostics;
     using ClashersRepublic.Magic.Titan.Debug;
+
+    using Debugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
 
     internal static class Logging
     {

@@ -2,16 +2,15 @@
 {
     using System.Net;
     using System.Net.Sockets;
-
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Services.Logic;
 
     internal class NetworkGateway
     {
-        private Socket _listener;
+        private readonly Socket _listener;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetworkGateway"/>
+        ///     Initializes a new instance of the <see cref="NetworkGateway" />
         /// </summary>
         internal NetworkGateway(int port)
         {
@@ -27,7 +26,7 @@
 
             this.StartAccept(acceptEvent);
         }
-        
+
         /// <summary>
         ///     Accepts a TCP Request.
         /// </summary>
@@ -67,7 +66,7 @@
         /// <param name="asyncEvent">The <see cref="SocketAsyncEventArgs" /> instance containing the event data.</param>
         private static void ProcessAccept(SocketAsyncEventArgs asyncEvent)
         {
-            Logging.Debug(typeof(NetworkGateway), "Connection from " + ((IPEndPoint)asyncEvent.AcceptSocket.RemoteEndPoint).Address + ".");
+            Logging.Debug(typeof(NetworkGateway), "Connection from " + ((IPEndPoint) asyncEvent.AcceptSocket.RemoteEndPoint).Address + ".");
 
             if (asyncEvent.AcceptSocket.Connected)
             {
@@ -78,10 +77,13 @@
                 readEvent.Completed += NetworkGateway.OnReceiveCompleted;
 
                 NetworkToken token = new NetworkToken(socket, readEvent);
-                
-                if (!socket.ReceiveAsync(readEvent))
+
+                if (NetworkManager.AddConnection(token))
                 {
-                    NetworkGateway.ProcessReceive(readEvent);
+                    if (!socket.ReceiveAsync(readEvent))
+                    {
+                        NetworkGateway.ProcessReceive(readEvent);
+                    }
                 }
             }
         }
@@ -94,7 +96,7 @@
         {
             if (asyncEvent.BytesTransferred > 0)
             {
-                NetworkToken token = (NetworkToken)asyncEvent.UserToken;
+                NetworkToken token = (NetworkToken) asyncEvent.UserToken;
 
                 if (token.IsConnected())
                 {
@@ -131,7 +133,7 @@
         /// <summary>
         ///     Called when [receive completed].
         /// </summary>
-        /// <param name="Sender">The sender.</param>
+        /// <param name="sender">The sender.</param>
         /// <param name="asyncEvent">The <see cref="SocketAsyncEventArgs" /> instance containing the event data.</param>
         private static void OnReceiveCompleted(object sender, SocketAsyncEventArgs asyncEvent)
         {
@@ -176,29 +178,30 @@
         /// <param name="asyncEvent">The <see cref="SocketAsyncEventArgs" /> instance containing the event data.</param>
         private static void OnSendCompleted(object sender, SocketAsyncEventArgs asyncEvent)
         {
-            if (asyncEvent.SocketError != SocketError.Success)
-            {
-                NetworkGateway.Disconnect(asyncEvent);
-            }
-
             asyncEvent.Dispose();
         }
 
         /// <summary>
         ///     Disconnects the specified socket.
         /// </summary>
-        private static void Disconnect(SocketAsyncEventArgs asyncEvent)
+        internal static void Disconnect(SocketAsyncEventArgs asyncEvent)
         {
             if (asyncEvent.UserToken != null)
             {
                 NetworkToken token = (NetworkToken) asyncEvent.UserToken;
 
-                if (!token.Aborted)
+                if (token.ConnectionId != 0)
                 {
-                    token.Dispose();
-                }
+                    if (NetworkManager.RemoveConnection(token))
+                    {
+                        if (!token.Aborted)
+                        {
+                            token.Dispose();
+                        }
 
-                asyncEvent.Dispose();
+                        asyncEvent.Dispose();
+                    }
+                }
             }
         }
     }

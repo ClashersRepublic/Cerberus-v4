@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Titan.Math;
@@ -30,9 +29,9 @@
 
             for (int i = 0; i < Config.MongodServers.Length; i++)
             {
-                var client = new MongoClient("mongodb://" + (!string.IsNullOrEmpty(Config.MongodUser) ? Config.MongodUser + ":" + Config.MongodPassword + "@" : "") + Config.MongodServers[i] + ":27017");
-                var database = client.GetDatabase(Config.MongodDbName);
-                
+                MongoClient client = new MongoClient("mongodb://" + (!string.IsNullOrEmpty(Config.MongodUser) ? Config.MongodUser + ":" + Config.MongodPassword + "@" : "") + Config.MongodServers[i] + ":27017");
+                IMongoDatabase database = client.GetDatabase(Config.MongodDbName);
+
                 GameDatabase._accounts[i] = database.GetCollection<GameAccount>(Config.MongodDbCollection);
                 GameDatabase._counters[i] = database.GetCollection<BsonDocument>("Counters");
 
@@ -46,7 +45,7 @@
                     }
                 );
             }
-            
+
             GameDatabase._saveAccountQueue = new ConcurrentQueue<GameAccount>();
             GameDatabase._saveThread = new Thread(GameDatabase.SaveTask);
             GameDatabase._saveThread.Start();
@@ -69,7 +68,7 @@
             {
                 account.HighId = GameDatabase._nextCollectionIndex;
                 account.LowId = GameDatabase._counters[account.HighId].FindOneAndUpdate(T => T["_id"] == "Accounts", Builders<BsonDocument>.Update.Inc("last_id", 1))["last_id"].AsInt32 + 1;
-                    
+
                 GameDatabase._nextCollectionIndex = ++GameDatabase._nextCollectionIndex % GameDatabase._accounts.Length;
 
                 Console.WriteLine(account.HighId + "-" + account.LowId);

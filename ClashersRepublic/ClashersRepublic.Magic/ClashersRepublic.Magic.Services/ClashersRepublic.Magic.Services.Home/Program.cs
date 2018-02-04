@@ -6,7 +6,9 @@
 
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Home.Handler;
+    using ClashersRepublic.Magic.Services.Home.Service;
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message.Network;
 
     internal class Program
     {
@@ -62,11 +64,7 @@
 
                         case "test":
                         {
-                            for (int i = 0; i < 1000; i++)
-                            {
-                                // GameAccountManager.CreateAccount();
-                            }
-
+                            ServiceMessageManager.SendRequestMessage(new KeepAliveMessage(), ServiceExchangeName.BuildExchangeName("home"), ServiceExchangeName.BuildQueueName("home", 0));
                             break;
                         }
                     }

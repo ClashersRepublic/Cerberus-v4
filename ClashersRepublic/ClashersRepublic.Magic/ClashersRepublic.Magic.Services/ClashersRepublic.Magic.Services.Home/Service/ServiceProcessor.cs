@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-
     using ClashersRepublic.Magic.Services.Home.Debug;
 
     internal static class ServiceProcessor

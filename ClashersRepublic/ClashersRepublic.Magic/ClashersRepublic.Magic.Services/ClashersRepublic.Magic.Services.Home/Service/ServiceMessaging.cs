@@ -1,71 +1,49 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
     using System;
-    using System.Text;
     using ClashersRepublic.Magic.Services.Home.Debug;
-    using ClashersRepublic.Magic.Services.Home.Helper;
-    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;
-    using ClashersRepublic.Magic.Titan.Util;
+
+    using RabbitMQ.Client.Events;
 
     internal static class ServiceMessaging
     {
-        internal static MagicServiceMessageFactory _factory;
+        private static MagicServiceMessageFactory _messageFactory;
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            ServiceMessaging._factory = MagicServiceMessageFactory.Instance;
+            ServiceMessaging._messageFactory = MagicServiceMessageFactory.Instance;
         }
 
         /// <summary>
-        ///     Called when a message has been received by service gateway.
+        ///     Called when the service gateway receive a message.
         /// </summary>
-        internal static void OnReceive(byte[] packet, int length)
+        internal static void OnReceive(BasicDeliverEventArgs rcvEvent)
         {
-            if (length >= 6)
+            byte[] buffer = rcvEvent.Body;
+            int length = buffer.Length;
+
+            if (length >= 5)
             {
-                length -= 6;
+                length -= 5;
 
-                int messageType = packet[1] | packet[0] << 8;
-                int messageLength = packet[4] | packet[3] << 8 | packet[2] << 16;
-                int messageSessionLength = (sbyte) packet[5];
+                int messageType = buffer[1] | buffer[0] << 8;
+                int messageLength = buffer[4] | buffer[3] << 8 | buffer[2] << 16;
 
-                ServiceMessage message = ServiceMessaging._factory.CreateMessageByType(messageType);
-
-                if (message != null)
+                if (length >= messageLength)
                 {
-                    if (messageSessionLength <= -1)
-                    {
-                        if (messageSessionLength != -1)
-                        {
-                            Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #1");
-                        }
-                    }
-                    else
-                    {
-                        if (length < messageSessionLength)
-                        {
-                            Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #2");
-                        }
-                        else
-                        {
-                            length -= messageSessionLength;
+                    byte[] messageByteArray = new byte[messageLength];
+                    Array.Copy(buffer, 5, messageByteArray, 0, messageLength);
 
-                            byte[] sessionId = new byte[messageSessionLength];
-                            Array.Copy(packet, 6, sessionId, 0, messageSessionLength);
-                            message.SetProxySessionId(Encoding.UTF8.GetString(sessionId));
-                        }
-                    }
+                    ServiceMessage message = ServiceMessaging._messageFactory.CreateMessageByType(messageType);
 
-                    if (length >= messageLength)
+                    if (message != null)
                     {
-                        byte[] messageBytes = new byte[messageLength];
-                        Array.Copy(packet, 6, messageBytes, 0, messageLength);
-
-                        message.GetByteStream().SetByteArray(messageBytes, messageLength);
+                        message.SetMessageVersion(0);
+                        message.GetByteStream().SetByteArray(messageByteArray, messageLength);
 
                         try
                         {
@@ -74,72 +52,54 @@
                         }
                         catch (Exception exception)
                         {
-                            Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive Message decode exception, trace: " + exception);
+                            Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message decode exception, trace: " + exception);
                         }
-                    }
-                    else
-                    {
-                        Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #3");
+
+                        Logging.Log(typeof(ServiceMessaging), "ServiceMessaging::onReceive message " + message.GetType().Name + " received");
                     }
                 }
                 else
                 {
-                    Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive ignoring message of unknown type " + messageType);
+                    Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #2");
                 }
             }
             else
             {
-                Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #4");
+                Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #1");
             }
         }
-
+        
         /// <summary>
-        ///     Sends the specified message to specified proxy.
+        ///     Sends the message to specified queue.
         /// </summary>
-        internal static void Send(ServiceMessage message, string sessionId)
+        internal static void Send(ServiceMessage message, string exchangeName, string routingKey = null)
         {
-            if (message.IsServerToClientMessage())
+            if (exchangeName == null)
             {
-                if (message.GetProxySessionId() == null)
-                {
-                    Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::send proxy session id is NULL");
-                    return;
-                }
-
-                int serverId = Convert.ToByte(message.GetProxySessionId().Substring(22, 2), 16);
-                Console.WriteLine("SERVER_ID : " + serverId);
-                ServiceProcessor.EnqueueSendAction(() => ServiceMessaging.OnWakeup(message, ServiceExchangeName.PROXY_EXCHANGE, ServiceExchangeName.START_PROXY_QUEUE_NAME + serverId));
+                throw new ArgumentNullException("exchangeName");
             }
+
+            ServiceProcessor.EnqueueSendAction(() => ServiceMessaging.OnWakeup(message, exchangeName, routingKey));
         }
 
         /// <summary>
-        ///     Sends the specified message to specified proxy.
+        ///     Called for send the specified message.
         /// </summary>
-        internal static void Send(ServiceMessage message, string exchange, string routingKey)
-        {
-            if (message.IsServerToClientMessage())
-            {
-                ServiceProcessor.EnqueueSendAction(() => ServiceMessaging.OnWakeup(message, exchange, routingKey));
-            }
-        }
-
-        /// <summary>
-        ///     Internal method for send the specified <see cref="ServiceMessage"/> to proxy.
-        /// </summary>
-        private static void OnWakeup(ServiceMessage message, string exchange, string routingKey)
+        internal static void OnWakeup(ServiceMessage message, string exchangeName, string routingKey)
         {
             message.Encode();
 
             int encodingLength = message.GetEncodingLength();
-            int sessionLength = message.GetProxySessionIdLength();
-            byte[] messageByteArray = message.GetByteStream().GetByteArray();
-            byte[] messageSessionId = message.GetProxySessionId().ToByteArray();
-            byte[] packet = new byte[message.GetEncodingLength() + encodingLength + sessionLength];
-            Array.Copy(messageSessionId, 0, packet, 6, sessionLength);
-            Array.Copy(messageByteArray, 0, packet, 6 + sessionLength, encodingLength);
-            ServiceMessaging.WriteHeader(message, packet, encodingLength);
-            
-            ServiceGateway.Send(packet, exchange, routingKey);
+            byte[] encodingByteArray = message.GetByteStream().GetByteArray();
+            byte[] buffer = new byte[5 + encodingLength];
+
+            Array.Copy(encodingByteArray, 0, buffer, 5, encodingLength);
+            ServiceMessaging.WriteHeader(message, buffer, encodingLength);
+            ServiceGateway.Send(buffer, exchangeName, routingKey);
+
+            message.Destruct();
+
+            Logging.Log(typeof(ServiceMessaging), "ServiceMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>
@@ -148,14 +108,12 @@
         private static void WriteHeader(ServiceMessage message, byte[] stream, int length)
         {
             int messageType = message.GetMessageType();
-            int messageSessionIdLength = message.GetProxySessionIdLength();
 
             stream[1] = (byte) (messageType);
             stream[0] = (byte) (messageType >> 8);
             stream[4] = (byte) (length);
             stream[3] = (byte) (length >> 8);
             stream[2] = (byte) (length >> 16);
-            stream[5] = (byte) (messageSessionIdLength & 127);
 
             if (length > 0xFFFFFF)
             {

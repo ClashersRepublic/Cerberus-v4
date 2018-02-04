@@ -5,8 +5,7 @@
 
     internal class GameAccount
     {
-        [BsonId]
-        public ObjectId _id;
+        [BsonId] public ObjectId _id;
 
         public int HighId;
         public int LowId;
@@ -15,7 +14,7 @@
         public string AccountCreationDate;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameAccount"/> class.
+        ///     Initializes a new instance of the <see cref="GameAccount" /> class.
         /// </summary>
         internal GameAccount()
         {
@@ -23,7 +22,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameAccount"/> class.
+        ///     Initializes a new instance of the <see cref="GameAccount" /> class.
         /// </summary>
         internal GameAccount(int highId, int lowId, string passToken)
         {

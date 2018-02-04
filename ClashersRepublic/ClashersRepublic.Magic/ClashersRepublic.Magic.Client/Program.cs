@@ -3,7 +3,9 @@
     using System;
     using System.Drawing;
     using System.Reflection;
+    using ClashersRepublic.Magic.Client.Debug;
     using ClashersRepublic.Magic.Client.Game;
+    using ClashersRepublic.Magic.Logic.Message.Account;
 
     internal class Program
     {
@@ -31,6 +33,8 @@
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
+            Logging.Initialize();
+            ClientManager.Initialize();
             GameMain.Initialize();
 
             while (true)
@@ -41,9 +45,19 @@
                 {
                     switch (cmd.Substring(1))
                     {
+                        case "create":
+                        {
+                            for (int i = 0; i < 5000; i++)
+                            {
+                                ClientManager.Create();
+                            }
+
+                            break;
+                        }
+
                         case "test":
                         {
-                            new GameMain();
+                            ClientManager.ForEeach(main => main.ServerConnection.MessageManager.SendMessage(new KeepAliveMessage()));
                             break;
                         }
                     }

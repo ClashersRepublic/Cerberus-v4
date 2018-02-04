@@ -1,9 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
-    using System;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Services.Logic;
-
     using RabbitMQ.Client;
     using RabbitMQ.Client.Events;
 
@@ -11,23 +9,27 @@
     {
         internal static IModel _channel;
 
+        internal static string ExchangeName;
+        internal static string QueueName;
+
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            IConnection connection = new ConnectionFactory { HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword }.CreateConnection();
+            ServiceGateway.ExchangeName = ServiceExchangeName.BuildExchangeName(ServiceExchangeName.SERVICE_PROXY_NAME);
+            ServiceGateway.QueueName = ServiceExchangeName.BuildQueueName(ServiceExchangeName.SERVICE_PROXY_NAME, Config.ServerId);
+
+            IConnection connection = new ConnectionFactory {HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword}.CreateConnection();
 
             ServiceGateway._channel = connection.CreateModel();
 
-            ServiceGateway.DeclareExchange(ServiceExchangeName.PROXY_EXCHANGE);
-            ServiceGateway.DeclareQueue(ServiceExchangeName.START_PROXY_QUEUE_NAME + Config.ServerId);
-            ServiceGateway.DeclareQueue(ServiceExchangeName.PROXY_COMMON_QUEUE, false);
-            ServiceGateway.BindQueue(ServiceExchangeName.PROXY_EXCHANGE,
-                ServiceExchangeName.START_PROXY_QUEUE_NAME + Config.ServerId,
-                ServiceExchangeName.START_PROXY_ROUTING_KEY_NAME + Config.ServerId);
-            ServiceGateway.ListenQueue(ServiceExchangeName.START_PROXY_QUEUE_NAME + Config.ServerId);
-            ServiceGateway.ListenQueue(ServiceExchangeName.PROXY_COMMON_QUEUE);
+            ServiceGateway.DeclareExchange(ServiceGateway.ExchangeName);
+            ServiceGateway.DeclareQueue(ServiceGateway.QueueName);
+            ServiceGateway.BindQueue(ServiceGateway.ExchangeName,
+                ServiceGateway.QueueName,
+                ServiceGateway.QueueName);
+            ServiceGateway.ListenQueue(ServiceGateway.QueueName);
         }
 
         /// <summary>
@@ -82,7 +84,7 @@
         {
             if (args.Body != null)
             {
-                ServiceMessaging.OnReceive(args.Body, args.Body.Length);
+                ServiceMessaging.OnReceive(args);
             }
             else
             {

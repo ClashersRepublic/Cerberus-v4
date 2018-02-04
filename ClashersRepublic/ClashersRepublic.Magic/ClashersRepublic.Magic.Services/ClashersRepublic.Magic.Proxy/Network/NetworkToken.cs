@@ -9,72 +9,48 @@
     {
         private static readonly int MAX_AVAILABLE_BYTES = Config.BufferSize * 4;
 
-        private bool _aborted;
-
-        private Socket _clientSocket;
-        private SocketAsyncEventArgs _readEvent;
-        private NetworkMessaging _messaging;
         private Client _client;
 
         private byte[] _receivedBytes;
         private int _receivedOffset;
 
         /// <summary>
+        ///     Gets or sets the connection id.
+        /// </summary>
+        internal long ConnectionId { get; set; }
+
+        /// <summary>
         ///     Gets the messaging instance.
         /// </summary>
-        internal NetworkMessaging Messaging
-        {
-            get
-            {
-                return this._messaging;
-            }
-        }
+        internal NetworkMessaging Messaging { get; private set; }
 
         /// <summary>
         ///     Gets the client socket.
         /// </summary>
-        internal Socket Socket
-        {
-            get
-            {
-                return this._clientSocket;
-            }
-        }
+        internal Socket Socket { get; private set; }
 
         /// <summary>
         ///     Gets the receive event.
         /// </summary>
-        internal SocketAsyncEventArgs AsyncEvent
-        {
-            get
-            {
-                return this._readEvent;
-            }
-        }
+        internal SocketAsyncEventArgs AsyncEvent { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is disposed.
         /// </summary>
-        internal bool Aborted
-        {
-            get
-            {
-                return this._aborted;
-            }
-        }
+        internal bool Aborted { get; private set; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetworkToken"/> class.
+        ///     Initializes a new instance of the <see cref="NetworkToken" /> class.
         /// </summary>
         internal NetworkToken(Socket socket, SocketAsyncEventArgs readEvent)
         {
             this._receivedBytes = new byte[NetworkToken.MAX_AVAILABLE_BYTES];
             this._client = new Client(this);
-            this._messaging = new NetworkMessaging(this._client, this);
+            this.Messaging = new NetworkMessaging(this._client, this);
 
-            this._clientSocket = socket;
-            this._readEvent = readEvent;
-            this._readEvent.UserToken = this;
+            this.Socket = socket;
+            this.AsyncEvent = readEvent;
+            this.AsyncEvent.UserToken = this;
         }
 
         /// <summary>
@@ -82,25 +58,25 @@
         /// </summary>
         internal bool AddData()
         {
-            int rcvLength = this._readEvent.BytesTransferred;
+            int rcvLength = this.AsyncEvent.BytesTransferred;
 
             if (this._receivedOffset + rcvLength > NetworkToken.MAX_AVAILABLE_BYTES)
             {
                 return false;
             }
 
-            Array.Copy(this._readEvent.Buffer, 0, this._receivedBytes, this._receivedOffset, rcvLength);
+            Array.Copy(this.AsyncEvent.Buffer, 0, this._receivedBytes, this._receivedOffset, rcvLength);
             this._receivedOffset += rcvLength;
 
             return true;
         }
-
+        
         /// <summary>
         ///     Handles the received data.
         /// </summary>
         internal bool HandleData()
         {
-            int read = this._messaging.OnReceive(this._receivedBytes, this._receivedOffset);
+            int read = this.Messaging.OnReceive(this._receivedBytes, this._receivedOffset);
 
             if (read != -1)
             {
@@ -134,17 +110,13 @@
         /// </summary>
         internal void WriteData(byte[] packet)
         {
-            if (this._aborted)
+            if (!this.Aborted)
             {
-                return;
+                if (this.IsConnected())
+                {
+                    NetworkGateway.Send(packet, this);
+                }
             }
-
-            if (!this.IsConnected())
-            {
-                return;
-            }
-
-            NetworkGateway.Send(packet, this);
         }
 
         /// <summary>
@@ -152,7 +124,7 @@
         /// </summary>
         internal bool IsConnected()
         {
-            return !this._aborted && this._clientSocket.Connected;
+            return !this.Aborted && this.Socket.Connected;
         }
 
         /// <summary>
@@ -160,19 +132,19 @@
         /// </summary>
         public void Dispose()
         {
-            if (this._aborted)
+            if (this.Aborted)
             {
                 return;
             }
 
-            this._aborted = true;
+            this.Aborted = true;
 
-            this._clientSocket.Close();
+            this.Socket.Close();
 
-            this._readEvent = null;
-            this._messaging = null;
+            this.AsyncEvent = null;
+            this.Messaging = null;
             this._receivedBytes = null;
-            this._clientSocket = null;
+            this.Socket = null;
             this._client = null;
 
             this._receivedOffset = 0;

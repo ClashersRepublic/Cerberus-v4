@@ -5,14 +5,22 @@
 
     internal class GameMain
     {
-        internal ServerConnection _serverConnection;
+        internal ServerConnection ServerConnection;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameMain"/> class.
+        ///     Initializes a new instance of the <see cref="GameMain" /> class.
         /// </summary>
         internal GameMain()
         {
-            this._serverConnection = new ServerConnection();
+            this.ServerConnection = new ServerConnection();
+        }
+
+        /// <summary>
+        ///     Updates the client.
+        /// </summary>
+        internal void Update(float time)
+        {
+            this.ServerConnection.Update(time);
         }
 
         /// <summary>

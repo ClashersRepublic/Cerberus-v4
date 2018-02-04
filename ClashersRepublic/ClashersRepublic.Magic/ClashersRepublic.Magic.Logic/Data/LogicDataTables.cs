@@ -60,7 +60,7 @@
             LogicDataTables.Load("csv/news.csv", 29);
             LogicDataTables.Load("logic/war.csv", 30);
             LogicDataTables.Load("logic/regions.csv", 31);
-            LogicDataTables.Load("logic/client_globals.csv", 32);
+            LogicDataTables.Load("csv/client_globals.csv", 32);
             LogicDataTables.Load("logic/alliance_badge_layers.csv", 33);
             LogicDataTables.Load("logic/alliance_levels.csv", 34);
             // LogicDataTables.Load("csv/helpshift.csv", 35);
@@ -109,6 +109,7 @@
             }
 
             LogicDataTables._globals.CreateReferences();
+            LogicDataTables._clientGlobals.CreateReferences();
         }
 
         /// <summary>

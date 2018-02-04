@@ -94,11 +94,10 @@
     <Compile Include="Database\GameDatabase.cs" />
     <Compile Include="Debug\Logging.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
-    <Compile Include="Helper\BitHelper.cs" />
     <Compile Include="Message\MessageManager.cs" />
     <Compile Include="Network\NetworkGateway.cs" />
+    <Compile Include="Network\NetworkManager.cs" />
     <Compile Include="Network\NetworkMessaging.cs" />
-    <Compile Include="Network\NetworkProcessor.cs" />
     <Compile Include="Network\NetworkToken.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,6 +109,7 @@
     <Compile Include="Session\GameSession.cs" />
     <Compile Include="Session\GameSessionManager.cs" />
     <Compile Include="User\Client.cs" />
+    <Compile Include="User\ClientDefines.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -117,6 +117,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Patcher\ClashersRepublic.Magic.Patcher.csproj">
+      <Project>{1df27a9e-2324-4ee7-9211-3f85f61e1a55}</Project>
+      <Name>ClashersRepublic.Magic.Patcher</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
       <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
       <Name>ClashersRepublic.Magic.Logic</Name>

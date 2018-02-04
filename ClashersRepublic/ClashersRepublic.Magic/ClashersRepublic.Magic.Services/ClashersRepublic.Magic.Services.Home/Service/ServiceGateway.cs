@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
-    using System;
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Logic;
 
@@ -11,21 +10,27 @@
     {
         internal static IModel _channel;
 
+        internal static string ExchangeName;
+        internal static string QueueName;
+
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
+            ServiceGateway.ExchangeName = ServiceExchangeName.BuildExchangeName(ServiceExchangeName.SERVICE_HOME_NAME);
+            ServiceGateway.QueueName = ServiceExchangeName.BuildQueueName(ServiceExchangeName.SERVICE_HOME_NAME, Config.ServerId);
+
             IConnection connection = new ConnectionFactory { HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword }.CreateConnection();
 
             ServiceGateway._channel = connection.CreateModel();
 
-            ServiceGateway.DeclareExchange(ServiceExchangeName.HOME_EXCHANGE);
-            ServiceGateway.DeclareQueue(ServiceExchangeName.START_HOME_QUEUE_NAME + Config.ServerId);
-            ServiceGateway.BindQueue(ServiceExchangeName.HOME_EXCHANGE,
-                ServiceExchangeName.START_HOME_QUEUE_NAME + Config.ServerId,
-                ServiceExchangeName.START_HOME_ROUTING_KEY_NAME + Config.ServerId);
-            ServiceGateway.ListenQueue(ServiceExchangeName.START_HOME_QUEUE_NAME + Config.ServerId);
+            ServiceGateway.DeclareExchange(ServiceGateway.ExchangeName);
+            ServiceGateway.DeclareQueue(ServiceGateway.QueueName);
+            ServiceGateway.BindQueue(ServiceGateway.ExchangeName,
+                ServiceGateway.QueueName,
+                ServiceGateway.QueueName);
+            ServiceGateway.ListenQueue(ServiceGateway.QueueName);
         }
 
         /// <summary>
@@ -80,7 +85,7 @@
         {
             if (args.Body != null)
             {
-                ServiceMessaging.OnReceive(args.Body, args.Body.Length);
+                ServiceMessaging.OnReceive(args);
             }
             else
             {

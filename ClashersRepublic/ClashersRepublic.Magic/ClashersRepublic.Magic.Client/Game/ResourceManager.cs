@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Client.Game
 {
     using System.IO;
-
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Json;
 

@@ -42,6 +42,36 @@
         public override void Decode()
         {
             base.Decode();
+
+            this.ErrorCode = this.Stream.ReadInt();
+            this.ResourceFingerprintContent = this.Stream.ReadString(900000);
+            this.RedirectDomain = this.Stream.ReadString(900000);
+            this.ContentUrl = this.Stream.ReadString(900000);
+            this.UpdateUrl = this.Stream.ReadString(900000);
+            this.Reason = this.Stream.ReadString(900000);
+            this.EndMaintenanceTime = this.Stream.ReadInt();
+            this.BannedShowHelpshiftContact = this.Stream.ReadBoolean();
+            this.ResourceFingerprintData = this.Stream.ReadBytes(this.Stream.ReadBytesLength(), 900000);
+
+            int contentUrlListSize = this.Stream.ReadInt();
+
+            if (contentUrlListSize != -1)
+            {
+                this.ContentUrlList = new LogicArrayList<string>(contentUrlListSize);
+
+                if (contentUrlListSize != 0)
+                {
+                    for (int i = 0; i < contentUrlListSize; i++)
+                    {
+                        this.ContentUrlList.Add(this.Stream.ReadString(900000));
+                    }
+                }
+            }
+
+            this.Stream.ReadInt();
+            this.Stream.ReadInt();
+            this.Stream.ReadString(900000);
+            this.Stream.ReadInt();
         }
 
         /// <summary>

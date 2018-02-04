@@ -226,13 +226,13 @@
 
                 case 31:
                 {
-                    data = new LogicAchievementData(row, this);
+                    data = new LogicRegionData(row, this);
                     break;
                 }
 
                 case 32:
                 {
-                    data = new LogicRegionData(row, this);
+                    data = new LogicGlobalData(row, this);
                     break;
                 }
 

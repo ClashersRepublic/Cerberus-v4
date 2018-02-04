@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-
     using ClashersRepublic.Magic.Proxy.Database;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Services.Logic;
@@ -12,7 +11,7 @@
     internal class GameAccountManager
     {
         private static ConcurrentDictionary<long, GameAccount> _accounts;
-        private static string PASSTOKEN_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+        private static readonly string PASSTOKEN_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
         /// <summary>
         ///     Initializes this instance.

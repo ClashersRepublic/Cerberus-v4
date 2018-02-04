@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Proxy
 {
-    using System;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Database;
@@ -21,7 +20,7 @@
             30000,
             843
         };
-        
+
         internal static bool InMaintenance;
         internal static NetworkGateway[] Gateways;
         internal static LogicMersenneTwisterRandom Random;
@@ -73,7 +72,7 @@
         /// </summary>
         private static void InitializeNetworks()
         {
-            NetworkProcessor.Initialize();
+            NetworkManager.Initialize();
 
             Resources.Gateways = new NetworkGateway[Resources.GATEWAY_PORTS.Length];
 

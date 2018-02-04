@@ -10,7 +10,7 @@
         private Socket _socket;
         private Messaging _listener;
 
-        private List<byte> _blocks;
+        private readonly List<byte> _blocks;
 
         /// <summary>
         ///     Gets the connection buffer.
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Connection"/> class.
+        ///     Initializes a new instance of the <see cref="Connection" /> class.
         /// </summary>
         internal Connection()
         {
@@ -37,6 +37,7 @@
         internal void Start()
         {
             this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this._listener.OnStart(this);
         }
 
         /// <summary>
@@ -61,7 +62,10 @@
             connectEvent.RemoteEndPoint = new DnsEndPoint(host, port);
             connectEvent.Completed += this.OnConnectCompleted;
 
-            this._socket.ConnectAsync(connectEvent);
+            if (!this._socket.ConnectAsync(connectEvent))
+            {
+                this.OnConnectCompleted(this, connectEvent);
+            }
         }
 
         /// <summary>
@@ -92,6 +96,11 @@
                 receiveEvent.SetBuffer(new byte[4096], 0, 4096);
 
                 this._listener.OnConnect(this);
+
+                if (!this._socket.ReceiveAsync(receiveEvent))
+                {
+                    this.OnReceiveCompleted(this, receiveEvent);
+                }
             }
             else
             {
@@ -119,7 +128,7 @@
 
                     if (this._socket.Connected)
                     {
-                        if (!this._socket.ConnectAsync(receiveEvent))
+                        if (!this._socket.ReceiveAsync(receiveEvent))
                         {
                             this.OnConnectCompleted(null, receiveEvent);
                         }

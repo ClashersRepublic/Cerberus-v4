@@ -9,6 +9,7 @@
     using ClashersRepublic.Magic.Titan;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -16,18 +17,21 @@
     {
         internal int State;
 
-        private Messaging _messaging;
+        private readonly Messaging _messaging;
         private Account _account;
-        
+
+        internal MessageManager MessageManager;
+
         private ServerType _serverType;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ServerConnection"/> class.
+        ///     Initializes a new instance of the <see cref="ServerConnection" /> class.
         /// </summary>
         internal ServerConnection()
         {
-            this._messaging = new Messaging(this);
+            this._messaging = new Messaging();
             this._account = new Account();
+            this.MessageManager = new MessageManager(this._messaging, this);
         }
 
         /// <summary>
@@ -101,14 +105,7 @@
         /// </summary>
         internal void Connect()
         {
-            if (this.ShouldConnectToChineseServer())
-            {
-                this.ConnectTo(ServerType.PROD_SERVER, "127.0.0.1", 9339);
-            }
-            else
-            {
-                this.ConnectTo(ServerType.PROD_SERVER, "127.0.0.1", 9339);
-            }
+            this.ConnectTo(ServerType.PROD_SERVER, "127.0.0.1", 9339);
         }
 
         /// <summary>
@@ -127,13 +124,9 @@
         /// </summary>
         internal void Update(float time)
         {
-            switch (this.State)
+            if (this.State == 0)
             {
-                case 0:
-                {
-                    this.Connect();
-                    break;
-                }
+                this.Connect();
             }
 
             if (!this._messaging.IsConnected())
@@ -147,10 +140,12 @@
             {
                 if (this.State == 1)
                 {
+                    this.State = 2;
+
                     LoginMessage loginMessage = new LoginMessage
                     {
                         AccountId = new LogicLong(this._account.AccountHighId, this._account.AccountLowId),
-                        PassToken =  this._account.AccountPassToken,
+                        PassToken = this._account.AccountPassToken,
                         ResourceSha = ResourceManager.FingerprintSha
                     };
 
@@ -164,7 +159,7 @@
                             MajorVersion = LogicVersion.MajorVersion,
                             BuildVersion = LogicVersion.BuildVersion,
                             ContentHash = ResourceManager.FingerprintSha,
-                            KeyVersion = PepperKey.VERSION 
+                            KeyVersion = PepperKey.VERSION
                         };
 
                         this._messaging.SendPepperAuthentification(clientHelloMessage, loginMessage, PepperKey.SERVER_PUBLIC_KEY);
@@ -173,6 +168,18 @@
                     {
                         this._messaging.Send(loginMessage);
                     }
+                }
+
+                while (true)
+                {
+                    PiranhaMessage rcvMessage = this._messaging.NextMessage();
+
+                    if (rcvMessage == null)
+                    {
+                        break;
+                    }
+
+                    this.MessageManager.ReceiveMessage(rcvMessage);
                 }
             }
         }

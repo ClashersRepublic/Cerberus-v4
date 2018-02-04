@@ -9,7 +9,7 @@
         /// </summary>
         public void CreateReferences()
         {
-            this._pepperEnabled = this.GetBoolValue("PEPPER_ENABLED");
+            this._pepperEnabled = this.GetBoolValue("USE_PEPPER_CRYPTO");
         }
 
         /// <summary>

@@ -5,36 +5,19 @@
 
     internal class GameSession
     {
-        internal string SessionId;
+        internal string SessionId { get; }
 
-        internal Client Client;
-        internal GameAccount Account;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="GameSession"/> class.
-        /// </summary>
-        internal GameSession()
-        {
-            this.SessionId = null;
-        }
+        internal Client Client { get; }
+        internal GameAccount Account { get; }
 
         /// <summary>
-        ///     Gets a value indicating whether this session is empty.
+        ///     Initializes a new instance of the <see cref="GameSession" /> class.
         /// </summary>
-        /// <returns></returns>
-        internal bool IsEmpty()
-        {
-            return this.SessionId == null;
-        }
-
-        /// <summary>
-        ///     Sets the session data.
-        /// </summary>
-        internal void SetData(string sessionId, Client client)
+        internal GameSession(string sessionId, Client client, GameAccount account)
         {
             this.SessionId = sessionId;
             this.Client = client;
-            this.Account = client.GameAccount;
+            this.Account = account;
         }
     }
 }
