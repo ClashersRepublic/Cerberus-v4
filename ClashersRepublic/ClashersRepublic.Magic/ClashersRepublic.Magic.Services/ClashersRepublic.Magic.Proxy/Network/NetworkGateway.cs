@@ -204,8 +204,7 @@
                         }
                     }
                 }
-
-                asyncEvent.UserToken = null;
+                
                 asyncEvent.Dispose();
             }
         }

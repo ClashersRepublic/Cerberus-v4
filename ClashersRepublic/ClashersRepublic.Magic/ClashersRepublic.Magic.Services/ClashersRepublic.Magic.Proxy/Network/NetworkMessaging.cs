@@ -12,7 +12,6 @@
     {
         private StreamEncrypter _receiveEncrypter;
         private StreamEncrypter _sendEncrypter;
-        private readonly LogicMessageFactory _factory;
         private readonly Client _client;
 
         private int _pepperStep;
@@ -34,7 +33,6 @@
         {
             this._client = client;
             this.Token = token;
-            this._factory = LogicMagicMessageFactory.Instance;
             this.MessageManager = new MessageManager(this._client, this);
         }
 
@@ -73,7 +71,7 @@
                     byte[] messageByteArray = new byte[messageLength];
                     Array.Copy(buffer, 7, messageByteArray, 0, messageLength);
 
-                    PiranhaMessage message = this._factory.CreateMessageByType(messageType);
+                    PiranhaMessage message = LogicMagicMessageFactory.CreateMessageByType(messageType);
 
                     if (message != null)
                     {
@@ -141,7 +139,7 @@
                             Logging.Error(this, "NetworkMessaging::onReceive Message decode exception, trace: " + exception);
                         }
 
-                        Logging.Log(this, "NetworkMessaging::onReceive message " + message.GetType().Name + " received");
+                        Logging.Debug(this, "NetworkMessaging::onReceive message " + message.GetType().Name + " received");
                     }
                     else
                     {
@@ -208,7 +206,7 @@
 
             this.Token.WriteData(packet);
 
-            Logging.Log(this, "NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
+            Logging.Debug(this, "NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>

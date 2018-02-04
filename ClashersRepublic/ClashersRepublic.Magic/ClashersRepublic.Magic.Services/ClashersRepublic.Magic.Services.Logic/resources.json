@@ -1,21 +1,21 @@
 ﻿{
-    "content": [
-        "http://142.44.181.111/patchs/magic/",
-        "https://raw.githubusercontent.com/BerkanYildiz/Patchs/master/ClashOfClans/"
-    ],
-    "chronosContent": [
-    ],
-    "appstore": [
-        "APPSTORE_LINK",
-        "GOOGLE_LINK",
-        "KUNLUN_LINK"
-    ],
-    "home": {
-        "starting_home": "level/starting_home.json",
-        "starting_shield_duration_secs": 86400,
-        "starting_guard_duration_secs":  43200
-    },
-    "avatar": {
-        "starting_avatar_name": "Mike"
-    }
+  "content": [
+    "https://raw.githubusercontent.com/Mimi8298/magic-assets/master/",
+    "https://raw.githubusercontent.com/BerkanYildiz/Patchs/master/ClashOfClans/"
+  ],
+  "chronosContent": [
+  ],
+  "appstore": [
+    "APPSTORE_LINK",
+    "GOOGLE_LINK",
+    "KUNLUN_LINK"
+  ],
+  "home": {
+    "starting_home": "level/starting_home.json",
+    "starting_shield_duration_secs": 86400,
+    "starting_guard_duration_secs": 43200
+  },
+  "avatar": {
+    "starting_avatar_name": "Mike"
+  }
 }

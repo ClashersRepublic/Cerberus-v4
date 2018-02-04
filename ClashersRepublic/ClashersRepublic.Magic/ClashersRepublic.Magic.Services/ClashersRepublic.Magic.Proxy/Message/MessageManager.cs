@@ -4,6 +4,7 @@
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.User;
@@ -42,7 +43,7 @@
 
             if (this.Client.State != 6)
             {
-                if (messageType != 10100 && messageType != 10101 && messageType != 10121)
+                if (messageType != 10100 && messageType != 10101 && messageType != 10108 && messageType != 10121)
                 {
                     return;
                 }
@@ -52,12 +53,18 @@
             {
                 case 10100:
                 {
-                    this.ClientHelloMessage((ClientHelloMessage) message);
+                    this.ClientHelloMessageReceived((ClientHelloMessage) message);
                     break;
                 }
                 case 10101:
                 {
-                    this.LoginMessage((LoginMessage) message);
+                    this.LoginMessageReceived((LoginMessage) message);
+                    break;
+                }
+
+                case 10108:
+                {
+                    this.KeepAliveMessageReceived((KeepAliveMessage) message);
                     break;
                 }
 
@@ -134,9 +141,9 @@
         }
 
         /// <summary>
-        ///     Called when a <see cref="ClientHelloMessage"/> has been received.
+        ///     Called when a <see cref="ClientHelloMessageReceived"/> has been received.
         /// </summary>
-        internal void ClientHelloMessage(ClientHelloMessage message)
+        internal void ClientHelloMessageReceived(ClientHelloMessage message)
         {
             if (this.CheckClientVersion(message.MajorVersion, message.BuildVersion, message.ContentHash))
             {
@@ -145,16 +152,17 @@
         }
 
         /// <summary>
-        ///     Called when a <see cref="LoginMessage" /> has been received.
+        ///     Called when a <see cref="LoginMessageReceived" /> has been received.
         /// </summary>
-        internal void LoginMessage(LoginMessage message)
+        internal void LoginMessageReceived(LoginMessage message)
         {
             if (this.CheckClientVersion(message.ClientMajorVersion, message.ClientBuildVersion, message.ResourceSha))
             {
                 if (message.AccountId.IsZero())
                 {
-                    if (message.PassToken != null)
+                    if (message.PassToken == null)
                     {
+                        GameAccount account = GameAccountManager.CreateAccount();
                     }
                     else
                     {
@@ -163,8 +171,28 @@
                 }
                 else
                 {
-                    this.SendLoginFailedMessage(1);
+                    if (message.PassToken != null)
+                    {
+                        this.SendLoginFailedMessage(10, message.AccountId + "-" + message.PassToken);
+                    }
+                    else
+                    {
+                        this.SendLoginFailedMessage(1);
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="KeepAliveMessage"/> has been received.
+        /// </summary>
+        internal void KeepAliveMessageReceived(KeepAliveMessage message)
+        {
+            this.LastKeepAliveTime = LogicTimeUtil.GetTimestamp();
+
+            if (this.Client.State == 6)
+            {
+                this.SendMessage(new KeepAliveServerMessage());
             }
         }
 

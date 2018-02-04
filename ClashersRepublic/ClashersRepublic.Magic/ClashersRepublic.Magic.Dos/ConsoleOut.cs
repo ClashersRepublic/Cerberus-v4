@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Proxy
+﻿namespace ClashersRepublic.Magic.Dos
 {
     using System;
     using System.IO;

@@ -30,7 +30,7 @@
                 int messageEncodingLength = this.Stream.ReadVInt();
                 byte[] messageBytes = this.Stream.ReadBytes(this.Stream.ReadBytesLength(), 0xFFFFFF);
 
-                this.Message = LogicMagicMessageFactory.Instance.CreateMessageByType(messageType);
+                this.Message = LogicMagicMessageFactory.CreateMessageByType(messageType);
 
                 if (this.Message == null)
                 {

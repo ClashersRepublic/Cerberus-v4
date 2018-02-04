@@ -57,17 +57,6 @@
 
             if (ResourceManager.FingerprintJson != null)
             {
-                if (Directory.Exists("Patchs"))
-                {
-                    if (File.Exists("Patchs/version.json"))
-                    {
-                        LogicJSONObject versionObject = (LogicJSONObject) LogicJSONParser.Parse(File.ReadAllText("Patchs/version.json"));
-
-                        string patchSha = LogicJSONHelper.GetJSONString(versionObject, "sha");
-                        string patchVersion = LogicJSONHelper.GetJSONString(versionObject, "version");
-                    }
-                }
-
                 LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(ResourceManager.FingerprintJson);
 
                 ResourceManager.FingerprintSha = LogicJSONHelper.GetJSONString(jsonObject, "sha");

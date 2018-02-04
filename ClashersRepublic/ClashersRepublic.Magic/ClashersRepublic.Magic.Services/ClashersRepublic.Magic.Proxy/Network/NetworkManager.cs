@@ -33,6 +33,28 @@
         }
 
         /// <summary>
+        ///     Gets the number of element in send message queue.
+        /// </summary>
+        internal static int SendMessageQueueCount
+        {
+            get
+            {
+                return NetworkManager._sendMessageQueue.Count;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the number of element in receive message queue.
+        /// </summary>
+        internal static int ReceiveMessageQueueCount
+        {
+            get
+            {
+                return NetworkManager._receiveMessageQueue.Count;
+            }
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()

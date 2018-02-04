@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Proxy.Network;
 
     internal static class CmdHandler
     {
@@ -33,6 +34,12 @@
                             case "test":
                             {
                                 CmdHandler.Test();
+                                break;
+                            }
+
+                            case "pool":
+                            {
+                                Console.WriteLine("Rcv: " + NetworkManager.ReceiveMessageQueueCount + " Snd: " + NetworkManager.SendMessageQueueCount);
                                 break;
                             }
                         }

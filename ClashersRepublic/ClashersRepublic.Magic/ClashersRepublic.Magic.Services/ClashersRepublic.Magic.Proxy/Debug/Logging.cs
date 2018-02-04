@@ -1,7 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Debug
 {
     using System;
+    using System.Diagnostics;
     using ClashersRepublic.Magic.Titan.Debug;
+    using Debugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
 
     internal static class Logging
     {
@@ -42,6 +44,7 @@
         /// <summary>
         ///     Logs the specified debug message.
         /// </summary>
+        [Conditional("DEBUG")]
         internal static void Debug(object sender, string message)
         {
             System.Diagnostics.Debug.WriteLine("[DEBUG] " + sender.GetType().Name + ": " + message);
@@ -50,6 +53,7 @@
         /// <summary>
         ///     Logs the specified debug message.
         /// </summary>
+        [Conditional("DEBUG")]
         internal static void Debug(Type sender, string message)
         {
             System.Diagnostics.Debug.WriteLine("[DEBUG] " + sender.Name + ": " + message);
@@ -58,6 +62,7 @@
         /// <summary>
         ///     Logs the specified message.
         /// </summary>
+        [Conditional("DEBUG")]
         internal static void Log(object sender, string message)
         {
             System.Diagnostics.Debug.WriteLine("[LOG] " + sender.GetType().Name + ": " + message);
@@ -66,6 +71,7 @@
         /// <summary>
         ///     Logs the specified message.
         /// </summary>
+        [Conditional("DEBUG")]
         internal static void Log(Type sender, string message)
         {
             System.Diagnostics.Debug.WriteLine("[LOG] " + sender.Name + ": " + message);

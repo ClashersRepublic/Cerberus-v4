@@ -12,6 +12,7 @@
         public LogicData PreferredLanguage;
 
         public bool AndroidClient;
+        public bool AdvertisingEnabled;
 
         public int ScramblerSeed;
         public int ClientMajorVersion;
@@ -25,6 +26,7 @@
         public string MacAddress;
         public string OpenUDID;
         public string OSVersion;
+        public string AdvertisingId;
 
         public string PassToken;
         public string PreferredDeviceLanguage;
@@ -49,6 +51,8 @@
         {
             this.IMEI = string.Empty;
             this.AndroidID = string.Empty;
+            this.KunlunSSO = string.Empty;
+            this.KunlunUID = string.Empty;
         }
 
         /// <summary>
@@ -132,8 +136,8 @@
 
                                     if (!this.Stream.IsAtEnd())
                                     {
-                                        this.Stream.ReadBoolean();
-                                        this.Stream.ReadString(900000);
+                                        this.AdvertisingEnabled = this.Stream.ReadBoolean();
+                                        this.AdvertisingId = this.Stream.ReadString(900000);
 
                                         if (!this.Stream.IsAtEnd())
                                         {
@@ -143,12 +147,12 @@
                                             {
                                                 this.AppStore = this.Stream.ReadVInt();
 
-                                                Console.WriteLine("1:" + this.Stream.ReadStringReference(900000));
-                                                Console.WriteLine("2:" + this.Stream.ReadStringReference(900000));
+                                                this.Stream.ReadStringReference(900000);
+                                                this.Stream.ReadStringReference(900000);
 
                                                 if (!this.Stream.IsAtEnd())
                                                 {
-                                                    Console.WriteLine("3:" + this.Stream.ReadStringReference(900000));
+                                                    this.Stream.ReadStringReference(900000);
 
                                                     if (!this.Stream.IsAtEnd())
                                                     {

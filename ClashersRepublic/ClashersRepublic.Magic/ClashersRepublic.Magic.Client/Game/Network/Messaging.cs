@@ -23,7 +23,6 @@
         private StreamEncrypter _sendEncrypter;
         private StreamEncrypter _receiveEncrypter;
         private PiranhaMessage _pepperLoginMessage;
-        private readonly LogicMessageFactory _messageFactory;
 
         private int _pepperState;
 
@@ -43,8 +42,6 @@
             this._sendMessageQueue = new ConcurrentQueue<PiranhaMessage>();
             this._receiveMessageQueue = new ConcurrentQueue<PiranhaMessage>();
             this._connection = new Connection();
-
-            this._messageFactory = LogicMagicMessageFactory.Instance;
         }
 
         /// <summary>
@@ -328,7 +325,7 @@
                         encodingByteArray = decryptedByteArray;
                     }
 
-                    PiranhaMessage message = this._messageFactory.CreateMessageByType(messageType);
+                    PiranhaMessage message = LogicMagicMessageFactory.CreateMessageByType(messageType);
 
                     if (message != null)
                     {

@@ -22,17 +22,17 @@
         /// <summary>
         ///     Gets the messaging instance.
         /// </summary>
-        internal NetworkMessaging Messaging { get; private set; }
+        internal NetworkMessaging Messaging { get; }
 
         /// <summary>
         ///     Gets the client socket.
         /// </summary>
-        internal Socket Socket { get; private set; }
+        internal Socket Socket { get; }
 
         /// <summary>
         ///     Gets the receive event.
         /// </summary>
-        internal SocketAsyncEventArgs AsyncEvent { get; private set; }
+        internal SocketAsyncEventArgs AsyncEvent { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is disposed.
@@ -44,7 +44,7 @@
         /// </summary>
         internal NetworkToken(Socket socket, SocketAsyncEventArgs readEvent)
         {
-            this._receivedBytes = new byte[NetworkToken.MAX_AVAILABLE_BYTES];
+            this._receivedBytes = new byte[Config.BufferSize];
             this._client = new Client(this);
             this.Messaging = new NetworkMessaging(this._client, this);
 
@@ -59,16 +59,32 @@
         internal bool AddData()
         {
             int rcvLength = this.AsyncEvent.BytesTransferred;
+            int requireCapacity = rcvLength + this._receivedOffset;
 
-            if (this._receivedOffset + rcvLength > NetworkToken.MAX_AVAILABLE_BYTES)
+            if (requireCapacity > this._receivedBytes.Length)
             {
-                return false;
+                if (requireCapacity > NetworkToken.MAX_AVAILABLE_BYTES)
+                {
+                    return false;
+                }
+
+                this.EnsureCapacity(requireCapacity);
             }
 
             Array.Copy(this.AsyncEvent.Buffer, 0, this._receivedBytes, this._receivedOffset, rcvLength);
             this._receivedOffset += rcvLength;
 
             return true;
+        }
+
+        /// <summary>
+        ///     Ensures the capacity of the receive byte array.
+        /// </summary>
+        internal void EnsureCapacity(int capacity)
+        {
+            byte[] tmp = this._receivedBytes;
+            this._receivedBytes = new byte[capacity + 100];
+            Array.Copy(tmp, this._receivedBytes, this._receivedOffset);
         }
         
         /// <summary>
@@ -138,13 +154,7 @@
             }
 
             this.Aborted = true;
-
             this.Socket.Close();
-
-            this.AsyncEvent = null;
-            this.Messaging = null;
-
-            this._receivedOffset = 0;
         }
     }
 }
