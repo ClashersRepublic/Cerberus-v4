@@ -1,7 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Account
 {
-    using System;
     using System.Collections.Concurrent;
+
     using ClashersRepublic.Magic.Proxy.Database;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Services.Logic;
@@ -61,13 +61,11 @@
             {
                 int lastAccountId = GameDatabase.GetHigherAccountId(dbId);
 
-                for (int accId = 1; accId <= lastAccountId; accId++)
+                for (int lowId = 1; lowId <= lastAccountId; lowId++)
                 {
-                    GameAccountManager.LoadAccount(new LogicLong(dbId, accId));
+                    GameAccountManager.LoadAccount(new LogicLong(dbId, lowId));
                 }
             }
-
-            Console.WriteLine("In-Memory Accounts: " + GameAccountManager._accounts.Count);
         }
 
         /// <summary>

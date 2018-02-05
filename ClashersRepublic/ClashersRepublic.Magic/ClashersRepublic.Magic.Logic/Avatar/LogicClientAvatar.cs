@@ -241,6 +241,14 @@
         }
 
         /// <summary>
+        ///     Decodes this instance.
+        /// </summary>
+        public void Decode(ByteStream stream)
+        {
+            // TODO: Implement LogicClientAvatar::decode();
+        }
+
+        /// <summary>
         ///     Encodes this instance.
         /// </summary>
         public void Encode(ChecksumEncoder encoder)

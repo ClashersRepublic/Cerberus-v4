@@ -1,14 +1,19 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Message
 {
-    using System;
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Message.Account;
+
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Network;
+    using ClashersRepublic.Magic.Proxy.Session;
     using ClashersRepublic.Magic.Proxy.User;
+
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Resource;
+
+    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
     using ClashersRepublic.Magic.Titan.Util;
@@ -41,12 +46,19 @@
         {
             int messageType = message.GetMessageType();
 
-            if (this.Client.State != 6)
+            if (this.Client.State != 0)
             {
-                if (messageType != 10100 && messageType != 10101 && messageType != 10108 && messageType != 10121)
+                if (this.Client.State != 6)
                 {
-                    return;
+                    if (messageType != 10100 && messageType != 10101 && messageType != 10108 && messageType != 10121)
+                    {
+                        return;
+                    }
                 }
+            }
+            else
+            {
+                return;
             }
 
             switch (messageType)
@@ -141,6 +153,43 @@
         }
 
         /// <summary>
+        ///     Sends a <see cref="LoginOkMessage"/> to client.
+        /// </summary>
+        internal void SendLoginOkMessage(GameAccount account)
+        {
+            if (this.Client.State != 0)
+            {
+                if (this.Client.State != 6)
+                {
+                    this.SendMessage(new LoginOkMessage
+                    {
+                        AccountId = new LogicLong(account.HighId, account.LowId),
+                        HomeId = new LogicLong(account.HighId, account.LowId),
+                        ServerTime = LogicTimeUtil.GetTimestampMS(),
+                        AccountCreatedDate = account.AccountCreationDate,
+                        PassToken = account.PassToken,
+                        Region = "fr-FR",
+
+                        ServerMajorVersion = 9,
+                        ServerBuildVersion = 256,
+                        
+                        ServerEnvironment = Config.ServerEnvironment,
+
+                        ContentVersion = ResourceManager.GetContentVersion(),
+                        ContentUrlList = ResourceManager.ContentUrlList,
+                        ChronosContentUrlList = ResourceManager.ChronosContentUrlList
+                    });
+
+                    this.Client.State = 6;
+                }
+                else
+                {
+                    Logging.Warning(this, "MessageManager::sendLoginOkMessage client already logged");
+                }
+            }
+        }
+
+        /// <summary>
         ///     Called when a <see cref="ClientHelloMessageReceived"/> has been received.
         /// </summary>
         internal void ClientHelloMessageReceived(ClientHelloMessage message)
@@ -158,11 +207,18 @@
         {
             if (this.CheckClientVersion(message.ClientMajorVersion, message.ClientBuildVersion, message.ResourceSha))
             {
+                this.Messaging.ScramblerSeed = message.ScramblerSeed;
+
                 if (message.AccountId.IsZero())
                 {
                     if (message.PassToken == null)
                     {
                         GameAccount account = GameAccountManager.CreateAccount();
+
+                        if (account != null)
+                        {
+                            GameSessionManager.CreateSession(this.Client, account, true);
+                        }
                     }
                     else
                     {
@@ -173,7 +229,26 @@
                 {
                     if (message.PassToken != null)
                     {
-                        this.SendLoginFailedMessage(10, message.AccountId + "-" + message.PassToken);
+                        GameAccount account = GameAccountManager.GetAccount(message.AccountId);
+
+                        if (account != null)
+                        {
+                            if (message.PassToken == account.PassToken)
+                            {
+                                GameSession currentSession = account.CurrentSession;
+
+                                if (currentSession != null)
+                                {
+                                    // TODO: Close the current session.
+                                }
+
+                                GameSessionManager.CreateSession(this.Client, account, false);
+                            }
+                        }
+                        else
+                        {
+                            this.SendLoginFailedMessage(1);
+                        }
                     }
                     else
                     {

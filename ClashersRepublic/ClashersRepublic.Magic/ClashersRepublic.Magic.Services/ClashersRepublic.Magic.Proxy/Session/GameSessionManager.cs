@@ -4,8 +4,11 @@
     using System.Collections.Concurrent;
     using System.Diagnostics;
     using ClashersRepublic.Magic.Proxy.Account;
+    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.User;
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message.Client;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -59,11 +62,61 @@
         /// <summary>
         ///     Creates a new session for specified client.
         /// </summary>
-        internal static void CreateSession(Client client, GameAccount account)
+        internal static void CreateSession(Client client, GameAccount account, bool isNewClient)
         {
             if (client.GameSession == null)
             {
-                client.GameSession = new GameSession(GameSessionManager.GenerateSessionId(), client, account);
+                GameSession session = new GameSession(GameSessionManager.GenerateSessionId(), client, account);
+
+                if (GameSessionManager._sessions.TryAdd(session.SessionId, session))
+                {
+                    client.GameSession = session;
+                    client.NetworkToken.Messaging.MessageManager.SendLoginOkMessage(account);
+
+                    account.SetSession(session);
+
+                    session.SendToHomeService(new ClientConnectedMessage
+                    {
+                        AccountId = new LogicLong(account.HighId, account.LowId),
+                        IsNewClient = isNewClient
+                    });
+                }
+            }
+            else
+            {
+                Logging.Warning(typeof(GameSessionManager), "GameSessionManager::createSession session already created");
+            }
+        }
+
+        /// <summary>
+        ///     Gets a session by id.
+        /// </summary>
+        internal static GameSession GetSession(string sessionId)
+        {
+            return GameSessionManager._sessions.TryGetValue(sessionId, out GameSession session) ? session : null;
+        }
+
+        /// <summary>
+        ///     Gets a session by id.
+        /// </summary>
+        internal static bool GetSession(string sessionId, out GameSession session)
+        {
+            return GameSessionManager._sessions.TryGetValue(sessionId, out session);
+        }
+
+        /// <summary>
+        ///     Closes the game session.
+        /// </summary>
+        internal static void CloseSession(GameSession session)
+        {
+            if (GameSessionManager._sessions.TryRemove(session.SessionId, out _))
+            {
+                session.SendToHomeService(new ClientDisconnectedMessage());
+                session.Account.SetSession(null);
+            }
+            else
+            {
+                Logging.Warning(typeof(GameSession), "GameSessionManager::closeSession session already closed");
             }
         }
     }

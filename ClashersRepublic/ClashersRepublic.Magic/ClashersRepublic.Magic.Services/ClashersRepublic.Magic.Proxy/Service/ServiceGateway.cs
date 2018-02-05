@@ -11,16 +11,18 @@
 
         internal static string ExchangeName;
         internal static string QueueName;
+        internal static string ServiceType;
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            ServiceGateway.ExchangeName = ServiceExchangeName.BuildExchangeName(ServiceExchangeName.SERVICE_PROXY_NAME);
-            ServiceGateway.QueueName = ServiceExchangeName.BuildQueueName(ServiceExchangeName.SERVICE_PROXY_NAME, Config.ServerId);
+            ServiceGateway.ServiceType = ServiceExchangeName.SERVICE_PROXY_NAME;
+            ServiceGateway.ExchangeName = ServiceExchangeName.BuildExchangeName(ServiceGateway.ServiceType);
+            ServiceGateway.QueueName = ServiceExchangeName.BuildQueueName(ServiceGateway.ServiceType, Config.ServerId);
 
-            IConnection connection = new ConnectionFactory {HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword}.CreateConnection();
+            IConnection connection = new ConnectionFactory { HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword }.CreateConnection();
 
             ServiceGateway._channel = connection.CreateModel();
 

@@ -204,24 +204,8 @@
             this.OpenUDID = null;
             this.PreferredDeviceLanguage = null;
             this.ResourceSha = null;
-            this.UDID = null;
-        }
-
-        /// <summary>
-        ///     Destructors of this instance.
-        /// </summary>
-        ~LoginMessage()
-        {
-            this.ADID = null;
-            this.PassToken = null;
-            this.Device = null;
-            this.IMEI = null;
-            this.MacAddress = null;
-            this.OSVersion = null;
-            this.AndroidID = null;
-            this.OpenUDID = null;
-            this.PreferredDeviceLanguage = null;
-            this.ResourceSha = null;
+            this.KunlunSSO = null;
+            this.KunlunUID = null;
             this.UDID = null;
         }
     }

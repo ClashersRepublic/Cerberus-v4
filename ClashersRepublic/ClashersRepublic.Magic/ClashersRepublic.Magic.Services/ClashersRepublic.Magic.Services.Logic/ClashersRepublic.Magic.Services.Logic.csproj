@@ -53,15 +53,11 @@
     <Compile Include="Config.cs" />
     <Compile Include="Message\Client\ClientConnectedMessage.cs" />
     <Compile Include="Message\Client\ClientDisconnectedMessage.cs" />
-    <Compile Include="Message\Debug\MaintenanceStateDataMessage.cs" />
-    <Compile Include="Message\Debug\AskForMaintenanceStateMessage.cs" />
-    <Compile Include="Message\Home\UpdateHomeQueueNameMessage.cs" />
     <Compile Include="Message\MagicServiceMessageFactory.cs" />
     <Compile Include="Message\ServiceMessage.cs" />
     <Compile Include="Message\Messaging\ForwardClientMessage.cs" />
     <Compile Include="Message\Messaging\ForwardServerMessage.cs" />
-    <Compile Include="Message\Network\KeepAliveServerMessage.cs" />
-    <Compile Include="Message\Network\KeepAliveMessage.cs" />
+    <Compile Include="Message\Session\SessionClosedMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
     <Compile Include="ServiceExchangeName.cs" />

@@ -11,5 +11,13 @@
         {
             return Encoding.UTF8.GetBytes(str);
         }
+
+        /// <summary>
+        ///     Converts the byte array to string.
+        /// </summary>
+        public static string CreateString(byte[] value, int offset, int length)
+        {
+            return Encoding.UTF8.GetString(value, offset, length);
+        }
     }
 }

@@ -49,12 +49,14 @@
                         try
                         {
                             message.Decode();
-                            ServiceProcessor.EnqueueReceiveAction(() => ServiceMessageManager.ReceiveMessage(message));
+                            ServiceProcessor.EnqueueReceiveMessage(message);
                         }
                         catch (Exception exception)
                         {
                             Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message decode exception, trace: " + exception);
                         }
+
+                        Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onReceive message " + message.GetType().Name + " received");
                     }
                 }
                 else
@@ -78,7 +80,7 @@
                 throw new ArgumentNullException("exchangeName");
             }
 
-            ServiceProcessor.EnqueueSendAction(() => ServiceMessaging.OnWakeup(message, exchangeName, routingKey));
+            ServiceProcessor.EnqueueSendMessage(message, exchangeName, routingKey);
         }
 
         /// <summary>
@@ -97,6 +99,8 @@
             ServiceGateway.Send(buffer, exchangeName, routingKey);
 
             message.Destruct();
+
+            Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>

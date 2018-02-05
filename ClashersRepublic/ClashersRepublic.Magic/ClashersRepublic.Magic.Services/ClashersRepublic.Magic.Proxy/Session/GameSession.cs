@@ -1,7 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Session
 {
     using ClashersRepublic.Magic.Proxy.Account;
+    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.User;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message;
 
     internal class GameSession
     {
@@ -18,6 +21,14 @@
             this.SessionId = sessionId;
             this.Client = client;
             this.Account = account;
+        }
+
+        /// <summary>
+        ///     Sends the <see cref="ServiceMessage"/> to home service.
+        /// </summary>
+        internal void SendToHomeService(ServiceMessage message)
+        {
+            ServiceMessageManager.SendMessage(message, ServiceExchangeName.SERVICE_HOME_NAME, this.Account.HighId, this.SessionId);
         }
     }
 }

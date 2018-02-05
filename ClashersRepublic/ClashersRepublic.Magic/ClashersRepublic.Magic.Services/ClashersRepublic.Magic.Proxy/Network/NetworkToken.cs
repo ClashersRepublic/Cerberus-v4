@@ -9,10 +9,13 @@
     {
         private static readonly int MAX_AVAILABLE_BYTES = Config.BufferSize * 4;
 
-        private Client _client;
-
         private byte[] _receivedBytes;
         private int _receivedOffset;
+
+        /// <summary>
+        ///     Gets the client instance.
+        /// </summary>
+        internal Client Client { get; }
 
         /// <summary>
         ///     Gets or sets the connection id.
@@ -45,8 +48,8 @@
         internal NetworkToken(Socket socket, SocketAsyncEventArgs readEvent)
         {
             this._receivedBytes = new byte[Config.BufferSize];
-            this._client = new Client(this);
-            this.Messaging = new NetworkMessaging(this._client, this);
+            this.Client = new Client(this);
+            this.Messaging = new NetworkMessaging(this.Client, this);
 
             this.Socket = socket;
             this.AsyncEvent = readEvent;
@@ -154,7 +157,9 @@
             }
 
             this.Aborted = true;
+
             this.Socket.Close();
+            this.Client.Dispose();
         }
     }
 }

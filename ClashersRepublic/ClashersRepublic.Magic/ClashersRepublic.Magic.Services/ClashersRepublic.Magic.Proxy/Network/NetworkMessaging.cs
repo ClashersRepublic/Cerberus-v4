@@ -2,10 +2,15 @@
 {
     using System;
     using ClashersRepublic.Magic.Logic.Message;
+    using ClashersRepublic.Magic.Logic.Message.Security;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Message;
+    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.User;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
     using ClashersRepublic.Magic.Titan;
+    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class NetworkMessaging
@@ -13,9 +18,7 @@
         private StreamEncrypter _receiveEncrypter;
         private StreamEncrypter _sendEncrypter;
         private readonly Client _client;
-
-        private int _pepperStep;
-
+        
         /// <summary>
         ///     Gets the token instance.
         /// </summary>
@@ -25,6 +28,16 @@
         ///     Gets the message manager instance.
         /// </summary>
         internal MessageManager MessageManager { get; }
+
+        /// <summary>
+        ///     Gets the pepper step.
+        /// </summary>
+        internal int PepperStep { get; private set; }
+
+        /// <summary>
+        ///     Gets or Sets the scrambler seed.
+        /// </summary>
+        internal int ScramblerSeed { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkMessaging" /> class.
@@ -52,7 +65,7 @@
             this._receiveEncrypter = receiveEncrypter;
             this._sendEncrypter = sendEncrypter;
         }
-
+        
         /// <summary>
         ///     Called for handle received data.
         /// </summary>
@@ -77,12 +90,12 @@
                     {
                         message.SetMessageVersion((short) messageVersion);
                         message.GetByteStream().SetByteArray(messageByteArray, length);
-
+                        
                         if (this._receiveEncrypter == null)
                         {
-                            if (this._pepperStep != -1)
+                            if (this.PepperStep != -1)
                             {
-                                if (this._pepperStep == 0)
+                                if (this.PepperStep == 0)
                                 {
                                     if (messageType == 10101)
                                     {
@@ -105,7 +118,7 @@
                                         this.HandlePepperAuthentificationMessage(message);
                                     }
                                 }
-                                else if (this._pepperStep == 1)
+                                else if (this.PepperStep == 1)
                                 {
                                     if (messageType == 10101)
                                     {
@@ -132,7 +145,24 @@
                         try
                         {
                             message.Decode();
-                            NetworkManager.ReceiveMessage(message, this);
+
+                            if (!message.IsServerToClientMessage())
+                            {
+                                if (message.GetServiceNodeType() == 1)
+                                {
+                                    NetworkManager.ReceiveMessage(message, this);
+                                }
+                                else
+                                {
+                                    if (this._client.State == 6)
+                                    {
+                                        ServiceMessageManager.SendMessage(new ForwardClientMessage {Message = message},
+                                            ServiceExchangeName.ServiceNodeTypeToServiceName(message.GetServiceNodeType()),
+                                            Config.ServerId,
+                                            this._client.GameSession.SessionId);
+                                    }
+                                }
+                            }
                         }
                         catch (Exception exception)
                         {
@@ -170,17 +200,79 @@
         }
 
         /// <summary>
+        ///     Generates a nonce.
+        /// </summary>
+        private byte[] GenerateNonce()
+        {
+            byte[] nonce = new byte[24];
+
+            for (int i = 0; i < 24; i += 4)
+            {
+                int rnd = Resources.Random.NextInt();
+
+                nonce[i] = (byte) (rnd);
+                nonce[i + 1] = (byte) (rnd >> 8);
+                nonce[i + 2] = (byte) (rnd >> 16);
+                nonce[i + 3] = (byte) (rnd >> 24);
+            }
+
+            return nonce;
+        }
+
+        /// <summary>
+        ///     Scrambles the encrypters.
+        /// </summary>
+        private void ScrambleEncrypters(byte[] nonce)
+        {
+            LogicMersenneTwisterRandom scrambler = new LogicMersenneTwisterRandom(this.ScramblerSeed);
+
+            string scrambledNonce = null;
+            byte byte100 = 0;
+
+            for (int i = 0; i < 100; i++)
+            {
+                byte100 = (byte) scrambler.NextInt();
+            }
+
+            for (int i = 0; i < nonce.Length; i++)
+            {
+                scrambledNonce += (char) (nonce[i] ^ (byte) (scrambler.NextInt() & byte100));
+            }
+
+            this.InitEncrypters(scrambledNonce);
+        }
+
+        /// <summary>
         ///     Internal method for send the specified <see cref="PiranhaMessage" /> to client.
         /// </summary>
         internal void OnWakeup(PiranhaMessage message)
         {
-            message.Encode();
+            if (message.GetEncodingLength() == 0)
+            {
+                message.Encode();
+            }
 
             int encodingLength = message.GetEncodingLength();
             byte[] messageByteArray = message.GetByteStream().GetByteArray();
 
             if (this._sendEncrypter != null)
             {
+                if (message.GetMessageType() == 20104)
+                {
+                    if (this.PepperStep == 0)
+                    {
+                        byte[] nonce = this.GenerateNonce();
+
+                        this.OnWakeup(new EncryptionMessage
+                        {
+                            ServerNonce = nonce,
+                            Version = 1
+                        });
+
+                        this.ScrambleEncrypters(nonce);
+                    }
+                }
+
                 byte[] decryptedByteArray = messageByteArray;
                 byte[] encryptedByteArray = new byte[this._sendEncrypter.GetOverheadEncryption() + encodingLength];
 
@@ -194,12 +286,7 @@
                 messageByteArray = encryptedByteArray;
                 encodingLength += this._sendEncrypter.GetOverheadEncryption();
             }
-
-            if (this._pepperStep != 0)
-            {
-
-            }
-
+            
             byte[] packet = new byte[7 + encodingLength];
             Array.Copy(messageByteArray, 0, packet, 7, encodingLength);
             this.WriteHeader(message, packet, encodingLength);
@@ -236,7 +323,7 @@
         /// </summary>
         internal void HandlePepperAuthentificationMessage(PiranhaMessage message)
         {
-            this._pepperStep = 1;
+            this.PepperStep = 1;
         }
 
         /// <summary>
@@ -244,7 +331,7 @@
         /// </summary>
         internal void HandlePepperLoginMessage(PiranhaMessage message)
         {
-            this._pepperStep = 2;
+            this.PepperStep = 2;
         }
 
         /// <summary>
@@ -252,7 +339,7 @@
         /// </summary>
         internal void SendPepperLoginResponseMessage(PiranhaMessage message)
         {
-            this._pepperStep = 3;
+            this.PepperStep = 3;
         }
     }
 }

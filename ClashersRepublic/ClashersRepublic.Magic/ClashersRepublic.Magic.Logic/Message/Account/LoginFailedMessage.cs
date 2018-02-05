@@ -139,18 +139,5 @@
             this.ResourceFingerprintContent = null;
             this.UpdateUrl = null;
         }
-
-        /// <summary>
-        ///     Destructors of this instance.
-        /// </summary>
-        ~LoginFailedMessage()
-        {
-            this.ContentUrl = null;
-            this.ContentUrlList = null;
-            this.Reason = null;
-            this.RedirectDomain = null;
-            this.ResourceFingerprintContent = null;
-            this.UpdateUrl = null;
-        }
     }
 }

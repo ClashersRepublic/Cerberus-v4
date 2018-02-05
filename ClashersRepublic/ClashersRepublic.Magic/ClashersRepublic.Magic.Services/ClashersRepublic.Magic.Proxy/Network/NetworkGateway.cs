@@ -4,6 +4,7 @@
     using System.Net;
     using System.Net.Sockets;
     using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Session;
     using ClashersRepublic.Magic.Services.Logic;
 
     internal class NetworkGateway

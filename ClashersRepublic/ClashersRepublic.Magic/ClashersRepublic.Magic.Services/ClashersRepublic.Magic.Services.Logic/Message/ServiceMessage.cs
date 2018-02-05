@@ -4,9 +4,10 @@
 
     public class ServiceMessage : PiranhaMessage
     {
-        protected string ExchangeKey;
-        protected string RoutingKey;
-        protected string ProxySessionId;
+        protected string ServiceType;
+        protected string SessionId;
+
+        protected int ServerId;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServiceMessage" /> class.
@@ -22,16 +23,9 @@
         {
             base.Decode();
 
-            if (this.Stream.ReadBoolean())
-            {
-                this.ExchangeKey = this.Stream.ReadStringReference(900000);
-                this.RoutingKey = this.Stream.ReadStringReference(900000);
-            }
-            
-            if (this.Stream.ReadBoolean())
-            {
-                this.ProxySessionId = this.Stream.ReadStringReference(900000);
-            }
+            this.ServiceType = this.Stream.ReadString(64);
+            this.SessionId = this.Stream.ReadString(64);
+            this.ServerId = this.Stream.ReadVInt();
         }
 
         /// <summary>
@@ -41,26 +35,9 @@
         {
             base.Encode();
 
-            if (this.RoutingKey == null && this.ExchangeKey == null)
-            {
-                this.Stream.WriteBoolean(false);
-            }
-            else
-            {
-                this.Stream.WriteBoolean(true);
-                this.Stream.WriteStringReference(this.ExchangeKey);
-                this.Stream.WriteStringReference(this.RoutingKey);
-            }
-
-            if (this.ProxySessionId == null)
-            {
-                this.Stream.WriteBoolean(false);
-            }
-            else
-            {
-                this.Stream.WriteBoolean(true);
-                this.Stream.WriteStringReference(this.ProxySessionId);
-            }
+            this.Stream.WriteString(this.ServiceType);
+            this.Stream.WriteString(this.SessionId);
+            this.Stream.WriteVInt(this.ServerId);
         }
 
         /// <summary>
@@ -86,56 +63,56 @@
         {
             base.Destruct();
 
-            this.RoutingKey = null;
-            this.ProxySessionId = null;
+            this.ServiceType = null;
+            this.SessionId = null;
         }
 
         /// <summary>
-        ///     Gets the exchange name.
+        ///     Gets the service type.
         /// </summary>
-        public string GetExchangeName()
+        public string GetServiceType()
         {
-            return this.ExchangeKey;
+            return this.ServiceType;
         }
 
         /// <summary>
-        ///     Sets the exchange name.
+        ///     Sets the service type.
         /// </summary>
-        public void SetExchangeName(string value)
+        public void SetSeviceType(string value)
         {
-            this.ExchangeKey = value;
+            this.ServiceType = value;
         }
 
         /// <summary>
-        ///     Gets the routing key.
+        ///     Gets the session id.
         /// </summary>
-        public string GetRoutingKey()
+        public string GetSessionId()
         {
-            return this.RoutingKey;
+            return this.SessionId;
         }
 
         /// <summary>
-        ///     Sets the routing key.
+        ///     Sets the session id.
         /// </summary>
-        public void SetRoutingKey(string value)
+        public void SetSessionId(string value)
         {
-            this.RoutingKey = value;
+            this.SessionId = value;
         }
 
         /// <summary>
-        ///     Gets the proxy session id.
+        ///     Gets the server id.
         /// </summary>
-        public string GetProxySessionId()
+        public int GetServerId()
         {
-            return this.ProxySessionId;
+            return this.ServerId;
         }
 
         /// <summary>
-        ///     Sets the proxy session id.
+        ///     Sets the server id.
         /// </summary>
-        public void SetProxySessionId(string value)
+        public void SetServerId(int value)
         {
-            this.ProxySessionId = value;
+            this.ServerId = value;
         }
     }
 }

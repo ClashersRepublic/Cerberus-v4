@@ -4,75 +4,89 @@
     using System.Collections.Concurrent;
     using System.Threading;
     using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Services.Logic.Message;
 
     internal static class ServiceProcessor
     {
-        private static Thread[] _threads;
-        private static ConcurrentQueue<Action>[] _actions;
-        private static AutoResetEvent[] _events;
+        private static Thread _sendMessageWorker;
+        private static Thread _receiveMessageWorker;
 
+        private static ConcurrentQueue<QueueItem> _sendMessageQueue;
+        private static ConcurrentQueue<ServiceMessage> _receiveMessageQueue;
+        
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            ServiceProcessor._threads = new Thread[2];
-            ServiceProcessor._actions = new ConcurrentQueue<Action>[2];
-            ServiceProcessor._events = new AutoResetEvent[2];
+            ServiceProcessor._sendMessageWorker = new Thread(ServiceProcessor.SendMessages);
+            ServiceProcessor._receiveMessageWorker = new Thread(ServiceProcessor.ReceiveMessages);
+            ServiceProcessor._sendMessageQueue = new ConcurrentQueue<QueueItem>();
+            ServiceProcessor._receiveMessageQueue = new ConcurrentQueue<ServiceMessage>();
 
-            for (int i = 0; i < 2; i++)
-            {
-                int index = i;
-
-                ServiceProcessor._events[index] = new AutoResetEvent(false);
-                ServiceProcessor._actions[index] = new ConcurrentQueue<Action>();
-                ServiceProcessor._threads[index] = new Thread(() => ServiceProcessor.Action(index));
-                ServiceProcessor._threads[index].Start();
-            }
+            ServiceProcessor._sendMessageWorker.Start();
+            ServiceProcessor._receiveMessageWorker.Start();
         }
 
         /// <summary>
-        ///     Tasks for thread.
+        ///     Tasks for the receive worker.
         /// </summary>
-        private static void Action(int index)
+        private static void ReceiveMessages()
         {
-            ConcurrentQueue<Action> queue = ServiceProcessor._actions[index];
-            AutoResetEvent queueEvent = ServiceProcessor._events[index];
-
             while (true)
             {
-                queueEvent.WaitOne();
-
-                while (queue.TryDequeue(out Action action))
+                while (ServiceProcessor._receiveMessageQueue.TryDequeue(out ServiceMessage item))
                 {
-                    try
-                    {
-                        action();
-                    }
-                    catch (Exception exception)
-                    {
-                        Logging.Error(typeof(ServiceProcessor), "An exception has been throwns while the execution of action. thread id: " + index + ", trace: " + exception);
-                    }
+                    ServiceMessageManager.ReceiveMessage(item);
                 }
+
+                Thread.Sleep(1);
             }
         }
 
         /// <summary>
-        ///     Enqueues the specified action.
+        ///     Tasks for the receive worker.
         /// </summary>
-        internal static void EnqueueReceiveAction(Action action)
+        private static void SendMessages()
         {
-            ServiceProcessor._actions[0].Enqueue(action);
-            ServiceProcessor._events[0].Set();
+            while (true)
+            {
+                while (ServiceProcessor._sendMessageQueue.TryDequeue(out QueueItem item))
+                {
+                    ServiceMessaging.OnWakeup(item.Message, item.ExchangeName, item.RoutingKey);
+                }
+
+                Thread.Sleep(1);
+            }
         }
 
         /// <summary>
-        ///     Enqueues the specified action.
+        ///     Enqueues the specified message.
         /// </summary>
-        internal static void EnqueueSendAction(Action action)
+        internal static void EnqueueReceiveMessage(ServiceMessage message)
         {
-            ServiceProcessor._actions[1].Enqueue(action);
-            ServiceProcessor._events[1].Set();
+            ServiceProcessor._receiveMessageQueue.Enqueue(message);
+        }
+
+        /// <summary>
+        ///     Enqueues the specified message.
+        /// </summary>
+        internal static void EnqueueSendMessage(ServiceMessage message, string exchangeName, string routingKey)
+        {
+            ServiceProcessor._sendMessageQueue.Enqueue(new QueueItem
+            {
+                Message = message,
+                ExchangeName = exchangeName,
+                RoutingKey = routingKey
+            });
+        }
+
+        private struct QueueItem
+        {
+            internal ServiceMessage Message;
+
+            internal string ExchangeName;
+            internal string RoutingKey;
         }
     }
 }

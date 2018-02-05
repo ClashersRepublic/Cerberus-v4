@@ -1,10 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message
 {
     using ClashersRepublic.Magic.Services.Logic.Message.Client;
-    using ClashersRepublic.Magic.Services.Logic.Message.Debug;
-    using ClashersRepublic.Magic.Services.Logic.Message.Home;
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
-    using ClashersRepublic.Magic.Services.Logic.Message.Network;
+    using ClashersRepublic.Magic.Services.Logic.Message.Session;
 
     public sealed class MagicServiceMessageFactory
     {
@@ -21,25 +19,7 @@
             {
                 switch (type)
                 {
-                    case 10108:
-                    {
-                        message = new KeepAliveMessage();
-                        break;
-                    }
-
-                    case 10130:
-                    {
-                        message = new AskForMaintenanceStateMessage();
-                        break;
-                    }
-                        
                     case 10140:
-                    {
-                        message = new ForwardServerMessage();
-                        break;
-                    }
-
-                    case 10141:
                     {
                         message = new ForwardClientMessage();
                         break;
@@ -62,21 +42,15 @@
             {
                 switch (type)
                 {
-                    case 20108:
+                    case 20110:
                     {
-                        message = new KeepAliveServerMessage();
+                        message = new SessionClosedMessage();
                         break;
                     }
 
-                    case 20130:
+                    case 20140:
                     {
-                        message = new MaintenanceStateDataMessage();
-                        break;
-                    }
-
-                    case 20190:
-                    {
-                        message = new UpdateHomeQueueNameMessage();
+                        message = new ForwardServerMessage();
                         break;
                     }
                 }

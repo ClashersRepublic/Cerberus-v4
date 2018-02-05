@@ -2,13 +2,18 @@
 {
     using System;
     using ClashersRepublic.Magic.Services.Home.Debug;
+    using ClashersRepublic.Magic.Services.Home.Message;
+    using ClashersRepublic.Magic.Services.Home.Player;
+    using ClashersRepublic.Magic.Services.Home.Session;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;
-    using ClashersRepublic.Magic.Services.Logic.Message.Network;
+    using ClashersRepublic.Magic.Services.Logic.Message.Client;
+    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
 
     internal static class ServiceMessageManager
     {
         /// <summary>
-        ///     Receives the specified <see cref="ServiceMessage"/> class.
+        ///     Receives the specified <see cref="ServiceMessage" /> class.
         /// </summary>
         internal static void ReceiveMessage(ServiceMessage message)
         {
@@ -18,9 +23,21 @@
             {
                 switch (messageType)
                 {
-                    case 10108:
+                    case 10140:
                     {
-                        ServiceMessageManager.SendResponseMessage(new KeepAliveServerMessage(), message);
+                        ServiceMessageManager.ForwardClientMessageReceived((ForwardClientMessage) message);
+                        break;
+                    }
+
+                    case 10198:
+                    {
+                        ServiceMessageManager.ClientConnectedMessageReceived((ClientConnectedMessage) message);
+                        break;
+                    }
+
+                    case 10199:
+                    {
+                        ServiceMessageManager.ClientDisconnectedMessageReceived((ClientDisconnectedMessage) message);
                         break;
                     }
 
@@ -45,49 +62,61 @@
         }
 
         /// <summary>
-        ///     Sends a request message to specified server.
-        /// </summary>
-        internal static void SendRequestMessage(ServiceMessage requestMessage, string exchangeName, string routingKey)
-        {
-            requestMessage.SetExchangeName(ServiceGateway.ExchangeName);
-            requestMessage.SetRoutingKey(ServiceGateway.QueueName);
-
-            ServiceMessaging.Send(requestMessage, exchangeName, routingKey);
-        }
-
-        /// <summary>
         ///     Sends the response message to requester.
         /// </summary>
         internal static void SendResponseMessage(ServiceMessage responseMessage, ServiceMessage requestMessage)
         {
-            string exchangeName = requestMessage.GetExchangeName();
-            string routingKey = requestMessage.GetRoutingKey();
-            string proxySessionId = requestMessage.GetProxySessionId();
-
-            if (exchangeName != null)
-            {
-                if (routingKey != null)
-                {
-                    responseMessage.SetExchangeName(ServiceGateway.ExchangeName);
-                    responseMessage.SetRoutingKey(ServiceGateway.QueueName);
-                    responseMessage.SetProxySessionId(proxySessionId);
-
-                    ServiceMessaging.Send(responseMessage, exchangeName, routingKey);
-                }
-            }
+            ServiceMessageManager.SendMessage(responseMessage, requestMessage.GetServiceType(), requestMessage.GetServerId(), requestMessage.GetSessionId());
         }
 
         /// <summary>
         ///     Sends the message to specified exchange and routing key.
         /// </summary>
-        internal static void SendMessage(ServiceMessage message, string exchangeName, string routingKey = null)
+        internal static void SendMessage(ServiceMessage message, string serviceType, int serverId, string sessionId = null)
         {
-            if (exchangeName == null)
+            if (serviceType == null)
             {
-                throw new ArgumentNullException("exchangeName");
+                throw new ArgumentNullException("serviceType");
             }
 
-            ServiceMessaging.Send(message, exchangeName, routingKey);
+            message.SetSeviceType(ServiceGateway.ServiceType);
+            message.SetServerId(Config.ServerId);
+            message.SetSessionId(sessionId);
+
+            ServiceMessaging.Send(message, ServiceExchangeName.BuildExchangeName(serviceType), ServiceExchangeName.BuildQueueName(serviceType, serverId));
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ForwardClientMessage"/> has been received.
+        /// </summary>
+        internal static void ForwardClientMessageReceived(ForwardClientMessage message)
+        {
+            if (message.Message != null)
+            {
+                message.Message.GetByteStream().SetOffset(0);
+                message.Message.Decode();
+
+                if (GamePlayerManager.GetSession(message.GetSessionId(), out GameSession session))
+                {
+                    MessageManager.ReceiveMessage(message.Message, session);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ClientConnectedMessage"/> has been received.
+        /// </summary>
+        internal static void ClientConnectedMessageReceived(ClientConnectedMessage message)
+        {
+            GamePlayerManager.OnClientConnected(message.GetServerId(), message.GetSessionId(), message.AccountId, message.IsNewClient);
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ClientDisconnectedMessage"/> has been received.
+        /// </summary>
+        internal static void ClientDisconnectedMessageReceived(ClientDisconnectedMessage message)
+        {
+            GamePlayerManager.OnClientDisconnected(message.GetSessionId());
         }
     }
 }

@@ -6,9 +6,8 @@
 
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Home.Handler;
-    using ClashersRepublic.Magic.Services.Home.Service;
+
     using ClashersRepublic.Magic.Services.Logic;
-    using ClashersRepublic.Magic.Services.Logic.Message.Network;
 
     internal class Program
     {

@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Data;
 
     using ClashersRepublic.Magic.Services.Home.Database;
+    using ClashersRepublic.Magic.Services.Home.Player;
     using ClashersRepublic.Magic.Services.Home.Service;
     using ClashersRepublic.Magic.Services.Logic.Resource;
 
@@ -38,7 +39,9 @@
         private static void InitializeGames()
         {
             Resources.Random = new LogicMersenneTwisterRandom(LogicTimeUtil.GetTimestamp());
+
             GameDatabase.Initialize();
+            GamePlayerManager.Initialize();
         }
 
         /// <summary>

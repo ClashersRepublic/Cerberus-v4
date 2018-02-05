@@ -40,6 +40,7 @@
                 {
                     this.Message.SetMessageVersion(messageVersion);
                     this.Message.GetByteStream().SetByteArray(messageBytes, messageEncodingLength);
+                    this.Message.GetByteStream().SetOffset(messageEncodingLength);
                 }
             }
         }
@@ -79,7 +80,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 10140;
+            return 20140;
         }
 
         /// <summary>
@@ -88,14 +89,6 @@
         public override int GetServiceNodeType()
         {
             return 0;
-        }
-
-        /// <summary>
-        ///     Destructors of this instance.
-        /// </summary>
-        ~ForwardServerMessage()
-        {
-            this.Message = null;
         }
     }
 }

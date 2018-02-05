@@ -1,13 +1,13 @@
-﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Debug
+﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Session
 {
-    public class AskForMaintenanceStateMessage : ServiceMessage
+    public class SessionClosedMessage : ServiceMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AskForMaintenanceStateMessage"/> class.
+        ///     Initializes a new instance of the <see cref="SessionClosedMessage"/> class.
         /// </summary>
-        public AskForMaintenanceStateMessage() : base(0)
+        public SessionClosedMessage() : base(0)
         {
-            // AskForMaintenanceStateMessage.
+            // SessionClosedMessage.
         }
 
         /// <summary>
@@ -39,7 +39,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 10130;
+            return 20110;
         }
 
         /// <summary>

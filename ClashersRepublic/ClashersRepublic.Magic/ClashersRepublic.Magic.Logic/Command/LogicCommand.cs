@@ -18,6 +18,14 @@
         }
 
         /// <summary>
+        ///     Gets a value indicating whether this command is a server command.
+        /// </summary>
+        public virtual bool IsServerCommand()
+        {
+            return false;
+        }
+
+        /// <summary>
         ///     Gets the command type.
         /// </summary>
         public virtual int GetCommandType()

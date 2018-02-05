@@ -32,7 +32,7 @@
                 var client = new MongoClient("mongodb://" + (!string.IsNullOrEmpty(Config.MongodUser) ? Config.MongodUser + ":" + Config.MongodPassword + "@" : "") + Config.MongodServers[i] + ":27017");
                 var database = client.GetDatabase(Config.MongodDbName);
                 
-                GameDatabase._players[i] = database.GetCollection<GamePlayer>(Config.MongodDbCollection);
+                GameDatabase._players[i] = database.GetCollection<GamePlayer>("Players");
                 GameDatabase._counters[i] = database.GetCollection<BsonDocument>("Counters");
 
                 if (GameDatabase._counters[i] == null)
@@ -96,7 +96,7 @@
         /// <summary>
         ///     Loads the specified player from database.
         /// </summary>
-        internal static GamePlayer LoadAccount(LogicLong accountId)
+        internal static GamePlayer LoadPlayer(LogicLong accountId)
         {
             return GameDatabase._players[accountId.GetHigherInt()].Find(T => T.HighId == accountId.GetHigherInt() && T.LowId == accountId.GetLowerInt()).Limit(1).SingleOrDefault();
         }
@@ -113,7 +113,7 @@
                     GameDatabase._players[player.HighId].ReplaceOne(T => T._id == player._id, player);
                 }
 
-                Thread.Sleep(5);
+                Thread.Sleep(1);
             }
         }
     }

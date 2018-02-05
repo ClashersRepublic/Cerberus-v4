@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Home;
+    using ClashersRepublic.Magic.Logic.Message.Security;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
 
@@ -36,12 +38,24 @@
                         message = new KeepAliveMessage();
                         break;
                     }
+
+                    case 14102:
+                    {
+                        message = new EndClientTurnMessage();
+                        break;
+                    }
                 }
             }
             else
             {
                 switch (type)
                 {
+                    case 20000:
+                    {
+                        message = new EncryptionMessage();
+                        break;
+                    }
+
                     case 20100:
                     {
                         message = new ServerHelloMessage();
@@ -54,9 +68,27 @@
                         break;
                     }
 
+                    case 20104:
+                    {
+                        message = new LoginOkMessage();
+                        break;
+                    }
+
                     case 20108:
                     {
                         message = new KeepAliveServerMessage();
+                        break;
+                    }
+
+                    case 24101:
+                    {
+                        message = new OwnHomeDataMessage();
+                        break;
+                    }
+
+                    case 24104:
+                    {
+                        message = new OutOfSyncMessage();
                         break;
                     }
                 }

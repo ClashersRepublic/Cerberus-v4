@@ -7,9 +7,8 @@
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Handler;
     using ClashersRepublic.Magic.Proxy.Network;
-    using ClashersRepublic.Magic.Proxy.Service;
+
     using ClashersRepublic.Magic.Services.Logic;
-    using ClashersRepublic.Magic.Services.Logic.Message.Network;
 
     internal class Program
     {

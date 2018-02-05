@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
     using System;
+
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Logic.Message;
 
@@ -30,8 +31,8 @@
             {
                 length -= 5;
 
-                int messageType = buffer[1] | buffer[0] << 8;
-                int messageLength = buffer[4] | buffer[3] << 8 | buffer[2] << 16;
+                int messageType = buffer[1] | (buffer[0] << 8);
+                int messageLength = buffer[4] | (buffer[3] << 8) | (buffer[2] << 16);
 
                 if (length >= messageLength)
                 {
@@ -48,14 +49,14 @@
                         try
                         {
                             message.Decode();
-                            ServiceProcessor.EnqueueReceiveAction(() => ServiceMessageManager.ReceiveMessage(message));
+                            ServiceProcessor.EnqueueReceiveMessage(message);
                         }
                         catch (Exception exception)
                         {
                             Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message decode exception, trace: " + exception);
                         }
 
-                        Logging.Log(typeof(ServiceMessaging), "ServiceMessaging::onReceive message " + message.GetType().Name + " received");
+                        Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onReceive message " + message.GetType().Name + " received");
                     }
                 }
                 else
@@ -68,7 +69,7 @@
                 Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #1");
             }
         }
-        
+
         /// <summary>
         ///     Sends the message to specified queue.
         /// </summary>
@@ -79,7 +80,7 @@
                 throw new ArgumentNullException("exchangeName");
             }
 
-            ServiceProcessor.EnqueueSendAction(() => ServiceMessaging.OnWakeup(message, exchangeName, routingKey));
+            ServiceProcessor.EnqueueSendMessage(message, exchangeName, routingKey);
         }
 
         /// <summary>
@@ -99,7 +100,7 @@
 
             message.Destruct();
 
-            Logging.Log(typeof(ServiceMessaging), "ServiceMessaging::onWakeup message " + message.GetType().Name + " sent");
+            Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>
@@ -109,9 +110,9 @@
         {
             int messageType = message.GetMessageType();
 
-            stream[1] = (byte) (messageType);
+            stream[1] = (byte) messageType;
             stream[0] = (byte) (messageType >> 8);
-            stream[4] = (byte) (length);
+            stream[4] = (byte) length;
             stream[3] = (byte) (length >> 8);
             stream[2] = (byte) (length >> 16);
 

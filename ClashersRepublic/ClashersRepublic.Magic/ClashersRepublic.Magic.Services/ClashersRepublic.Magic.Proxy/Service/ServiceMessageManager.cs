@@ -2,7 +2,10 @@
 {
     using System;
     using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Session;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;
+    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
 
     internal static class ServiceMessageManager
     {
@@ -28,6 +31,12 @@
             {
                 switch (messageType)
                 {
+                    case 20140:
+                    {
+                        ServiceMessageManager.ForwardServerMessageReceived((ForwardServerMessage) message);
+                        break;
+                    }
+
                     default:
                     {
                         Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
@@ -36,51 +45,49 @@
                 }
             }
         }
-
-        /// <summary>
-        ///     Sends a request message to specified server.
-        /// </summary>
-        internal static void SendRequestMessage(ServiceMessage requestMessage, string exchangeName, string routingKey)
-        {
-            requestMessage.SetExchangeName(ServiceGateway.ExchangeName);
-            requestMessage.SetRoutingKey(ServiceGateway.QueueName);
-
-            ServiceMessaging.Send(requestMessage, exchangeName, routingKey);
-        }
-
+        
         /// <summary>
         ///     Sends the response message to requester.
         /// </summary>
         internal static void SendResponseMessage(ServiceMessage responseMessage, ServiceMessage requestMessage)
         {
-            string exchangeName = requestMessage.GetExchangeName();
-            string routingKey = requestMessage.GetRoutingKey();
-            string proxySessionId = requestMessage.GetProxySessionId();
-
-            if (exchangeName != null)
-            {
-                if (routingKey != null)
-                {
-                    responseMessage.SetExchangeName(ServiceGateway.ExchangeName);
-                    responseMessage.SetRoutingKey(ServiceGateway.QueueName);
-                    responseMessage.SetProxySessionId(proxySessionId);
-
-                    ServiceMessaging.Send(responseMessage, exchangeName, routingKey);
-                }
-            }
+            ServiceMessageManager.SendMessage(responseMessage, requestMessage.GetServiceType(), requestMessage.GetServerId(), requestMessage.GetSessionId());
         }
 
         /// <summary>
         ///     Sends the message to specified exchange and routing key.
         /// </summary>
-        internal static void SendMessage(ServiceMessage message, string exchangeName, string routingKey = null)
+        internal static void SendMessage(ServiceMessage message, string serviceType, int serverId, string sessionId = null)
         {
-            if (exchangeName == null)
+            if (serviceType == null)
             {
-                throw new ArgumentNullException("exchangeName");
+                throw new ArgumentNullException("serviceType");
             }
 
-            ServiceMessaging.Send(message, exchangeName, routingKey);
+            message.SetSeviceType(ServiceGateway.ServiceType);
+            message.SetServerId(Config.ServerId);
+            message.SetSessionId(sessionId);
+
+            ServiceMessaging.Send(message, ServiceExchangeName.BuildExchangeName(serviceType), ServiceExchangeName.BuildQueueName(serviceType, serverId));
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ForwardServerMessage"/> has been received.
+        /// </summary>
+        internal static void ForwardServerMessageReceived(ForwardServerMessage message)
+        {
+            if (message.Message != null)
+            {
+                Console.WriteLine(BitConverter.ToString(message.Message.GetByteStream().GetByteArray()));
+
+                if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
+                {
+                    if (session.Client.State == 6)
+                    {
+                        session.Client.NetworkToken.Messaging.MessageManager.SendMessage(message.Message);
+                    }
+                }
+            }
         }
     }
 }

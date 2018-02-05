@@ -51,13 +51,12 @@
         /// </summary>
         public int NextInt()
         {
-            int seed = this._seeds[this._ix];
-
-            if (seed == 0)
+            if (this._ix == 0)
             {
                 this.Generate();
             }
 
+            int seed = this._seeds[this._ix];
             this._ix = (this._ix + 1) % 624;
 
             seed ^= seed >> 11;

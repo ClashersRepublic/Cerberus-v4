@@ -1,11 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Database
 {
-    using System;
     using System.Collections.Concurrent;
     using System.Threading;
+
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Titan.Math;
+
     using MongoDB.Bson;
     using MongoDB.Driver;
 
@@ -30,10 +31,19 @@
             for (int i = 0; i < Config.MongodServers.Length; i++)
             {
                 MongoClient client = new MongoClient("mongodb://" + (!string.IsNullOrEmpty(Config.MongodUser) ? Config.MongodUser + ":" + Config.MongodPassword + "@" : "") + Config.MongodServers[i] + ":27017");
+
                 IMongoDatabase database = client.GetDatabase(Config.MongodDbName);
 
-                GameDatabase._accounts[i] = database.GetCollection<GameAccount>(Config.MongodDbCollection);
+                GameDatabase._accounts[i] = database.GetCollection<GameAccount>("Accounts");
                 GameDatabase._counters[i] = database.GetCollection<BsonDocument>("Counters");
+
+                if (GameDatabase._counters[i] == null)
+                {
+                    database.CreateCollection("Counters");
+
+                    GameDatabase._counters[i] = database.GetCollection<BsonDocument>("Counters");
+                    GameDatabase._counters[i].InsertOne(BsonDocument.Parse("{\"_id\":\"Players\",\"last_id\":0}"));
+                }
 
                 GameDatabase._accounts[i].Indexes.CreateOne(Builders<GameAccount>.IndexKeys.Combine(
                         Builders<GameAccount>.IndexKeys.Ascending(T => T.HighId),
@@ -70,8 +80,6 @@
                 account.LowId = GameDatabase._counters[account.HighId].FindOneAndUpdate(T => T["_id"] == "Accounts", Builders<BsonDocument>.Update.Inc("last_id", 1))["last_id"].AsInt32 + 1;
 
                 GameDatabase._nextCollectionIndex = ++GameDatabase._nextCollectionIndex % GameDatabase._accounts.Length;
-
-                Console.WriteLine(account.HighId + "-" + account.LowId);
             }
 
             GameDatabase._accounts[account.HighId].InsertOne(account);
