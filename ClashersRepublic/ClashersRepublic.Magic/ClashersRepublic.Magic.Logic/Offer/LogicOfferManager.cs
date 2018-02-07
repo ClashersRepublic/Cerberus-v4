@@ -9,7 +9,7 @@
         /// </summary>
         public LogicOfferManager()
         {
-
+            // LogicOfferManager.
         }
 
         /// <summary>
@@ -33,6 +33,14 @@
             LogicJSONObject jsonObject = new LogicJSONObject();
 
             root.Put("offer", jsonObject);
+        }
+
+        /// <summary>
+        ///     Ticks for update this instance.
+        /// </summary>
+        public void Tick()
+        {
+            // Tick.
         }
     }
 }

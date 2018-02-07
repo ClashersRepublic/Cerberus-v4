@@ -1,5 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Time
 {
+    using ClashersRepublic.Magic.Logic.Data;
+
     public class LogicTime
     {
         private int _tick;
@@ -10,7 +12,7 @@
         /// </summary>
         public LogicTime()
         {
-            
+            // LogicTime.
         }
 
         /// <summary>
@@ -35,11 +37,55 @@
         }
 
         /// <summary>
-        ///     Converts integer to time.
+        ///     Gets the milliseconds in ticks.
         /// </summary>
-        public static implicit operator LogicTime(int tick)
+        public static int GetMSInTicks(int time)
         {
-            return new LogicTime();
+            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            {
+                return 16 * time;
+            }
+
+            return (int) (1000L * time / 60);
+        }
+
+        /// <summary>
+        ///     Gets the seconds in ticks.
+        /// </summary>
+        public static int GetSecondsInTicks(int time)
+        {
+            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            {
+                return (int) (1000L * time / 16);
+            }
+
+            return time / 60;
+        }
+
+        /// <summary>
+        ///     Gets the cooldown seconds in ticks.
+        /// </summary>
+        public static int GetCooldownSecondsInTicks(int time)
+        {
+            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            {
+                return (int)(1000L * time / 64);
+            }
+
+            return time / 15;
+        }
+
+        /// <summary>
+        ///     Gets the cooldown ticks in seconds.
+        /// </summary>
+        public static int GetCooldownTicksInSeconds(int time)
+        {
+            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            {
+                return (int) ((long) time << 6 / 1000);
+            }
+
+            return time / 15;
         }
 
         /// <summary>
@@ -48,6 +94,17 @@
         public static implicit operator int(LogicTime time)
         {
             return time._tick;
+        }
+
+        /// <summary>
+        ///     Converts ticks to time.
+        /// </summary>
+        public static implicit operator LogicTime(int tick)
+        {
+            return new LogicTime
+            {
+                _tick = tick
+            };
         }
     }
 }

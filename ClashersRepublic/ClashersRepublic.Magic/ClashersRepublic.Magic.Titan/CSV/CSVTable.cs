@@ -7,9 +7,9 @@
     {
         public LogicArrayList<string> ColumnNames;
         public LogicArrayList<CSVColumn> Columns;
+        public LogicArrayList<CSVRow> Rows;
 
         public CSVNode Node;
-        public LogicArrayList<CSVRow> Rows;
 
         public int Size;
 

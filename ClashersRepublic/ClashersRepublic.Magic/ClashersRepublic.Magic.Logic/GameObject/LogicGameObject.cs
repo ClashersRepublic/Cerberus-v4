@@ -2,8 +2,10 @@
 {
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject.Component;
+    using ClashersRepublic.Magic.Logic.GameObject.Listener;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
+
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
@@ -11,87 +13,35 @@
 
     public class LogicGameObject
     {
-        protected int _seed;
-        protected int _globalId;
-        protected int _villageType;
-
+        protected LogicData _data;
         protected LogicLevel _level;
         protected LogicVector2 _position;
+        protected LogicGameObjectListener _listener;
         protected LogicArrayList<LogicComponent> _components;
 
-        private LogicData _data;
+        protected int _villageType;
+        protected int _globalId;
+        protected int _seed;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicGameObject"/> class.
         /// </summary>
-        public LogicGameObject(LogicData data, LogicLevel level)
+        public LogicGameObject(LogicData data, LogicLevel level, int villageType)
         {
+            Debugger.DoAssert(villageType < 2, "VillageType not set! Game object has not been added to LogicGameObjectManager.");
+
             this._data = data;
             this._level = level;
-            this._globalId = -1;
-
+            this._villageType = villageType;
             this._position = new LogicVector2();
-            this._components = new LogicArrayList<LogicComponent>();
+            
+            this._listener = new LogicGameObjectListener();
+            this._components = new LogicArrayList<LogicComponent>(21);
 
-            for (int i = 0; i < 22; i++)
+            for (int i = 0; i < 21; i++)
             {
                 this._components.Add(null);
             }
-        }
-
-        /// <summary>
-        ///     Adds the specified component to gameobject.
-        /// </summary>
-        public void AddComponent(LogicComponent component)
-        {
-            if (this._components[component.GetComponentType()] != null)
-            {
-                Debugger.Error("LogicGameObject::addComponent - Component is already added.");
-                return;
-            }
-
-            this._level.GetGameObjectManagerAt(this._villageType).GetComponentManager().AddComponent(component);
-            this._components[component.GetComponentType()] = component;
-        }
-        
-        /// <summary>
-        ///     Gets the hitpoint component instance.
-        /// </summary>
-        public LogicHitpointComponent GetHitpointComponent()
-        {
-            return (LogicHitpointComponent) this._components[2];
-        }
-
-        /// <summary>
-        ///     Gets the combat component instance.
-        /// </summary>
-        public LogicComponent GetCombatComponent()
-        {
-            return this._components[1];
-        }
-
-        /// <summary>
-        ///     Gets the data instance.
-        /// </summary>
-        public LogicData GetData()
-        {
-            return this._data;
-        }
-
-        /// <summary>
-        ///     Gets the global id of this instance.
-        /// </summary>
-        public int GetGlobalID()
-        {
-            return this._globalId;
-        }
-
-        /// <summary>
-        ///     Sets the global id of this instance.
-        /// </summary>
-        public void SetGlobalID(int id)
-        {
-            this._globalId = id;
         }
 
         /// <summary>
@@ -119,7 +69,7 @@
         }
 
         /// <summary>
-        ///     Gets the y position.
+        ///     Gets the tile y position.
         /// </summary>
         public int GetTileY()
         {
@@ -127,7 +77,115 @@
         }
 
         /// <summary>
-        ///     Gets the width size in tiles.
+        ///     Gets the village type of this gameobject.
+        /// </summary>
+        public int GetVillageType()
+        {
+            return this._villageType;
+        }
+
+        /// <summary>
+        ///     Gets the global id of this gameobject.
+        /// </summary>
+        public int GetGlobalID()
+        {
+            return this._globalId;
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicLevel"/> instance.
+        /// </summary>
+        public LogicLevel GetLevel()
+        {
+            return this._level;
+        }
+
+        /// <summary>
+        ///     Gets the hitpoint component.
+        /// </summary>
+        public LogicHitpointComponent GetHitpointComponent()
+        {
+            return (LogicHitpointComponent) this._components[2];
+        }
+
+        /// <summary>
+        ///     Removes the specified component.
+        /// </summary>
+        public void RemoveComponent(int componentType)
+        {
+            if (this._components[componentType] != null)
+            {
+                this._components[componentType].RemoveGameObjectReferences(this);
+                this._components[componentType] = null;
+            }
+        }
+
+        /// <summary>
+        ///     Refreshes passable of tilemap.
+        /// </summary>
+        public void RefreshPassable()
+        {
+            this._level.GetTileMap().RefreshPassable(this);
+        }
+
+        /// <summary>
+        ///     Sets the initial position.
+        /// </summary>
+        public void SetInitialPosition(int x, int y)
+        {
+            this._position.Set(x, y);
+        }
+
+        /// <summary>
+        ///     Sets the gameobject position.
+        /// </summary>
+        public void SetPosition(LogicVector2 vector2)
+        {
+            this._position.Set(vector2.X, vector2.Y);
+        }
+
+        /// <summary>
+        ///     Sets the gameobject position.
+        /// </summary>
+        public void SetPositionXY(int x, int y)
+        {
+            this._position.Set(x, y);
+        }
+
+        /// <summary>
+        ///     Sets the global id.
+        /// </summary>
+        public void SetGlobalID(int globalId)
+        {
+            this._globalId = globalId;
+        }
+        
+        /// <summary>
+        ///     Sets the gameobject listener.
+        /// </summary>
+        public void SetListener(LogicGameObjectListener listener)
+        {
+            this._listener = listener;
+        }
+
+        /// <summary>
+        ///     Gets the gameobject type.
+        /// </summary>
+        public int GetGameObjectType()
+        {
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the height of gameobject in tiles.
+        /// </summary>
+        public virtual int GetHeightInTiles()
+        {
+            return 1;
+        }
+
+        /// <summary>
+        ///     Gets the width of gameobject in tiles.
         /// </summary>
         public virtual int GetWidthInTiles()
         {
@@ -135,35 +193,11 @@
         }
 
         /// <summary>
-        ///     Gets the heigh size in tiles.
+        ///     Gets if this gameobject should be destroy.
         /// </summary>
-        public virtual int GetHeighInTiles()
-        {
-            return 1;
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether the gameobject can be sell.
-        /// </summary>
-        public virtual bool CanSell()
+        public virtual bool ShouldDestruct()
         {
             return false;
-        }
-
-        /// <summary>
-        ///     Sets the position x,y.
-        /// </summary>
-        public void SetPositionXY(int x, int y)
-        {
-            this._position.Set(x, y);
-        }
-        
-        /// <summary>
-        ///     Gets the component type of this instance.
-        /// </summary>
-        public virtual int GetGameObjectType()
-        {
-            return 0;
         }
 
         /// <summary>
@@ -184,8 +218,8 @@
             checksum.WriteValue("type", this.GetGameObjectType());
             checksum.WriteValue("globalID", this._globalId);
             checksum.WriteValue("dataGlobalID", this._data.GetGlobalID());
-            checksum.WriteValue("x", this._position.X);
-            checksum.WriteValue("y", this._position.Y);
+            checksum.WriteValue("x", this.GetTileX());
+            checksum.WriteValue("y", this.GetTileY());
             checksum.WriteValue("seed", this._seed);
 
             if (this.GetHitpointComponent() != null)
@@ -220,17 +254,25 @@
         /// </summary>
         public virtual void Load(LogicJSONObject jsonObject)
         {
-            LogicJSONNumber xObject = jsonObject.GetJSONNumber("x");
-            LogicJSONNumber yObject = jsonObject.GetJSONNumber("y");
+            LogicJSONNumber xNumber = jsonObject.GetJSONNumber("x");
+            LogicJSONNumber yNumber = jsonObject.GetJSONNumber("y");
 
-            if (xObject != null && yObject != null)
+            for (int i = 0; i < this._components.Count; i++)
             {
-                this.SetPositionXY(xObject.GetIntValue() << 9, yObject.GetIntValue() << 9);
+                LogicComponent component = this._components[i];
+
+                if (component != null)
+                {
+                    component.Load(jsonObject);
+                }
             }
-            else
+
+            if (xNumber == null || yNumber == null)
             {
                 Debugger.Error("LogicGameObject::load - x or y is NULL!");
             }
+
+            this.SetPositionXY(xNumber.GetIntValue(), yNumber.GetIntValue());
         }
 
         /// <summary>
@@ -238,16 +280,18 @@
         /// </summary>
         public virtual void Save(LogicJSONObject jsonObject)
         {
-            jsonObject.Put("x", new LogicJSONNumber(this._position.X));
-            jsonObject.Put("y", new LogicJSONNumber(this._position.Y));
-        }
+            jsonObject.Put("x", new LogicJSONNumber(this.GetTileX()));
+            jsonObject.Put("y", new LogicJSONNumber(this.GetTileY()));
 
-        /// <summary>
-        ///     Gets the level instance.
-        /// </summary>
-        internal LogicLevel GetLevel()
-        {
-            return this._level;
+            for (int i = 0; i < this._components.Count; i++)
+            {
+                LogicComponent component = this._components[i];
+
+                if (component != null)
+                {
+                    component.Save(jsonObject);
+                }
+            }
         }
     }
 }

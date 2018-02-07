@@ -49,7 +49,7 @@
                         try
                         {
                             message.Decode();
-                            ServiceProcessor.EnqueueReceiveMessage(message);
+                            ServiceProcessor.ReceiveMessage(message);
                         }
                         catch (Exception exception)
                         {
@@ -80,7 +80,7 @@
                 throw new ArgumentNullException("exchangeName");
             }
 
-            ServiceProcessor.EnqueueSendMessage(message, exchangeName, routingKey);
+            ServiceProcessor.SendMessage(message, exchangeName, routingKey);
         }
 
         /// <summary>
@@ -92,6 +92,7 @@
 
             int encodingLength = message.GetEncodingLength();
             byte[] encodingByteArray = message.GetByteStream().GetByteArray();
+
             byte[] buffer = new byte[5 + encodingLength];
 
             Array.Copy(encodingByteArray, 0, buffer, 5, encodingLength);

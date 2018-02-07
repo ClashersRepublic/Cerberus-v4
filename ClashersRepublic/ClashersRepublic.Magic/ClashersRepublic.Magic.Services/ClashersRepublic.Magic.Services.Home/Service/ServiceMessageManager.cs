@@ -1,10 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
     using System;
+
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Home.Message;
     using ClashersRepublic.Magic.Services.Home.Player;
     using ClashersRepublic.Magic.Services.Home.Session;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Client;
@@ -95,8 +97,8 @@
             {
                 message.Message.GetByteStream().SetOffset(0);
                 message.Message.Decode();
-
-                if (GamePlayerManager.GetSession(message.GetSessionId(), out GameSession session))
+                
+                if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
                 {
                     MessageManager.ReceiveMessage(message.Message, session);
                 }
@@ -108,7 +110,7 @@
         /// </summary>
         internal static void ClientConnectedMessageReceived(ClientConnectedMessage message)
         {
-            GamePlayerManager.OnClientConnected(message.GetServerId(), message.GetSessionId(), message.AccountId, message.IsNewClient);
+            GameSessionManager.OnClientConnected(message.GetServerId(), message.GetSessionId(), message.AccountId, message.IsNewClient);
         }
 
         /// <summary>
@@ -116,7 +118,7 @@
         /// </summary>
         internal static void ClientDisconnectedMessageReceived(ClientDisconnectedMessage message)
         {
-            GamePlayerManager.OnClientDisconnected(message.GetSessionId());
+            GameSessionManager.OnClientDisconnected(message.GetSessionId());
         }
     }
 }

@@ -53,6 +53,7 @@
     <Compile Include="Achievement\LogicAchievementManager.cs" />
     <Compile Include="Avatar\LogicAvatar.cs" />
     <Compile Include="Avatar\LogicClientAvatar.cs" />
+    <Compile Include="Battle\LogicBattleLog.cs" />
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
     <Compile Include="Command\Home\LogicTrainUnitCommand.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
     <Compile Include="Command\LogicCommand.cs" />
     <Compile Include="Command\LogicCommandManager.cs" />
+    <Compile Include="Cooldown\LogicCooldown.cs" />
+    <Compile Include="Cooldown\LogicCooldownManager.cs" />
     <Compile Include="Data\GlobalID.cs" />
     <Compile Include="Data\LogicAchievementData.cs" />
     <Compile Include="Data\LogicAllianceBadgeData.cs" />
@@ -117,7 +120,7 @@
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicHitpointComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
-    <Compile Include="GameObject\LogicBuilding.cs" />
+    <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
     <Compile Include="GameObject\LogicGameObject.cs" />
     <Compile Include="GameObject\LogicGameObjectFactory.cs" />
     <Compile Include="GameObject\LogicGameObjectManager.cs" />
@@ -3458,7 +3461,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Battle\" />
     <Folder Include="Command\Battle\" />
     <Folder Include="Command\Server\" />
     <Folder Include="Message\Alliance\Stream\" />

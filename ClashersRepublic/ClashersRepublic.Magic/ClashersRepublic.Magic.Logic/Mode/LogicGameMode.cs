@@ -110,7 +110,7 @@
         /// </summary>
         public void SetBattleOver()
         {
-
+            
         }
 
         /// <summary>
@@ -150,7 +150,7 @@
                 }
             }
 
-            if (this._state <= 5 && ((1 << this._state) & 0x2C) != 0)
+            if (this._state == 2 || this._state == 3 || this._state == 5)
             {
                 if (this._battleTimer != null &&
                     this._battleTimer.GetRemainingSeconds(this._time) == 0 ||
@@ -176,9 +176,9 @@
                 this._level.SetHomeOwnerAvatar(avatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
 
-                this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._time);
-                this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._time);
-                this._maintenanceTimer.StartTimer(home.GetNextMaintenanceSeconds(), this._time);
+                this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._time, false, -1);
+                this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._time, false, -1);
+                this._maintenanceTimer.StartTimer(home.GetNextMaintenanceSeconds(), this._time, false, -1);
             }
         }
     }

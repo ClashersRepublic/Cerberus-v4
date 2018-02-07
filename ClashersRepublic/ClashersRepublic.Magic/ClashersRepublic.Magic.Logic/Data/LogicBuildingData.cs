@@ -284,6 +284,11 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.UpgradesUnits;
         }
 
+        public bool IsLocked()
+        {
+            return this.Locked;
+        }
+
         public int GetUnitStorageCapacity(int level)
         {
             return this.HousingSpace[level];

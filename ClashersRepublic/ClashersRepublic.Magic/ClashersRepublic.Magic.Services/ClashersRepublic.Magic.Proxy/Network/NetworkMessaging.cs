@@ -144,10 +144,10 @@
 
                         try
                         {
-                            message.Decode();
-
                             if (!message.IsServerToClientMessage())
                             {
+                                message.Decode();
+
                                 if (message.GetServiceNodeType() == 1)
                                 {
                                     NetworkManager.ReceiveMessage(message, this);

@@ -45,6 +45,14 @@
         }
 
         /// <summary>
+        ///     Gets the stream offset.
+        /// </summary>
+        public int GetOffset()
+        {
+            return this._offset;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the stream is at end.
         /// </summary>
         public bool IsAtEnd()

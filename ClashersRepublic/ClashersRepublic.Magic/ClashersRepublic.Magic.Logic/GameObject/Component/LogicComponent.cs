@@ -18,6 +18,17 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._parent.GetLevel().GetComponentManager(this._parent.GetVillageType()).RemoveComponent(this);
+
+            this._enabled = false;
+            this._parent = null;
+        }
+
+        /// <summary>
         ///     Gets the parent of this component.
         /// </summary>
         public LogicGameObject GetParent()
@@ -47,6 +58,14 @@
         public virtual int GetComponentType()
         {
             return 0;
+        }
+
+        /// <summary>
+        ///     Removes all references for the specified gameobject.
+        /// </summary>
+        public virtual void RemoveGameObjectReferences(LogicGameObject gameObject)
+        {
+            // RemoveGameObjectReferences.
         }
 
         /// <summary>

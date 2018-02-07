@@ -1,8 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
     using System;
+
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Session;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
@@ -78,8 +80,6 @@
         {
             if (message.Message != null)
             {
-                Console.WriteLine(BitConverter.ToString(message.Message.GetByteStream().GetByteArray()));
-
                 if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
                 {
                     if (session.Client.State == 6)

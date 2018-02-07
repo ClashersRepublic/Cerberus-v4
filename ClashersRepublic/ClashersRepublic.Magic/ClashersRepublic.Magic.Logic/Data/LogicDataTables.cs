@@ -165,6 +165,24 @@
         }
 
         /// <summary>
+        ///     Gets the town hall level data by index.
+        /// </summary>
+        public static LogicTownhallLevelData GetTownHallLevel(int levelIndex)
+        {
+            if (levelIndex > -1)
+            {
+                if (levelIndex < LogicDataTables._dataTables[14].GetItemCount())
+                {
+                    return (LogicTownhallLevelData) LogicDataTables._dataTables[14].GetItemAt(levelIndex);
+                }
+            }
+
+            Debugger.Error("LogicDataTables::getTownHallLevel parameter out of bounds");
+
+            return null;
+        }
+
+        /// <summary>
         ///     Gets the resource data by name.
         /// </summary>
         public static LogicResourceData GetResourceByName(string name)

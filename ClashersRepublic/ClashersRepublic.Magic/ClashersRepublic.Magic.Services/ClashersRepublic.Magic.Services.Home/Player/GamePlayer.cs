@@ -11,8 +11,7 @@
 
     internal class GamePlayer
     {
-        [BsonId]
-        public ObjectId _id;
+        [BsonId] public ObjectId _id;
 
         public int HighId;
         public int LowId;
@@ -25,15 +24,14 @@
         internal LogicClientHome LogicClientHome;
         internal LogicClientAvatar LogicClientAvatar;
 
-        internal string CurrentSessionId;
+        internal string CurrentSessionId { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GamePlayer"/> class.
         /// </summary>
         public GamePlayer()
         {
-            this.LogicClientHome = new LogicClientHome();
-            this.LogicClientAvatar = new LogicClientAvatar();
+            // GamePlayer.
         }
 
         /// <summary>
@@ -71,8 +69,11 @@
         /// </summary>
         public void LoadFromDocuments()
         {
+            this.LogicClientHome = new LogicClientHome();
+            this.LogicClientAvatar = new LogicClientAvatar();
+
             this.LogicClientHome.Load((LogicJSONObject) LogicJSONParser.Parse(this.HomeDocument.ToJson()));
-            this.LogicClientAvatar.Load((LogicJSONObject)LogicJSONParser.Parse(this.AvatarDocument.ToJson()));
+            this.LogicClientAvatar.Load((LogicJSONObject) LogicJSONParser.Parse(this.AvatarDocument.ToJson()));
         }
     }
 }

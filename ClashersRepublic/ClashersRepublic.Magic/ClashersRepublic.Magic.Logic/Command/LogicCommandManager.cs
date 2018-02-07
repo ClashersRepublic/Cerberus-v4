@@ -63,26 +63,12 @@
             }
 
             stream.EnableCheckSum(false);
-
-            int commandCount = stream.ReadInt();
-
-            for (int i = 0; i < commandCount; i++)
+            
+            for (int i = 0, commandCount = stream.ReadInt(); i < commandCount; i++)
             {
-                LogicCommand command = LogicCommandManager.CreateCommand(stream.ReadInt());
-
-                if (command == null)
-                {
-                    Debugger.Error("LogicCommandManager::decodeCommand() - command is null");
-                    break;
-                }
-                else
-                {
-                    command.Decode(stream);
-                }
-
-                this._commandList.Add(command);
+                this._commandList.Add(LogicCommandManager.DecodeCommand(stream));
             }
-
+            
             stream.EnableCheckSum(true);
         }
 
@@ -161,7 +147,10 @@
 
                     if (command.GetExecuteSubTick() < subTick)
                     {
-                        string message = "Execute command failed! Command should have been executed already. (type=" + command.GetCommandType() + " server_tick=" + subTick + " command_tick=" + command.GetExecuteSubTick() + ")";
+                        string message = "Execute command failed! Command should have been executed already." +
+                                         " (type=" + command.GetCommandType() + 
+                                         " server_tick=" + subTick + 
+                                         " command_tick=" + command.GetExecuteSubTick() + ")";
 
                         Debugger.Error(message);
 
@@ -188,7 +177,9 @@
                         }
                         else
                         {
-                            this._listener.CommandExecuteFailed(command, "Execute command failed! Command not allowed in current state. (type=" + command.GetCommandType() + " current_state=" + this._level.GetState() + ")");
+                            this._listener.CommandExecuteFailed(command, "Execute command failed! Command not allowed in current state." +
+                                                                         " (type=" + command.GetCommandType() + 
+                                                                         " current_state=" + this._level.GetState() + ")");
                         }
                     }
                 }

@@ -51,7 +51,7 @@
             {
                 string path = fileArray.GetJSONObject(i).GetJSONString("file").GetStringValue();
 
-                if (File.Exists("dl/" + path))
+                if (!File.Exists("dl/" + path))
                 {
                     tasks.Add(Task.Run(() => Program.DownloadContent(fingerprintSha.GetStringValue(), path)));
                 }
@@ -70,7 +70,24 @@
 
             if (content.Length > 0)
             {
-                if (filePath.EndsWith(".csv"))
+                content = Program.Decompress(Path.GetExtension(filePath), content);
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName("dl/" + filePath));
+            File.WriteAllBytes("dl/" + filePath, content);
+            Console.WriteLine("File " + filePath + " downloaded");
+        }
+
+        /// <summary>
+        ///     Decompresses the specified asset.
+        /// </summary>
+        private static byte[] Decompress(string fileExtension, byte[] content)
+        {
+            byte[] decompressed = content;
+
+            switch (fileExtension)
+            {
+                case ".csv":
                 {
                     using (MemoryStream inputStream = new MemoryStream(content))
                     {
@@ -89,15 +106,15 @@
                             decompresser.SetDecoderProperties(properties);
                             decompresser.Code(inputStream, outputStream, inputStream.Length, fileLength, null);
 
-                            content = outputStream.ToArray();
+                            decompressed = outputStream.ToArray();
                         }
                     }
+
+                    break;
                 }
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName("dl/" + filePath));
-            File.WriteAllBytes("dl/" + filePath, content);
-            Console.WriteLine("File " + filePath + " downloaded");
+            return decompressed;
         }
     }
 }

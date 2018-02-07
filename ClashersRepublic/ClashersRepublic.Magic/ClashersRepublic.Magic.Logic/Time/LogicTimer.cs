@@ -5,7 +5,8 @@
 
     public class LogicTimer
     {
-        private int _totalTime;
+        private int _remainingTime;
+        private int _EndTimestamp;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicTimer"/> class.
@@ -20,7 +21,7 @@
         /// </summary>
         public int GetRemainingSeconds(LogicTime time)
         {
-            int remaining = this._totalTime - time;
+            int remaining = this._remainingTime - time;
 
             if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
             {
@@ -45,29 +46,47 @@
         /// </summary>
         public int GetRemainingMS(LogicTime time)
         {
-            int remaining = this._totalTime - time;
+            int remaining = this._remainingTime - time;
 
             if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
             {
                 return 16 * remaining;
             }
-
-            int ms = 1000 * (remaining / 60);
-
-            if (ms % 60 != 0)
+            else
             {
-                ms += 2133 * ms >> 7;
-            }
+                int ms = 1000 * (remaining / 60);
 
-            return ms;
+                if (ms % 60 != 0)
+                {
+                    ms += 2133 * ms >> 7;
+                }
+
+                return ms;
+            }
         }
 
         /// <summary>
         ///     Starts the timer.
         /// </summary>
-        public void StartTimer(int totalSecs, LogicTime time)
+        public void StartTimer(int totalSecs, LogicTime time, bool setEndTimestamp, int currentTimestamp)
         {
-            this._totalTime = (int) (1000L * totalSecs / 16L) + time;
+            int totalTicks = 0;
+
+            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            {
+                totalTicks = (int) (1000L * totalTicks / 16);
+            }
+            else
+            {
+                totalTicks = 60 * totalTicks;
+            }
+
+            this._remainingTime = totalTicks + time;
+
+            if (setEndTimestamp)
+            {
+                this._EndTimestamp = currentTimestamp + totalSecs;
+            }
         }
 
         /// <summary>
@@ -75,15 +94,45 @@
         /// </summary>
         public void FastForward(int totalSecs)
         {
-            this._totalTime -= (int) (1000L * totalSecs / 16L);
+            int totalTicks = 0;
+
+            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            {
+                totalTicks = (int)(1000L * totalTicks / 16);
+            }
+            else
+            {
+                totalTicks = 60 * totalTicks;
+            }
+
+            this._remainingTime -= totalTicks;
         }
 
         /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
-        public void FastForwardSubticks(int time)
+        public void FastForwardSubticks(int tick)
         {
-            this._totalTime -= time;
+            if (tick > 0)
+            {
+                this._remainingTime -= tick;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the end timestamp.
+        /// </summary>
+        public void SetEndTimestamp(int endTimestamp)
+        {
+            this._EndTimestamp = endTimestamp;
+        }
+
+        /// <summary>
+        ///     Gets the end timestamp time.
+        /// </summary>
+        public int GetEndTimestamp()
+        {
+            return this._EndTimestamp;
         }
     }
 }

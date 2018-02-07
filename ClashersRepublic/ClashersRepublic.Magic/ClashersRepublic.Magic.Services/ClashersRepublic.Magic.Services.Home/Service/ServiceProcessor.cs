@@ -62,7 +62,7 @@
         /// <summary>
         ///     Enqueues the specified message.
         /// </summary>
-        internal static void EnqueueReceiveMessage(ServiceMessage message)
+        internal static void ReceiveMessage(ServiceMessage message)
         {
             ServiceProcessor._receiveMessageQueue.Enqueue(message);
         }
@@ -70,7 +70,7 @@
         /// <summary>
         ///     Enqueues the specified message.
         /// </summary>
-        internal static void EnqueueSendMessage(ServiceMessage message, string exchangeName, string routingKey)
+        internal static void SendMessage(ServiceMessage message, string exchangeName, string routingKey)
         {
             ServiceProcessor._sendMessageQueue.Enqueue(new QueueItem
             {

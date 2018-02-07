@@ -46,6 +46,11 @@
 
             Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
 
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine(i << 31 >> 31);
+            }
+
             CmdHandler.Initialize();
         }
 

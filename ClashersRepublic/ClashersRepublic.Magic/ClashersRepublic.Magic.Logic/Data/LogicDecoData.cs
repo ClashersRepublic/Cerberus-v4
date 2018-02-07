@@ -4,6 +4,9 @@ namespace ClashersRepublic.Magic.Logic.Data
 
     public class LogicDecoData : LogicData
     {
+        private bool _inShop;
+        private LogicResourceData _buildResourceData;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicDecoData" /> class.
         /// </summary>
@@ -11,38 +14,67 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             // LogicDecoData.
         }
-
-        public string TID { get; protected set; }
-        public string InfoTID { get; protected set; }
-        public string SWF { get; protected set; }
-        public string ExportName { get; protected set; }
-        public string ExportNameConstruction { get; protected set; }
-        public string BuildResource { get; protected set; }
-        public int BuildCost { get; protected set; }
-        public int RequiredExpLevel { get; protected set; }
-        public int MaxCount { get; protected set; }
-        public int Width { get; protected set; }
-        public int Height { get; protected set; }
-        public string Icon { get; protected set; }
-        public int BaseGfx { get; protected set; }
-        public string ExportNameBase { get; protected set; }
-        public bool IsRed { get; protected set; }
-        public bool NotInShop { get; protected set; }
-        public int VillageType { get; protected set; }
-        public int RedMul { get; protected set; }
-        public int GreenMul { get; protected set; }
-        public int BlueMul { get; protected set; }
-        public int RedAdd { get; protected set; }
-        public int GreenAdd { get; protected set; }
-        public int BlueAdd { get; protected set; }
-        public bool LightsOn { get; protected set; }
+        
+        protected string SWF { get; set; }
+        protected string ExportName { get; set; }
+        protected string ExportNameConstruction { get; set; }
+        protected int BuildCost { get; set; }
+        protected int RequiredExpLevel { get; set; }
+        protected int MaxCount { get; set; }
+        protected int Width { get; set; }
+        protected int Height { get; set; }
+        protected string Icon { get; set; }
+        protected int BaseGfx { get; set; }
+        protected string ExportNameBase { get; set; }
+        protected bool IsRed { get; set; }
+        public int VillageType { get; set; }
+        protected int RedMul { get; set; }
+        protected int GreenMul { get; set; }
+        protected int BlueMul { get; set; }
+        protected int RedAdd { get; set; }
+        protected int GreenAdd { get; set; }
+        protected int BlueAdd { get; set; }
+        protected bool LightsOn { get; set; }
 
         /// <summary>
         ///     Called when all instances has been loaded for initialized members in instance.
         /// </summary>
         public override void LoadingFinished()
         {
-            // LoadingFinished.
+            this._inShop = !this.GetBooleanValue("NotInShop", 0);
+            this._buildResourceData = LogicDataTables.GetResourceByName(this.GetValue("BuildingResource", 0));
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this deco is in shop.
+        /// </summary>
+        public bool IsInShop()
+        {
+            return this._inShop;
+        }
+
+        /// <summary>
+        ///     Gets max count of this deco.
+        /// </summary>
+        public int GetMaxCount()
+        {
+            return this.MaxCount;
+        }
+
+        /// <summary>
+        ///     Gets the required exp level.
+        /// </summary>
+        public int GetRequiredExpLevel()
+        {
+            return this.RequiredExpLevel;
+        }
+
+        /// <summary>
+        ///     Gets the required exp level.
+        /// </summary>
+        public int GetSellPrice()
+        {
+            return this.BuildCost / 10;
         }
     }
 }

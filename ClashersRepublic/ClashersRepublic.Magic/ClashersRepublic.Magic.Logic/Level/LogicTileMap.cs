@@ -38,7 +38,7 @@
                 if (tileY >= 0)
                 {
                     int sizeX = gameObject.GetWidthInTiles();
-                    int sizeY = gameObject.GetHeighInTiles();
+                    int sizeY = gameObject.GetHeightInTiles();
 
                     for (int i = 0; i < sizeY; i++)
                     {
@@ -64,7 +64,7 @@
                 if (tileY >= 0)
                 {
                     int sizeX = gameObject.GetWidthInTiles();
-                    int sizeY = gameObject.GetHeighInTiles();
+                    int sizeY = gameObject.GetHeightInTiles();
 
                     for (int i = 0; i < sizeY; i++)
                     {
@@ -93,6 +93,14 @@
             }
 
             this._roomEnabled = state;
+        }
+
+        /// <summary>
+        ///     Refreshes passable of this gameobject.
+        /// </summary>
+        public void RefreshPassable(LogicGameObject gameObject)
+        {
+
         }
 
         /// <summary>

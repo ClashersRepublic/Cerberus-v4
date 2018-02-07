@@ -78,8 +78,6 @@
                 player.LowId = GameDatabase._counters[player.HighId].FindOneAndUpdate(T => T["_id"] == "Accounts", Builders<BsonDocument>.Update.Inc("last_id", 1))["last_id"].AsInt32 + 1;
                     
                 GameDatabase._nextCollectionIndex = ++GameDatabase._nextCollectionIndex % GameDatabase._players.Length;
-
-                Console.WriteLine(player.HighId + "-" + player.LowId);
             }
 
             GameDatabase._players[player.HighId].InsertOne(player);
@@ -90,7 +88,17 @@
         /// </summary>
         internal static void SaveAccount(GamePlayer player)
         {
-            GameDatabase._saveAccountQueue.Enqueue(player);
+            GamePlayer savePlayer = new GamePlayer
+            {
+                _id = player._id,
+
+                AvatarDocument = player.AvatarDocument,
+                HomeDocument = player.HomeDocument,
+
+                LastSaveTime = player.LastSaveTime
+            };
+
+            GameDatabase._saveAccountQueue.Enqueue(savePlayer);
         }
 
         /// <summary>

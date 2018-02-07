@@ -5,6 +5,7 @@
     using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Home.Player;
     using ClashersRepublic.Magic.Services.Home.Service;
+    using ClashersRepublic.Magic.Services.Home.Session;
     using ClashersRepublic.Magic.Services.Logic.Resource;
 
     using ClashersRepublic.Magic.Titan.Math;
@@ -42,6 +43,7 @@
 
             GameDatabase.Initialize();
             GamePlayerManager.Initialize();
+            GameSessionManager.Initialize();
         }
 
         /// <summary>

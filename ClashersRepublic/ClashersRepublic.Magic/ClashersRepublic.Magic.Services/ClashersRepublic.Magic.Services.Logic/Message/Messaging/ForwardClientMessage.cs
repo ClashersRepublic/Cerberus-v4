@@ -62,7 +62,7 @@
                 this.Stream.WriteShort(this.Message.GetMessageType());
                 this.Stream.WriteShort(this.Message.GetMessageVersion());
                 this.Stream.WriteVInt(this.Message.GetEncodingLength());
-                this.Stream.WriteBytes(this.Message.GetByteStream().GetByteArray(), this.Message.GetEncodingLength());
+                this.Stream.WriteBytes(this.Message.GetByteStream().GetByteArray(), this.Message.GetByteStream().GetOffset());
             }
         }
 

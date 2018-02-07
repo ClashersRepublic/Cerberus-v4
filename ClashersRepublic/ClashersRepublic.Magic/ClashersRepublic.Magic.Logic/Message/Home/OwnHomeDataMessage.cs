@@ -6,7 +6,7 @@
 
     public class OwnHomeDataMessage : PiranhaMessage
     {
-        public int Timestamp;
+        public int CurrentTimestamp;
         public int SecondsSinceLastSave;
 
         public LogicClientAvatar LogicClientAvatar;
@@ -38,7 +38,7 @@
             this.LogicClientHome = new LogicClientHome();
             this.LogicClientAvatar = new LogicClientAvatar();
 
-            this.Timestamp = this.Stream.ReadInt();
+            this.CurrentTimestamp = this.Stream.ReadInt();
             this.Stream.ReadInt();
             this.SecondsSinceLastSave = this.Stream.ReadInt();
 
@@ -64,7 +64,7 @@
         {
             base.Encode();
 
-            this.Stream.WriteInt(this.Timestamp);
+            this.Stream.WriteInt(this.CurrentTimestamp);
             this.Stream.WriteInt(-1);
             this.Stream.WriteInt(this.SecondsSinceLastSave);
 

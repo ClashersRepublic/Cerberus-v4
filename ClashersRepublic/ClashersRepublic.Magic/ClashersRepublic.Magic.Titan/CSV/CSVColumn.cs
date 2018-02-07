@@ -64,11 +64,6 @@
             switch (this.ColumnType)
             {
                 case -1:
-                {
-                    this._stringValue.Add(string.Empty);
-                    break;
-                }
-
                 case 0:
                 {
                     this._stringValue.Add(string.Empty);
