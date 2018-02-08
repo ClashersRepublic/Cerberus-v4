@@ -9,7 +9,7 @@
         /// <summary>
         ///     Creates a gameobject with specified data.
         /// </summary>
-        public static LogicGameObject CreateGameObject(LogicData data, LogicLevel level)
+        public static LogicGameObject CreateGameObject(LogicData data, LogicLevel level, int villageType)
         {
             LogicGameObject gameObject = null;
 
@@ -17,7 +17,7 @@
             {
                 case 0:
                 {
-                    gameObject = new LogicBuilding(data, level);
+                    gameObject = new LogicBuilding(data, level, villageType);
                     break;
                 }
 

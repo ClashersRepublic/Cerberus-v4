@@ -223,6 +223,38 @@
         }
 
         /// <summary>
+        ///     Gets the diamonds count.
+        /// </summary>
+        public int GetDiamonds()
+        {
+            return this._diamonds;
+        }
+
+        /// <summary>
+        ///     Sets the diamonds count.
+        /// </summary>
+        public void SetDiamonds(int count)
+        {
+            this._diamonds = count;
+        }
+
+        /// <summary>
+        ///     Gets the free diamonds count.
+        /// </summary>
+        public int GetFreeDiamonds()
+        {
+            return this._freeDiamonds;
+        }
+
+        /// <summary>
+        ///     Sets the free diamonds count.
+        /// </summary>
+        public void SetFreeDiamonds(int count)
+        {
+            this._freeDiamonds = count;
+        }
+
+        /// <summary>
         ///     Gets the league type.
         /// </summary>
         public int GetLeagueType()

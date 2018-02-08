@@ -187,6 +187,48 @@
         }
 
         /// <summary>
+        ///     Helpers for change the count of commodity array.
+        /// </summary>
+        public void CommodityCountChangeHelper(int commodityType, LogicData data, int count)
+        {
+            switch (data.GetDataType())
+            {
+                case 2:
+                {
+                    if (commodityType == 0)
+                    {
+                        int resourceCount = this.GetResourceCount((LogicResourceData) data);
+                        int newResourceCount = LogicMath.Max(resourceCount + count, 0);
+
+                        if (newResourceCount > 0)
+                        {
+                            int resourceCap = this.GetResourceCap((LogicResourceData) data);
+
+                            if (resourceCount < resourceCap)
+                            {
+                                if (newResourceCount > resourceCap)
+                                {
+                                    newResourceCount = resourceCap;
+                                }
+
+                                if (newResourceCount > resourceCount)
+                                {
+                                    this.SetResourceCount((LogicResourceData) data, count);
+                                }
+                            }
+                        }
+                    }
+                    else if (commodityType == 1)
+                    {
+                        this.SetResourceCap((LogicResourceData) data, this.GetResourceCap((LogicResourceData) data) + count);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the player is in alliance.
         /// </summary>
         /// <returns></returns>
@@ -225,6 +267,78 @@
         public virtual int GetExpLevel()
         {
             return 1;
+        }
+
+        /// <summary>
+        ///     Gets the unused resource cap.
+        /// </summary>
+        public int GetUnusedResourceCap(LogicResourceData data)
+        {
+            return LogicMath.Max(this.GetResourceCap(data) - this.GetResourceCount(data), 0);
+        }
+
+        /// <summary>
+        ///     Gets the resource cap.
+        /// </summary>
+        public int GetResourceCap(LogicResourceData data)
+        {
+            if (data.PremiumCurrency)
+            {
+                Debugger.Warning("LogicClientAvatar::getResourceCap shouldn't be used for diamonds");
+            }
+            else
+            {
+                int index = -1;
+
+                for (int i = 0; i < this._resourceCap.Count; i++)
+                {
+                    if (this._resourceCount[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    return this._resourceCap[index].GetCount();
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Sets the resource cap.
+        /// </summary>
+        public void SetResourceCap(LogicResourceData data, int count)
+        {
+            if (data.PremiumCurrency)
+            {
+                Debugger.Warning("LogicClientAvatar::setResourceCap shouldn't be used for diamonds");
+            }
+            else
+            {
+                int index = -1;
+
+                for (int i = 0; i < this._resourceCap.Count; i++)
+                {
+                    if (this._resourceCount[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    this._resourceCap[index].SetCount(count);
+                }
+                else
+                {
+                    this._resourceCap.Add(new LogicDataSlot(data, count));
+                }
+            }
         }
 
         /// <summary>

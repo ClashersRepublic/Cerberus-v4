@@ -61,6 +61,7 @@
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
     <Compile Include="Command\LogicCommand.cs" />
     <Compile Include="Command\LogicCommandManager.cs" />
+    <Compile Include="Command\Server\LogicServerCommand.cs" />
     <Compile Include="Cooldown\LogicCooldown.cs" />
     <Compile Include="Cooldown\LogicCooldownManager.cs" />
     <Compile Include="Data\GlobalID.cs" />
@@ -119,8 +120,10 @@
     <Compile Include="GameObject\Component\LogicComponent.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicHitpointComponent.cs" />
+    <Compile Include="GameObject\Component\LogicResourceProductionComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
+    <Compile Include="GameObject\LogicBuilding.cs" />
     <Compile Include="GameObject\LogicGameObject.cs" />
     <Compile Include="GameObject\LogicGameObjectFactory.cs" />
     <Compile Include="GameObject\LogicGameObjectManager.cs" />
@@ -3462,7 +3465,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Command\Battle\" />
-    <Folder Include="Command\Server\" />
     <Folder Include="Message\Alliance\Stream\" />
     <Folder Include="Message\Avatar\Stream\" />
     <Folder Include="Message\Battle\" />

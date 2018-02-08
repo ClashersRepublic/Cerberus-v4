@@ -33,14 +33,32 @@
             this._data = data;
             this._level = level;
             this._villageType = villageType;
-            this._position = new LogicVector2();
-            
+
+            this._position = new LogicVector2();         
             this._listener = new LogicGameObjectListener();
             this._components = new LogicArrayList<LogicComponent>(21);
 
-            for (int i = 0; i < 21; i++)
+            for (int i = 0; i < 17; i++)
             {
                 this._components.Add(null);
+            }
+        }
+
+        /// <summary>
+        ///     Adds the specified component.
+        /// </summary>
+        public void AddComponent(LogicComponent component)
+        {
+            int componentType = component.GetComponentType();
+
+            if (this._components[componentType] == null)
+            {
+                this._level.GetComponentManager(this._villageType).AddComponent(component);
+                this._components[componentType] = component;
+            }
+            else
+            {
+                Debugger.Error("LogicGameObject::addComponent - Component is already added.");
             }
         }
 
@@ -98,6 +116,24 @@
         public LogicLevel GetLevel()
         {
             return this._level;
+        }
+
+        /// <summary>
+        ///     Gets the specified component.
+        /// </summary>
+        public LogicComponent GetComponent(int componentType, bool needEnabled)
+        {
+            LogicComponent component = this._components[componentType];
+
+            if (component != null)
+            {
+                if (!needEnabled || component.IsEnabled())
+                {
+                    return component;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

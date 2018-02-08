@@ -460,7 +460,7 @@
                                 return;
                             }
 
-                            LogicGameObject gameObject = LogicGameObjectFactory.CreateGameObject(data, this._level);
+                            LogicGameObject gameObject = LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
 
                             if (gameObject != null)
                             {

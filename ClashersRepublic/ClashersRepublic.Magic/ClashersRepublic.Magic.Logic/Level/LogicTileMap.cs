@@ -6,8 +6,10 @@
     {
         private byte _passableFlag;
         private bool _roomEnabled;
-        private int _x;
-        private int _y;
+
+        private int _sizeX;
+        private int _sizeY;
+
         private LogicTile[] _tiles;
 
         /// <summary>
@@ -15,8 +17,8 @@
         /// </summary>
         public LogicTileMap(int x, int y)
         {
-            this._x = x;
-            this._y = y;
+            this._sizeX = x;
+            this._sizeY = y;
             this._tiles = new LogicTile[x * y];
 
             for (int i = 0; i < this._tiles.Length; i++)
@@ -44,7 +46,7 @@
                     {
                         for (int j = 0; j < sizeX; j++)
                         {
-                            this._tiles[tileX + j + this._x * tileY].AddGameObject(gameObject);
+                            this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
                         }
                     }
                 }
@@ -70,8 +72,8 @@
                     {
                         for (int j = 0; j < sizeX; j++)
                         {
-                            this._tiles[oldTileX + j + this._x * oldTileY].RemoveGameObject(gameObject);
-                            this._tiles[tileX + j + this._x * tileY].AddGameObject(gameObject);
+                            this._tiles[oldTileX + j + this._sizeX * oldTileY].RemoveGameObject(gameObject);
+                            this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
                         }
                     }
                 }
@@ -110,16 +112,12 @@
         {
             if (this._roomEnabled)
             {
-                int tileCount = this._x * this._y;
+                int tileCount = this._sizeX * this._sizeY;
 
                 for (int i = 0; i < tileCount; i++)
                 {
                     LogicTile tmp = this._tiles[i];
-
-                    bool isPassable = tmp.IsFullyNotPassable();
-                    byte isPassableVal = isPassable ? (byte) 1 : (byte) 0;
-
-                    tmp.SetRoomIdx(isPassableVal << 31 >> 31);
+                    tmp.SetRoomIdx(tmp.IsFullyNotPassable() ? -1 : 0);
                 }
                 
                 for (int i = 0, roomId = 1; i < tileCount; i++)
