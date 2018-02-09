@@ -81,67 +81,71 @@
 
                 if (length >= messageLength)
                 {
-                    byte[] messageByteArray = new byte[messageLength];
-                    Array.Copy(buffer, 7, messageByteArray, 0, messageLength);
+                    int encodingLength = messageLength;
+                    byte[] encodingByteArray = new byte[messageLength];
+
+                    Array.Copy(buffer, 7, encodingByteArray, 0, messageLength);
+
+                    if (this._receiveEncrypter == null)
+                    {
+                        if (this.PepperStep != -1)
+                        {
+                            if (this.PepperStep == 0)
+                            {
+                                if (messageType == 10101)
+                                {
+                                    this.InitEncrypters("nonce");
+
+                                    byte[] encryptedByteArray = encodingByteArray;
+                                    byte[] decryptedByteArray = new byte[encryptedByteArray.Length - this._receiveEncrypter.GetOverheadEncryption()];
+
+                                    int encryptionResult = this._receiveEncrypter.Decrypt(encryptedByteArray, decryptedByteArray, messageLength);
+
+                                    if (encryptionResult != 0)
+                                    {
+                                        Logging.Error(this, "NetworkMessaging::onReceive encryption failure, code: " + encryptionResult);
+                                    }
+
+                                    encodingByteArray = decryptedByteArray;
+                                    encodingLength -= this._receiveEncrypter.GetOverheadEncryption();
+                                }
+                                else if (messageType == 10100)
+                                {
+                                    this.HandlePepperAuthentificationMessage(encodingByteArray);
+                                }
+                            }
+                            else if (this.PepperStep == 1)
+                            {
+                                if (messageType == 10101)
+                                {
+                                    this.HandlePepperLoginMessage(encodingByteArray);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        byte[] encryptedByteArray = encodingByteArray;
+                        byte[] decryptedByteArray = new byte[encryptedByteArray.Length - this._receiveEncrypter.GetOverheadEncryption()];
+
+                        int encryptionResult = this._receiveEncrypter.Decrypt(encryptedByteArray, decryptedByteArray, messageLength);
+
+                        if (encryptionResult != 0)
+                        {
+                            Logging.Error(this, "NetworkMessaging::onReceive encryption failure, code: " + encryptionResult);
+                        }
+
+                        encodingByteArray = decryptedByteArray;
+                        encodingLength -= this._receiveEncrypter.GetOverheadEncryption();
+                    }
 
                     PiranhaMessage message = LogicMagicMessageFactory.CreateMessageByType(messageType);
 
                     if (message != null)
                     {
                         message.SetMessageVersion((short) messageVersion);
-                        message.GetByteStream().SetByteArray(messageByteArray, length);
+                        message.GetByteStream().SetByteArray(encodingByteArray, encodingLength);
                         
-                        if (this._receiveEncrypter == null)
-                        {
-                            if (this.PepperStep != -1)
-                            {
-                                if (this.PepperStep == 0)
-                                {
-                                    if (messageType == 10101)
-                                    {
-                                        this.InitEncrypters("nonce");
-
-                                        byte[] encryptedByteArray = message.GetByteStream().RemoveByteArray();
-                                        byte[] decryptedByteArray = new byte[encryptedByteArray.Length - this._receiveEncrypter.GetOverheadEncryption()];
-
-                                        int encryptionResult = this._receiveEncrypter.Decrypt(encryptedByteArray, decryptedByteArray, messageLength);
-
-                                        if (encryptionResult != 0)
-                                        {
-                                            Logging.Error(this, "NetworkMessaging::onReceive encryption failure, code: " + encryptionResult);
-                                        }
-
-                                        message.GetByteStream().SetByteArray(decryptedByteArray, decryptedByteArray.Length);
-                                    }
-                                    else if (messageType == 10100)
-                                    {
-                                        this.HandlePepperAuthentificationMessage(message);
-                                    }
-                                }
-                                else if (this.PepperStep == 1)
-                                {
-                                    if (messageType == 10101)
-                                    {
-                                        this.HandlePepperLoginMessage(message);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            byte[] encryptedByteArray = message.GetByteStream().RemoveByteArray();
-                            byte[] decryptedByteArray = new byte[encryptedByteArray.Length - this._receiveEncrypter.GetOverheadEncryption()];
-
-                            int encryptionResult = this._receiveEncrypter.Decrypt(encryptedByteArray, decryptedByteArray, messageLength);
-
-                            if (encryptionResult != 0)
-                            {
-                                Logging.Error(this, "NetworkMessaging::onReceive encryption failure, code: " + encryptionResult);
-                            }
-
-                            message.GetByteStream().SetByteArray(decryptedByteArray, decryptedByteArray.Length);
-                        }
-
                         try
                         {
                             if (!message.IsServerToClientMessage())
@@ -321,7 +325,7 @@
         /// <summary>
         ///     Handles the specified pepper authentification message.
         /// </summary>
-        internal void HandlePepperAuthentificationMessage(PiranhaMessage message)
+        internal void HandlePepperAuthentificationMessage(byte[] messageByteArray)
         {
             this.PepperStep = 1;
         }
@@ -329,7 +333,7 @@
         /// <summary>
         ///     Handles the specified pepper long message.
         /// </summary>
-        internal void HandlePepperLoginMessage(PiranhaMessage message)
+        internal void HandlePepperLoginMessage(byte[] messageByteArray)
         {
             this.PepperStep = 2;
         }

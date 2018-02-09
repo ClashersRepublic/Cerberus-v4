@@ -88,17 +88,7 @@
         /// </summary>
         internal static void SaveAccount(GamePlayer player)
         {
-            GamePlayer savePlayer = new GamePlayer
-            {
-                _id = player._id,
-
-                AvatarDocument = player.AvatarDocument,
-                HomeDocument = player.HomeDocument,
-
-                LastSaveTime = player.LastSaveTime
-            };
-
-            GameDatabase._saveAccountQueue.Enqueue(savePlayer);
+            GameDatabase._saveAccountQueue.Enqueue(player);
         }
 
         /// <summary>
