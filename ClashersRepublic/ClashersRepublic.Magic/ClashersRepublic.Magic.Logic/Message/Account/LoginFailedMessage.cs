@@ -21,7 +21,7 @@
         public byte[] ResourceFingerprintData;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginFailedMessage" />
+        ///     Initializes a new instance of the <see cref="LoginFailedMessage" /> class.
         /// </summary>
         public LoginFailedMessage() : this(9)
         {
@@ -29,7 +29,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginFailedMessage" />
+        ///     Initializes a new instance of the <see cref="LoginFailedMessage" /> class.
         /// </summary>
         public LoginFailedMessage(short messageVersion) : base(messageVersion)
         {

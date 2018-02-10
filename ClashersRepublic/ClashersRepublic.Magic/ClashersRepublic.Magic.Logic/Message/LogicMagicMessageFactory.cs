@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Message.Security;
     using ClashersRepublic.Magic.Titan.Message;
@@ -42,6 +43,12 @@
                     case 14102:
                     {
                         message = new EndClientTurnMessage();
+                        break;
+                    }
+
+                    case 14262:
+                    {
+                        message = new BindGoogleServiceAccountMessage();
                         break;
                     }
                 }

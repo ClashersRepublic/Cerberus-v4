@@ -13,7 +13,7 @@
         public LogicClientHome LogicClientHome;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="OwnHomeDataMessage" />
+        ///     Initializes a new instance of the <see cref="OwnHomeDataMessage" /> class.
         /// </summary>
         public OwnHomeDataMessage() : this(0)
         {
@@ -21,7 +21,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="OwnHomeDataMessage" />
+        ///     Initializes a new instance of the <see cref="OwnHomeDataMessage" /> class.
         /// </summary>
         public OwnHomeDataMessage(short messageVersion) : base(messageVersion)
         {

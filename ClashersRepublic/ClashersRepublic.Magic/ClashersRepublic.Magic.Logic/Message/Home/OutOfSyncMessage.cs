@@ -10,7 +10,7 @@
         public string ChecksumJson;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="OutOfSyncMessage" />
+        ///     Initializes a new instance of the <see cref="OutOfSyncMessage" /> class.
         /// </summary>
         public OutOfSyncMessage() : this(0)
         {
@@ -18,7 +18,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="OutOfSyncMessage" />
+        ///     Initializes a new instance of the <see cref="OutOfSyncMessage" /> class.
         /// </summary>
         public OutOfSyncMessage(short messageVersion) : base(messageVersion)
         {

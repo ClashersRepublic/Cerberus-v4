@@ -5,7 +5,7 @@
     public class KeepAliveMessage : PiranhaMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="KeepAliveMessage" />
+        ///     Initializes a new instance of the <see cref="KeepAliveMessage" /> class.
         /// </summary>
         public KeepAliveMessage() : this(0)
         {
@@ -13,7 +13,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginFailedMessage" />
+        ///     Initializes a new instance of the <see cref="LoginFailedMessage" /> class.
         /// </summary>
         public KeepAliveMessage(short messageVersion) : base(messageVersion)
         {
