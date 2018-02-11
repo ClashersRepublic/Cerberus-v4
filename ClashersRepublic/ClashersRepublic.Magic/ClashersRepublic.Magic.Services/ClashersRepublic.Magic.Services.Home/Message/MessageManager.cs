@@ -2,6 +2,9 @@
 {
     using System;
     using ClashersRepublic.Magic.Logic.Message.Home;
+    using ClashersRepublic.Magic.Logic.Message.Battle;
+
+    using ClashersRepublic.Magic.Logic.Data;
 
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Home.Session;
@@ -31,6 +34,12 @@
                     break;
                 }
 
+                case 14134:
+                {
+                    MessageManager.AttackNpcMessageReceived((AttackNpcMessage)message, session);
+                    break;
+                }
+
                 default:
                 {
                     Logging.Warning(typeof(MessageManager), "MessageManager::receiveMessage no case exist for message type " + messageType);
@@ -45,6 +54,14 @@
         internal static void EndClientTurnMessageReceived(EndClientTurnMessage message, GameSession session)
         {
             Console.WriteLine("EndClientTurnMessage: subtick: " + message.Subtick + " checksum: " + message.Checksum);
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="AttackNpcMessage"/> has been received.
+        /// </summary>
+        internal static void AttackNpcMessageReceived(AttackNpcMessage message, GameSession session)
+        {
+            Console.WriteLine("AttackNpcMessage: Name: "+ message.LogicNpcData.GetName() + " LevelFile: " + ((LogicNpcData)message.LogicNpcData).LevelFile);
         }
     }
 }

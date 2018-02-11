@@ -110,7 +110,7 @@ namespace ClashersRepublic.Magic.Logic.Data
                 this._treasuryCaps.Add(this.GetIntegerValue("Treasury" + resourceTable.GetItemAt(i).GetName(), 0));
             }
 
-            if (this.DarkElixirStorageLootPercentage > 100 || this.DarkElixirStorageLootPercentage < 0 || this.ResourceStorageLootCap > 100 || this.ResourceStorageLootCap < 0)
+            if (this.DarkElixirStorageLootPercentage > 100 || this.DarkElixirStorageLootPercentage < 0 || this.ResourceStorageLootPercentage > 100 || this.ResourceStorageLootPercentage < 0)
             {
                 Debugger.Error("townhall_levels.csv: Invalid loot percentage!");
             }

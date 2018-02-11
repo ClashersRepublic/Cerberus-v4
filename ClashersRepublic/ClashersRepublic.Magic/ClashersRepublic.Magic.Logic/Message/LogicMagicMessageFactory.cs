@@ -1,4 +1,6 @@
-﻿namespace ClashersRepublic.Magic.Logic.Message
+﻿using ClashersRepublic.Magic.Logic.Message.Battle;
+
+namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Logic.Message.Home;
@@ -42,6 +44,12 @@
                     case 14102:
                     {
                         message = new EndClientTurnMessage();
+                        break;
+                    }
+
+                    case 14134:
+                    {
+                        message = new AttackNpcMessage();
                         break;
                     }
                 }

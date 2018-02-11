@@ -219,6 +219,12 @@
             {
                 switch (type)
                 {
+                    case 500:
+                    {
+                        command = new LogicBuyBuildingCommand();
+                        break;
+                    }
+
                     case 508:
                     {
                         command = new LogicTrainUnitCommand();

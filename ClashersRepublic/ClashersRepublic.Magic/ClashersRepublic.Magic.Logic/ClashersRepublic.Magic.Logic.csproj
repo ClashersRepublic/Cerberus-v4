@@ -56,6 +56,7 @@
     <Compile Include="Battle\LogicBattleLog.cs" />
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
+    <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicTrainUnitCommand.cs" />
     <Compile Include="Command\Home\LogicNewsSeenCommand.cs" />
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Message\Account\LoginOkMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
+    <Compile Include="Message\Battle\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
     <Compile Include="Message\Home\OutOfSyncMessage.cs" />
@@ -3467,7 +3469,6 @@
     <Folder Include="Command\Battle\" />
     <Folder Include="Message\Alliance\Stream\" />
     <Folder Include="Message\Avatar\Stream\" />
-    <Folder Include="Message\Battle\" />
     <Folder Include="Message\DeviceLink\" />
     <Folder Include="Message\Facebook\" />
     <Folder Include="Message\Friend\" />
