@@ -43,54 +43,65 @@
             {
                 string cmd = Console.ReadLine();
 
-                if (cmd.StartsWith("/"))
+
+                if (cmd != null)
                 {
-                    switch (cmd.Substring(1))
+                    if (cmd.StartsWith("/"))
                     {
-                        case "create":
+                        switch (cmd.Substring(1))
                         {
-                            for (int i = 0; i < 1; i++)
+                            case "create":
                             {
-                                ClientManager.Create();
+                                for (int i = 0; i < 1; i++)
+                                {
+                                    ClientManager.Create();
+                                }
+
+                                break;
                             }
 
-                            break;
-                        }
-                            
-                        case "dos":
-                        {
-                            for (int j = 0; j < 14000; j++)
+                            case "dos":
                             {
-                                ClientManager.Create();
+                                for (int j = 0; j < 14000; j++)
+                                {
+                                    ClientManager.Create();
+                                }
+
+                                break;
                             }
 
-                            break;
-                        }
-
-                        case "test":
-                        {
-                            ClientManager.ForEeach(client =>
+                            case "load":
                             {
-                                client.MessageManager.SendKeepAliveMessage();
-                            });
+                                for (int i = 0; i < 1000; i++)
+                                {
+                                    ClientManager.Create();
+                                }
 
-                            break;
-                        }
-
-                        case "ping":
-                        {
-                            Client client = ClientManager.Get();
-
-                            if (client != null)
-                            {
-                                client.MessageManager.Ping();
-                            }
-                            else
-                            {
-                                Console.WriteLine("No client is connected to the server");
+                                break;
                             }
 
-                            break;
+                            case "test":
+                            {
+                                ClientManager.ForEeach(client => { client.MessageManager.SendKeepAliveMessage(); });
+
+                                break;
+                            }
+
+                            case "ping":
+                            {
+                                Client client = ClientManager.Get();
+
+                                if (client != null)
+                                {
+                                    client.MessageManager.Ping();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("No client is connected to the server");
+                                }
+
+                                break;
+                            }
                         }
                     }
                 }

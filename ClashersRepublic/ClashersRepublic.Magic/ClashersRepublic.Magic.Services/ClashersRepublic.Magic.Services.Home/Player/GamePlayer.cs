@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Services.Logic.Resource;
+    using ClashersRepublic.Magic.Services.Logic.Snappy;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
@@ -17,9 +18,9 @@
         public int LowId;
 
         public int LastSaveTime;
-
-        public BsonDocument HomeDocument;
-        public BsonDocument AvatarDocument;
+        
+        public SnappyString LogicClientHomeJSON;
+        public SnappyString LogicClientAvatarJSON;
 
         internal LogicClientHome LogicClientHome;
         internal LogicClientAvatar LogicClientAvatar;
@@ -59,8 +60,8 @@
         /// </summary>
         public void UpdateDocuments()
         {
-            this.HomeDocument = BsonDocument.Parse(LogicJSONParser.CreateJSONString(this.LogicClientHome.Save()));
-            this.AvatarDocument = BsonDocument.Parse(LogicJSONParser.CreateJSONString(this.LogicClientAvatar.Save()));
+            this.LogicClientHomeJSON.Update(LogicJSONParser.CreateJSONString(this.LogicClientHome.Save()));
+            this.LogicClientAvatarJSON.Update(LogicJSONParser.CreateJSONString(this.LogicClientAvatar.Save()));
             this.LastSaveTime = LogicTimeUtil.GetTimestamp();
         }
 
@@ -72,8 +73,8 @@
             this.LogicClientHome = new LogicClientHome();
             this.LogicClientAvatar = new LogicClientAvatar();
 
-            this.LogicClientHome.Load((LogicJSONObject) LogicJSONParser.Parse(this.HomeDocument.ToJson()));
-            this.LogicClientAvatar.Load((LogicJSONObject) LogicJSONParser.Parse(this.AvatarDocument.ToJson()));
+            this.LogicClientHome.Load((LogicJSONObject) LogicJSONParser.Parse(this.LogicClientHomeJSON));
+            this.LogicClientAvatar.Load((LogicJSONObject) LogicJSONParser.Parse(this.LogicClientAvatarJSON));
         }
     }
 }

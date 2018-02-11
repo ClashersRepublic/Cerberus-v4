@@ -42,8 +42,8 @@
             Resources.Random = new LogicMersenneTwisterRandom(LogicTimeUtil.GetTimestamp());
 
             GameDatabase.Initialize();
-            GamePlayerManager.Initialize();
             GameSessionManager.Initialize();
+            GamePlayerManager.Initialize();
         }
 
         /// <summary>

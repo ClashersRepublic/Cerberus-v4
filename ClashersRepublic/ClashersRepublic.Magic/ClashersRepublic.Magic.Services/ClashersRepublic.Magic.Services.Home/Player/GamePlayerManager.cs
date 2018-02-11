@@ -1,26 +1,34 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Player
 {
-    using System;
     using System.Collections.Concurrent;
-    using ClashersRepublic.Magic.Logic.Avatar;
-    using ClashersRepublic.Magic.Logic.Home;
+    using System.Threading;
     using ClashersRepublic.Magic.Logic.Level;
-    using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Mode;
 
     using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Home.Debug;
-    using ClashersRepublic.Magic.Services.Home.Session;
 
     using ClashersRepublic.Magic.Services.Logic;
+
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
-    using ClashersRepublic.Magic.Titan.Util;
 
     internal static class GamePlayerManager
     {
         private static ConcurrentDictionary<long, GamePlayer> _players;
-        private static ConcurrentDictionary<string, GameSession> _sessions;
+
+        private static Thread _gameThread;
+
+        /// <summary>
+        ///     Gets the total players in memory.
+        /// </summary>
+        internal static int TotalPlayers
+        {
+            get
+            {
+                return GamePlayerManager._players.Count;
+            }
+        }
 
         /// <summary>
         ///     Initializes this instance.
@@ -28,8 +36,8 @@
         internal static void Initialize()
         {
             GamePlayerManager._players = new ConcurrentDictionary<long, GamePlayer>();
-            GamePlayerManager._sessions = new ConcurrentDictionary<string, GameSession>();
-
+            GamePlayerManager._gameThread = new Thread(GamePlayerManager.Update);
+            GamePlayerManager._gameThread.Start();
             GamePlayerManager.LoadAllPlayers();
         }
 
@@ -145,6 +153,18 @@
             player.UpdateDocuments();
 
             GameDatabase.SaveAccount(player);
+        }
+
+        /// <summary>
+        ///     Updates this instance.
+        /// </summary>
+        private static void Update()
+        {
+            while (true)
+            {
+                Program.UpdateConsoleTitle();
+                Thread.Sleep(50);
+            }
         }
     }
 }

@@ -169,9 +169,16 @@
                 writeEvent.UserToken = token;
                 writeEvent.SetBuffer(packet, 0, packet.Length);
 
-                if (!token.Socket.SendAsync(writeEvent))
+                try
                 {
-                    NetworkGateway.OnSendCompleted(null, writeEvent);
+                    if (!token.Socket.SendAsync(writeEvent))
+                    {
+                        NetworkGateway.OnSendCompleted(null, writeEvent);
+                    }
+                }
+                catch(Exception)
+                {
+                    Logging.Error(typeof(NetworkGateway), "NetworkGateway::send socket->send");
                 }
             }
         }

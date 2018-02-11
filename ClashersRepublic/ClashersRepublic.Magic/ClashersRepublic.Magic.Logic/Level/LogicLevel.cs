@@ -603,5 +603,16 @@
             this._achievementManager.Tick();
             this._offerManager.Tick();
         }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._tileMap != null)
+            {
+                this._tileMap = null;
+            }
+        }
     }
 }

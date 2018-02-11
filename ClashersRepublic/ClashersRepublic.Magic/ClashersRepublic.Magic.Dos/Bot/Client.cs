@@ -85,7 +85,7 @@
             {
                 ClientMajorVersion = LogicVersion.MajorVersion,
                 ClientBuildVersion = LogicVersion.BuildVersion,
-                ResourceSha = ""
+                ResourceSha = "f4e97369bfe07c3923d63c0c5ec89925e9b5ae2a"
             };
 
             this.SendMessage(loginMessage);

@@ -3,7 +3,7 @@
     using System;
     using System.Drawing;
     using System.Reflection;
-
+    using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Handler;
     using ClashersRepublic.Magic.Proxy.Network;
@@ -54,7 +54,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - " + Config.ServerId + " - Connections: " + NetworkManager.TotalConnections;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID : " + Config.ServerId + " - Clients : " + NetworkManager.TotalConnections + " - Accounts : " + GameAccountManager.TotalAccounts;
         }
     }
 }

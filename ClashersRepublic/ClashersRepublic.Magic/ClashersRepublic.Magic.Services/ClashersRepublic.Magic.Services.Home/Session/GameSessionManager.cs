@@ -1,21 +1,34 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Session
 {
     using System.Collections.Concurrent;
+
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Message.Home;
-    using ClashersRepublic.Magic.Services.Home.Database;
-    using ClashersRepublic.Magic.Services.Home.Debug;
+
     using ClashersRepublic.Magic.Services.Home.Player;
     using ClashersRepublic.Magic.Services.Home.Service;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message.Session;
+
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal class GameSessionManager
     {
-        internal static ConcurrentDictionary<string, GameSession> _sessions;
+        private static ConcurrentDictionary<string, GameSession> _sessions;
+
+        /// <summary>
+        ///     Gets the total sessions in memory.
+        /// </summary>
+        internal static int TotalSessions
+        {
+            get
+            {
+                return GameSessionManager._sessions.Count;
+            }
+        }
 
         /// <summary>
         ///     Initializes this instance.
@@ -64,7 +77,17 @@
         /// </summary>
         internal static void OnSessionRemoved(GameSession session)
         {
-            GamePlayerManager.SavePlayer(session.Player, session.LogicGameMode);
+            LogicAvatar avatar = session.LogicGameMode.GetLevel().GetHomeOwnerAvatar();
+
+            if (avatar != null)
+            {
+                session.LogicGameMode.GetLevel().GetHomeOwnerAvatar().SetLevel(null);
+
+                if (session.LogicGameMode.GetLevel().GetHome() != null)
+                {
+                    GamePlayerManager.SavePlayer(session.Player, session.LogicGameMode);
+                }
+            }
         }
 
         /// <summary>
@@ -74,8 +97,8 @@
         {
             if (GameSessionManager._sessions.TryRemove(sessionId, out GameSession session))
             {
+                session.SendToProxy(new SessionClosedMessage());
                 GameSessionManager.OnSessionRemoved(session);
-                ServiceMessageManager.SendMessage(new SessionClosedMessage(), ServiceExchangeName.SERVICE_PROXY_NAME, session.ServerId, session.SessionId);
             }
         }
 

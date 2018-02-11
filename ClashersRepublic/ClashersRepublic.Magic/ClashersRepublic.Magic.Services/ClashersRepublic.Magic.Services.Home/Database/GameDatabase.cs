@@ -5,6 +5,7 @@
     using System.Threading;
     using ClashersRepublic.Magic.Services.Home.Player;
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Snappy;
     using ClashersRepublic.Magic.Titan.Math;
     using MongoDB.Bson;
     using MongoDB.Driver;
@@ -24,6 +25,8 @@
         /// </summary>
         internal static void Initialize()
         {
+            MongoDB.Bson.Serialization.BsonSerializer.RegisterSerializer(typeof(SnappyString), new SnappyStringSerializer());
+
             GameDatabase._players = new IMongoCollection<GamePlayer>[Config.MongodServers.Length];
             GameDatabase._counters = new IMongoCollection<BsonDocument>[Config.MongodServers.Length];
 

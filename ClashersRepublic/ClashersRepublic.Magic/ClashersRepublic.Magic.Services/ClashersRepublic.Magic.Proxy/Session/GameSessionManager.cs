@@ -3,12 +3,14 @@
     using System;
     using System.Collections.Concurrent;
     using System.Diagnostics;
+
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
-    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.User;
+
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message.Client;
+
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -18,6 +20,17 @@
         private static long _sessionNum;
 
         private static ConcurrentDictionary<string, GameSession> _sessions;
+
+        /// <summary>
+        ///     Gets the total sessions in memory.
+        /// </summary>
+        internal static int TotalSessions
+        {
+            get
+            {
+                return GameSessionManager._sessions.Count;
+            }
+        }
 
         /// <summary>
         ///     Initializes this instance.

@@ -14,6 +14,17 @@
         private static readonly string PASSTOKEN_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
         /// <summary>
+        ///     Gets the total accounts in memory.
+        /// </summary>
+        internal static int TotalAccounts
+        {
+            get
+            {
+                return GameAccountManager._accounts.Count;
+            }
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
@@ -49,7 +60,12 @@
 
             GameDatabase.InsertAccount(account);
 
-            return account;
+            if (GameAccountManager._accounts.TryAdd((long) (account.HighId << 32) | (uint) account.LowId, account))
+            {
+                return account;
+            }
+
+            return null;
         }
 
         /// <summary>
