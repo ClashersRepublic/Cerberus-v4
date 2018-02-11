@@ -5,6 +5,7 @@
     using ClashersRepublic.Magic.Proxy.Database;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.Service;
+    using ClashersRepublic.Magic.Proxy.Service.Api;
     using ClashersRepublic.Magic.Proxy.Session;
     using ClashersRepublic.Magic.Services.Logic.Resource;
     using ClashersRepublic.Magic.Titan.Math;
@@ -64,6 +65,8 @@
             ServiceProcessor.Initialize();
             ServiceMessaging.Initialize();
             ServiceGateway.Initialize();
+
+            GoogleServiceManager.Initialize();
         }
 
         /// <summary>

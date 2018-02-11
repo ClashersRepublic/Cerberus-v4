@@ -12,7 +12,7 @@
         public LogicArrayList<LogicCommand> Commands;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EndClientTurnMessage" />
+        ///     Initializes a new instance of the <see cref="EndClientTurnMessage" /> class.
         /// </summary>
         public EndClientTurnMessage() : this(0)
         {
@@ -20,7 +20,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EndClientTurnMessage" />
+        ///     Initializes a new instance of the <see cref="EndClientTurnMessage" /> class.
         /// </summary>
         public EndClientTurnMessage(short messageVersion) : base(messageVersion)
         {

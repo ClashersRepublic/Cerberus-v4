@@ -8,7 +8,7 @@
         public int Version;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EncryptionMessage"/>
+        ///     Initializes a new instance of the <see cref="EncryptionMessage"/> class.
         /// </summary>
         public EncryptionMessage() : this(0)
         {
@@ -16,7 +16,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EncryptionMessage"/>
+        ///     Initializes a new instance of the <see cref="EncryptionMessage"/> class.
         /// </summary>
         public EncryptionMessage(short messageVersion) : base(messageVersion)
         {

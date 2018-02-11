@@ -1,9 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Message
 {
+    using System;
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Message.Account;
-
+    using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Network;
@@ -77,6 +78,12 @@
                 case 10108:
                 {
                     this.KeepAliveMessageReceived((KeepAliveMessage) message);
+                    break;
+                }
+
+                case 14262:
+                {
+                    this.BindGoogleServiceAccountMessageReceived((BindGoogleServiceAccountMessage) message);
                     break;
                 }
 
@@ -269,6 +276,14 @@
             {
                 this.SendMessage(new KeepAliveServerMessage());
             }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="BindGoogleServiceAccountMessage"/> has been received.
+        /// </summary>
+        internal void BindGoogleServiceAccountMessageReceived(BindGoogleServiceAccountMessage message)
+        {
+            Console.WriteLine("ServiceID: " + message.GoogleServiceId + " AuthCode: " + message.AuthCode);
         }
 
         /// <summary>

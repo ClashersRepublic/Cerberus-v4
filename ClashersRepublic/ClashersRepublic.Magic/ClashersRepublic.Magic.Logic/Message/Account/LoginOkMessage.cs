@@ -31,7 +31,7 @@
         public LogicArrayList<string> ChronosContentUrlList;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginOkMessage" />
+        ///     Initializes a new instance of the <see cref="LoginOkMessage" /> class.
         /// </summary>
         public LoginOkMessage() : this(1)
         {
@@ -39,7 +39,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginOkMessage" />
+        ///     Initializes a new instance of the <see cref="LoginOkMessage" /> class.
         /// </summary>
         public LoginOkMessage(short messageVersion) : base(messageVersion)
         {
