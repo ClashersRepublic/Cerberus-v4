@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicMissionData"/> class.
         /// </summary>
         public LogicMissionProgressCommand(LogicMissionData missionData)
         {
@@ -48,6 +48,16 @@
         public override int GetCommandType()
         {
             return 519;
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+
+            this._missionData = null;
         }
     }
 }
