@@ -231,6 +231,12 @@
                         break;
                     }
 
+                    case 519:
+                    {
+                        command = new LogicMissionProgressCommand();
+                        break;
+                    }
+
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();

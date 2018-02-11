@@ -57,6 +57,7 @@
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
     <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicMissionProgressCommand.cs" />
     <Compile Include="Command\Home\LogicTrainUnitCommand.cs" />
     <Compile Include="Command\Home\LogicNewsSeenCommand.cs" />
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
