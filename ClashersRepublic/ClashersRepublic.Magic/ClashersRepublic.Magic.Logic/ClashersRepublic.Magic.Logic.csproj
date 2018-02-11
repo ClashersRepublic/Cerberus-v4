@@ -145,6 +145,7 @@
     <Compile Include="Message\Account\LoginOkMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
+    <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
     <Compile Include="Message\Battle\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
@@ -169,6 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Assets\csv\animations.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -3473,13 +3475,13 @@
     <Folder Include="Message\Facebook\" />
     <Folder Include="Message\Friend\" />
     <Folder Include="Message\Gamecenter\" />
-    <Folder Include="Message\Google\" />
     <Folder Include="Message\Inbox\" />
     <Folder Include="Message\Kunlun\" />
     <Folder Include="Message\Notification\" />
     <Folder Include="Message\Scoring\" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
       <HintPath>..\..\packages\zlib.net.1.0.4.0\lib\zlib.net.dll</HintPath>
     </Reference>

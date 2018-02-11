@@ -8,13 +8,16 @@
     {
         public LogicData LogicNpcData;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AttackNpcMessage" /> class.
+        /// </summary>
         public AttackNpcMessage() : this(0)
         {
             // AttackNpcMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AttackNpcMessage" />
+        ///     Initializes a new instance of the <see cref="AttackNpcMessage" /> class
         /// </summary>
         public AttackNpcMessage(short messageVersion) : base(messageVersion)
         {

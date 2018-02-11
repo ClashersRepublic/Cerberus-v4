@@ -3,6 +3,7 @@
 namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Message.Security;
     using ClashersRepublic.Magic.Titan.Message;
@@ -50,6 +51,12 @@ namespace ClashersRepublic.Magic.Logic.Message
                     case 14134:
                     {
                         message = new AttackNpcMessage();
+                        break;
+                    }
+
+                    case 14262:
+                    {
+                        message = new BindGoogleServiceAccountMessage();
                         break;
                     }
                 }
