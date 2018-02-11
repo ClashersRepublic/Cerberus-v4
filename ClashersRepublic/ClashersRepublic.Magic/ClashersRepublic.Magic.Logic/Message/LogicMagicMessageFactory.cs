@@ -1,8 +1,7 @@
-﻿using ClashersRepublic.Magic.Logic.Message.Battle;
-
-namespace ClashersRepublic.Magic.Logic.Message
+﻿namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Battle;
     using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Message.Security;
