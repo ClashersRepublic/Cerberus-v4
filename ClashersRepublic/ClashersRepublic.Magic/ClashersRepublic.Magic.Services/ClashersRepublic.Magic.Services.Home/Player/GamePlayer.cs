@@ -2,11 +2,14 @@
 {
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Home;
+
     using ClashersRepublic.Magic.Services.Logic.Resource;
     using ClashersRepublic.Magic.Services.Logic.Snappy;
+
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
+
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
 
