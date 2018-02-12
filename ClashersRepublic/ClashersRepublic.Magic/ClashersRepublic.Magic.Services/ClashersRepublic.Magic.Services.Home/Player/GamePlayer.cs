@@ -35,13 +35,14 @@
         /// </summary>
         public GamePlayer()
         {
-            // GamePlayer.
+            this.LogicClientHomeJSON = new SnappyString();
+            this.LogicClientAvatarJSON = new SnappyString();
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GamePlayer"/> class.
         /// </summary>
-        public GamePlayer(LogicLong accountId)
+        public GamePlayer(LogicLong accountId) : this()
         {
             this.HighId = accountId.GetHigherInt();
             this.LowId = accountId.GetLowerInt();
@@ -78,6 +79,14 @@
 
             this.LogicClientHome.Load((LogicJSONObject) LogicJSONParser.Parse(this.LogicClientHomeJSON));
             this.LogicClientAvatar.Load((LogicJSONObject) LogicJSONParser.Parse(this.LogicClientAvatarJSON));
+        }
+
+        /// <summary>
+        ///     Gets the account id.
+        /// </summary>
+        public LogicLong GetAccountId()
+        {
+            return new LogicLong(this.HighId, this.LowId);
         }
     }
 }

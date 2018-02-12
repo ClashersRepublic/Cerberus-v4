@@ -24,6 +24,28 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._commandList != null)
+            {
+                if (this._commandList.Count != 0)
+                {
+                    do
+                    {
+                        this._commandList.Remove(0);
+                    } while (this._commandList.Count != 0);
+                }
+
+                this._commandList = null;
+            }
+
+            this._listener = null;
+            this._level = null;
+        }
+
+        /// <summary>
         ///     Sets the listener of this instance.
         /// </summary>
         public void SetListener(LogicCommandManagerListener listener)

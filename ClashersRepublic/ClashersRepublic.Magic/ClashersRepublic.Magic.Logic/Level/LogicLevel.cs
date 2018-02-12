@@ -611,6 +611,7 @@
         {
             if (this._tileMap != null)
             {
+                this._tileMap.Destruct();
                 this._tileMap = null;
             }
         }

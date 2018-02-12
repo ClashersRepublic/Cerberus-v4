@@ -88,6 +88,8 @@
                     GamePlayerManager.SavePlayer(session.Player, session.LogicGameMode);
                 }
             }
+
+            session.LogicGameMode.Destruct();
         }
 
         /// <summary>

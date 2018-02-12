@@ -41,6 +41,35 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._level != null)
+            {
+                this._level.Destruct();
+                this._level = null;
+            }
+
+            if (this._commandManager != null)
+            {
+                this._commandManager.Destruct();
+                this._commandManager = null;
+            }
+
+            if (this._calendar != null)
+            {
+                this._calendar.Destruct();
+                this._calendar = null;
+            }
+            
+            this._battleTimer = null;
+            this._shieldTimer = null;
+            this._guardTimer = null;
+            this._time = null;
+        }
+
+        /// <summary>
         ///     Calculates the checksum of this instance.
         /// </summary>
         public ChecksumHelper CalculateChecksum(int mode)

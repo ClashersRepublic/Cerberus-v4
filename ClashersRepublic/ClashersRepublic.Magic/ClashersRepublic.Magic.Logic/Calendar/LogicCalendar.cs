@@ -17,6 +17,25 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._activeCalendarEvents != null)
+            {
+                if (this._activeCalendarEvents.Count != 0)
+                {
+                    do
+                    {
+                        this._activeCalendarEvents.Remove(0);
+                    } while (this._activeCalendarEvents.Count != 0);
+                }
+
+                this._activeCalendarEvents = null;
+            }
+        }
+
+        /// <summary>
         ///     Gets the checksum of this instance.
         /// </summary>
         public void GetChecksum(ChecksumHelper checksum)

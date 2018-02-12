@@ -122,7 +122,7 @@
                     }
 
                     PiranhaMessage message = LogicMagicMessageFactory.CreateMessageByType(messageType);
-
+             
                     if (message != null)
                     {
                         message.SetMessageVersion((short) messageVersion);
@@ -130,8 +130,10 @@
 
                         try
                         {
+                            /*
                             message.Decode();
                             this.MessageManager.ReceiveMessage(message);
+                            */
                         }
                         catch (Exception exception)
                         {

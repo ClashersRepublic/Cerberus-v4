@@ -63,7 +63,6 @@
             return this._compressedByteArray;
         }
 
-
         public static implicit operator SnappyString(string content)
         {
             return new SnappyString(content);

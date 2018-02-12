@@ -5,7 +5,6 @@
     using ClashersRepublic.Magic.Dos.Debug;
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Titan.Message;
-    using ClashersRepublic.Magic.Titan.Util;
 
     internal class MessageManager
     {
