@@ -28,6 +28,23 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._tiles != null)
+            {
+                for (int i = 0; i < this._tiles.Length; i++)
+                {
+                    this._tiles[i].Destruct();
+                    this._tiles[i] = null;
+                }
+
+                this._tiles = null;
+            }
+        }
+
+        /// <summary>
         ///     Adds the specified gameobject to tiles.
         /// </summary>
         public void AddGameObject(LogicGameObject gameObject)

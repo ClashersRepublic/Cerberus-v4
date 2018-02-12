@@ -15,7 +15,21 @@
         /// </summary>
         public LogicTile()
         {
-            this._gameObjects = new LogicArrayList<LogicGameObject>();
+            this._gameObjects = new LogicArrayList<LogicGameObject>(4);
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._gameObjects != null)
+            {
+                for (int i = 0; i < this._gameObjects.Count; i++)
+                {
+                    this._gameObjects[i] = null;
+                }
+            }
         }
 
         /// <summary>
