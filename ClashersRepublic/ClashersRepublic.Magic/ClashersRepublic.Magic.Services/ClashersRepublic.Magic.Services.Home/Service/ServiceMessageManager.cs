@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
     using ClashersRepublic.Magic.Services.Home.Debug;
-    using ClashersRepublic.Magic.Services.Home.Session;
 
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;

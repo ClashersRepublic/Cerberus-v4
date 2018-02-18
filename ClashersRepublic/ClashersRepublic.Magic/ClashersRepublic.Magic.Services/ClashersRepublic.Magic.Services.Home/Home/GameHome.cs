@@ -54,7 +54,10 @@
                 home.LogicClientHomeInstance = null;
             }
 
+            home.LogicClientHomeInstance = new LogicClientHome();
             home.LogicClientAvatarInstance = LogicClientAvatar.GetDefaultAvatar();
+
+            return home;
         }
 
         /// <summary>
