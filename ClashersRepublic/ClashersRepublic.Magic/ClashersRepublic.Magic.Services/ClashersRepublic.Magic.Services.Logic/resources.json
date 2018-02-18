@@ -9,13 +9,5 @@
     "APPSTORE_LINK",
     "GOOGLE_LINK",
     "KUNLUN_LINK"
-  ],
-  "home": {
-    "starting_home": "level/starting_home.json",
-    "starting_shield_duration_secs": 86400,
-    "starting_guard_duration_secs": 43200
-  },
-  "avatar": {
-    "starting_avatar_name": "Mike"
-  }
+  ]
 }

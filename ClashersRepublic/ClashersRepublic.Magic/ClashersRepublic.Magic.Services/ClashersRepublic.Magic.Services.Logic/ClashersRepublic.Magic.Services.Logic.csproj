@@ -51,16 +51,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="Message\Client\ClientConnectedMessage.cs" />
-    <Compile Include="Message\Client\ClientDisconnectedMessage.cs" />
-    <Compile Include="Message\MagicServiceMessageFactory.cs" />
+    <Compile Include="Message\Game\CreateDataMessage.cs" />
+    <Compile Include="Message\ServiceMessageFactory.cs" />
     <Compile Include="Message\ServiceMessage.cs" />
-    <Compile Include="Message\Messaging\ForwardClientMessage.cs" />
-    <Compile Include="Message\Messaging\ForwardServerMessage.cs" />
-    <Compile Include="Message\Session\SessionClosedMessage.cs" />
+    <Compile Include="Message\Messaging\ForwardPiranhaMessage.cs" />
+    <Compile Include="Message\Session\ServiceNodeUnboundedToSessionMessage.cs" />
+    <Compile Include="Message\Session\ServiceNodeBoundedToSessionMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
-    <Compile Include="ServiceExchangeName.cs" />
+    <Compile Include="Service\ServiceConfig.cs" />
+    <Compile Include="Service\ServiceHelper.cs" />
+    <Compile Include="Service\Setting\ServiceNetConfig.cs" />
+    <Compile Include="Service\Setting\ServiceLogicConfig.cs" />
+    <Compile Include="Service\Setting\ServiceSecurityConfig.cs" />
+    <Compile Include="Service\Setting\ServiceStockageConfig.cs" />
     <Compile Include="Snappy\SnappyString.cs" />
     <Compile Include="Snappy\SnappyStringSerializer.cs" />
   </ItemGroup>
@@ -80,7 +84,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="Patchs\version.json" />
     <None Include="resources.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -95,12 +98,9 @@
     <Reference Include="Snappy.NET, Version=1.1.1.8, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Snappy.NET.1.1.1.8\lib\net45\Snappy.NET.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties Patchs_4version_1json__JSONSchema="" />
-    </VisualStudio>
-  </ProjectExtensions>
+  <ProjectExtensions />
 </Project>

@@ -272,5 +272,15 @@
 
             return jsonObject;
         }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._eventJSON = null;
+            this._globalJSON = null;
+            this._homeJSON = null;
+        }
     }
 }

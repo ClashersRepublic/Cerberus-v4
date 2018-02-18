@@ -1,7 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Logic.Utils;
     using ClashersRepublic.Magic.Proxy.Network;
+    using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal static class CmdHandler
     {
@@ -22,7 +25,6 @@
 
                         switch (parameters[0])
                         {
-                            case "shut":
                             case "shutdown":
                             case "close":
                             case "quit":

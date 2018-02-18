@@ -3,11 +3,11 @@
     using System;
     using System.Drawing;
     using System.Reflection;
-
+    using ClashersRepublic.Magic.Services.Home.Account;
     using ClashersRepublic.Magic.Services.Home.Debug;
     using ClashersRepublic.Magic.Services.Home.Handler;
-    using ClashersRepublic.Magic.Services.Home.Player;
-    using ClashersRepublic.Magic.Services.Home.Session;
+    using ClashersRepublic.Magic.Services.Home.Network;
+
     using ClashersRepublic.Magic.Services.Logic;
 
     internal class Program
@@ -45,7 +45,7 @@
             ExitHandler.Initialize();
 
             Console.WriteLine(Assembly.GetExecutingAssembly().GetName().Name + " is now starting..." + Environment.NewLine);
-            Program.UpdateConsoleTitle();
+            
             CmdHandler.Initialize();
         }
 
@@ -54,7 +54,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID : " + Config.ServerId + " - Sessions : " + GameSessionManager.TotalSessions + " - Players : " + GamePlayerManager.TotalPlayers;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID : " + Config.ServerId + " - Clients : " + NetworkManager.TotalConnections + " - Accounts : " + GameAccountManager.TotalAccounts;
         }
     }
 }

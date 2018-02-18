@@ -1,14 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Account
 {
     using ClashersRepublic.Magic.Proxy.Session;
-
-    using MongoDB.Bson;
-    using MongoDB.Bson.Serialization.Attributes;
-
+    
     internal class GameAccount
     {
-        [BsonId] public ObjectId _id;
-
         public int HighId;
         public int LowId;
 

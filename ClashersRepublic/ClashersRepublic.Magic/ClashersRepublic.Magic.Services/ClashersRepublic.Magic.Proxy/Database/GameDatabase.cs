@@ -1,120 +1,79 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Database
 {
-    using System.Collections.Concurrent;
-    using System.Threading;
-
+    using System;
+    using System.Collections.Generic;
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Services.Logic;
-    using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Proxy.Log;
+    using Couchbase;
+    using Couchbase.Configuration.Client;
+    using Couchbase.Core;
 
-    using MongoDB.Bson;
-    using MongoDB.Driver;
-
-    internal static class GameDatabase
+    internal class GameDatabase
     {
-        private static IMongoCollection<GameAccount>[] _accounts;
-        private static IMongoCollection<BsonDocument>[] _counters;
-
-        private static Thread _saveThread;
-        private static ConcurrentQueue<GameAccount> _saveAccountQueue;
-
-        private static int _nextCollectionIndex;
+        private int _id;
+        private IBucket _bucket;
+        private Cluster _cluster;
 
         /// <summary>
-        ///     Initializes this instance.
+        ///     Initializes a new instance of the <see cref="GameDatabase"/> class.
         /// </summary>
-        internal static void Initialize()
+        internal GameDatabase(int id, string serverUrl, string userName, string passToken)
         {
-            GameDatabase._accounts = new IMongoCollection<GameAccount>[Config.MongodServers.Length];
-            GameDatabase._counters = new IMongoCollection<BsonDocument>[Config.MongodServers.Length];
+            this._id = id;
 
-            for (int i = 0; i < Config.MongodServers.Length; i++)
+            this._cluster = new Cluster(new ClientConfiguration
             {
-                MongoClient client = new MongoClient("mongodb://" + (!string.IsNullOrEmpty(Config.MongodUser) ? Config.MongodUser + ":" + Config.MongodPassword + "@" : "") + Config.MongodServers[i] + ":27017");
-
-                IMongoDatabase database = client.GetDatabase(Config.MongodDbName);
-
-                GameDatabase._accounts[i] = database.GetCollection<GameAccount>("Accounts");
-                GameDatabase._counters[i] = database.GetCollection<BsonDocument>("Counters");
-
-                if (GameDatabase._counters[i] == null)
+                Servers = new List<Uri>
                 {
-                    database.CreateCollection("Counters");
-
-                    GameDatabase._counters[i] = database.GetCollection<BsonDocument>("Counters");
-                    GameDatabase._counters[i].InsertOne(BsonDocument.Parse("{\"_id\":\"Players\",\"last_id\":0}"));
+                    new Uri("http://" + serverUrl)
                 }
+            });
+            this._cluster.Authenticate(userName, passToken);
+            this._bucket = this._cluster.OpenBucket("magic-accounts");
 
-                GameDatabase._accounts[i].Indexes.CreateOne(Builders<GameAccount>.IndexKeys.Combine(
-                        Builders<GameAccount>.IndexKeys.Ascending(T => T.HighId),
-                        Builders<GameAccount>.IndexKeys.Descending(T => T.LowId)),
-                    new CreateIndexOptions
-                    {
-                        Name = "entityIds",
-                        Background = true
-                    }
-                );
+            if (!this._bucket.Exists("counters"))
+            {
+                this._bucket.Insert("counters", 0);
             }
-
-            GameDatabase._saveAccountQueue = new ConcurrentQueue<GameAccount>();
-            GameDatabase._saveThread = new Thread(GameDatabase.SaveTask);
-            GameDatabase._saveThread.Start();
         }
 
         /// <summary>
-        ///     Gets the higher account id.
+        ///     Gets the higher id.
         /// </summary>
-        internal static int GetHigherAccountId(int dbId)
+        internal int GetHigherId()
         {
-            return GameDatabase._counters[dbId].Find(T => T["_id"] == "Accounts").Limit(1).Single()["last_id"].AsInt32;
+            return (int) this._bucket.Get<ulong>("counters").Value;
         }
 
         /// <summary>
-        ///     Inserts the specified account to database.
+        ///     Inserts a new account.
         /// </summary>
-        internal static void InsertAccount(GameAccount account)
+        internal void InsertAccount(GameAccount account)
         {
             if (account.HighId == 0 && account.LowId == 0)
             {
-                account.HighId = GameDatabase._nextCollectionIndex;
-                account.LowId = GameDatabase._counters[account.HighId].FindOneAndUpdate(T => T["_id"] == "Accounts", Builders<BsonDocument>.Update.Inc("last_id", 1))["last_id"].AsInt32 + 1;
-
-                GameDatabase._nextCollectionIndex = ++GameDatabase._nextCollectionIndex % GameDatabase._accounts.Length;
+                account.HighId = this._id;
+                account.LowId = (int) this._bucket.Increment("counters").Value;
             }
 
-            GameDatabase._accounts[account.HighId].InsertOne(account);
-        }
-
-        /// <summary>
-        ///     Inserts the specified account to database.
-        /// </summary>
-        internal static void SaveAccount(GameAccount account)
-        {
-            GameDatabase._saveAccountQueue.Enqueue(account);
-        }
-
-        /// <summary>
-        ///     Loads the specified account from database.
-        /// </summary>
-        internal static GameAccount LoadAccount(LogicLong accountId)
-        {
-            return GameDatabase._accounts[accountId.GetHigherInt()].Find(T => T.HighId == accountId.GetHigherInt() && T.LowId == accountId.GetLowerInt()).Limit(1).SingleOrDefault();
-        }
-
-        /// <summary>
-        ///     Tasks for save thread.
-        /// </summary>
-        private static void SaveTask()
-        {
-            while (true)
+            IDocumentResult result = this._bucket.Insert(new Document<GameAccount>
             {
-                while (GameDatabase._saveAccountQueue.TryDequeue(out GameAccount account))
-                {
-                    GameDatabase._accounts[account.HighId].ReplaceOne(T => T._id == account._id, account);
-                }
+                Id = account.LowId.ToString(),
+                Content = account
+            });
 
-                Thread.Sleep(5);
+            if (!result.Success)
+            {
+                Logging.Error(this, "GameDatabase::insertAccount insert failed, status: " + result.Status);
             }
+        }
+
+        /// <summary>
+        ///     Gets the specified document.
+        /// </summary>
+        internal GameAccount GetAccount(int lowId)
+        {
+            return this._bucket.Get<GameAccount>(lowId.ToString()).Value;
         }
     }
 }

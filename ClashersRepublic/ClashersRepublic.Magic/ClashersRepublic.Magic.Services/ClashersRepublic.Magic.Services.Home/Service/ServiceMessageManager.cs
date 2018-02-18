@@ -1,16 +1,15 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
-    using System;
-
     using ClashersRepublic.Magic.Services.Home.Debug;
-    using ClashersRepublic.Magic.Services.Home.Message;
-    using ClashersRepublic.Magic.Services.Home.Player;
     using ClashersRepublic.Magic.Services.Home.Session;
 
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Message;
-    using ClashersRepublic.Magic.Services.Logic.Message.Client;
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
+
+    using ClashersRepublic.Magic.Titan.Debug;
+
+    using NetMQ;
 
     internal static class ServiceMessageManager
     {
@@ -25,24 +24,6 @@
             {
                 switch (messageType)
                 {
-                    case 10140:
-                    {
-                        ServiceMessageManager.ForwardClientMessageReceived((ForwardClientMessage) message);
-                        break;
-                    }
-
-                    case 10198:
-                    {
-                        ServiceMessageManager.ClientConnectedMessageReceived((ClientConnectedMessage) message);
-                        break;
-                    }
-
-                    case 10199:
-                    {
-                        ServiceMessageManager.ClientDisconnectedMessageReceived((ClientDisconnectedMessage) message);
-                        break;
-                    }
-
                     default:
                     {
                         Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
@@ -54,6 +35,12 @@
             {
                 switch (messageType)
                 {
+                    case 10300:
+                    {
+                        ServiceMessageManager.ForwardServerMessageReceived((ForwardPiranhaMessage) message);
+                        break;
+                    }
+
                     default:
                     {
                         Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
@@ -64,61 +51,69 @@
         }
 
         /// <summary>
-        ///     Sends the response message to requester.
+        ///     Sends message to the specified socket.
         /// </summary>
-        internal static void SendResponseMessage(ServiceMessage responseMessage, ServiceMessage requestMessage)
+        internal static void SendMessage(ServiceMessage message, NetMQSocket responseSocket)
         {
-            ServiceMessageManager.SendMessage(responseMessage, requestMessage.GetServiceType(), requestMessage.GetServerId(), requestMessage.GetSessionId());
+            message.SetServerId(Config.ServerId);
+            message.SetServiceType(ServiceManager.SERVICE_TYPE);
+            
+            ServiceMessaging.Send(message, responseSocket);
         }
 
         /// <summary>
-        ///     Sends the message to specified exchange and routing key.
+        ///     Sends message to the specified socket.
         /// </summary>
-        internal static void SendMessage(ServiceMessage message, string serviceType, int serverId, string sessionId = null)
+        internal static void SendMessage(ServiceMessage message, string sessionId, NetMQSocket responseSocket)
         {
-            if (serviceType == null)
-            {
-                throw new ArgumentNullException("serviceType");
-            }
-
-            message.SetSeviceType(ServiceGateway.ServiceType);
             message.SetServerId(Config.ServerId);
+            message.SetServiceType(ServiceManager.SERVICE_TYPE);
             message.SetSessionId(sessionId);
 
-            ServiceMessaging.Send(message, ServiceExchangeName.BuildExchangeName(serviceType), ServiceExchangeName.BuildQueueName(serviceType, serverId));
+            ServiceMessaging.Send(message, responseSocket);
         }
 
         /// <summary>
-        ///     Called when a <see cref="ForwardClientMessage"/> has been received.
+        ///     Sends message to the specified service node.
         /// </summary>
-        internal static void ForwardClientMessageReceived(ForwardClientMessage message)
+        internal static void SendMessage(ServiceMessage message, int serviceType, int serverId)
         {
-            if (message.Message != null)
+            NetMQSocket socket = ServiceManager.GetServiceSocket(serviceType, serverId);
+
+            if (socket != null)
             {
-                message.Message.GetByteStream().SetOffset(0);
-                message.Message.Decode();
-                
-                if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
-                {
-                    MessageManager.ReceiveMessage(message.Message, session);
-                }
+                ServiceMessageManager.SendMessage(message, socket);
             }
         }
 
         /// <summary>
-        ///     Called when a <see cref="ClientConnectedMessage"/> has been received.
+        ///     Sends message to the specified service node.
         /// </summary>
-        internal static void ClientConnectedMessageReceived(ClientConnectedMessage message)
+        internal static void SendMessage(ServiceMessage message, string sessionId, int serviceType, int serverId)
         {
-            GameSessionManager.OnClientConnected(message.GetServerId(), message.GetSessionId(), message.AccountId, message.IsNewClient);
+            NetMQSocket socket = ServiceManager.GetServiceSocket(serviceType, serverId);
+
+            if (socket != null)
+            {
+                ServiceMessageManager.SendMessage(message, sessionId, socket);
+            }
         }
 
         /// <summary>
-        ///     Called when a <see cref="ClientDisconnectedMessage"/> has been received.
+        ///     Called when a <see cref="ForwardPiranhaMessage"/> has been received.
         /// </summary>
-        internal static void ClientDisconnectedMessageReceived(ClientDisconnectedMessage message)
+        internal static void ForwardServerMessageReceived(ForwardPiranhaMessage message)
         {
-            GameSessionManager.OnClientDisconnected(message.GetSessionId());
+            if (message.PiranhaMessage != null)
+            {
+                if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
+                {
+                    if (session.Client.State == 6)
+                    {
+                        session.Client.NetworkToken.Messaging.MessageManager.SendMessage(message.PiranhaMessage);
+                    }
+                }
+            }
         }
     }
 }

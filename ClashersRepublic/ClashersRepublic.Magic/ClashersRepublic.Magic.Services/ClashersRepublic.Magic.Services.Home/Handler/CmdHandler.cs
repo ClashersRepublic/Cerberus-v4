@@ -1,6 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Services.Home.Network;
+    using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal static class CmdHandler
     {
@@ -21,7 +25,6 @@
 
                         switch (parameters[0])
                         {
-                            case "shut":
                             case "shutdown":
                             case "close":
                             case "quit":
@@ -33,6 +36,12 @@
                             case "test":
                             {
                                 CmdHandler.Test();
+                                break;
+                            }
+
+                            case "pool":
+                            {
+                                Console.WriteLine("Rcv: " + NetworkManager.ReceiveMessageQueueCount + " Snd: " + NetworkManager.SendMessageQueueCount);
                                 break;
                             }
                         }
@@ -54,7 +63,8 @@
         /// </summary>
         private static void Test()
         {
-            // Test.
+            HashTagCodeGenerator codeGenerator = new HashTagCodeGenerator();
+            Console.WriteLine(codeGenerator.ToId("#2L8UGPUJ").ToString());
         }
     }
 }

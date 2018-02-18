@@ -2,13 +2,13 @@
 {
     using System;
     using System.Net.Sockets;
+
     using ClashersRepublic.Magic.Proxy.User;
-    using ClashersRepublic.Magic.Services.Logic;
+    
+    using ClashersRepublic.Magic.Services.Logic.Service.Setting;
 
     internal class NetworkToken : IDisposable
     {
-        private static readonly int MAX_AVAILABLE_BYTES = Config.BufferSize * 4;
-
         private byte[] _receivedBytes;
         private int _receivedOffset;
 
@@ -16,11 +16,6 @@
         ///     Gets the client instance.
         /// </summary>
         internal Client Client { get; }
-
-        /// <summary>
-        ///     Gets or sets the connection id.
-        /// </summary>
-        internal long ConnectionId { get; set; }
 
         /// <summary>
         ///     Gets the messaging instance.
@@ -38,18 +33,23 @@
         internal SocketAsyncEventArgs AsyncEvent { get; }
 
         /// <summary>
+        ///     Gets or sets the connection id.
+        /// </summary>
+        internal long ConnectionId { get; set; }
+
+        /// <summary>
         ///     Gets a value indicating whether this instance is disposed.
         /// </summary>
-        internal bool Aborted { get; private set; }
+        internal bool Disposed { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkToken" /> class.
         /// </summary>
         internal NetworkToken(Socket socket, SocketAsyncEventArgs readEvent)
         {
-            this._receivedBytes = new byte[Config.BufferSize];
             this.Client = new Client(this);
             this.Messaging = new NetworkMessaging(this.Client, this);
+            this._receivedBytes = new byte[ServiceNetConfig.GetTcpBufferSize()];
 
             this.Socket = socket;
             this.AsyncEvent = readEvent;
@@ -66,7 +66,7 @@
 
             if (requireCapacity > this._receivedBytes.Length)
             {
-                if (requireCapacity > NetworkToken.MAX_AVAILABLE_BYTES)
+                if (requireCapacity > ServiceNetConfig.GetTcpBufferAllocationSize())
                 {
                     return false;
                 }
@@ -86,7 +86,7 @@
         internal void EnsureCapacity(int capacity)
         {
             byte[] tmp = this._receivedBytes;
-            this._receivedBytes = new byte[capacity + 100];
+            this._receivedBytes = new byte[capacity];
             Array.Copy(tmp, this._receivedBytes, this._receivedOffset);
         }
         
@@ -129,7 +129,7 @@
         /// </summary>
         internal void WriteData(byte[] packet)
         {
-            if (!this.Aborted)
+            if (!this.Disposed)
             {
                 if (this.IsConnected())
                 {
@@ -143,7 +143,7 @@
         /// </summary>
         internal bool IsConnected()
         {
-            return !this.Aborted && this.Socket.Connected;
+            return !this.Disposed && this.Socket.Connected;
         }
 
         /// <summary>
@@ -151,12 +151,12 @@
         /// </summary>
         public void Dispose()
         {
-            if (this.Aborted)
+            if (this.Disposed)
             {
                 return;
             }
 
-            this.Aborted = true;
+            this.Disposed = true;
 
             this.Socket.Close();
             this.Client.Dispose();

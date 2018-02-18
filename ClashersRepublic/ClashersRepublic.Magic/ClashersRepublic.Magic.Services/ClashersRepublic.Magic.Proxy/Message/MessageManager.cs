@@ -6,14 +6,15 @@
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Network;
+    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.Session;
     using ClashersRepublic.Magic.Proxy.User;
 
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Resource;
-
+    using ClashersRepublic.Magic.Services.Logic.Service;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
@@ -180,8 +181,7 @@
                         ServerMajorVersion = 9,
                         ServerBuildVersion = 256,
                         
-                        ServerEnvironment = Config.ServerEnvironment,
-
+                        ServerEnvironment = ServiceConfig.GetEnvironment(),
                         ContentVersion = ResourceManager.GetContentVersion(),
                         ContentUrlList = ResourceManager.ContentUrlList,
                         ChronosContentUrlList = ResourceManager.ChronosContentUrlList
@@ -224,7 +224,7 @@
 
                         if (account != null)
                         {
-                            GameSessionManager.CreateSession(this.Client, account, true);
+                            GameSessionManager.CreateSession(this.Client, account);
                         }
                     }
                     else
@@ -236,9 +236,9 @@
                 {
                     if (message.PassToken != null)
                     {
-                        GameAccount account = GameAccountManager.GetAccount(message.AccountId);
+                        int result = GameAccountManager.GetAccount(message.AccountId, out GameAccount account);
 
-                        if (account != null)
+                        if (result == 0)
                         {
                             if (message.PassToken == account.PassToken)
                             {
@@ -249,8 +249,12 @@
                                     // TODO: Close the current session.
                                 }
 
-                                GameSessionManager.CreateSession(this.Client, account, false);
+                                GameSessionManager.CreateSession(this.Client, account);
                             }
+                        }
+                        else if (result == 1)
+                        {
+                            this.SendLoginFailedMessage(1, "Internal server error");
                         }
                         else
                         {

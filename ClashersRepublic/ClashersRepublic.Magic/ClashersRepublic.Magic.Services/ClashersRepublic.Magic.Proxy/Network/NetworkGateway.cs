@@ -3,13 +3,12 @@
     using System;
     using System.Net;
     using System.Net.Sockets;
-    using ClashersRepublic.Magic.Proxy.Debug;
-    using ClashersRepublic.Magic.Proxy.Session;
-    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Proxy.Log;
 
     internal class NetworkGateway
     {
         private readonly Socket _listener;
+        private const int BufferSize = 2048;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkGateway" />
@@ -20,7 +19,7 @@
             this._listener.Bind(new IPEndPoint(IPAddress.Any, port));
             this._listener.Listen(500);
 
-            Logging.Debug(this, "Server has been bound to " + this._listener.LocalEndPoint + ".");
+            Logging.Debug(this, "Server listens on TCP port " + port);
 
             SocketAsyncEventArgs acceptEvent = new SocketAsyncEventArgs();
             acceptEvent.Completed += this.OnAcceptCompleted;
@@ -75,7 +74,7 @@
                 Socket socket = asyncEvent.AcceptSocket;
 
                 SocketAsyncEventArgs readEvent = new SocketAsyncEventArgs();
-                readEvent.SetBuffer(new byte[Config.BufferSize], 0, Config.BufferSize);
+                readEvent.SetBuffer(new byte[NetworkGateway.BufferSize], 0, NetworkGateway.BufferSize);
                 readEvent.Completed += NetworkGateway.OnReceiveCompleted;
 
                 NetworkToken token = new NetworkToken(socket, readEvent);
@@ -119,7 +118,7 @@
                             }
                         }
 
-                        if (!token.Aborted)
+                        if (!token.Disposed)
                         {
                             if (!token.Socket.ReceiveAsync(asyncEvent))
                             {
@@ -206,7 +205,7 @@
                 {
                     if (NetworkManager.RemoveConnection(token))
                     {
-                        if (!token.Aborted)
+                        if (!token.Disposed)
                         {
                             token.Dispose();
                         }

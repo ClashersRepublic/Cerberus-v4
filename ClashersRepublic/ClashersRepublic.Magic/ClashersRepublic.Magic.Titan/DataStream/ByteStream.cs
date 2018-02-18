@@ -24,9 +24,9 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="ByteStream" /> class.
         /// </summary>
-        public ByteStream(byte[] buffer)
+        public ByteStream(byte[] buffer, int length)
         {
-            this._length = buffer.Length;
+            this._length = length;
             this._buffer = new byte[this._length];
             Array.Copy(buffer, this._buffer, this._length);
         }
@@ -514,9 +514,7 @@
         public override void WriteBytes(byte[] value, int length)
         {
             base.WriteBytes(value, length);
-
-            this._bitIdx = 0;
-
+            
             if (value == null)
             {
                 this.WriteIntToByteArray(-1);
@@ -528,6 +526,18 @@
 
                 Array.Copy(value, 0, this._buffer, this._offset, length);
 
+                this._offset += length;
+            }
+        }
+
+        public void WriteBytesWithoutLength(byte[] value, int length)
+        {
+            base.WriteBytes(value, length);
+
+            if (value != null)
+            {
+                this.EnsureCapacity(length);
+                Array.Copy(value, 0, this._buffer, this._offset, length);
                 this._offset += length;
             }
         }

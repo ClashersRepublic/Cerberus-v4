@@ -1,126 +1,99 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
     using System;
-
-    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Services.Logic.Message;
 
-    using RabbitMQ.Client.Events;
+    using NetMQ;
 
     internal static class ServiceMessaging
     {
-        private static MagicServiceMessageFactory _messageFactory;
-
         /// <summary>
-        ///     Initializes this instance.
+        ///     Called when a message is received.
         /// </summary>
-        internal static void Initialize()
+        internal static void OnReceive(byte[] buffer, int length)
         {
-            ServiceMessaging._messageFactory = MagicServiceMessageFactory.Instance;
-        }
-
-        /// <summary>
-        ///     Called when the service gateway receive a message.
-        /// </summary>
-        internal static void OnReceive(BasicDeliverEventArgs rcvEvent)
-        {
-            byte[] buffer = rcvEvent.Body;
-            int length = buffer.Length;
-
-            if (length >= 5)
+            if (length >= 6)
             {
-                length -= 5;
+                length -= 6;
 
-                int messageType = buffer[1] | (buffer[0] << 8);
-                int messageLength = buffer[4] | (buffer[3] << 8) | (buffer[2] << 16);
+                int messageType = buffer[1] | buffer[0] << 8;
+                int messageLength = buffer[5] | buffer[4] << 8 | buffer[3] << 16 | (buffer[2] & 0x7f) << 24;
 
                 if (length >= messageLength)
                 {
-                    byte[] messageByteArray = new byte[messageLength];
-                    Array.Copy(buffer, 5, messageByteArray, 0, messageLength);
+                    byte[] encodingByteArray = new byte[messageLength];
+                    Array.Copy(buffer, 6, encodingByteArray, 0, messageLength);
 
-                    ServiceMessage message = ServiceMessaging._messageFactory.CreateMessageByType(messageType);
+                    ServiceMessage message = ServiceMessageFactory.CreateMessageByType(messageType);
 
                     if (message != null)
                     {
-                        message.SetMessageVersion(0);
-                        message.GetByteStream().SetByteArray(messageByteArray, messageLength);
+                        message.GetByteStream().SetByteArray(encodingByteArray, messageLength);
 
                         try
                         {
                             message.Decode();
                             ServiceProcessor.ReceiveMessage(message);
                         }
-                        catch (Exception exception)
+                        catch (Exception e)
                         {
-                            Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message decode exception, trace: " + exception);
+                            Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message decode failed, trace: " + e);
                         }
-
-                        Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onReceive message " + message.GetType().Name + " received");
+                    }
+                    else
+                    {
+                        Logging.Warning(typeof(ServiceMessaging), "Ignoring message of unknown type " + messageType);
                     }
                 }
                 else
                 {
-                    Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #2");
+                    Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message is corrupted #2");
                 }
             }
             else
             {
-                Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive packet is corrupted #1");
+                Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message is corrupted #1");
             }
         }
 
         /// <summary>
-        ///     Sends the message to specified queue.
+        ///     Sends the message to specified server.
         /// </summary>
-        internal static void Send(ServiceMessage message, string exchangeName, string routingKey = null)
+        internal static void Send(ServiceMessage message, NetMQSocket responseSocket)
         {
-            if (exchangeName == null)
-            {
-                throw new ArgumentNullException("exchangeName");
-            }
-
-            ServiceProcessor.SendMessage(message, exchangeName, routingKey);
+            ServiceProcessor.SendMessage(message, responseSocket);
         }
 
         /// <summary>
-        ///     Called for send the specified message.
+        ///     Called for send to server the specified message.
         /// </summary>
-        internal static void OnWakeup(ServiceMessage message, string exchangeName, string routingKey)
+        internal static void OnWakeup(ServiceMessage message, NetMQSocket responseSocket)
         {
             message.Encode();
 
             int encodingLength = message.GetEncodingLength();
             byte[] encodingByteArray = message.GetByteStream().GetByteArray();
+            byte[] packet = new byte[encodingLength + 6];
 
-            byte[] buffer = new byte[5 + encodingLength];
-
-            Array.Copy(encodingByteArray, 0, buffer, 5, encodingLength);
-            ServiceMessaging.WriteHeader(message, buffer, encodingLength);
-            ServiceGateway.Send(buffer, exchangeName, routingKey);
-
-            message.Destruct();
-
-            Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onWakeup message " + message.GetType().Name + " sent");
+            ServiceMessaging.WriteHeader(message, encodingLength, packet);
+            Array.Copy(encodingByteArray, 0, packet, 6, encodingLength);
+            ServiceGateway.Send(packet, encodingLength + 6, responseSocket);
         }
 
         /// <summary>
-        ///     Writes the message header.
+        ///     Writes the message header to buffer.
         /// </summary>
-        private static void WriteHeader(ServiceMessage message, byte[] stream, int length)
+        private static void WriteHeader(ServiceMessage message, int encodingLenght, byte[] buffer)
         {
             int messageType = message.GetMessageType();
 
-            stream[1] = (byte) messageType;
-            stream[0] = (byte) (messageType >> 8);
-            stream[4] = (byte) length;
-            stream[3] = (byte) (length >> 8);
-            stream[2] = (byte) (length >> 16);
-
-            if (length > 0xFFFFFF)
-            {
-                Logging.Error(typeof(ServiceMessaging), "NetworkMessaging::writeHeader trying to send too big message, type " + messageType);
-            }
+            buffer[0] = (byte) (messageType >> 8);
+            buffer[1] = (byte) (messageType);
+            buffer[2] = (byte) (encodingLenght >> 24);
+            buffer[3] = (byte) (encodingLenght >> 16);
+            buffer[4] = (byte) (encodingLenght >> 8);
+            buffer[5] = (byte) (encodingLenght);
         }
     }
 }

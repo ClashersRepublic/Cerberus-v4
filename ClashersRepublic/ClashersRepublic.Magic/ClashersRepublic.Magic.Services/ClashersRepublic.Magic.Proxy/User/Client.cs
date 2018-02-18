@@ -7,11 +7,11 @@
 
     internal class Client : IDisposable
     {
-        internal NetworkToken NetworkToken;
-        internal GameSession GameSession;
-        internal ClientDefines Defines;
+        internal NetworkToken NetworkToken { get; private set; }
+        internal GameSession GameSession { get; set; }
+        internal ClientDefines Defines { get; set; }
 
-        internal int State;
+        internal int State { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Client" /> class.
@@ -32,8 +32,10 @@
             if (this.GameSession != null)
             {
                 GameSessionManager.CloseSession(this.GameSession);
-                this.GameSession = null;
             }
+
+            this.GameSession = null;
+            this.NetworkToken = null;
         }
     }
 }

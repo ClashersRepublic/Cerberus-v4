@@ -4,8 +4,8 @@
     using System.Drawing;
     using System.Reflection;
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Debug;
     using ClashersRepublic.Magic.Proxy.Handler;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Network;
 
     using ClashersRepublic.Magic.Services.Logic;

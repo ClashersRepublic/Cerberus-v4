@@ -1,76 +1,65 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message
 {
-    using ClashersRepublic.Magic.Titan.Message;
+    using ClashersRepublic.Magic.Titan.DataStream;
 
-    public class ServiceMessage : PiranhaMessage
+    public class ServiceMessage
     {
-        protected string ServiceType;
+        protected ByteStream Stream;
+
         protected string SessionId;
 
+        protected int ServiceType;
         protected int ServerId;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServiceMessage" /> class.
         /// </summary>
-        public ServiceMessage(short messageVersion) : base(messageVersion)
+        public ServiceMessage()
         {
+            this.Stream = new ByteStream(20);
         }
 
         /// <summary>
         ///     Decodes this instance.
         /// </summary>
-        public override void Decode()
+        public virtual void Decode()
         {
-            base.Decode();
-
-            this.ServiceType = this.Stream.ReadString(64);
-            this.SessionId = this.Stream.ReadString(64);
             this.ServerId = this.Stream.ReadVInt();
+            this.ServiceType = this.Stream.ReadVInt();
+            this.SessionId = this.Stream.ReadString(12);
         }
 
         /// <summary>
         ///     Encodes this instance.
         /// </summary>
-        public override void Encode()
+        public virtual void Encode()
         {
-            base.Encode();
-
-            this.Stream.WriteString(this.ServiceType);
-            this.Stream.WriteString(this.SessionId);
+            this.Stream.WriteVInt(this.ServiceType);
             this.Stream.WriteVInt(this.ServerId);
+            this.Stream.WriteString(this.SessionId);
         }
 
         /// <summary>
         ///     Gets the message type of this instance.
         /// </summary>
-        public override short GetMessageType()
+        public virtual short GetMessageType()
         {
-            return base.GetMessageType();
+            return 0;
         }
-
-        /// <summary>
-        ///     Gets the service node type of this instance.
-        /// </summary>
-        public override int GetServiceNodeType()
-        {
-            return base.GetServiceNodeType();
-        }
-
+        
         /// <summary>
         ///     Destructs this message.
         /// </summary>
-        public override void Destruct()
+        public virtual void Destruct()
         {
-            base.Destruct();
-
-            this.ServiceType = null;
+            this.Stream.Destruct();
             this.SessionId = null;
         }
 
         /// <summary>
         ///     Gets the service type.
         /// </summary>
-        public string GetServiceType()
+        public int GetServiceType()
         {
             return this.ServiceType;
         }
@@ -78,7 +67,7 @@
         /// <summary>
         ///     Sets the service type.
         /// </summary>
-        public void SetSeviceType(string value)
+        public void SetServiceType(int value)
         {
             this.ServiceType = value;
         }
@@ -113,6 +102,22 @@
         public void SetServerId(int value)
         {
             this.ServerId = value;
+        }
+
+        /// <summary>
+        ///     Gets the encoding length.
+        /// </summary>
+        public int GetEncodingLength()
+        {
+            return this.Stream.GetLength();
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="ByteStream"/> instance.
+        /// </summary>
+        public ByteStream GetByteStream()
+        {
+            return this.Stream;
         }
     }
 }

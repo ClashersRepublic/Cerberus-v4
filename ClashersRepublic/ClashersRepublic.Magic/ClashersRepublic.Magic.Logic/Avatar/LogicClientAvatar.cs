@@ -836,5 +836,13 @@
 
             jsonObject.Put(key, jsonArray);
         }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // TODO: Implement LogicClientAvatar::destruct();
+        }
     }
 }

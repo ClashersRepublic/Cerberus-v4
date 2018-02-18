@@ -3,16 +3,28 @@
     using System.Collections.Concurrent;
     using System.Linq;
     using System.Threading;
-
-    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Message;
+    using ClashersRepublic.Magic.Proxy.Network.Udp;
+    using ClashersRepublic.Magic.Services.Logic.Service.Setting;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal static class NetworkManager
     {
+        private static readonly int[] _gamePorts =
+        {
+            9339,
+            1863,
+            3724,
+            30000,
+            843
+        };
+
         private static long _connectionId;
 
+        private static NetworkGateway[] _gateways;
+        private static NetworkUdpGateway _udpGateway;
         private static ConcurrentQueue<QueueItem> _sendMessageQueue;
         private static ConcurrentQueue<QueueItem> _receiveMessageQueue;
         private static ConcurrentDictionary<long, NetworkToken> _connections;
@@ -20,6 +32,17 @@
         private static Thread _sendWorker;
         private static Thread _receiveWorker;
         private static Thread _updateWorker;
+
+        /// <summary>
+        ///     Gets the udp gateway instance.
+        /// </summary>
+        internal static NetworkUdpGateway UdpGateway
+        {
+            get
+            {
+                return NetworkManager._udpGateway;
+            }
+        }
 
         /// <summary>
         ///     Gets the number of connections.
@@ -71,6 +94,18 @@
             NetworkManager._sendWorker.Start();
             NetworkManager._receiveWorker.Start();
             NetworkManager._updateWorker.Start();
+
+            NetworkManager._gateways = new NetworkGateway[NetworkManager._gamePorts.Length];
+
+            for (int i = 0; i < NetworkManager._gamePorts.Length; i++)
+            {
+                NetworkManager._gateways[i] = new NetworkGateway(NetworkManager._gamePorts[i]);
+            }
+
+            if (ServiceNetConfig.UdpEnabled() || true)
+            {
+                NetworkManager._udpGateway = new NetworkUdpGateway(NetworkManager._gamePorts[0]);
+            }
         }
 
         /// <summary>
@@ -152,7 +187,7 @@
             {
                 while (NetworkManager._receiveMessageQueue.TryDequeue(out QueueItem item))
                 {
-                    if (!item.Messaging.Token.Aborted)
+                    if (!item.Messaging.Token.Disposed)
                     {
                         item.Messaging.MessageManager.ReceiveMessage(item.Message);
                     }
@@ -171,7 +206,7 @@
             {
                 while (NetworkManager._sendMessageQueue.TryDequeue(out QueueItem item))
                 {
-                    if (!item.Messaging.Token.Aborted)
+                    if (!item.Messaging.Token.Disposed)
                     {
                         item.Messaging.OnWakeup(item.Message);
                     }

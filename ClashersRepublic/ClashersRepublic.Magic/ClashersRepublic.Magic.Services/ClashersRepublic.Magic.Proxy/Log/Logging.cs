@@ -1,9 +1,11 @@
-﻿namespace ClashersRepublic.Magic.Proxy.Debug
+﻿namespace ClashersRepublic.Magic.Proxy.Log
 {
     using System;
     using System.Diagnostics;
     using ClashersRepublic.Magic.Titan.Debug;
-    using Debugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
+
+    using CDebug = System.Diagnostics.Debug;
+    using LogicDebugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
 
     internal static class Logging
     {
@@ -12,9 +14,9 @@
         /// </summary>
         internal static void Initialize()
         {
-            Debugger.LogEvent += Logging.Log;
-            Debugger.WarningEvent += Logging.Warning;
-            Debugger.ErrorEvent += Logging.Error;
+            LogicDebugger.LogEvent += Logging.Log;
+            LogicDebugger.WarningEvent += Logging.Warning;
+            LogicDebugger.ErrorEvent += Logging.Error;
         }
 
         /// <summary>
@@ -22,7 +24,7 @@
         /// </summary>
         private static void Log(object sender, DebugEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("[DEBUG] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
+            CDebug.WriteLine("[DEBUG] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
         }
 
         /// <summary>
@@ -30,7 +32,7 @@
         /// </summary>
         private static void Warning(object sender, DebugEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("[WARNING] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
+            CDebug.WriteLine("[WARNING] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
         }
 
         /// <summary>
@@ -38,7 +40,7 @@
         /// </summary>
         private static void Error(object sender, DebugEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("[ERROR] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
+            CDebug.WriteLine("[ERROR] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
         }
 
         /// <summary>
@@ -47,7 +49,7 @@
         [Conditional("DEBUG")]
         internal static void Debug(object sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[DEBUG] " + sender.GetType().Name + ": " + message);
+            CDebug.WriteLine("[DEBUG] {0}: {1}", sender.GetType().Name, message);
         }
 
         /// <summary>
@@ -56,7 +58,7 @@
         [Conditional("DEBUG")]
         internal static void Debug(Type sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[DEBUG] " + sender.Name + ": " + message);
+            CDebug.WriteLine("[DEBUG] {0}: {1}", sender.Name, message);
         }
 
         /// <summary>
@@ -65,7 +67,7 @@
         [Conditional("DEBUG")]
         internal static void Log(object sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[LOG] " + sender.GetType().Name + ": " + message);
+            CDebug.WriteLine("[LOG] {0}: {1}", sender.GetType().Name, message);
         }
 
         /// <summary>
@@ -74,7 +76,7 @@
         [Conditional("DEBUG")]
         internal static void Log(Type sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[LOG] " + sender.Name + ": " + message);
+            CDebug.WriteLine("[LOG] {0}: {1}", sender.Name, message);
         }
 
         /// <summary>
@@ -82,7 +84,7 @@
         /// </summary>
         internal static void Warning(object sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[WARNING] " + sender.GetType().Name + ": " + message);
+            CDebug.WriteLine("[WARNING] {0}: {1}", sender.GetType().Name, message);
         }
 
         /// <summary>
@@ -90,7 +92,7 @@
         /// </summary>
         internal static void Warning(Type sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[WARNING] " + sender.Name + ": " + message);
+            CDebug.WriteLine("[WARNING] {0}: {1}", sender.Name, message);
         }
 
         /// <summary>
@@ -98,7 +100,7 @@
         /// </summary>
         internal static void Error(object sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[ERROR] " + sender.GetType().Name + ": " + message);
+            CDebug.WriteLine("[ERROR] {0}: {1}", sender.GetType().Name, message);
         }
 
         /// <summary>
@@ -106,7 +108,7 @@
         /// </summary>
         internal static void Error(Type sender, string message)
         {
-            System.Diagnostics.Debug.WriteLine("[ERROR] " + sender.Name + ": " + message);
+            CDebug.WriteLine("[ERROR] {0}: {1}", sender.Name, message);
         }
 
         /// <summary>
@@ -116,7 +118,7 @@
         {
             if (!assertCondition)
             {
-                System.Diagnostics.Debug.WriteLine("[ASSERT] " + sender.GetType().Name + ": " + assertionError);
+                CDebug.WriteLine("[ASSERT] {0}: {1}", sender.GetType().Name, assertionError);
             }
         }
 
@@ -127,7 +129,7 @@
         {
             if (!assertCondition)
             {
-                System.Diagnostics.Debug.WriteLine("[ASSERT] " + sender.Name + ": " + assertionError);
+                CDebug.WriteLine("[ASSERT] {0}: {1}", sender.Name, assertionError);
             }
         }
     }

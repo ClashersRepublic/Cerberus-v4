@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic
 {
     using System.IO;
+
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
@@ -11,22 +12,10 @@
 
         public static int ServerId;
 
-        public static int BufferSize;
-        public static int MaxPlayers;
-
-        public static string ServerVersion;
-        public static string ServerEnvironment;
-
-        public static string RabbitServer;
-        public static string RabbitUser;
-        public static string RabbitPassword;
-
-        public static string[] MongodServers;
-        public static string MongodUser;
-        public static string MongodPassword;
-        public static string MongodDbName;
-        public static string MongodDbCollection;
-
+        public static string ServiceFile;
+        public static string DatabaseFile;
+        public static string ConfigServer;
+        
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
@@ -57,49 +46,16 @@
             if (File.Exists("config.json"))
             {
                 LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(File.ReadAllText("config.json"));
+                LogicJSONObject resourceObject = jsonObject.GetJSONObject("resources");
+                LogicJSONNumber serverIdNumber = jsonObject.GetJSONNumber("server_id");
 
-                LogicJSONObject rabbitObject = jsonObject.GetJSONObject("rabbit");
-                LogicJSONObject mongodObject = jsonObject.GetJSONObject("mongod");
-                LogicJSONObject networkObject = jsonObject.GetJSONObject("network");
-
-                Config.ServerId = LogicJSONHelper.GetJSONNumber(jsonObject, "serverId");
-                Config.ServerVersion = LogicJSONHelper.GetJSONString(jsonObject, "serverVersion");
-                Config.ServerEnvironment = LogicJSONHelper.GetJSONString(jsonObject, "serverEnvironment");
-
-                if (rabbitObject != null)
+                Config.ServerId = serverIdNumber.GetIntValue();
+                
+                if (resourceObject != null)
                 {
-                    Config.RabbitServer = LogicJSONHelper.GetJSONString(rabbitObject, "server");
-                    Config.RabbitUser = LogicJSONHelper.GetJSONString(rabbitObject, "user");
-                    Config.RabbitPassword = LogicJSONHelper.GetJSONString(rabbitObject, "password");
-                }
-
-                if (mongodObject != null)
-                {
-                    LogicJSONArray serverArray = mongodObject.GetJSONArray("servers");
-
-                    if (serverArray.Size() > 0)
-                    {
-                        Config.MongodServers = new string[serverArray.Size()];
-
-                        for (int i = 0; i < serverArray.Size(); i++)
-                        {
-                            Config.MongodServers[i] = serverArray.GetJSONString(i).GetStringValue();
-                        }
-                    }
-                    else
-                    {
-                        Debugger.Error("Config::loadConfig 'servers' array is empty");
-                    }
-                    
-                    Config.MongodUser = LogicJSONHelper.GetJSONString(mongodObject, "user");
-                    Config.MongodPassword = LogicJSONHelper.GetJSONString(mongodObject, "password");
-                    Config.MongodDbName = LogicJSONHelper.GetJSONString(mongodObject, "db_name");
-                    Config.MongodDbCollection = LogicJSONHelper.GetJSONString(mongodObject, "db_collection_name");
-                }
-
-                if (networkObject != null)
-                {
-                    Config.BufferSize = LogicJSONHelper.GetJSONNumber(networkObject, "buffer_size");
+                    Config.ServiceFile = LogicJSONHelper.GetJSONString(resourceObject, "service_file");
+                    Config.DatabaseFile = LogicJSONHelper.GetJSONString(resourceObject, "database_file");
+                    Config.ConfigServer = LogicJSONHelper.GetJSONString(resourceObject, "config_server");
                 }
             }
             else

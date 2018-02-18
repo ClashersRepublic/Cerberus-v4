@@ -1,9 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Account
 {
+    using System;
     using System.Collections.Concurrent;
 
     using ClashersRepublic.Magic.Proxy.Database;
-    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
@@ -58,7 +59,7 @@
             account.PassToken = GameAccountManager.GeneratePassToken();
             account.AccountCreationDate = LogicTimeUtil.GetTimestampMS();
 
-            GameDatabase.InsertAccount(account);
+            GameDatabaseManager.GetRandomDatabase().InsertAccount(account);
 
             if (GameAccountManager._accounts.TryAdd((long) (account.HighId << 32) | (uint) account.LowId, account))
             {
@@ -73,46 +74,51 @@
         /// </summary>
         internal static void LoadAllAccounts()
         {
-            for (int dbId = 0; dbId < Config.MongodServers.Length; dbId++)
-            {
-                int lastAccountId = GameDatabase.GetHigherAccountId(dbId);
-
-                for (int lowId = 1; lowId <= lastAccountId; lowId++)
-                {
-                    GameAccountManager.LoadAccount(new LogicLong(dbId, lowId));
-                }
-            }
+            // LoadAllAccounts.
         }
 
         /// <summary>
         ///     Loads the specified account.
         /// </summary>
-        internal static GameAccount LoadAccount(LogicLong accountId)
+        internal static int LoadAccount(LogicLong accountId, out GameAccount account)
         {
-            GameAccount account = GameDatabase.LoadAccount(accountId);
+            GameDatabase database = GameDatabaseManager.GetDatabase(accountId.GetHigherInt());
 
-            if (account != null)
+            if (database != null)
             {
-                if (!GameAccountManager._accounts.TryAdd(accountId, account))
+                account = database.GetAccount(accountId.GetLowerInt());
+
+                if (account != null)
                 {
-                    Logging.Error(typeof(GameAccountManager), "GameAccountManager::loadAccount account already added");
+                    if (!GameAccountManager._accounts.TryAdd(accountId, account))
+                    {
+                        Logging.Error(typeof(GameAccountManager), "GameAccountManager::loadAccount account already added");
+                    }
+
+                    return 0;
                 }
+
+                return 2;
+            }
+            else
+            {
+                account = null;
             }
 
-            return account;
+            return 1;
         }
 
         /// <summary>
         ///     Get sthe specified account.
         /// </summary>
-        internal static GameAccount GetAccount(LogicLong accountId)
+        internal static int GetAccount(LogicLong accountId, out GameAccount account)
         {
-            if (!GameAccountManager._accounts.TryGetValue(accountId, out GameAccount account))
+            if (!GameAccountManager._accounts.TryGetValue(accountId, out account))
             {
-                account = GameAccountManager.LoadAccount(accountId);
+                return GameAccountManager.LoadAccount(accountId, out account);
             }
 
-            return account;
+            return 0;
         }
     }
 }

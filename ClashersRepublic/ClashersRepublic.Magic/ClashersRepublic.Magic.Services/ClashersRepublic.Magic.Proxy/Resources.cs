@@ -7,22 +7,14 @@
     using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.Service.Api;
     using ClashersRepublic.Magic.Proxy.Session;
+    using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Resource;
+    using ClashersRepublic.Magic.Services.Logic.Service;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal static class Resources
     {
-        private static readonly int[] GATEWAY_PORTS =
-        {
-            9339,
-            1863,
-            3724,
-            30000,
-            843
-        };
-        
-        internal static NetworkGateway[] Gateways;
         internal static LogicMersenneTwisterRandom Random;
 
         /// <summary>
@@ -31,10 +23,21 @@
         internal static void Initialize()
         {
             ResourceManager.Initialize();
+
+            Resources.InitializeConfigs();
             Resources.InitializeLogics();
             Resources.InitializeGames();
             Resources.InitializeServices();
             Resources.InitializeNetworks();
+        }
+
+        /// <summary>
+        ///     Initializes the config part.
+        /// </summary>
+        private static void InitializeConfigs()
+        {
+            Config.Initialize();
+            ServiceConfig.Initialize();
         }
 
         /// <summary>
@@ -52,7 +55,7 @@
         {
             Resources.Random = new LogicMersenneTwisterRandom(LogicTimeUtil.GetTimestamp());
 
-            GameDatabase.Initialize();
+            GameDatabaseManager.Initialize();
             GameAccountManager.Initialize();
             GameSessionManager.Initialize();
         }
@@ -62,11 +65,9 @@
         /// </summary>
         private static void InitializeServices()
         {
-            ServiceProcessor.Initialize();
-            ServiceMessaging.Initialize();
-            ServiceGateway.Initialize();
-
             GoogleServiceManager.Initialize();
+            ServiceProcessor.Initialize();
+            ServiceManager.Initialize();
         }
 
         /// <summary>
@@ -75,13 +76,6 @@
         private static void InitializeNetworks()
         {
             NetworkManager.Initialize();
-
-            Resources.Gateways = new NetworkGateway[Resources.GATEWAY_PORTS.Length];
-
-            for (int i = 0; i < Resources.GATEWAY_PORTS.Length; i++)
-            {
-                Resources.Gateways[i] = new NetworkGateway(Resources.GATEWAY_PORTS[i]);
-            }
         }
     }
 }

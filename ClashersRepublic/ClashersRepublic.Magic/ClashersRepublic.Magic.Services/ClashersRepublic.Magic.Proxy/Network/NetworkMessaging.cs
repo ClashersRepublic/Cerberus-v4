@@ -1,14 +1,16 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Network
 {
     using System;
+
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Logic.Message.Security;
-    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Message;
     using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.User;
-    using ClashersRepublic.Magic.Services.Logic;
+
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
+
     using ClashersRepublic.Magic.Titan;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
@@ -160,10 +162,7 @@
                                 {
                                     if (this._client.State == 6)
                                     {
-                                        ServiceMessageManager.SendMessage(new ForwardClientMessage {Message = message},
-                                            ServiceExchangeName.ServiceNodeTypeToServiceName(message.GetServiceNodeType()),
-                                            Config.ServerId,
-                                            this._client.GameSession.SessionId);
+                                        this._client.GameSession.ForwardGameMessage(message);
                                     }
                                 }
                             }

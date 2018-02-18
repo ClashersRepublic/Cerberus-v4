@@ -4,10 +4,26 @@
     using System.Linq;
 
     using ClashersRepublic.Magic.Logic.Data;
+    using ClashersRepublic.Magic.Logic.Utils;
     using ClashersRepublic.Magic.Titan.DataStream;
 
     public static class ByteStreamHelper
     {
+        /// <summary>
+        ///     Reads a compressable string or null.
+        /// </summary>
+        public static LogicCompressibleString ReadCompressableStringOrNull(this ByteStream stream)
+        {
+            if (stream.ReadBoolean())
+            {
+                return null;
+            }
+
+            LogicCompressibleString compressibleString = new LogicCompressibleString();
+            compressibleString.Decode(stream);
+            return compressibleString;
+        }
+
         /// <summary>
         ///     Reads a data reference.
         /// </summary>
@@ -29,6 +45,22 @@
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///     Writes a compressable string or null.
+        /// </summary>
+        public static void WriteCompressableStringOrNull(this ChecksumEncoder encoder, LogicCompressibleString compressibleString)
+        {
+            if (compressibleString == null)
+            {
+                encoder.WriteBoolean(false);
+            }
+            else
+            {
+                encoder.WriteBoolean(true);
+                compressibleString.Encode(encoder);
+            }
         }
 
         /// <summary>

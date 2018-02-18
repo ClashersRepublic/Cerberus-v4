@@ -1,13 +1,13 @@
-﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Client
+﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Game
 {
-    public class ClientDisconnectedMessage : ServiceMessage
+    public class CreateDataMessage : ServiceMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ClientDisconnectedMessage"/> class.
+        ///     Initializes a new instance of the <see cref="CreateDataMessage"/> class.
         /// </summary>
-        public ClientDisconnectedMessage() : base(0)
+        public CreateDataMessage() : base()
         {
-            // ClientDisconnectedMessage.
+            // CreateDataMessage.
         }
 
         /// <summary>
@@ -39,15 +39,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 10199;
-        }
-
-        /// <summary>
-        ///     Gets the service node type of this message.
-        /// </summary>
-        public override int GetServiceNodeType()
-        {
-            return 0;
+            return 10100;
         }
     }
 }

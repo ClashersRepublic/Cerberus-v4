@@ -5,10 +5,10 @@
     using System.Diagnostics;
 
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Debug;
+    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.User;
+
     using ClashersRepublic.Magic.Services.Logic;
-    using ClashersRepublic.Magic.Services.Logic.Message.Client;
 
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
@@ -58,9 +58,9 @@
             sessionId[0] = (byte) (Config.ServerId);
             sessionId[1] = (byte) (GameSessionManager._processId >> 8);
             sessionId[2] = (byte) (GameSessionManager._processId);
-            sessionId[3] = (byte) (timestamp >> 16);
-            sessionId[4] = (byte) (timestamp >> 8);
-            sessionId[5] = (byte) (timestamp);
+            sessionId[3] = (byte) (timestamp >> 8);
+            sessionId[4] = (byte) (timestamp);
+            sessionId[5] = (byte) (sessionCounter >> 24);
             sessionId[6] = (byte) (sessionCounter >> 16);
             sessionId[7] = (byte) (sessionCounter >> 8);
             sessionId[8] = (byte) (sessionCounter);
@@ -74,7 +74,7 @@
         /// <summary>
         ///     Creates a new session for specified client.
         /// </summary>
-        internal static void CreateSession(Client client, GameAccount account, bool isNewClient)
+        internal static void CreateSession(Client client, GameAccount account)
         {
             if (client.GameSession == null)
             {
@@ -84,14 +84,11 @@
                 {
                     client.GameSession = session;
                     client.NetworkToken.Messaging.MessageManager.SendLoginOkMessage(account);
+                    
+                    session.SetServerIDs(10, account.HighId);
+                    session.SetServerIDs(9, account.HighId);
 
                     account.SetSession(session);
-
-                    session.SendToHomeService(new ClientConnectedMessage
-                    {
-                        AccountId = new LogicLong(account.HighId, account.LowId),
-                        IsNewClient = isNewClient
-                    });
                 }
             }
             else
@@ -123,7 +120,7 @@
         {
             if (GameSessionManager._sessions.TryRemove(session.SessionId, out _))
             {
-                session.SendToHomeService(new ClientDisconnectedMessage());
+                session.ClearServerIDs();
                 session.Account.SetSession(null);
             }
             else

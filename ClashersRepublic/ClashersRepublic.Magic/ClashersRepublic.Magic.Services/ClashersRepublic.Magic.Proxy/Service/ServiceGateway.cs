@@ -1,96 +1,64 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
-    using ClashersRepublic.Magic.Proxy.Debug;
-    using ClashersRepublic.Magic.Services.Logic;
-    using RabbitMQ.Client;
-    using RabbitMQ.Client.Events;
+    using System;
+    using System.Threading;
+    using ClashersRepublic.Magic.Proxy.Log;
+    using NetMQ;
+    using NetMQ.Sockets;
 
-    internal static class ServiceGateway
+    internal class ServiceGateway
     {
-        internal static IModel _channel;
+        private NetMQSocket _client;
+        private Thread _receiveThread;
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ServiceGateway"/> class.
+        /// </summary>
+        internal ServiceGateway(int port)
+        {
+            this._client = new DealerSocket("@tcp://*:" + port);
 
-        internal static string ExchangeName;
-        internal static string QueueName;
-        internal static string ServiceType;
+            Logging.Debug(typeof(ServiceGateway), "Service listens on port " + port);
+
+            this._receiveThread = new Thread(this.Receive);
+            this._receiveThread.Start();        }
 
         /// <summary>
-        ///     Initializes this instance.
+        ///     Receives bytes.
         /// </summary>
-        internal static void Initialize()
+        private void Receive()
         {
-            ServiceGateway.ServiceType = ServiceExchangeName.SERVICE_PROXY_NAME;
-            ServiceGateway.ExchangeName = ServiceExchangeName.BuildExchangeName(ServiceGateway.ServiceType);
-            ServiceGateway.QueueName = ServiceExchangeName.BuildQueueName(ServiceGateway.ServiceType, Config.ServerId);
-
-            IConnection connection = new ConnectionFactory { HostName = Config.RabbitServer, UserName = Config.RabbitUser, Password = Config.RabbitPassword }.CreateConnection();
-
-            ServiceGateway._channel = connection.CreateModel();
-
-            ServiceGateway.DeclareExchange(ServiceGateway.ExchangeName);
-            ServiceGateway.DeclareQueue(ServiceGateway.QueueName);
-            ServiceGateway.BindQueue(ServiceGateway.ExchangeName,
-                ServiceGateway.QueueName,
-                ServiceGateway.QueueName);
-            ServiceGateway.ListenQueue(ServiceGateway.QueueName);
-        }
-
-        /// <summary>
-        ///     Declares the exchange.
-        /// </summary>
-        internal static void DeclareExchange(string exchange)
-        {
-            ServiceGateway._channel.ExchangeDeclare(exchange, ExchangeType.Direct, true);
-        }
-
-        /// <summary>
-        ///     Declares the queue.
-        /// </summary>
-        internal static void DeclareQueue(string queueName, bool isEsclusive = true)
-        {
-            ServiceGateway._channel.QueueDeclare(queueName, true, isEsclusive);
-        }
-
-        /// <summary>
-        ///     Binds the queue to specified exchange.
-        /// </summary>
-        internal static void BindQueue(string exchange, string queue, params string[] routingKeys)
-        {
-            for (int i = 0; i < routingKeys.Length; i++)
+            while (true)
             {
-                ServiceGateway._channel.QueueBind(queue, exchange, routingKeys[i]);
+                this.ProcessReceive();
             }
         }
 
         /// <summary>
-        ///     Listens the specified queue.
+        ///     Processes the receive bytes.
         /// </summary>
-        internal static void ListenQueue(string queue)
+        private void ProcessReceive()
         {
-            EventingBasicConsumer consumer = new EventingBasicConsumer(ServiceGateway._channel);
-            consumer.Received += ServiceGateway.ReceiveCallback;
-            ServiceGateway._channel.BasicConsume(queue, true, consumer);
-        }
+            byte[] buffer = this._client.ReceiveFrameBytes(out bool more);
 
-        /// <summary>
-        ///     Sends the message to specified client.
-        /// </summary>
-        internal static void Send(byte[] content, string exchange, string routingKey)
-        {
-            ServiceGateway._channel.BasicPublish(exchange, routingKey, ServiceGateway._channel.CreateBasicProperties(), content);
-        }
-
-        /// <summary>
-        ///     Called when a content has been received.
-        /// </summary>
-        private static void ReceiveCallback(object sender, BasicDeliverEventArgs args)
-        {
-            if (args.Body != null)
+            if (buffer != null)
             {
-                ServiceMessaging.OnReceive(args);
+                ServiceMessaging.OnReceive(buffer, buffer.Length);
+
+                if (more)
+                {
+                    this.ProcessReceive();
+                }
             }
-            else
+        }
+        
+        /// <summary>
+        ///     Sends the message to specified socket.
+        /// </summary>
+        internal static void Send(byte[] buffer, int length, NetMQSocket socket)
+        {
+            if (!socket.TrySendFrame(buffer, length))
             {
-                Logging.Error(typeof(ServiceGateway), "ServiceGateway::receiveCallback body is NULL");
+                Logging.Error(typeof(ServiceGateway), "ServiceGateway::send send failed");
             }
         }
     }

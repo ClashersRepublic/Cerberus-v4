@@ -1,13 +1,16 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Session
 {
-    public class SessionClosedMessage : ServiceMessage
+    public class ServiceNodeUnboundedToSessionMessage : ServiceMessage
     {
+        public int ServiceNodeType;
+        public int ServiceNodeId;
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SessionClosedMessage"/> class.
+        ///     Initializes a new instance of the <see cref="ServiceNodeUnboundedToSessionMessage"/> class.
         /// </summary>
-        public SessionClosedMessage() : base(0)
+        public ServiceNodeUnboundedToSessionMessage() : base()
         {
-            // SessionClosedMessage.
+            // ServiceNodeUnboundedToSessionMessage.
         }
 
         /// <summary>
@@ -16,6 +19,9 @@
         public override void Decode()
         {
             base.Decode();
+
+            this.ServiceNodeType = this.Stream.ReadVInt();
+            this.ServiceNodeId = this.Stream.ReadVInt();
         }
 
         /// <summary>
@@ -24,6 +30,9 @@
         public override void Encode()
         {
             base.Encode();
+
+            this.Stream.WriteVInt(this.ServiceNodeType);
+            this.Stream.WriteVInt(this.ServiceNodeId);
         }
 
         /// <summary>
@@ -39,15 +48,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 20110;
-        }
-
-        /// <summary>
-        ///     Gets the service node type of this message.
-        /// </summary>
-        public override int GetServiceNodeType()
-        {
-            return 0;
+            return 10202;
         }
     }
 }

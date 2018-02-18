@@ -1,10 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
-    using System;
     using System.Collections.Concurrent;
     using System.Threading;
-    using ClashersRepublic.Magic.Proxy.Debug;
+
     using ClashersRepublic.Magic.Services.Logic.Message;
+
+    using NetMQ;
 
     internal static class ServiceProcessor
     {
@@ -53,7 +54,7 @@
             {
                 while (ServiceProcessor._sendMessageQueue.TryDequeue(out QueueItem item))
                 {
-                    ServiceMessaging.OnWakeup(item.Message, item.ExchangeName, item.RoutingKey);
+                    ServiceMessaging.OnWakeup(item.Message, item.Socket);
                 }
 
                 Thread.Sleep(1);
@@ -71,22 +72,19 @@
         /// <summary>
         ///     Enqueues the specified message.
         /// </summary>
-        internal static void SendMessage(ServiceMessage message, string exchangeName, string routingKey)
+        internal static void SendMessage(ServiceMessage message, NetMQSocket socket)
         {
             ServiceProcessor._sendMessageQueue.Enqueue(new QueueItem
             {
                 Message = message,
-                ExchangeName = exchangeName,
-                RoutingKey = routingKey
+                Socket = socket
             });
         }
 
         private struct QueueItem
         {
             internal ServiceMessage Message;
-
-            internal string ExchangeName;
-            internal string RoutingKey;
+            internal NetMQSocket Socket;
         }
     }
 }

@@ -13,12 +13,7 @@
         public static string FingerprintVersion;
         public static string FingerprintJson;
         public static string FingerprintSha;
-
-        public static string StartingHomeJson;
-
-        public static int StartingHomeShieldDurationSeconds;
-        public static int StartingHomeGuardDurationSeconds;
-
+        
         public static LogicArrayList<string> ContentUrlList;
         public static LogicArrayList<string> ChronosContentUrlList;
         public static LogicArrayList<string> AppStoreUrlList;
@@ -99,7 +94,6 @@
                 LogicJSONArray contentArray = jsonObject.GetJSONArray("content");
                 LogicJSONArray chronosContentArray = jsonObject.GetJSONArray("chronosContent");
                 LogicJSONArray appStoreArray = jsonObject.GetJSONArray("appstore");
-                LogicJSONObject homeObject = jsonObject.GetJSONObject("home");
 
                 for (int i = 0; i < contentArray.Size(); i++)
                 {
@@ -114,26 +108,6 @@
                 for (int i = 0; i < appStoreArray.Size(); i++)
                 {
                     ResourceManager.AppStoreUrlList.Add(appStoreArray.GetJSONString(i).GetStringValue());
-                }
-
-                if (homeObject != null)
-                {
-                    string startingHomeFile = LogicJSONHelper.GetJSONString(homeObject, "starting_home");
-
-                    if (ResourceManager.LoadAssetFile(startingHomeFile) != null)
-                    {
-                        ResourceManager.StartingHomeJson = ResourceManager.LoadAssetFile(startingHomeFile);
-                        ResourceManager.StartingHomeShieldDurationSeconds = LogicJSONHelper.GetJSONNumber(homeObject, "shield_duration_secs");
-                        ResourceManager.StartingHomeGuardDurationSeconds = LogicJSONHelper.GetJSONNumber(homeObject, "guard_duration_secs");
-                    }
-                    else
-                    {
-                        Debugger.Error("ResourceManager::loadResources starting home file not exist");
-                    }
-                }
-                else
-                {
-                    Debugger.Error("ResourceManager::loadResources home object is NULL");
                 }
             }
             else

@@ -160,6 +160,8 @@
     <Compile Include="Time\LogicTimer.cs" />
     <Compile Include="Unit\LogicUnitProduction.cs" />
     <Compile Include="Message\Security\EncryptionMessage.cs" />
+    <Compile Include="Utils\HashTagCodeGenerator.cs" />
+    <Compile Include="Utils\LogicCompressibleString.cs" />
     <Compile Include="Utils\LogicDataSlot.cs" />
     <Compile Include="Utils\LogicUnitSlot.cs" />
     <Compile Include="Worker\LogicWorkerManager.cs" />
