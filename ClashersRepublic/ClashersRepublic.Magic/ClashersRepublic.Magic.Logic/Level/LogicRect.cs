@@ -19,6 +19,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the specified position is in inside of rectangle.
         /// </summary>
         public bool InInside(int x, int y)

@@ -18,6 +18,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._level = null;
+        }
+
+        /// <summary>
         ///     Refreshes status of all achievements.
         /// </summary>
         public void RefreshStatus()

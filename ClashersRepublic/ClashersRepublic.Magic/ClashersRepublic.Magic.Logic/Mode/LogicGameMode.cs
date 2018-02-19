@@ -7,6 +7,7 @@
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
+    using ClashersRepublic.Magic.Titan.Json;
 
     public class LogicGameMode
     {
@@ -159,6 +160,14 @@
         }
 
         /// <summary>
+        ///     Saves this instance to json.
+        /// </summary>
+        public void SaveToJSON(LogicJSONObject jsonObject)
+        {
+            this._level.SaveToJSON(jsonObject);
+        }
+
+        /// <summary>
         ///     Updates a one tick.
         /// </summary>
         public void UpdateOneSubTick()
@@ -195,7 +204,7 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar avatar, int secondsSinceLastSave, int currentTimestamp)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar avatar, int currentTimestamp, int secondsSinceLastSave)
         {
             if (home != null)
             {

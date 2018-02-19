@@ -57,6 +57,44 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                if (this._gameObjects[i].Count != 0)
+                {
+                    do
+                    {
+                        this._gameObjects[i][0].Destruct();
+                        this._gameObjects[i].Remove(0);
+                    } while (this._gameObjects[i].Count != 0);
+                }
+            }
+
+            if (this._unitProduction != null)
+            {
+                this._unitProduction.Destruct();
+                this._unitProduction = null;
+            }
+
+            if (this._spellProduction != null)
+            {
+                this._spellProduction.Destruct();
+                this._spellProduction = null;
+            }
+
+            this._level = null;
+            this._tileMap = null;
+            this._townHall = null;
+            this._townHallVillage2 = null;
+            this._allianceCastle = null;
+            this._laboratory = null;
+            this._specialObstacleData = null;
+        }
+
+        /// <summary>
         ///     Adds the specified gameobject to this instance.
         /// </summary>
         public void AddGameObject(LogicGameObject gameObject)

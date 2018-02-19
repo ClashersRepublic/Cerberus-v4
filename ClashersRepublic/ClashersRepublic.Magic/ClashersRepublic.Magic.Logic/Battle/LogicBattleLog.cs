@@ -15,6 +15,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether this battle is started.
         /// </summary>
         public bool GetBattleStarted()

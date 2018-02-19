@@ -102,12 +102,14 @@
         {
             if (index < this._count && index > -1)
             {
-                if (index != this._count - 1)
+                this._count -= 1;
+
+                if (index != this._count)
                 {
-                    Array.Copy(this._items, index + 1, this._items, index, this._count - index - 1);
+                    Array.Copy(this._items, index + 1, this._items, index, this._count - index);
                 }
 
-                this._items[index] = default(T);
+                this._items[this._count] = default(T);
             }
             else
             {

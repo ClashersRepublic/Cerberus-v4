@@ -45,6 +45,38 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            // LogicTileMap::removeGameObject(this);
+
+            for (int i = 0; i < this._components.Count; i++)
+            {
+                if (this._components[i] != null)
+                {
+                    this._components[i].Destruct();
+                    this._components[i].RemoveGameObjectReferences(this);
+                }
+            }
+
+            if (this._position != null)
+            {
+                this._position.Destruct();
+                this._position = null;
+            }
+
+            if (this._listener != null)
+            {
+                this._listener.Destruct();
+                this._listener = null;
+            }
+
+            this._data = null;
+            this._level = null;
+        }
+
+        /// <summary>
         ///     Adds the specified component.
         /// </summary>
         public void AddComponent(LogicComponent component)

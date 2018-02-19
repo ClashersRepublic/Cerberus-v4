@@ -9,5 +9,13 @@
         {
             // LogicGameObjectListener.
         }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            // Destruct.
+        }
     }
 }

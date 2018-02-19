@@ -131,6 +131,7 @@
     <Compile Include="GameObject\LogicGameObjectManager.cs" />
     <Compile Include="Helper\ByteStreamHelper.cs" />
     <Compile Include="Helper\ChecksumHelper.cs" />
+    <Compile Include="Helper\CompressibleStringHelper.cs" />
     <Compile Include="Helper\LogicJSONHelper.cs" />
     <Compile Include="Helper\ZLibHelper.cs" />
     <Compile Include="Home\LogicClientHome.cs" />

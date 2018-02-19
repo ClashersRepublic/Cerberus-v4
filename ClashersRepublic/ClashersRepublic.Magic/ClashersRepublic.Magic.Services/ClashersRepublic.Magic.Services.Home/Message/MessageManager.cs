@@ -43,7 +43,7 @@
         /// </summary>
         internal void EndClientTurnMessageReceived(EndClientTurnMessage message)
         {
-            // EndClientTurnMessageReceived.
+            this._gameSession.GameMode.EndTurnReceived(message);
         }
     }
 }

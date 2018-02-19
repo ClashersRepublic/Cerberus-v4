@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Titan.Math
 {
     using ClashersRepublic.Magic.Titan.DataStream;
-    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicVector2
     {
@@ -14,6 +13,14 @@
         public LogicVector2()
         {
             // LogicVector2.
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
         }
 
         /// <summary>

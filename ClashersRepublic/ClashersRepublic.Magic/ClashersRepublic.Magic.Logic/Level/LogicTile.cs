@@ -25,10 +25,15 @@
         {
             if (this._gameObjects != null)
             {
-                for (int i = 0; i < this._gameObjects.Count; i++)
+                if (this._gameObjects.Count != 0)
                 {
-                    this._gameObjects[i] = null;
+                    do
+                    {
+                        this._gameObjects.Remove(0);
+                    } while (this._gameObjects.Count != 0);
                 }
+
+                this._gameObjects = null;
             }
         }
 

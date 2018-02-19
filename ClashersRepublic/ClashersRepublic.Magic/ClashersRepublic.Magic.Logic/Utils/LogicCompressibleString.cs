@@ -156,6 +156,7 @@
             if (cString != null)
             {
                 this._compressedData = Convert.FromBase64String(cString.GetStringValue());
+                this._compressedLength = this._compressedData.Length;
             }
         }
 

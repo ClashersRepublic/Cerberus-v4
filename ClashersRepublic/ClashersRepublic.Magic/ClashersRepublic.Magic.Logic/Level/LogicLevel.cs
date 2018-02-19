@@ -1,5 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Level
 {
+    using System;
+
     using ClashersRepublic.Magic.Logic.Achievement;
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.GameObject;
@@ -9,8 +11,10 @@
     using ClashersRepublic.Magic.Logic.Offer;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Worker;
+
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
+
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Battle;
     using ClashersRepublic.Magic.Logic.Cooldown;
@@ -301,6 +305,7 @@
         public void SetHome(LogicClientHome home)
         {
             this._clientHome = home;
+            Console.WriteLine(home.GetHomeJSON());
         }
 
         /// <summary>
@@ -614,6 +619,158 @@
                 this._tileMap.Destruct();
                 this._tileMap = null;
             }
+
+            if (this._map != null)
+            {
+                this._map.Destruct();
+                this._map = null;
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (this._gameObjectManagers[i] != null)
+                {
+                    this._gameObjectManagers[i].Destruct();
+                    this._gameObjectManagers[i] = null;
+                }
+
+                if (this._workerManagers[i] != null)
+                {
+                    this._workerManagers[i].Destruct();
+                    this._workerManagers[i] = null;
+                }
+            }
+
+            if (this._offerManager != null)
+            {
+                this._offerManager.Destruct();
+                this._offerManager = null;
+            }
+
+            if (this._achievementManager != null)
+            {
+                this._achievementManager.Destruct();
+                this._achievementManager = null;
+            }
+
+            if (this._cooldownManager != null)
+            {
+                this._cooldownManager.Destruct();
+                this._cooldownManager = null;
+            }
+
+            if (this._battleLog != null)
+            {
+                this._battleLog.Destruct();
+                this._battleLog = null;
+            }
+
+            if (this._gameListener != null)
+            {
+                this._gameListener.Destruct();
+                this._gameListener = null;
+            }
+
+            if (this._newShopBuildings != null)
+            {
+                if (this._newShopBuildings.Count != 0)
+                {
+                    do
+                    {
+                        this._newShopBuildings.Remove(0);
+                    } while (this._newShopBuildings.Count != 0);
+                }
+
+                this._newShopBuildings = null;
+            }
+
+            if (this._newShopTraps != null)
+            {
+                if (this._newShopTraps.Count != 0)
+                {
+                    do
+                    {
+                        this._newShopTraps.Remove(0);
+                    } while (this._newShopTraps.Count != 0);
+                }
+
+                this._newShopTraps = null;
+            }
+
+            if (this._newShopDecos != null)
+            {
+                if (this._newShopDecos.Count != 0)
+                {
+                    do
+                    {
+                        this._newShopDecos.Remove(0);
+                    } while (this._newShopDecos.Count != 0);
+                }
+
+                this._newShopDecos = null;
+            }
+
+            if (this._layoutState != null)
+            {
+                if (this._layoutState.Count != 0)
+                {
+                    do
+                    {
+                        this._layoutState.Remove(0);
+                    } while (this._layoutState.Count != 0);
+                }
+            }
+
+            if (this._layoutStateVillage2 != null)
+            {
+                if (this._layoutStateVillage2.Count != 0)
+                {
+                    do
+                    {
+                        this._layoutStateVillage2.Remove(0);
+                    } while (this._layoutStateVillage2.Count != 0);
+                }
+            }
+
+            if (this._layoutCooldown != null)
+            {
+                if (this._layoutCooldown.Count != 0)
+                {
+                    do
+                    {
+                        this._layoutCooldown.Remove(0);
+                    } while (this._layoutCooldown.Count != 0);
+                }
+            }
+
+            if (this._armyNames != null)
+            {
+                if (this._armyNames.Count != 0)
+                {
+                    do
+                    {
+                        this._armyNames.Remove(0);
+                    } while (this._armyNames.Count != 0);
+                }
+            }
+
+            if (this._unplacedObjects != null)
+            {
+                if (this._unplacedObjects.Count != 0)
+                {
+                    do
+                    {
+                        this._unplacedObjects[0].Destruct();
+                        this._unplacedObjects.Remove(0);
+                    } while (this._unplacedObjects.Count != 0);
+                }
+            }
+
+            this._gameMode = null;
+            this._clientHome = null;
+            this._homeOwnerAvatar = null;
+            this._visitorAvatar = null;
+            
         }
     }
 }

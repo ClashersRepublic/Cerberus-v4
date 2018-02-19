@@ -1,9 +1,11 @@
-﻿namespace ClashersRepublic.Magic.Services.Home.Home
+﻿// #define USE_SNAPPY
+
+namespace ClashersRepublic.Magic.Services.Home.Home
 {
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
-    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Services.Home.Game.Mode;
     using ClashersRepublic.Magic.Services.Logic.Math;
     using ClashersRepublic.Magic.Services.Logic.Service.Setting;
     using ClashersRepublic.Magic.Services.Logic.Snappy;
@@ -17,14 +19,13 @@
     public class GameHome
     {
         [JsonConverter(typeof(LogicLongSerializer))] public LogicLong Id;
-
-        [JsonConverter(typeof(SnappyStringSerializer))] public SnappyString LogicClientHomeJson;
-        [JsonConverter(typeof(SnappyStringSerializer))] public SnappyString LogicClientAvatarJson;
+        
+        public string LogicClientHomeJson;
+        public string LogicClientAvatarJson;
 
         public int SaveTimestamp;
-
-        internal int State { get; private set; }
-
+        
+        internal GameMode GameMode { get; private set; }
         internal LogicClientHome LogicClientHomeInstance { get; private set; }
         internal LogicClientAvatar LogicClientAvatarInstance { get; private set; }
 
@@ -33,8 +34,7 @@
         /// </summary>
         public GameHome()
         {
-            this.LogicClientHomeJson = new SnappyString();
-            this.LogicClientAvatarJson = new SnappyString();
+            this.GameMode = new GameMode(this);
             this.LogicClientHomeInstance = new LogicClientHome();
             this.LogicClientAvatarInstance = new LogicClientAvatar();
         }
@@ -105,64 +105,8 @@
         /// </summary>
         public void SetDatas(string homeData, string avatarData)
         {
-            this.LogicClientHomeJson.Update(homeData);
-            this.LogicClientAvatarJson.Update(avatarData);
-        }
-
-        /// <summary>
-        ///     Gets if this <see cref="GameHome"/> instance is in none state.
-        /// </summary>
-        public bool IsInNoneState()
-        {
-            return this.State == 0;
-        }
-
-        /// <summary>
-        ///     Gets if this <see cref="GameHome"/> instance is in home state.
-        /// </summary>
-        public bool IsInHomeState()
-        {
-            return this.State == 1;
-        }
-
-        /// <summary>
-        ///     Gets if this <see cref="GameHome"/> instance is in attack state.
-        /// </summary>
-        public bool IsInAttackState()
-        {
-            return this.State == 2;
-        }
-
-        /// <summary>
-        ///     Gets if this <see cref="GameHome"/> instance is in defense state.
-        /// </summary>
-        public bool IsInDefenseState()
-        {
-            return this.State == 3;
-        }
-
-        /// <summary>
-        ///     Gets if this <see cref="GameHome"/> instance is in visit state.
-        /// </summary>
-        public bool IsInVisitState()
-        {
-            return this.State == 4;
-        }
-
-        /// <summary>
-        ///     Gets if this <see cref="GameHome"/> instance is in replay state.
-        /// </summary>
-        public bool IsInReplayState()
-        {
-            return this.State == 5;
-        }
-
-        /// <summary>
-        ///     Sets the game state.
-        /// </summary>
-        internal void SetState(int state)
-        {
-            this.State = state;
+            this.LogicClientAvatarJson = avatarData;
+            this.LogicClientHomeJson = homeData;
         }
     }
 }

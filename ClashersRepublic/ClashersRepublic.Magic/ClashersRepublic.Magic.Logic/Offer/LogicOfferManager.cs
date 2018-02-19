@@ -13,6 +13,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
         ///     Loads this instance from json.
         /// </summary>
         public void Load(LogicJSONObject root)

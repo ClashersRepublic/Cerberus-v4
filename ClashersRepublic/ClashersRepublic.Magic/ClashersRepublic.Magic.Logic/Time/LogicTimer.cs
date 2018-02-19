@@ -17,6 +17,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
         ///     Gets the number of remaining seconds.
         /// </summary>
         public int GetRemainingSeconds(LogicTime time)

@@ -73,9 +73,7 @@
         /// </summary>
         public byte[] GetByteArray()
         {
-            byte[] array = new byte[this._offset];
-            Array.Copy(this._buffer, array, this._offset);
-            return array;
+            return this._buffer;
         }
 
         /// <summary>
@@ -530,6 +528,9 @@
             }
         }
 
+        /// <summary>
+        ///     Writes a byte array value without length.
+        /// </summary>
         public void WriteBytesWithoutLength(byte[] value, int length)
         {
             base.WriteBytes(value, length);
@@ -608,6 +609,15 @@
             this._bitIdx = 0;
             this._buffer = buffer;
             this._length = length;
+        }
+
+        /// <summary>
+        ///     Resets the offset.
+        /// </summary>
+        public void ResetOffset()
+        {
+            this._offset = 0;
+            this._bitIdx = 0;
         }
 
         /// <summary>

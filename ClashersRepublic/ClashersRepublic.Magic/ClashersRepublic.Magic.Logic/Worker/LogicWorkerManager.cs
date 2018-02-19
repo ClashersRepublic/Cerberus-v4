@@ -23,6 +23,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
         ///     Gets the number of free workers.
         /// </summary>
         public int GetFreeWorkers()

@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
+    using System;
     using ClashersRepublic.Magic.Services.Home.Home;
+    using ClashersRepublic.Magic.Services.Home.Message;
     using ClashersRepublic.Magic.Services.Home.Sessions;
 
     using ClashersRepublic.Magic.Services.Logic;
@@ -137,7 +139,9 @@
                     gameSession.SetServiceNode(ServiceManager.SERVICE_TYPE, Config.ServerId);
                     gameSession.BindServiceNode(9, Config.ServerId);
 
-                    gameSession.GameMode.OnStart();
+                    gameSession.GameMode.SetSession(gameSession);
+                    gameSession.GameMode.SetOfflineMode(false);
+                    gameSession.GameMode.LoadMode();
                 }
             }
         }
@@ -166,8 +170,14 @@
 
                 if (gameSession != null)
                 {
-                    message.Decode();
-                    gameSession.MessageManager.ReceiveMessage(message.PiranhaMessage);
+                    try
+                    {
+                        MessageProcessor.ReceiveMessage(message.PiranhaMessage, gameSession);
+                    }
+                    catch (Exception exception)
+                    {
+                        Logging.Error(typeof(ServiceMessageManager), "ServiceMessageManager::forwardPiranhaMessageReceived message decode failed, trace: " + exception);
+                    }
                 }
                 else
                 {

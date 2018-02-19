@@ -1,7 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Sessions
 {
-    using ClashersRepublic.Magic.Logic.Mode;
-
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
     using ClashersRepublic.Magic.Services.Home.Home;
     using ClashersRepublic.Magic.Services.Home.Message;
@@ -22,8 +20,18 @@
         internal string SessionId { get; }
 
         internal GameHome GameHome { get; }
-        internal GameMode GameMode { get; }
         internal MessageManager MessageManager { get; }
+
+        /// <summary>
+        ///     Gets the <see cref="GameMode"/> instance.
+        /// </summary>
+        internal GameMode GameMode
+        {
+            get
+            {
+                return this.GameHome.GameMode;
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameSession"/> class.
@@ -45,8 +53,7 @@
         {
             this.SessionId = sessionId;
             this.GameHome = home;
-
-            this.GameMode = new GameMode(this);
+            
             this.MessageManager = new MessageManager(this);
         }
 

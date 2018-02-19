@@ -21,6 +21,20 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._timer != null)
+            {
+                this._timer.Destruct();
+                this._timer = null;
+            }
+
+            this._level = null;
+        }
+
+        /// <summary>
         ///     Ticks for update this instance.
         /// </summary>
         public void Tick()
