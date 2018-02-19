@@ -2,7 +2,8 @@
 {
     using System.Net;
     using System.Net.Sockets;
-    using ClashersRepublic.Magic.Proxy.Log;
+
+    using ClashersRepublic.Magic.Services.Logic.Log;
 
     internal class NetworkUdpGateway
     {

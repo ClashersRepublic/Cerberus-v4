@@ -1,7 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Utils
 {
     using System;
+    using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.DataStream;
+    using ClashersRepublic.Magic.Titan.Json;
 
     public class LogicCompressibleString
     {
@@ -119,6 +121,42 @@
             this._compressedData = null;
             this._compressedLength = 0;
             return tmp;
+        }
+
+        /// <summary>
+        ///     Saves this instance to json.
+        /// </summary>
+        public void Save(LogicJSONObject jsonObject)
+        {
+            if (this._stringValue != null)
+            {
+                jsonObject.Put("s", new LogicJSONString(this._stringValue));
+            }
+
+            if (this._compressedData != null)
+            {
+                jsonObject.Put("c", new LogicJSONString(Convert.ToBase64String(this._compressedData, 0, this._compressedLength)));
+            }
+        }
+
+        /// <summary>
+        ///     Loads this instance from json.
+        /// </summary>
+        public void Load(LogicJSONObject jsonObject)
+        {
+            LogicJSONString sString = jsonObject.GetJSONString("s");
+
+            if (sString != null)
+            {
+                this._stringValue = sString.GetStringValue();
+            }
+
+            LogicJSONString cString = jsonObject.GetJSONString("c");
+
+            if (cString != null)
+            {
+                this._compressedData = Convert.FromBase64String(cString.GetStringValue());
+            }
         }
 
         /// <summary>

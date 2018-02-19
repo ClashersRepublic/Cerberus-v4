@@ -66,7 +66,7 @@
                 {
                     case 20000:
                     {
-                        message = new EncryptionMessage();
+                        message = new ExtendedSetEncryptionMessage();
                         break;
                     }
 
@@ -103,6 +103,12 @@
                     case 24104:
                     {
                         message = new OutOfSyncMessage();
+                        break;
+                    }
+
+                    case 24112:
+                    {
+                        message = new WaitingToGoHomeMessage();
                         break;
                     }
                 }

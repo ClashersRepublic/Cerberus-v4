@@ -1,24 +1,18 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Snappy
 {
-    using MongoDB.Bson;
-    using MongoDB.Bson.Serialization;
-    using MongoDB.Bson.Serialization.Serializers;
+    using System;
+    using Newtonsoft.Json;
 
-    public class SnappyStringSerializer : SerializerBase<SnappyString>
+    public class SnappyStringSerializer : JsonConverter<SnappyString>
     {
-        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, SnappyString value)
+        public override void WriteJson(JsonWriter writer, SnappyString value, JsonSerializer serializer)
         {
-            context.Writer.WriteBytes(value.GetArray());
+            writer.WriteValue(value.GetArray());
         }
 
-        public override SnappyString Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        public override SnappyString ReadJson(JsonReader reader, Type objectType, SnappyString existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            if (context.Reader.CurrentBsonType != BsonType.Binary)
-            {
-                throw new BsonSerializationException("Invalid bson type");
-            }
-
-            return new SnappyString(context.Reader.ReadBytes());
+            return new SnappyString(Convert.FromBase64String((string) reader.Value));
         }
     }
 }

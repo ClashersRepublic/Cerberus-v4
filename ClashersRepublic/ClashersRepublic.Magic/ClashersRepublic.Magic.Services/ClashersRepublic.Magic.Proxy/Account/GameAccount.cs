@@ -1,11 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Account
 {
     using ClashersRepublic.Magic.Proxy.Session;
-    
+    using ClashersRepublic.Magic.Services.Logic.Math;
+    using ClashersRepublic.Magic.Titan.Math;
+    using Newtonsoft.Json;
+
     internal class GameAccount
     {
-        public int HighId;
-        public int LowId;
+        [JsonConverter(typeof(LogicLongSerializer))] public LogicLong Id;
 
         public string PassToken;
         public string AccountCreationDate;
@@ -18,21 +20,11 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameAccount" /> class.
         /// </summary>
-        internal GameAccount()
+        public GameAccount()
         {
             // GameAccount.
         }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="GameAccount" /> class.
-        /// </summary>
-        internal GameAccount(int highId, int lowId, string passToken)
-        {
-            this.HighId = highId;
-            this.LowId = lowId;
-            this.PassToken = passToken;
-        }
-
+        
         /// <summary>
         ///     Sets the session instance.
         /// </summary>

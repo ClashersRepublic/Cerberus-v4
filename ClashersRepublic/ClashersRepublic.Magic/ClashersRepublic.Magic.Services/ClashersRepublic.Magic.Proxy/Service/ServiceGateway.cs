@@ -1,8 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
-    using System;
     using System.Threading;
-    using ClashersRepublic.Magic.Proxy.Log;
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using NetMQ;
     using NetMQ.Sockets;
 

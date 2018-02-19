@@ -1,14 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
-    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Session;
 
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Services.Logic.Message;
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
-
-    using ClashersRepublic.Magic.Titan.Debug;
-
+    
     using NetMQ;
 
     internal static class ServiceMessageManager
@@ -20,32 +18,16 @@
         {
             int messageType = message.GetMessageType();
 
-            if (messageType < 20000)
+            switch (messageType)
             {
-                switch (messageType)
-                {
-                    default:
-                    {
-                        Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                switch (messageType)
-                {
-                    case 10300:
-                    {
-                        ServiceMessageManager.ForwardServerMessageReceived((ForwardPiranhaMessage) message);
-                        break;
-                    }
+                case 10300:
+                    ServiceMessageManager.ForwardPiranhaMessageReceived((ForwardPiranhaMessage)message);
+                    break;
 
-                    default:
-                    {
-                        Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
-                        break;
-                    }
+                default:
+                {
+                    Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
+                    break;
                 }
             }
         }
@@ -100,19 +82,29 @@
         }
 
         /// <summary>
-        ///     Called when a <see cref="ForwardPiranhaMessage"/> has been received.
+        ///     Called when a <see cref="ForwardPiranhaMessage"/> is received.
         /// </summary>
-        internal static void ForwardServerMessageReceived(ForwardPiranhaMessage message)
+        internal static void ForwardPiranhaMessageReceived(ForwardPiranhaMessage message)
         {
             if (message.PiranhaMessage != null)
             {
                 if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
                 {
+                    session.SetServiceNode(message.GetServiceType(), message.GetServerId());
+
                     if (session.Client.State == 6)
                     {
                         session.Client.NetworkToken.Messaging.MessageManager.SendMessage(message.PiranhaMessage);
                     }
                 }
+                else
+                {
+                    Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::forwardPiranhaMessageReceived session doesn't exist");
+                }
+            }
+            else
+            {
+                Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::forwardPiranhaMessageReceived piranha message is NULL");
             }
         }
     }

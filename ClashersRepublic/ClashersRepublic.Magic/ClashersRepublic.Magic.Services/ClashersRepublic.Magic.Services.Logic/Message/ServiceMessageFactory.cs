@@ -23,13 +23,13 @@
 
                 case 10201:
                 {
-                    message = new ServiceNodeBoundedToSessionMessage();
+                    message = new ServiceNodeBoundToSessionMessage();
                     break;
                 }
 
                 case 10202:
                 {
-                    message = new ServiceNodeUnboundedToSessionMessage();
+                    message = new ServiceNodeUnboundToSessionMessage();
                     break;
                 }
 

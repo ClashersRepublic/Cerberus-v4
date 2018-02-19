@@ -4,12 +4,11 @@
 
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Logic.Message.Security;
-    using ClashersRepublic.Magic.Proxy.Log;
+
     using ClashersRepublic.Magic.Proxy.Message;
-    using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.User;
 
-    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
+    using ClashersRepublic.Magic.Services.Logic.Log;
 
     using ClashersRepublic.Magic.Titan;
     using ClashersRepublic.Magic.Titan.Math;
@@ -162,7 +161,7 @@
                                 {
                                     if (this._client.State == 6)
                                     {
-                                        this._client.GameSession.ForwardGameMessage(message);
+                                        this._client.GameSession.ForwardPiranhaMessage(message);
                                     }
                                 }
                             }
@@ -266,12 +265,12 @@
                     {
                         byte[] nonce = this.GenerateNonce();
 
-                        this.OnWakeup(new EncryptionMessage
-                        {
-                            ServerNonce = nonce,
-                            Version = 1
-                        });
+                        ExtendedSetEncryptionMessage encryptionMessage = new ExtendedSetEncryptionMessage();
 
+                        encryptionMessage.SetNonce(nonce);
+                        encryptionMessage.SetNonceMethod(1);
+
+                        this.OnWakeup(encryptionMessage);
                         this.ScrambleEncrypters(nonce);
                     }
                 }

@@ -189,6 +189,8 @@
         /// </summary>
         public override void Destruct()
         {
+            base.Destruct();
+
             this.ChronosContentUrlList = null;
             this.ContentUrlList = null;
 

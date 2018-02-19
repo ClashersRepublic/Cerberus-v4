@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
 
-    using ClashersRepublic.Magic.Services.Home.Debug;
+    using ClashersRepublic.Magic.Services.Home.Home;
+    using ClashersRepublic.Magic.Services.Logic.Log;
+    using ClashersRepublic.Magic.Titan.Math;
     using Couchbase;
     using Couchbase.Configuration.Client;
     using Couchbase.Core;
@@ -11,7 +13,11 @@
     internal class GameDatabase
     {
         private int _id;
-        private IBucket _bucket;
+
+        private IBucket _homeBucket;
+        private IBucket _counterBucket;
+
+
         private Cluster _cluster;
 
         /// <summary>
@@ -29,11 +35,13 @@
                 }
             });
             this._cluster.Authenticate(userName, passToken);
-            this._bucket = this._cluster.OpenBucket("magic-accounts");
 
-            if (!this._bucket.Exists("counters"))
+            this._homeBucket = this._cluster.OpenBucket("magic-homes");
+            this._counterBucket = this._cluster.OpenBucket("magic-counters");
+
+            if (!this._counterBucket.Exists("acc_counters"))
             {
-                this._bucket.Insert("counters", 0);
+                this._counterBucket.Insert("acc_counters", 0);
             }
         }
 
@@ -42,38 +50,38 @@
         /// </summary>
         internal int GetHigherId()
         {
-            return (int) this._bucket.Get<ulong>("counters").Value;
+            return (int) this._counterBucket.Get<ulong>("acc_counters").Value;
         }
 
         /// <summary>
-        ///     Inserts a new account.
+        ///     Inserts a new home.
         /// </summary>
-        internal void InsertAccount(GameAccount account)
+        internal void InsertHome(GameHome home)
         {
-            if (account.HighId == 0 && account.LowId == 0)
+            if (home.Id.IsZero())
             {
-                account.HighId = this._id;
-                account.LowId = (int) this._bucket.Increment("counters").Value;
+                Logging.Error(this, "GameDatabase::insertHome id not set");
+                return;
             }
 
-            IDocumentResult result = this._bucket.Insert(new Document<GameAccount>
+            IDocumentResult result = this._homeBucket.Insert(new Document<GameHome>
             {
-                Id = account.LowId.ToString(),
-                Content = account
+                Id = home.Id.GetLowerInt().ToString(),
+                Content = home
             });
 
             if (!result.Success)
             {
-                Logging.Error(this, "GameDatabase::insertAccount insert failed, status: " + result.Status);
+                Logging.Error(this, "GameDatabase::insertHome insert failed, status: " + result.Status);
             }
         }
 
         /// <summary>
         ///     Gets the specified document.
         /// </summary>
-        internal GameAccount GetAccount(int lowId)
+        internal GameHome GetAccount(int lowId)
         {
-            return this._bucket.Get<GameAccount>(lowId.ToString()).Value;
+            return this._homeBucket.GetDocument<GameHome>(lowId.ToString()).Content;
         }
     }
 }

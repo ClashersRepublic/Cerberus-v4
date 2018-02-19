@@ -1,16 +1,17 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Message.Session
 {
-    public class ServiceNodeUnboundedToSessionMessage : ServiceMessage
+    using ClashersRepublic.Magic.Titan.Math;
+
+    public class ServiceNodeBoundToSessionMessage : ServiceMessage
     {
-        public int ServiceNodeType;
-        public int ServiceNodeId;
+        public LogicLong AccountId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ServiceNodeUnboundedToSessionMessage"/> class.
+        ///     Initializes a new instance of the <see cref="ServiceNodeBoundToSessionMessage"/> class.
         /// </summary>
-        public ServiceNodeUnboundedToSessionMessage() : base()
+        public ServiceNodeBoundToSessionMessage()
         {
-            // ServiceNodeUnboundedToSessionMessage.
+            // ServiceNodeBoundToSessionMessage.
         }
 
         /// <summary>
@@ -19,9 +20,7 @@
         public override void Decode()
         {
             base.Decode();
-
-            this.ServiceNodeType = this.Stream.ReadVInt();
-            this.ServiceNodeId = this.Stream.ReadVInt();
+            this.AccountId = this.Stream.ReadLong();
         }
 
         /// <summary>
@@ -30,9 +29,7 @@
         public override void Encode()
         {
             base.Encode();
-
-            this.Stream.WriteVInt(this.ServiceNodeType);
-            this.Stream.WriteVInt(this.ServiceNodeId);
+            this.Stream.WriteLong(this.AccountId);
         }
 
         /// <summary>
@@ -48,7 +45,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 10202;
+            return 10201;
         }
     }
 }

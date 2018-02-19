@@ -132,6 +132,8 @@
         /// </summary>
         public override void Destruct()
         {
+            base.Destruct();
+
             this.ContentUrl = null;
             this.ContentUrlList = null;
             this.Reason = null;

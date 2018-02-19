@@ -149,6 +149,7 @@
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
     <Compile Include="Message\Battle\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />
+    <Compile Include="Message\Home\WaitingToGoHomeMessage.cs" />
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
     <Compile Include="Message\Home\OutOfSyncMessage.cs" />
     <Compile Include="Message\LogicMagicMessageFactory.cs" />
@@ -159,7 +160,7 @@
     <Compile Include="Time\LogicTime.cs" />
     <Compile Include="Time\LogicTimer.cs" />
     <Compile Include="Unit\LogicUnitProduction.cs" />
-    <Compile Include="Message\Security\EncryptionMessage.cs" />
+    <Compile Include="Message\Security\ExtendedSetEncryptionMessage.cs" />
     <Compile Include="Utils\HashTagCodeGenerator.cs" />
     <Compile Include="Utils\LogicCompressibleString.cs" />
     <Compile Include="Utils\LogicDataSlot.cs" />

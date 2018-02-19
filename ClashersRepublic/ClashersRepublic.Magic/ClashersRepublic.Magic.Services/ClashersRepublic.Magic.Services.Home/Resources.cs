@@ -3,7 +3,10 @@
     using ClashersRepublic.Magic.Logic.Data;
 
     using ClashersRepublic.Magic.Services.Home.Database;
+    using ClashersRepublic.Magic.Services.Home.Home;
+    using ClashersRepublic.Magic.Services.Home.Message;
     using ClashersRepublic.Magic.Services.Home.Service;
+    using ClashersRepublic.Magic.Services.Home.Sessions;
 
     using ClashersRepublic.Magic.Services.Logic;
     using ClashersRepublic.Magic.Services.Logic.Resource;
@@ -52,7 +55,10 @@
         private static void InitializeGames()
         {
             Resources.Random = new LogicMersenneTwisterRandom(LogicTimeUtil.GetTimestamp());
+
             GameDatabaseManager.Initialize();
+            GameHomeManager.Initialize();
+            GameSessionManager.Initialize();
         }
 
         /// <summary>
@@ -61,6 +67,7 @@
         private static void InitializeServices()
         {
             ServiceProcessor.Initialize();
+            MessageProcessor.Initialize();
             ServiceManager.Initialize();
         }
     }

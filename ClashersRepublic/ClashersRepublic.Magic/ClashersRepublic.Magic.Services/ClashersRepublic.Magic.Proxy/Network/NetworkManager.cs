@@ -3,10 +3,13 @@
     using System.Collections.Concurrent;
     using System.Linq;
     using System.Threading;
-    using ClashersRepublic.Magic.Proxy.Log;
+
     using ClashersRepublic.Magic.Proxy.Message;
     using ClashersRepublic.Magic.Proxy.Network.Udp;
+
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Services.Logic.Service.Setting;
+
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -102,7 +105,7 @@
                 NetworkManager._gateways[i] = new NetworkGateway(NetworkManager._gamePorts[i]);
             }
 
-            if (ServiceNetConfig.UdpEnabled() || true)
+            if (ServiceNetConfig.UdpEnabled())
             {
                 NetworkManager._udpGateway = new NetworkUdpGateway(NetworkManager._gamePorts[0]);
             }

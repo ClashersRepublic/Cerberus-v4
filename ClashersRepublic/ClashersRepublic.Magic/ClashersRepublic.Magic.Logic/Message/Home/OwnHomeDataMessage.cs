@@ -6,11 +6,11 @@
 
     public class OwnHomeDataMessage : PiranhaMessage
     {
-        public int CurrentTimestamp;
-        public int SecondsSinceLastSave;
+        private int _currentTimestamp;
+        private int _secondsSinceLastSave;
 
-        public LogicClientAvatar LogicClientAvatar;
-        public LogicClientHome LogicClientHome;
+        private LogicClientAvatar _logicClientAvatar;
+        private LogicClientHome _logicClientHome;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="OwnHomeDataMessage" /> class.
@@ -35,15 +35,15 @@
         {
             base.Decode();
 
-            this.LogicClientHome = new LogicClientHome();
-            this.LogicClientAvatar = new LogicClientAvatar();
+            this._logicClientHome = new LogicClientHome();
+            this._logicClientAvatar = new LogicClientAvatar();
 
-            this.CurrentTimestamp = this.Stream.ReadInt();
+            this._currentTimestamp = this.Stream.ReadInt();
             this.Stream.ReadInt();
-            this.SecondsSinceLastSave = this.Stream.ReadInt();
+            this._secondsSinceLastSave = this.Stream.ReadInt();
 
-            this.LogicClientHome.Decode(this.Stream);
-            this.LogicClientAvatar.Decode(this.Stream);
+            this._logicClientHome.Decode(this.Stream);
+            this._logicClientAvatar.Decode(this.Stream);
 
             this.Stream.ReadInt();
             this.Stream.ReadInt();
@@ -64,12 +64,12 @@
         {
             base.Encode();
 
-            this.Stream.WriteInt(this.CurrentTimestamp);
+            this.Stream.WriteInt(this._currentTimestamp);
             this.Stream.WriteInt(-1);
-            this.Stream.WriteInt(this.SecondsSinceLastSave);
+            this.Stream.WriteInt(this._secondsSinceLastSave);
 
-            this.LogicClientHome.Encode(this.Stream);
-            this.LogicClientAvatar.Encode(this.Stream);
+            this._logicClientHome.Encode(this.Stream);
+            this._logicClientAvatar.Encode(this.Stream);
 
             this.Stream.WriteInt(352);
             this.Stream.WriteInt(1190797808);
@@ -104,8 +104,78 @@
         /// </summary>
         public override void Destruct()
         {
-            this.LogicClientHome = null;
-            this.LogicClientAvatar = null;
+            base.Destruct();
+
+            this._logicClientHome = null;
+            this._logicClientAvatar = null;
+        }
+
+        /// <summary>
+        ///     Gets the current timestamp.
+        /// </summary>
+        public int GetCurrentTimestamp()
+        {
+            return this._currentTimestamp;
+        }
+
+        /// <summary>
+        ///     Sets the current timestamp.
+        /// </summary>
+        public void SetCurrentTimestamp(int value)
+        {
+            this._currentTimestamp = value;
+        }
+
+        /// <summary>
+        ///     Gets the seconds since last save.
+        /// </summary>
+        public int GetSecondsSinceLastSave()
+        {
+            return this._secondsSinceLastSave;
+        }
+
+        /// <summary>
+        ///     Sets the seconds since last save.
+        /// </summary>
+        public void SetSecondsSinceLastSave(int value)
+        {
+            this._secondsSinceLastSave = value;
+        }
+
+        /// <summary>
+        ///     Removes the <see cref="LogicClientHome"/> instance.
+        /// </summary>
+        public LogicClientHome RemoveLogicClientHome()
+        {
+            LogicClientHome tmp = this._logicClientHome;
+            this._logicClientHome = null;
+            return tmp;
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="LogicClientHome"/> instance.
+        /// </summary>
+        public void SetLogicClientHome(LogicClientHome logicClientHome)
+        {
+            this._logicClientHome = logicClientHome;
+        }
+
+        /// <summary>
+        ///     Removes the <see cref="LogicClientAvatar"/> instance.
+        /// </summary>
+        public LogicClientAvatar RemoveLogicClientAvatar()
+        {
+            LogicClientAvatar tmp = this._logicClientAvatar;
+            this._logicClientAvatar = null;
+            return tmp;
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="LogicClientAvatar"/> instance.
+        /// </summary>
+        public void SetLogicClientAvatar(LogicClientAvatar logicClientAvatar)
+        {
+            this._logicClientAvatar = logicClientAvatar;
         }
     }
 }

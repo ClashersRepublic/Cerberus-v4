@@ -5,10 +5,10 @@
     using System.Diagnostics;
 
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.User;
 
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
 
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
@@ -83,11 +83,8 @@
                 if (GameSessionManager._sessions.TryAdd(session.SessionId, session))
                 {
                     client.GameSession = session;
-                    client.NetworkToken.Messaging.MessageManager.SendLoginOkMessage(account);
-                    
-                    session.SetServerIDs(10, account.HighId);
-                    session.SetServerIDs(9, account.HighId);
-
+                    client.NetworkToken.Messaging.MessageManager.SendLoginOkMessage(account);                 
+                    session.BindServiceNode(10, account.Id.GetHigherInt());
                     account.SetSession(session);
                 }
             }
@@ -120,7 +117,7 @@
         {
             if (GameSessionManager._sessions.TryRemove(session.SessionId, out _))
             {
-                session.ClearServerIDs();
+                session.RemoveServiceNodes();
                 session.Account.SetSession(null);
             }
             else

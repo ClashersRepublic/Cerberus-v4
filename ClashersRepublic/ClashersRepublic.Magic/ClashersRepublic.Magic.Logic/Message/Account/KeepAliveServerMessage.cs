@@ -59,14 +59,5 @@
         {
             base.Destruct();
         }
-
-        /// <summary>
-        ///     Destructors of this instance.
-        /// </summary>
-        ~KeepAliveServerMessage()
-        {
-            this.Stream = null;
-            this.Version = 0;
-        }
     }
 }

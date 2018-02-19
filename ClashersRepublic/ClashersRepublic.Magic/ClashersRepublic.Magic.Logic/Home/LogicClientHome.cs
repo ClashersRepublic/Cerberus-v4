@@ -15,19 +15,18 @@
         private int _guardDurationSeconds;
         private int _nextMaintenanceSeconds;
 
-        private string _homeJSON;
-
+        private LogicCompressibleString _compressibleHomeJson;
         private LogicCompressibleString _compressibleGlobalJson;
-        private LogicCompressibleString _compressibleCalandarJson;
+        private LogicCompressibleString _compressibleCalendarJson;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicClientHome"/> class.
         /// </summary>
         public LogicClientHome()
         {
-            this._homeJSON = string.Empty;
+            this._compressibleHomeJson = new LogicCompressibleString();
             this._compressibleGlobalJson = new LogicCompressibleString();
-            this._compressibleCalandarJson = new LogicCompressibleString();
+            this._compressibleCalendarJson = new LogicCompressibleString();
         }
 
         /// <summary>
@@ -41,20 +40,8 @@
             encoder.WriteInt(this._guardDurationSeconds);
             encoder.WriteInt(this._nextMaintenanceSeconds);
 
-            if (this._homeJSON != null)
-            {
-                ZLibHelper.ConpressInZLibFormat(LogicStringUtil.GetBytes(this._homeJSON), out byte[] compressed);
-
-                encoder.WriteBoolean(true);
-                encoder.WriteBytes(compressed, compressed.Length);
-            }
-            else
-            {
-                encoder.WriteBoolean(false);
-                encoder.WriteString(this._homeJSON);
-            }
-
-            this._compressibleCalandarJson.Encode(encoder);
+            this._compressibleHomeJson.Encode(encoder);
+            this._compressibleCalendarJson.Encode(encoder);
             this._compressibleGlobalJson.Encode(encoder);
         }
 
@@ -68,21 +55,8 @@
             this._guardDurationSeconds = stream.ReadInt();
             this._nextMaintenanceSeconds = stream.ReadInt();
 
-            if (stream.ReadBoolean())
-            {
-                int byteArrayLength = stream.ReadBytesLength();
-                byte[] byteArray = stream.ReadBytes(byteArrayLength, 900000);
-
-                ZLibHelper.DecompressInMySQLFormat(byteArray, byteArrayLength, out byte[] decompressed);
-
-                this._homeJSON = LogicStringUtil.CreateString(decompressed, 0, decompressed.Length);
-            }
-            else
-            {
-                this._homeJSON = stream.ReadString(900000);
-            }
-
-            this._compressibleCalandarJson.Decode(stream);
+            this._compressibleHomeJson.Decode(stream);
+            this._compressibleCalendarJson.Decode(stream);
             this._compressibleGlobalJson.Decode(stream);
         }
 
@@ -127,11 +101,11 @@
         }
 
         /// <summary>
-        ///     Gets the compressible calandar json.
+        ///     Gets the compressible calendar json.
         /// </summary>
-        public LogicCompressibleString GetCompressibleCalandarJSON()
+        public LogicCompressibleString GetCompressibleCalendarJSON()
         {
-            return this._compressibleCalandarJson;
+            return this._compressibleCalendarJson;
         }
 
         /// <summary>
@@ -143,11 +117,19 @@
         }
 
         /// <summary>
+        ///     Gets the compressible home json.
+        /// </summary>
+        public LogicCompressibleString GetCompressibleHomeJSON()
+        {
+            return this._compressibleHomeJson;
+        }
+
+        /// <summary>
         ///     Gets the home json.
         /// </summary>
         public string GetHomeJSON()
         {
-            return this._homeJSON;
+            return this._compressibleHomeJson.Get();
         }
 
         /// <summary>
@@ -155,23 +137,23 @@
         /// </summary>
         public void SetHomeJSON(string json)
         {
-            this._homeJSON = json;
+            this._compressibleHomeJson.Set(json);
         }
 
         /// <summary>
-        ///     Gets the calandar json.
+        ///     Gets the calendar json.
         /// </summary>
-        public string GetCalandarJSON()
+        public string GetCalendarJSON()
         {
-            return this._compressibleCalandarJson.Get();
+            return this._compressibleCalendarJson.Get();
         }
 
         /// <summary>
-        ///     Sets the calandar json.
+        ///     Sets the calendar json.
         /// </summary>
-        public void SetCalandarJSON(string json)
+        public void SetCalendarJSON(string json)
         {
-            this._compressibleCalandarJson.Set(json);
+            this._compressibleCalendarJson.Set(json);
         }
 
         /// <summary>
@@ -223,7 +205,13 @@
             this._shieldDurationSeconds = LogicJSONHelper.GetJSONNumber(json, "shield_duration_secs");
             this._guardDurationSeconds = LogicJSONHelper.GetJSONNumber(json, "guard_duration_secs");
             this._nextMaintenanceSeconds = LogicJSONHelper.GetJSONNumber(json, "next_maintenance_secs");
-            this._homeJSON = LogicJSONHelper.GetJSONString(json, "level");
+
+            LogicJSONObject level = json.GetJSONObject("level");
+
+            if (level != null)
+            {
+                this._compressibleHomeJson.Load(level);
+            }
         }
 
         /// <summary>
@@ -238,7 +226,10 @@
             jsonObject.Put("shield_duration_secs", new LogicJSONNumber(this._shieldDurationSeconds));
             jsonObject.Put("guard_duration_secs", new LogicJSONNumber(this._guardDurationSeconds));
             jsonObject.Put("next_maintenance_secs", new LogicJSONNumber(this._nextMaintenanceSeconds));
-            jsonObject.Put("level", new LogicJSONString(this._homeJSON));
+
+            LogicJSONObject level = new LogicJSONObject();
+            this._compressibleHomeJson.Save(level);
+            jsonObject.Put("level", level);
 
             return jsonObject;
         }
@@ -254,13 +245,17 @@
                 this._compressibleGlobalJson = null;
             }
 
-            if (this._compressibleCalandarJson != null)
+            if (this._compressibleCalendarJson != null)
             {
-                this._compressibleCalandarJson.Destruct();
-                this._compressibleCalandarJson = null;
+                this._compressibleCalendarJson.Destruct();
+                this._compressibleCalendarJson = null;
             }
-            
-            this._homeJSON = null;
+
+            if (this._compressibleHomeJson != null)
+            {
+                this._compressibleHomeJson.Destruct();
+                this._compressibleHomeJson = null;
+            }
         }
     }
 }

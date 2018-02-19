@@ -2,9 +2,6 @@
 {
     using System;
     using ClashersRepublic.Magic.Logic.Utils;
-    using ClashersRepublic.Magic.Services.Home.Network;
-    using ClashersRepublic.Magic.Titan.Math;
-    using ClashersRepublic.Magic.Titan.Util;
 
     internal static class CmdHandler
     {
@@ -38,12 +35,6 @@
                                 CmdHandler.Test();
                                 break;
                             }
-
-                            case "pool":
-                            {
-                                Console.WriteLine("Rcv: " + NetworkManager.ReceiveMessageQueueCount + " Snd: " + NetworkManager.SendMessageQueueCount);
-                                break;
-                            }
                         }
                     }
                 }
@@ -63,8 +54,7 @@
         /// </summary>
         private static void Test()
         {
-            HashTagCodeGenerator codeGenerator = new HashTagCodeGenerator();
-            Console.WriteLine(codeGenerator.ToId("#2L8UGPUJ").ToString());
+            // Test.
         }
     }
 }

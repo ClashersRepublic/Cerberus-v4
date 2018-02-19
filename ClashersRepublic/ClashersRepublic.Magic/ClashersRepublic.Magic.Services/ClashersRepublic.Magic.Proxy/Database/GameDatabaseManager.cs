@@ -1,8 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Database
 {
     using System.Net;
-    using ClashersRepublic.Magic.Proxy.Log;
+
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
+
     using ClashersRepublic.Magic.Titan.Json;
 
     internal static class GameDatabaseManager

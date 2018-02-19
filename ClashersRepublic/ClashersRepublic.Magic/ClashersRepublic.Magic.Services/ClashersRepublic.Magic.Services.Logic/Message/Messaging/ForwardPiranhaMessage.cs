@@ -27,7 +27,8 @@
             {
                 short messageType = this.Stream.ReadShort();
                 short messageVersion = this.Stream.ReadShort();
-                byte[] messageEncoding = this.Stream.ReadBytes(this.Stream.ReadBytesLength(), 0xFFFFFF);
+                int messageLength = this.Stream.ReadVInt();
+                byte[] messageEncoding = this.Stream.ReadBytes(messageLength, 0xFFFFFF);
 
                 this.PiranhaMessage = LogicMagicMessageFactory.CreateMessageByType(messageType);
 
@@ -38,8 +39,8 @@
                 else
                 {
                     this.PiranhaMessage.SetMessageVersion(messageVersion);
-                    this.PiranhaMessage.GetByteStream().SetByteArray(messageEncoding, messageEncoding.Length);
-                    this.PiranhaMessage.GetByteStream().SetOffset(messageEncoding.Length);
+                    this.PiranhaMessage.GetByteStream().SetByteArray(messageEncoding, messageLength);
+                    this.PiranhaMessage.GetByteStream().SetOffset(messageLength);
                 }
             }
         }
@@ -60,7 +61,8 @@
                 this.Stream.WriteBoolean(true);
                 this.Stream.WriteShort(this.PiranhaMessage.GetMessageType());
                 this.Stream.WriteShort(this.PiranhaMessage.GetMessageVersion());
-                this.Stream.WriteBytes(this.PiranhaMessage.GetByteStream().GetByteArray(), this.PiranhaMessage.GetByteStream().GetOffset());
+                this.Stream.WriteVInt(this.PiranhaMessage.GetEncodingLength());
+                this.Stream.WriteBytesWithoutLength(this.PiranhaMessage.GetByteStream().GetByteArray(), this.PiranhaMessage.GetEncodingLength());
             }
         }
 

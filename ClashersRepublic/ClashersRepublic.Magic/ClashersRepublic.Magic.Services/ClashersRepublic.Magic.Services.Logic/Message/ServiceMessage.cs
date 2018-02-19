@@ -24,9 +24,9 @@
         /// </summary>
         public virtual void Decode()
         {
-            this.ServerId = this.Stream.ReadVInt();
             this.ServiceType = this.Stream.ReadVInt();
-            this.SessionId = this.Stream.ReadString(12);
+            this.ServerId = this.Stream.ReadVInt();
+            this.SessionId = this.Stream.ReadString(24);
         }
 
         /// <summary>

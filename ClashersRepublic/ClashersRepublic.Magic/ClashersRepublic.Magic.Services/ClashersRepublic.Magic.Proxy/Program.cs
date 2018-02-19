@@ -5,10 +5,10 @@
     using System.Reflection;
     using ClashersRepublic.Magic.Proxy.Account;
     using ClashersRepublic.Magic.Proxy.Handler;
-    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Network;
 
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
 
     internal class Program
     {

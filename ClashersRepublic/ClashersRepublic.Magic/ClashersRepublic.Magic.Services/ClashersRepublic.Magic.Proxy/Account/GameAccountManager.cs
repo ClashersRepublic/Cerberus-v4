@@ -1,11 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Account
 {
-    using System;
     using System.Collections.Concurrent;
 
     using ClashersRepublic.Magic.Proxy.Database;
-    using ClashersRepublic.Magic.Proxy.Log;
-    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -61,7 +59,7 @@
 
             GameDatabaseManager.GetRandomDatabase().InsertAccount(account);
 
-            if (GameAccountManager._accounts.TryAdd((long) (account.HighId << 32) | (uint) account.LowId, account))
+            if (GameAccountManager._accounts.TryAdd(account.Id, account))
             {
                 return account;
             }

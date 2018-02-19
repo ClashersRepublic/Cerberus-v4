@@ -1,9 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
     using System.Net;
-
-    using ClashersRepublic.Magic.Services.Home.Debug;
+    
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Services.Logic.Service;
 
     using ClashersRepublic.Magic.Titan.Util;

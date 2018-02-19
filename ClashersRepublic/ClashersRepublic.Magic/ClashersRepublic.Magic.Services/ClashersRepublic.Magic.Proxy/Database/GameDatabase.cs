@@ -2,8 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Log;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
+    using ClashersRepublic.Magic.Titan.Math;
     using Couchbase;
     using Couchbase.Configuration.Client;
     using Couchbase.Core;
@@ -11,7 +14,10 @@
     internal class GameDatabase
     {
         private int _id;
-        private IBucket _bucket;
+
+        private IBucket _accountBucket;
+        private IBucket _counterBucket;
+
         private Cluster _cluster;
 
         /// <summary>
@@ -29,11 +35,13 @@
                 }
             });
             this._cluster.Authenticate(userName, passToken);
-            this._bucket = this._cluster.OpenBucket("magic-accounts");
 
-            if (!this._bucket.Exists("counters"))
+            this._accountBucket = this._cluster.OpenBucket("magic-accounts");
+            this._counterBucket = this._cluster.OpenBucket("magic-counters");
+
+            if (!this._counterBucket.Exists("acc_counters"))
             {
-                this._bucket.Insert("counters", 0);
+                this._counterBucket.Insert("acc_counters", 0);
             }
         }
 
@@ -42,7 +50,7 @@
         /// </summary>
         internal int GetHigherId()
         {
-            return (int) this._bucket.Get<ulong>("counters").Value;
+            return (int) this._counterBucket.Get<ulong>("acc_counters").Value;
         }
 
         /// <summary>
@@ -50,15 +58,14 @@
         /// </summary>
         internal void InsertAccount(GameAccount account)
         {
-            if (account.HighId == 0 && account.LowId == 0)
+            if (account.Id.IsZero())
             {
-                account.HighId = this._id;
-                account.LowId = (int) this._bucket.Increment("counters").Value;
+                account.Id = new LogicLong(Config.ServerId, (int) this._counterBucket.Increment("acc_counters").Value);
             }
 
-            IDocumentResult result = this._bucket.Insert(new Document<GameAccount>
+            IDocumentResult result = this._accountBucket.Insert(new Document<GameAccount>
             {
-                Id = account.LowId.ToString(),
+                Id = account.Id.GetLowerInt().ToString(),
                 Content = account
             });
 
@@ -73,7 +80,7 @@
         /// </summary>
         internal GameAccount GetAccount(int lowId)
         {
-            return this._bucket.Get<GameAccount>(lowId.ToString()).Value;
+            return this._accountBucket.Get<GameAccount>(lowId.ToString()).Value;
         }
     }
 }

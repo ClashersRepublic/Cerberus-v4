@@ -194,6 +194,8 @@
         /// </summary>
         public override void Destruct()
         {
+            base.Destruct();
+
             this.ADID = null;
             this.PassToken = null;
             this.Device = null;

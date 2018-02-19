@@ -1,12 +1,15 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
-    using ClashersRepublic.Magic.Services.Home.Debug;
+    using ClashersRepublic.Magic.Services.Home.Home;
+    using ClashersRepublic.Magic.Services.Home.Sessions;
 
     using ClashersRepublic.Magic.Services.Logic;
-    using ClashersRepublic.Magic.Services.Logic.Message;
-    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
+    using ClashersRepublic.Magic.Services.Logic.Log;
 
-    using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Services.Logic.Message;
+    using ClashersRepublic.Magic.Services.Logic.Message.Game;
+    using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
+    using ClashersRepublic.Magic.Services.Logic.Message.Session;
 
     using NetMQ;
 
@@ -19,32 +22,25 @@
         {
             int messageType = message.GetMessageType();
 
-            if (messageType < 20000)
+            switch (messageType)
             {
-                switch (messageType)
-                {
-                    default:
-                    {
-                        Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                switch (messageType)
-                {
-                    case 10300:
-                    {
-                        ServiceMessageManager.ForwardServerMessageReceived((ForwardPiranhaMessage) message);
-                        break;
-                    }
+                case 10100:
+                    ServiceMessageManager.CreateDataMessageReceived((CreateDataMessage) message);
+                    break;
+                case 10201:
+                    ServiceMessageManager.ServiceNodeBoundToSessionMessageReceived((ServiceNodeBoundToSessionMessage) message);
+                    break;
+                case 10202:
+                    ServiceMessageManager.ServiceNodeUnboundToSessionMessageReceived((ServiceNodeUnboundToSessionMessage) message);
+                    break;
+                case 10300:
+                    ServiceMessageManager.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
+                    break;
 
-                    default:
-                    {
-                        Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
-                        break;
-                    }
+                default:
+                {
+                    Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::receiveMessage no case exist for message type " + messageType);
+                    break;
                 }
             }
         }
@@ -99,19 +95,88 @@
         }
 
         /// <summary>
-        ///     Called when a <see cref="ForwardPiranhaMessage"/> has been received.
+        ///     Called when a <see cref="CreateDataMessage"/> is received.
         /// </summary>
-        internal static void ForwardServerMessageReceived(ForwardPiranhaMessage message)
+        private static void CreateDataMessageReceived(CreateDataMessage message)
+        {
+            if (!message.Id.IsZero())
+            {
+                if (message.Id.GetHigherInt() == Config.ServerId)
+                {
+                    GameHomeManager.CreateGameHome(message.Id);
+                }
+                else
+                {
+                    Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::createDataMessageReceived server id mismatch");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ServiceNodeBoundToSessionMessage"/> is received.
+        /// </summary>
+        private static void ServiceNodeBoundToSessionMessageReceived(ServiceNodeBoundToSessionMessage message)
+        {
+            GameSession gameSession = GameSessionManager.GetGameSession(message.GetSessionId());
+
+            if (gameSession != null)
+            {
+                Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::serviceNodeBoundToSessionMessageReceived service node already bound, message received twice?");
+            }
+            else
+            {
+                gameSession = GameSessionManager.CreateGameSession(message.GetSessionId(), message.AccountId);
+
+                if (gameSession == null)
+                {
+                    Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::serviceNodeBoundToSessionMessageReceived game session creation error");
+                }
+                else
+                {
+                    gameSession.SetServiceNode(message.GetServiceType(), message.GetServerId());
+                    gameSession.SetServiceNode(ServiceManager.SERVICE_TYPE, Config.ServerId);
+                    gameSession.BindServiceNode(9, Config.ServerId);
+
+                    gameSession.GameMode.OnStart();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ServiceNodeUnboundToSessionMessage"/> is received.
+        /// </summary>
+        private static void ServiceNodeUnboundToSessionMessageReceived(ServiceNodeUnboundToSessionMessage message)
+        {
+            GameSession gameSession = GameSessionManager.GetGameSession(message.GetSessionId());
+
+            if (gameSession != null)
+            {
+                GameSessionManager.RemoveGameSession(message.GetSessionId());
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ForwardPiranhaMessage"/> is received.
+        /// </summary>
+        private static void ForwardPiranhaMessageReceived(ForwardPiranhaMessage message)
         {
             if (message.PiranhaMessage != null)
             {
-                if (GameSessionManager.GetSession(message.GetSessionId(), out GameSession session))
+                GameSession gameSession = GameSessionManager.GetGameSession(message.GetSessionId());
+
+                if (gameSession != null)
                 {
-                    if (session.Client.State == 6)
-                    {
-                        session.Client.NetworkToken.Messaging.MessageManager.SendMessage(message.PiranhaMessage);
-                    }
+                    message.Decode();
+                    gameSession.MessageManager.ReceiveMessage(message.PiranhaMessage);
                 }
+                else
+                {
+                    Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::forwardPiranhaMessageReceived session cannot exist");
+                }
+            }
+            else
+            {
+                Logging.Warning(typeof(ServiceMessageManager), "ServiceMessageManager::forwardPiranhaMessageReceived piranha message is NULL");
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Proxy.Log
+﻿namespace ClashersRepublic.Magic.Services.Logic.Log
 {
     using System;
     using System.Diagnostics;
@@ -7,12 +7,12 @@
     using CDebug = System.Diagnostics.Debug;
     using LogicDebugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
 
-    internal static class Logging
+    public static class Logging
     {
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
-        internal static void Initialize()
+        public static void Initialize()
         {
             LogicDebugger.LogEvent += Logging.Log;
             LogicDebugger.WarningEvent += Logging.Warning;
@@ -47,7 +47,7 @@
         ///     Logs the specified debug message.
         /// </summary>
         [Conditional("DEBUG")]
-        internal static void Debug(object sender, string message)
+        public static void Debug(object sender, string message)
         {
             CDebug.WriteLine("[DEBUG] {0}: {1}", sender.GetType().Name, message);
         }
@@ -56,7 +56,7 @@
         ///     Logs the specified debug message.
         /// </summary>
         [Conditional("DEBUG")]
-        internal static void Debug(Type sender, string message)
+        public static void Debug(Type sender, string message)
         {
             CDebug.WriteLine("[DEBUG] {0}: {1}", sender.Name, message);
         }
@@ -65,7 +65,7 @@
         ///     Logs the specified message.
         /// </summary>
         [Conditional("DEBUG")]
-        internal static void Log(object sender, string message)
+        public static void Log(object sender, string message)
         {
             CDebug.WriteLine("[LOG] {0}: {1}", sender.GetType().Name, message);
         }
@@ -74,7 +74,7 @@
         ///     Logs the specified message.
         /// </summary>
         [Conditional("DEBUG")]
-        internal static void Log(Type sender, string message)
+        public static void Log(Type sender, string message)
         {
             CDebug.WriteLine("[LOG] {0}: {1}", sender.Name, message);
         }
@@ -82,7 +82,7 @@
         /// <summary>
         ///     Logs the specified warning message.
         /// </summary>
-        internal static void Warning(object sender, string message)
+        public static void Warning(object sender, string message)
         {
             CDebug.WriteLine("[WARNING] {0}: {1}", sender.GetType().Name, message);
         }
@@ -90,7 +90,7 @@
         /// <summary>
         ///     Logs the specified warning message.
         /// </summary>
-        internal static void Warning(Type sender, string message)
+        public static void Warning(Type sender, string message)
         {
             CDebug.WriteLine("[WARNING] {0}: {1}", sender.Name, message);
         }
@@ -98,7 +98,7 @@
         /// <summary>
         ///     Logs the specified error message.
         /// </summary>
-        internal static void Error(object sender, string message)
+        public static void Error(object sender, string message)
         {
             CDebug.WriteLine("[ERROR] {0}: {1}", sender.GetType().Name, message);
         }
@@ -106,15 +106,15 @@
         /// <summary>
         ///     Logs the specified error message.
         /// </summary>
-        internal static void Error(Type sender, string message)
+        public static void Error(Type sender, string message)
         {
             CDebug.WriteLine("[ERROR] {0}: {1}", sender.Name, message);
         }
 
         /// <summary>
-        ///     Do assert the specified message.
+        ///     Do assert the specified condition.
         /// </summary>
-        internal static void DoAssert(object sender, bool assertCondition, string assertionError)
+        public static void DoAssert(object sender, bool assertCondition, string assertionError)
         {
             if (!assertCondition)
             {

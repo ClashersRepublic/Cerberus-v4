@@ -2,7 +2,7 @@
 {
     using System;
 
-    using ClashersRepublic.Magic.Services.Home.Debug;
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Services.Logic.Message;
 
     using NetMQ;
@@ -41,6 +41,8 @@
                         {
                             Logging.Error(typeof(ServiceMessaging), "ServiceMessaging::onReceive message decode failed, trace: " + e);
                         }
+
+                        Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onReceive message " + message.GetType().Name + " received");
                     }
                     else
                     {
@@ -80,6 +82,8 @@
             ServiceMessaging.WriteHeader(message, encodingLength, packet);
             Array.Copy(encodingByteArray, 0, packet, 6, encodingLength);
             ServiceGateway.Send(packet, encodingLength + 6, responseSocket);
+
+            Logging.Debug(typeof(ServiceMessaging), "ServiceMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>

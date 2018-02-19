@@ -1,9 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Service
 {
     using System.Net;
-    using ClashersRepublic.Magic.Proxy.Log;
+
     using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Services.Logic.Service;
+
     using ClashersRepublic.Magic.Titan.Util;
 
     using NetMQ;

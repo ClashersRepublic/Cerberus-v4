@@ -1,8 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Service
 {
-    using System;
     using System.Threading;
-    using ClashersRepublic.Magic.Services.Home.Debug;
+
+    using ClashersRepublic.Magic.Services.Logic.Log;
 
     using NetMQ;
     using NetMQ.Sockets;

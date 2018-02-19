@@ -1,9 +1,11 @@
-﻿namespace ClashersRepublic.Magic.Proxy.Session
+﻿namespace ClashersRepublic.Magic.Services.Home.Sessions
 {
-    using System;
-    using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Service;
-    using ClashersRepublic.Magic.Proxy.User;
+    using ClashersRepublic.Magic.Logic.Mode;
+
+    using ClashersRepublic.Magic.Services.Home.Game.Mode;
+    using ClashersRepublic.Magic.Services.Home.Home;
+    using ClashersRepublic.Magic.Services.Home.Message;
+    using ClashersRepublic.Magic.Services.Home.Service;
 
     using ClashersRepublic.Magic.Services.Logic.Log;
     using ClashersRepublic.Magic.Services.Logic.Message.Messaging;
@@ -19,24 +21,33 @@
 
         internal string SessionId { get; }
 
-        internal Client Client { get; }
-        internal GameAccount Account { get; }
+        internal GameHome GameHome { get; }
+        internal GameMode GameMode { get; }
+        internal MessageManager MessageManager { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameSession" /> class.
+        ///     Initializes a new instance of the <see cref="GameSession"/> class.
         /// </summary>
-        internal GameSession(string sessionId, Client client, GameAccount account)
+        private GameSession()
         {
-            this.SessionId = sessionId;
-            this.Client = client;
-            this.Account = account;
-
             this._serverEndPoints = new ServerEndPoint[28];
 
-            for (int i = 0; i < 28; i++)
+            for (int i = 0; i < this._serverEndPoints.Length; i++)
             {
                 this._serverEndPoints[i] = new ServerEndPoint();
             }
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="GameSession"/> class.
+        /// </summary>
+        internal GameSession(string sessionId, GameHome home) : this()
+        {
+            this.SessionId = sessionId;
+            this.GameHome = home;
+
+            this.GameMode = new GameMode(this);
+            this.MessageManager = new MessageManager(this);
         }
 
         /// <summary>
@@ -89,7 +100,7 @@
 
                         ServiceMessageManager.SendMessage(new ServiceNodeBoundToSessionMessage
                         {
-                            AccountId = this.Account.Id
+                            AccountId = this.GameHome.Id
                         }, this.SessionId, newServerEndPoint);
                     }
                 }
@@ -133,11 +144,7 @@
                     {
                         if (currentEndPoint.Socket != null)
                         {
-                            if (currentEndPoint.Socket == newServerEndPoint)
-                            {
-                                return;
-                            }
-                            else
+                            if (currentEndPoint.Socket != newServerEndPoint)
                             {
                                 if (currentEndPoint.IsBound)
                                 {
@@ -207,6 +214,11 @@
 
                 if (serverEndPoint != null)
                 {
+                    if (message.GetEncodingLength() == 0)
+                    {
+                        message.Encode();
+                    }
+
                     ServiceMessageManager.SendMessage(new ForwardPiranhaMessage
                     {
                         PiranhaMessage = message
@@ -217,6 +229,14 @@
             {
                 Logging.Error(this, "GameSession::forwardPiranhaMessage service node type out of bands " + serviceNodeType + "/" + this._serverEndPoints.Length);
             }
+        }
+
+        /// <summary>
+        ///     Called when the <see cref="GameSession"/> instance is create.
+        /// </summary>
+        internal void OnCreate()
+        {
+
         }
 
         private class ServerEndPoint

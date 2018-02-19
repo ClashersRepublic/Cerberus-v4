@@ -6,10 +6,10 @@
 
     public class EndClientTurnMessage : PiranhaMessage
     {
-        public int Subtick;
-        public int Checksum;
+        private int _subTick;
+        private int _checksum;
 
-        public LogicArrayList<LogicCommand> Commands;
+        private LogicArrayList<LogicCommand> _commands;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EndClientTurnMessage" /> class.
@@ -34,8 +34,8 @@
         {
             base.Decode();
 
-            this.Subtick = this.Stream.ReadInt();
-            this.Checksum = this.Stream.ReadInt();
+            this._subTick = this.Stream.ReadInt();
+            this._checksum = this.Stream.ReadInt();
 
             int arraySize = this.Stream.ReadInt();
 
@@ -43,7 +43,7 @@
             {
                 if (arraySize > 0)
                 {
-                    this.Commands = new LogicArrayList<LogicCommand>(arraySize);
+                    this._commands = new LogicArrayList<LogicCommand>(arraySize);
 
                     do
                     {
@@ -54,7 +54,7 @@
                             break;
                         }
 
-                        this.Commands.Add(command);
+                        this._commands.Add(command);
                     } while (--arraySize != 0);
                 }
             }
@@ -67,16 +67,16 @@
         {
             base.Encode();
 
-            this.Stream.WriteInt(this.Subtick);
-            this.Stream.WriteInt(this.Checksum);
+            this.Stream.WriteInt(this._subTick);
+            this.Stream.WriteInt(this._checksum);
 
-            if (this.Commands != null)
+            if (this._commands != null)
             {
-                this.Stream.WriteInt(this.Commands.Count);
+                this.Stream.WriteInt(this._commands.Count);
 
-                for (int i = 0; i < this.Commands.Count; i++)
+                for (int i = 0; i < this._commands.Count; i++)
                 {
-                    LogicCommandManager.EncodeCommand(this.Stream, this.Commands[i]);
+                    LogicCommandManager.EncodeCommand(this.Stream, this._commands[i]);
                 }
             }
             else
@@ -106,7 +106,56 @@
         /// </summary>
         public override void Destruct()
         {
-            this.Commands = null;
+            base.Destruct();
+            this._commands = null;
+        }
+
+        /// <summary>
+        ///     Gets the subtick.
+        /// </summary>
+        public int GetSubTick()
+        {
+            return this._subTick;
+        }
+
+        /// <summary>
+        ///     Sets the subtick.
+        /// </summary>
+        public void SetSubTick(int value)
+        {
+            this._subTick = value;
+        }
+
+        /// <summary>
+        ///     Gets the checksum.
+        /// </summary>
+        public int GetChecksum()
+        {
+            return this._checksum;
+        }
+
+        /// <summary>
+        ///     Sets the checksum.
+        /// </summary>
+        public void SetChecksum(int value)
+        {
+            this._checksum = value;
+        }
+
+        /// <summary>
+        ///     Gets all commands.
+        /// </summary>
+        public LogicArrayList<LogicCommand> GetCommands()
+        {
+            return this._commands;
+        }
+
+        /// <summary>
+        ///     Sets all commands.
+        /// </summary>
+        public void SetCommands(LogicArrayList<LogicCommand> commands)
+        {
+            this._commands = commands;
         }
     }
 }

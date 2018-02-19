@@ -63,6 +63,7 @@
         /// </summary>
         public override void Destruct()
         {
+            base.Destruct();
             this.LogicNpcData = null;
         }
     }

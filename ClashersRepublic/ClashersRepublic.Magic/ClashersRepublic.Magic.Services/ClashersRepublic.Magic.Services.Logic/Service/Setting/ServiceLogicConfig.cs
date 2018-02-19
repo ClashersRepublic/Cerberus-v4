@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Logic.Service.Setting
 {
-    using System.IO;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Services.Logic.Resource;
     using ClashersRepublic.Magic.Titan.Json;
@@ -8,11 +7,11 @@
     public static class ServiceLogicConfig
     {
         private static string _startingHomePath;
-        private static string _calandarPath;
+        private static string _calendarPath;
         private static string _globalsPath;
 
         private static string _startingHomeData;
-        private static string _calandarData;
+        private static string _calendarData;
         private static string _globalsData;
 
         /// <summary>
@@ -25,7 +24,7 @@
             if (pathObject != null)
             {
                 ServiceLogicConfig._startingHomePath = LogicJSONHelper.GetJSONString(pathObject, "starting_home");
-                ServiceLogicConfig._calandarPath = LogicJSONHelper.GetJSONString(pathObject, "calandar");
+                ServiceLogicConfig._calendarPath = LogicJSONHelper.GetJSONString(pathObject, "calendar");
                 ServiceLogicConfig._globalsPath = LogicJSONHelper.GetJSONString(pathObject, "globals");
 
                 if (ServiceLogicConfig._startingHomePath != null)
@@ -33,9 +32,9 @@
                     ServiceLogicConfig._startingHomeData = ResourceManager.LoadAssetFile(ServiceLogicConfig._startingHomePath);
                 }
 
-                if (ServiceLogicConfig._calandarPath != null)
+                if (ServiceLogicConfig._calendarPath != null)
                 {
-                    ServiceLogicConfig._calandarData = ResourceManager.LoadAssetFile(ServiceLogicConfig._calandarPath);
+                    ServiceLogicConfig._calendarData = ResourceManager.LoadAssetFile(ServiceLogicConfig._calendarPath);
                 }
 
                 if (ServiceLogicConfig._globalsPath != null)
@@ -62,19 +61,19 @@
         }
 
         /// <summary>
-        ///     Gets the calandar path.
+        ///     Gets the calendar path.
         /// </summary>
-        public static string GetCalandarPath()
+        public static string GetCalendarPath()
         {
-            return ServiceLogicConfig._calandarPath;
+            return ServiceLogicConfig._calendarPath;
         }
 
         /// <summary>
-        ///     Gets the calandar json.
+        ///     Gets the calendar json.
         /// </summary>
-        public static string GetCalandarJson()
+        public static string GetCalendarJson()
         {
-            return ServiceLogicConfig._calandarData;
+            return ServiceLogicConfig._calendarData;
         }
 
         /// <summary>

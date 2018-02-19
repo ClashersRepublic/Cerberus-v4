@@ -1,20 +1,23 @@
 ﻿namespace ClashersRepublic.Magic.Proxy.Message
 {
     using System;
+
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Logic.Message.Google;
+
     using ClashersRepublic.Magic.Proxy.Account;
-    using ClashersRepublic.Magic.Proxy.Log;
     using ClashersRepublic.Magic.Proxy.Network;
     using ClashersRepublic.Magic.Proxy.Service;
     using ClashersRepublic.Magic.Proxy.Session;
     using ClashersRepublic.Magic.Proxy.User;
 
-    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Services.Logic.Log;
+    using ClashersRepublic.Magic.Services.Logic.Message.Game;
     using ClashersRepublic.Magic.Services.Logic.Resource;
     using ClashersRepublic.Magic.Services.Logic.Service;
+
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
@@ -128,14 +131,7 @@
                 {
                     if (this.Client.Defines.DeviceType == 0)
                     {
-                        if (this.Client.Defines.AndroidClient)
-                        {
-                            message.UpdateUrl = ResourceManager.GetAppStoreUrl(1);
-                        }
-                        else
-                        {
-                            message.UpdateUrl = ResourceManager.GetAppStoreUrl(2);
-                        }
+                        message.UpdateUrl = ResourceManager.GetAppStoreUrl(this.Client.Defines.AndroidClient ? 1 : 2);
                     }
                     else
                     {
@@ -171,8 +167,8 @@
                 {
                     this.SendMessage(new LoginOkMessage
                     {
-                        AccountId = new LogicLong(account.HighId, account.LowId),
-                        HomeId = new LogicLong(account.HighId, account.LowId),
+                        AccountId = account.Id,
+                        HomeId = account.Id,
                         ServerTime = LogicTimeUtil.GetTimestampMS(),
                         AccountCreatedDate = account.AccountCreationDate,
                         PassToken = account.PassToken,
@@ -224,6 +220,11 @@
 
                         if (account != null)
                         {
+                            ServiceMessageManager.SendMessage(new CreateDataMessage
+                            {
+                                Id = account.Id
+                            }, 10, account.Id.GetHigherInt());
+
                             GameSessionManager.CreateSession(this.Client, account);
                         }
                     }
