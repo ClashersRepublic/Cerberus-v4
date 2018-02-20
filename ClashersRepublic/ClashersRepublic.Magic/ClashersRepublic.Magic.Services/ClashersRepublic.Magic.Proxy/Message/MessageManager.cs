@@ -123,7 +123,7 @@
             {
                 case 7:
                 {
-                    ZLibHelper.ConpressInZLibFormat(LogicStringUtil.GetBytes(ResourceManager.FingerprintJson), out message.ResourceFingerprintData);
+                    ZLibHelper.CompressInZLibFormat(LogicStringUtil.GetBytes(ResourceManager.FingerprintJson), out message.ResourceFingerprintData);
                     break;
                 }
 

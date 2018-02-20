@@ -66,7 +66,7 @@ namespace ClashersRepublic.Magic.Services.Home.Home
                 home.LogicClientHomeInstance = null;
             }
 
-            ZLibHelper.ConpressInZLibFormat(LogicStringUtil.GetBytes(ServiceLogicConfig.GetStartingHomeJson()), out byte[] compressed);
+            ZLibHelper.CompressInZLibFormat(LogicStringUtil.GetBytes(ServiceLogicConfig.GetStartingHomeJson()), out byte[] compressed);
 
             home.LogicClientHomeInstance = new LogicClientHome();
             home.LogicClientAvatarInstance = LogicClientAvatar.GetDefaultAvatar();
