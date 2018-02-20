@@ -31,6 +31,22 @@
         }
 
         /// <summary>
+        ///     Calculates the loot.
+        /// </summary>
+        public void CalculateLoot(bool unk)
+        {
+            // TODO: Implement LogicComponentManager::calculateLoot();
+        }
+
+        /// <summary>
+        ///     Devides the avatar resources to storages.
+        /// </summary>
+        public void DevideAvatarResourcesToStorages()
+        {
+            // TODO: Implement LogicComponentManager::divideAvatarResourcesToStorages();
+        }
+
+        /// <summary>
         ///     Removes the specified component.
         /// </summary>
         public void RemoveComponent(LogicComponent component)

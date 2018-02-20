@@ -224,6 +224,14 @@
         }
 
         /// <summary>
+        ///     Called when the loading is finished.
+        /// </summary>
+        public void LoadingFinished()
+        {
+            // TODO: Implement LogicGameObjectManager::loadingFinished();
+        }
+
+        /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
         public void FastForwardTime(int totalSecs)

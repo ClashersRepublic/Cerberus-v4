@@ -1,7 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Level
 {
-    using System;
-
     using ClashersRepublic.Magic.Logic.Achievement;
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.GameObject;
@@ -11,15 +9,15 @@
     using ClashersRepublic.Magic.Logic.Offer;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Worker;
-
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
-
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Battle;
     using ClashersRepublic.Magic.Logic.Cooldown;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject.Component;
+    using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicLevel
     {
@@ -37,6 +35,7 @@
         private LogicCooldownManager _cooldownManager;
         private LogicBattleLog _battleLog;
         private LogicGameListener _gameListener;
+        private LogicJSONObject _levelJSON;
 
         private LogicArrayList<int> _layoutState;
         private LogicArrayList<int> _layoutCooldown;
@@ -61,21 +60,23 @@
         private int _lastNewsSeen;
         private int _waveNumber;
         private int _experienceVersion;
+        private int _warTutorialsSeen;
         private int _matchType;
 
+        private bool _helpOpened;
         private bool _warBase;
+        private bool _editModeShown;
         private bool _npcVillage;
         private bool _androidClient;
         private bool _battleStarted;
         private bool _battleEndPending;
-        private bool _warTutorialsSeen;
         private bool _isWarLevel;
         private bool _isDirectLevel;
         private bool _isDirectVillage2Level;
 
         private string _warRequestMessage;
         private string _troopRequestMessage;
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicLevel"/> class.
         /// </summary>
@@ -89,6 +90,7 @@
             this._armyNames = new LogicArrayList<string>();
             this._gameObjectManagers = new LogicGameObjectManager[2];
             this._workerManagers = new LogicWorkerManager[2];
+            this._tileMap = new LogicTileMap(50, 50);
 
             for (int i = 0; i < 2; i++)
             {
@@ -97,7 +99,6 @@
             }
 
             this._offerManager = new LogicOfferManager();
-            this._tileMap = new LogicTileMap(50, 50);
             this._map = new LogicRect(3, 3, 47, 47);
             this._cooldownManager = new LogicCooldownManager();
             this._battleLog = new LogicBattleLog(this);
@@ -213,7 +214,7 @@
 
             return null;
         }
-        
+
         /// <summary>
         ///     Gets the worker manager instance.
         /// </summary>
@@ -298,14 +299,236 @@
         {
             return this._clientHome;
         }
-        
+
         /// <summary>
         ///     Sets the home instance.
         /// </summary>
-        public void SetHome(LogicClientHome home)
+        public void SetHome(LogicClientHome home, bool isAndroidClient)
         {
             this._clientHome = home;
-            Console.WriteLine(home.GetHomeJSON());
+
+            this._levelJSON = (LogicJSONObject) LogicJSONParser.Parse(home.GetHomeJSON());
+
+            this._androidClient = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "android_client");
+            this._warBase = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "war_base");
+            this._activeLayout = LogicJSONHelper.GetJSONNumber(this._levelJSON, "active_layout");
+            this._activeLayoutVillage2 = LogicJSONHelper.GetJSONNumber(this._levelJSON, "act_l2");
+
+            if (this._activeLayout < 0)
+            {
+                this._activeLayout = 0;
+            }
+
+            if (this._activeLayoutVillage2 < 0)
+            {
+                this._activeLayoutVillage2 = 0;
+            }
+
+            LogicJSONNumber warLayoutNumber = this._levelJSON.GetJSONNumber("war_layout");
+
+            if (warLayoutNumber != null)
+            {
+                this._warLayout = warLayoutNumber.GetIntValue();
+            }
+            else if (this._warBase)
+            {
+                this._warLayout = 1;
+            }
+
+            if (this._warLayout < 0)
+            {
+                this._warLayout = 0;
+            }
+
+            if (this._layoutState.Count > 0)
+            {
+                for (int i = 0; i < this._layoutState.Count; i++)
+                {
+                    this._layoutState[i] = 0;
+                }
+            }
+
+            LogicJSONArray layoutStateArray = this._levelJSON.GetJSONArray("layout_state");
+
+            if (layoutStateArray != null)
+            {
+                int arraySize = layoutStateArray.Size();
+
+                for (int i = 0; i < this._layoutState.Count; i++)
+                {
+                    if (i >= arraySize)
+                    {
+                        break;
+                    }
+
+                    LogicJSONNumber numObject = layoutStateArray.GetJSONNumber(i);
+
+                    if (numObject != null)
+                    {
+                        int num = numObject.GetIntValue();
+
+                        if (num > -1)
+                        {
+                            this._layoutState[i] = num;
+                        }
+                    }
+                }
+            }
+
+            if (this._layoutStateVillage2.Count > 0)
+            {
+                for (int i = 0; i < this._layoutStateVillage2.Count; i++)
+                {
+                    this._layoutStateVillage2[i] = 0;
+                }
+            }
+
+            LogicJSONArray layoutState2Array = this._levelJSON.GetJSONArray("layout_state2");
+
+            if (layoutState2Array != null)
+            {
+                int arraySize = layoutState2Array.Size();
+
+                for (int i = 0; i < this._layoutStateVillage2.Count; i++)
+                {
+                    if (i >= arraySize)
+                    {
+                        break;
+                    }
+
+                    LogicJSONNumber numObject = layoutState2Array.GetJSONNumber(i);
+
+                    if (numObject != null)
+                    {
+                        int num = numObject.GetIntValue();
+
+                        if (num > -1)
+                        {
+                            this._layoutStateVillage2[i] = num;
+                        }
+                    }
+                }
+            }
+
+            if (this._layoutCooldown.Count > 0)
+            {
+                for (int i = 0; i < this._layoutCooldown.Count; i++)
+                {
+                    this._layoutCooldown[i] = 0;
+                }
+            }
+
+            LogicJSONArray layoutCooldownArray = this._levelJSON.GetJSONArray("layout_state2");
+
+            if (layoutCooldownArray != null)
+            {
+                int arraySize = layoutCooldownArray.Size();
+
+                for (int i = 0; i < this._layoutCooldown.Count; i++)
+                {
+                    if (i >= arraySize)
+                    {
+                        break;
+                    }
+
+                    LogicJSONNumber numObject = layoutCooldownArray.GetJSONNumber(i);
+
+                    if (numObject != null)
+                    {
+                        int num = LogicMath.Min(numObject.GetIntValue(), 15 * LogicDataTables.GetGlobalsInstance().GetChallengeBaseSaveCooldown());
+
+                        if (num > -1)
+                        {
+                            this._layoutCooldown[i] = num;
+                        }
+                    }
+                }
+            }
+
+            if (this._unplacedObjects != null)
+            {
+                if (this._unplacedObjects.Count != 0)
+                {
+                    do
+                    {
+                        this._unplacedObjects.Remove(0);
+                    } while (this._unplacedObjects.Count != 0);
+                }
+            }
+
+            LogicJSONArray unplacedArray = this._levelJSON.GetJSONArray("unplaced");
+
+            if (unplacedArray != null)
+            {
+                int arraySize = unplacedArray.Size();
+
+                for (int i = 0; i < arraySize; i++)
+                {
+                    LogicDataSlot dataSlot = new LogicDataSlot(null, 0);
+                    dataSlot.ReadFromJSON(unplacedArray.GetJSONObject(i));
+                    this.AddUnplacedObject(dataSlot);
+                }
+            }
+
+            LogicJSONNumber waveNumObject = this._levelJSON.GetJSONNumber("wave_num");
+
+            if (waveNumObject != null)
+            {
+                if (this.GetState() != 1)
+                {
+                    this._waveNumber = waveNumObject.GetIntValue();
+                }
+            }
+
+            LogicJSONBoolean directObject = this._levelJSON.GetJSONBoolean("direct");
+
+            if (directObject != null)
+            {
+                this._isDirectLevel = !directObject.IsTrue();
+            }
+            else
+            {
+                this._isDirectLevel = true;
+            }
+
+            LogicJSONBoolean direct2Object = this._levelJSON.GetJSONBoolean("direct2");
+
+            if (direct2Object != null)
+            {
+                if (direct2Object.IsTrue())
+                {
+                }
+            }
+
+            if (!this._npcVillage)
+            {
+                this._experienceVersion = LogicJSONHelper.GetJSONNumber(this._levelJSON, "exp_ver");
+
+                if (this._gameMode.GetState() != 5)
+                {
+                    if (this._experienceVersion <= 0)
+                    {
+                        do
+                        {
+                            // TODO: Implement this.
+                        } while (++this._experienceVersion <= 0);
+                    }
+                }
+
+                if (false)
+                {
+                }
+                else
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        this._gameObjectManagers[i].Load(this._levelJSON);
+                    }
+
+                    this._cooldownManager.Load(this._levelJSON);
+                    this._offerManager.Load(this._levelJSON);
+                }
+            }
         }
 
         /// <summary>
@@ -396,6 +619,50 @@
             if (!this._npcVillage)
             {
                 this._cooldownManager.Save(jsonObject);
+                this.SaveShopNewItems(jsonObject);
+
+                LogicJSONHelper.SetJSONNumber(jsonObject, "last_league_rank", this._lastLeagueRank);
+                LogicJSONHelper.SetJSONNumber(jsonObject, "last_alliance_level", this._lastAllianceLevel);
+                LogicJSONHelper.SetJSONNumber(jsonObject, "last_league_shuffle", this._lastLeagueShuffle);
+                LogicJSONHelper.SetJSONNumber(jsonObject, "last_season_seen", this._lastSeasonSeen);
+                LogicJSONHelper.SetJSONNumber(jsonObject, "last_news_seen", this._lastNewsSeen);
+
+                if (this._troopRequestMessage.Length > 0)
+                {
+                    LogicJSONHelper.SetJSONString(jsonObject, "troop_req_msg", this._troopRequestMessage);
+                }
+
+                if (this._warRequestMessage.Length > 0)
+                {
+                    LogicJSONHelper.SetJSONString(jsonObject, "war_req_msg", this._warRequestMessage);
+                }
+
+                LogicJSONHelper.SetJSONNumber(jsonObject, "war_tutorials_seen", this._warTutorialsSeen);
+                LogicJSONHelper.SetJSONBoolean(jsonObject, "war_base", this._warBase);
+
+                LogicJSONArray armyNameArray = new LogicJSONArray();
+
+                for (int i = 0; i < this._armyNames.Count; i++)
+                {
+                    armyNameArray.Add(new LogicJSONString(this._armyNames[i]));
+                }
+
+                jsonObject.Put("army_names", armyNameArray);
+
+                if (this._unplacedObjects != null)
+                {
+                    if (this._unplacedObjects.Count > 0)
+                    {
+                        LogicJSONArray unplacedArray = new LogicJSONArray();
+
+                        for (int i = 0; i < this._unplacedObjects.Count; i++)
+                        {
+                            LogicJSONObject obj = new LogicJSONObject();
+                            this._unplacedObjects[i].WriteToJSON(obj);
+                            unplacedArray.Add(obj);
+                        }
+                    }
+                }
             }
         }
 
@@ -442,6 +709,14 @@
         }
 
         /// <summary>
+        ///     Loads the shop new items.
+        /// </summary>
+        public void LoadShopNewItems()
+        {
+            // TODO: Implement LogicLevel::loadShopNewItems();
+        }
+
+        /// <summary>
         ///     Sets the home owner avatar instance.
         /// </summary>
         public void SetHomeOwnerAvatar(LogicAvatar avatar)
@@ -460,6 +735,19 @@
         }
 
         /// <summary>
+        ///     Adds the unplaced object.
+        /// </summary>
+        public void AddUnplacedObject(LogicDataSlot obj)
+        {
+            if (this._unplacedObjects == null)
+            {
+                this._unplacedObjects = new LogicArrayList<LogicDataSlot>();
+            }
+
+            this._unplacedObjects.Add(obj);
+        }
+
+        /// <summary>
         ///     Gets the number of unlocked shop item.
         /// </summary>
         public int GetUnlockedShopItemCount(int dataIndex, int dataType)
@@ -468,7 +756,6 @@
 
             switch (dataType)
             {
-                    
             }
 
             return count;
@@ -535,11 +822,11 @@
                 {
                     if (this._matchType == 1 ||
                         this._matchType == 3 ||
-                        this._matchType == 4 || 
+                        this._matchType == 4 ||
                         this._matchType == 7)
                     {
                     }
-                    else if (this._matchType == 5 || 
+                    else if (this._matchType == 5 ||
                              this._matchType == 8)
                     {
                     }
@@ -556,6 +843,75 @@
         {
             int state = this.GetState();
             return state == 2 || state == 3 || state == 5;
+        }
+
+        /// <summary>
+        ///     Called when the loading is finished.
+        /// </summary>
+        public void LoadingFinished()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].GetComponentManager().DevideAvatarResourcesToStorages();
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].GetComponentManager().CalculateLoot(true);
+            }
+
+            if (this._battleLog != null)
+            {
+                // TODO: LogicBattleLog::calculateAvailableResources(this, this._matchType);
+                // TODO: LogicLevel::setOwnerInformationToBattleLog();
+            }
+
+            if (this._gameMode.GetState() == 2)
+            {
+                if (this._matchType == 1)
+                {
+                    Debugger.Log("matchmaking");
+                }
+                else if (this._matchType == 8)
+                {
+                    Debugger.Log("matchmakingv2");
+                }
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].LoadingFinished();
+            }
+
+            // TODO: LogicMissionManager::refreshOpenMissions();
+            this.LoadShopNewItems();
+
+            if (this._levelJSON != null)
+            {
+                this._lastLeagueRank = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_league_rank");
+                this._lastAllianceLevel = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_alliance_level");
+                this._lastLeagueShuffle = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_league_shuffle");
+                this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
+                this._lastNewsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
+                this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");
+                this._troopRequestMessage = LogicJSONHelper.GetJSONString(this._levelJSON, "troop_req_msg");
+                this._warRequestMessage = LogicJSONHelper.GetJSONString(this._levelJSON, "war_req_msg");
+                this._warTutorialsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "war_tutorials_seen");
+
+                LogicJSONArray armyNameArray = this._levelJSON.GetJSONArray("army_names");
+
+                if (armyNameArray != null)
+                {
+                    int size = LogicMath.Min(armyNameArray.Size(), this._armyNames.Count);
+
+                    for (int i = 0; i < size; i++)
+                    {
+                        this._armyNames[i] = armyNameArray.GetJSONString(i).GetStringValue();
+                    }
+                }
+
+                this._helpOpened = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "help_opened");
+            }
         }
 
         /// <summary>
@@ -604,7 +960,7 @@
                 this._gameObjectManagers[this._villageType].Tick();
             }
 
-            // LogicMissionManager::tick();
+            // TODO: LogicMissionManager::tick();
             this._achievementManager.Tick();
             this._offerManager.Tick();
         }
@@ -770,7 +1126,6 @@
             this._clientHome = null;
             this._homeOwnerAvatar = null;
             this._visitorAvatar = null;
-            
         }
     }
 }

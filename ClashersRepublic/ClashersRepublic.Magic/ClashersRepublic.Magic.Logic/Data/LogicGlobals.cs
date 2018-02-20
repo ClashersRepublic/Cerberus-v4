@@ -9,6 +9,7 @@
         private int _startingGold;
         private int _startingGold2;
         private int _liveReplayFrequencySecs;
+        private int _challengeBaseSaveCooldown;
 
         private bool _useNewTraining;
 
@@ -31,6 +32,7 @@
             this._startingGold2 = this.GetIntValue("STARTING_GOLD2");
             this._startingElixir2 = this.GetIntValue("STARTING_ELIXIR2");
             this._liveReplayFrequencySecs = this.GetIntValue("LIVE_REPLAY_UPDATE_FREQUENCY_SECONDS");
+            this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
             this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
@@ -108,6 +110,11 @@
         public int GetLiveReplayUpdateFrequencySecs()
         {
             return this._liveReplayFrequencySecs;
+        }
+
+        public int GetChallengeBaseSaveCooldown()
+        {
+            return this._challengeBaseSaveCooldown;
         }
 
         /// <summary>
