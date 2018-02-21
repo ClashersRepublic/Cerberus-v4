@@ -14,7 +14,7 @@
         private int _slotId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicTrainUnitCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicTrainUnitCommand" /> class.
         /// </summary>
         public LogicTrainUnitCommand()
         {
@@ -22,7 +22,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicTrainUnitCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicTrainUnitCommand" /> class.
         /// </summary>
         public LogicTrainUnitCommand(int count, LogicCombatItemData combatItemData, int gameObjectId, int slotId)
         {

@@ -21,7 +21,7 @@
         private LogicCompressibleString _compressibleCalendarJson;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicClientHome"/> class.
+        ///     Initializes a new instance of the <see cref="LogicClientHome" /> class.
         /// </summary>
         public LogicClientHome()
         {

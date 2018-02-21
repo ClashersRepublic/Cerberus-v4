@@ -8,7 +8,7 @@
         private readonly int _endY;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicRect"/> class.
+        ///     Initializes a new instance of the <see cref="LogicRect" /> class.
         /// </summary>
         public LogicRect(int startX, int startY, int endX, int endY)
         {

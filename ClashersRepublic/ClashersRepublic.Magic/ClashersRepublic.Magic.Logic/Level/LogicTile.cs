@@ -11,7 +11,7 @@
         private LogicArrayList<LogicGameObject> _gameObjects;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicTile"/> class.
+        ///     Initializes a new instance of the <see cref="LogicTile" /> class.
         /// </summary>
         public LogicTile()
         {
@@ -93,7 +93,7 @@
                 for (int i = 0, index = -1; i < this._gameObjects.Count; i++, index = -1)
                 {
                     LogicGameObject tmp = this._gameObjects[i];
-                    
+
                     for (int j = 0; j < gameObjects.Length; j++)
                     {
                         if (gameObjects[j] == tmp)

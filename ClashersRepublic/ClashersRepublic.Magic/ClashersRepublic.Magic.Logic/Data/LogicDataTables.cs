@@ -203,7 +203,7 @@
         /// </summary>
         public static LogicGlobalData GetGlobalByName(string name)
         {
-            return (LogicGlobalData)LogicDataTables._dataTables[13].GetDataByName(name);
+            return (LogicGlobalData) LogicDataTables._dataTables[13].GetDataByName(name);
         }
 
         /// <summary>

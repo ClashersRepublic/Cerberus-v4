@@ -9,7 +9,7 @@
         private LogicData _missionData;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicMissionProgressCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicMissionProgressCommand" /> class.
         /// </summary>
         public LogicMissionProgressCommand()
         {
@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicMissionData"/> class.
+        ///     Initializes a new instance of the <see cref="LogicMissionData" /> class.
         /// </summary>
         public LogicMissionProgressCommand(LogicMissionData missionData)
         {

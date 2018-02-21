@@ -8,18 +8,18 @@
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
-    
+
     public sealed class LogicGameObjectManager
     {
-        private int _villageType;
-        private int[] _gameObjectIds;
+        private readonly int _villageType;
+        private readonly int[] _gameObjectIds;
 
         private LogicLevel _level;
         private LogicTileMap _tileMap;
         private LogicUnitProduction _unitProduction;
         private LogicUnitProduction _spellProduction;
-        private LogicComponentManager _componentManager;
-        private LogicArrayList<LogicGameObject>[] _gameObjects;
+        private readonly LogicComponentManager _componentManager;
+        private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
 
         private LogicBuilding _townHall;
         private LogicBuilding _townHallVillage2;
@@ -31,7 +31,7 @@
         private int _specialObstacleDropTime;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicGameObjectManager"/> class.
+        ///     Initializes a new instance of the <see cref="LogicGameObjectManager" /> class.
         /// </summary>
         public LogicGameObjectManager(LogicTileMap tileMap, LogicLevel level, int villageType)
         {
@@ -113,7 +113,7 @@
             {
                 LogicBuilding building = (LogicBuilding) gameObject;
                 LogicBuildingData buildingData = building.GetBuildingData();
-                
+
                 if (buildingData.IsWorkerBuilding() || buildingData.IsWorker2Building())
                 {
                     this._level.GetWorkerManagerAt(this._villageType).IncreaseWorkerCount();
@@ -358,7 +358,7 @@
                 {
                     LogicJSONArray vObjArray = jsonObject.GetJSONArray("vobjs2");
                     LogicJSONArray obstacleArray = jsonObject.GetJSONArray("obstacles2");
-                    
+
                     if (obstacleArray != null)
                     {
                         this.LoadGameObjectsJsonArray(obstacleArray);

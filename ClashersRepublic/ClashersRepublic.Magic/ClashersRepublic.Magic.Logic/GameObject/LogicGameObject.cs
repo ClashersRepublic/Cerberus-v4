@@ -5,7 +5,6 @@
     using ClashersRepublic.Magic.Logic.GameObject.Listener;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
-
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
@@ -24,7 +23,7 @@
         protected int _seed;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicGameObject"/> class.
+        ///     Initializes a new instance of the <see cref="LogicGameObject" /> class.
         /// </summary>
         public LogicGameObject(LogicData data, LogicLevel level, int villageType)
         {
@@ -34,7 +33,7 @@
             this._level = level;
             this._villageType = villageType;
 
-            this._position = new LogicVector2();         
+            this._position = new LogicVector2();
             this._listener = new LogicGameObjectListener();
             this._components = new LogicArrayList<LogicComponent>(21);
 
@@ -143,7 +142,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="LogicLevel"/> instance.
+        ///     Gets the <see cref="LogicLevel" /> instance.
         /// </summary>
         public LogicLevel GetLevel()
         {
@@ -227,7 +226,7 @@
         {
             this._globalId = globalId;
         }
-        
+
         /// <summary>
         ///     Sets the gameobject listener.
         /// </summary>

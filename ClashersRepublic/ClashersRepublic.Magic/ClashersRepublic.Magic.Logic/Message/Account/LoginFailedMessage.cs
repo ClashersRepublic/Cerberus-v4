@@ -8,7 +8,7 @@
         public LogicArrayList<string> ContentUrlList;
 
         public bool BannedShowHelpshiftContact;
-        
+
         public int ErrorCode;
         public int EndMaintenanceTime;
 

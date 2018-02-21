@@ -2,7 +2,6 @@
 {
     using System;
     using System.Linq;
-
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Utils;
     using ClashersRepublic.Magic.Titan.DataStream;
@@ -76,9 +75,9 @@
             hexa = hexa.Replace("-", string.Empty);
 
             byte[] bytes = Enumerable.Range(0, hexa.Length)
-                .Where(x => x % 2 == 0)
-                .Select(x => Convert.ToByte(hexa.Substring(x, 2), 16))
-                .ToArray();
+                                     .Where(x => x % 2 == 0)
+                                     .Select(x => Convert.ToByte(hexa.Substring(x, 2), 16))
+                                     .ToArray();
 
             for (int i = 0; i < bytes.Length; i++)
             {

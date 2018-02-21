@@ -19,14 +19,6 @@
         private int _lastSeasonScore;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicLegendLeagueTournamentEntry"/> class.
-        /// </summary>
-        public LogicLegendLeagueTournamentEntry()
-        {
-            // LogicLegendLeagueTournamentEntry.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public void Destruct()

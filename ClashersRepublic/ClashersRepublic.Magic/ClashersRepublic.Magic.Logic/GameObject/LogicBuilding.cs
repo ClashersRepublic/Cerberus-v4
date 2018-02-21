@@ -14,7 +14,7 @@
         private LogicTimer _constructionTimer;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuilding"/> class.
+        ///     Initializes a new instance of the <see cref="LogicBuilding" /> class.
         /// </summary>
         public LogicBuilding(LogicData data, LogicLevel level, int villageType) : base(data, level, villageType)
         {
@@ -22,7 +22,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="LogicBuildingData"/> instance.
+        ///     Gets the <see cref="LogicBuildingData" /> instance.
         /// </summary>
         public LogicBuildingData GetBuildingData()
         {
@@ -80,7 +80,6 @@
 
             if (this.GetComponent(5, true) != null)
             {
-                
             }
         }
     }

@@ -72,7 +72,7 @@
         {
             return this.GetGlobalData(name).NumberValue;
         }
-        
+
         /// <summary>
         ///     Gets the number of starting diamonds.
         /// </summary>
@@ -112,7 +112,7 @@
         {
             return this._startingElixir2;
         }
-        
+
         public int GetLiveReplayUpdateFrequencySecs()
         {
             return this._liveReplayFrequencySecs;
@@ -175,7 +175,7 @@
         }
 
         /// <summary>
-        ///     Gets the alliance create <see cref="LogicResourceData"/> data.
+        ///     Gets the alliance create <see cref="LogicResourceData" /> data.
         /// </summary>
         public LogicResourceData GetAllianceCreateResourceData()
         {

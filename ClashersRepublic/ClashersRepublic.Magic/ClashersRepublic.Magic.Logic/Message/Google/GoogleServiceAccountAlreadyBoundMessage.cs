@@ -153,7 +153,7 @@
         }
 
         /// <summary>
-        ///     Removes the <see cref="LogicClientAvatar"/> instance.
+        ///     Removes the <see cref="LogicClientAvatar" /> instance.
         /// </summary>
         public LogicClientAvatar RemoveLogicClientAvatar()
         {
@@ -163,7 +163,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicClientAvatar"/> instance.
+        ///     Sets the <see cref="LogicClientAvatar" /> instance.
         /// </summary>
         public void SetAvatar(LogicClientAvatar avatar)
         {

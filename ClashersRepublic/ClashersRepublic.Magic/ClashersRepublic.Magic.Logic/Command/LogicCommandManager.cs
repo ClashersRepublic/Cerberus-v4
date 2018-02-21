@@ -15,7 +15,7 @@
         private LogicArrayList<LogicCommand> _commandList;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicCommandManager"/> class.
+        ///     Initializes a new instance of the <see cref="LogicCommandManager" /> class.
         /// </summary>
         public LogicCommandManager(LogicLevel level)
         {
@@ -85,12 +85,12 @@
             }
 
             stream.EnableCheckSum(false);
-            
+
             for (int i = 0, commandCount = stream.ReadInt(); i < commandCount; i++)
             {
                 this._commandList.Add(LogicCommandManager.DecodeCommand(stream));
             }
-            
+
             stream.EnableCheckSum(true);
         }
 
@@ -128,17 +128,17 @@
             }
 
             if (commandType >= 500
-             && commandType < 600
-             && state != 1)
+                && commandType < 600
+                && state != 1)
             {
                 Debugger.Error("Execute command failed! Command is only allowed in home state.");
                 return false;
             }
 
             if (commandType >= 600
-             && commandType < 700
-             && state != 2
-             && state != 5)
+                && commandType < 700
+                && state != 2
+                && state != 5)
             {
                 Debugger.Error("Execute command failed! Command is only allowed in attack state.");
                 return false;
@@ -170,8 +170,8 @@
                     if (command.GetExecuteSubTick() < subTick)
                     {
                         string message = "Execute command failed! Command should have been executed already." +
-                                         " (type=" + command.GetCommandType() + 
-                                         " server_tick=" + subTick + 
+                                         " (type=" + command.GetCommandType() +
+                                         " server_tick=" + subTick +
                                          " command_tick=" + command.GetExecuteSubTick() + ")";
 
                         Debugger.Error(message);
@@ -200,7 +200,7 @@
                         else
                         {
                             this._listener.CommandExecuteFailed(command, "Execute command failed! Command not allowed in current state." +
-                                                                         " (type=" + command.GetCommandType() + 
+                                                                         " (type=" + command.GetCommandType() +
                                                                          " current_state=" + this._level.GetState() + ")");
                         }
                     }

@@ -25,10 +25,10 @@
 
         private LogicTimer _shieldTimer;
         private LogicTimer _guardTimer;
-        private LogicTimer _maintenanceTimer;
+        private readonly LogicTimer _maintenanceTimer;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicGameMode"/> class.
+        ///     Initializes a new instance of the <see cref="LogicGameMode" /> class.
         /// </summary>
         public LogicGameMode()
         {
@@ -63,7 +63,7 @@
                 this._calendar.Destruct();
                 this._calendar = null;
             }
-            
+
             this._battleTimer = null;
             this._shieldTimer = null;
             this._guardTimer = null;
@@ -110,7 +110,7 @@
 
             return checksum;
         }
-        
+
         /// <summary>
         ///     Gets the command manager instance.
         /// </summary>
@@ -140,7 +140,6 @@
         /// </summary>
         public void SetBattleOver()
         {
-            
         }
 
         /// <summary>

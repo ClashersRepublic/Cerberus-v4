@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Avatar
 {
+    using ClashersRepublic.Magic.Logic.Avatar.Change;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
@@ -7,8 +8,6 @@
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
-    using ClashersRepublic.Magic.Logic;
-    using ClashersRepublic.Magic.Logic.Avatar.Change;
 
     public class LogicAvatar
     {
@@ -57,7 +56,7 @@
         protected LogicArrayList<LogicData> _missionCompleted;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicAvatar"/> class.
+        ///     Initializes a new instance of the <see cref="LogicAvatar" /> class.
         /// </summary>
         public LogicAvatar()
         {
@@ -242,7 +241,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="LogicAvatarChangeListener"/> instance.
+        ///     Gets the <see cref="LogicAvatarChangeListener" /> instance.
         /// </summary>
         public LogicAvatarChangeListener GetChangeListener()
         {
@@ -250,7 +249,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicAvatarChangeListener"/> instance.
+        ///     Sets the <see cref="LogicAvatarChangeListener" /> instance.
         /// </summary>
         public void SetChangeListener(LogicAvatarChangeListener listener)
         {

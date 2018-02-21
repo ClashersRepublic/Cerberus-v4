@@ -9,14 +9,6 @@
         private int _EndTimestamp;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicTimer"/> class.
-        /// </summary>
-        public LogicTimer()
-        {
-            // LogicTimer.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public void Destruct()
@@ -42,7 +34,7 @@
             {
                 if (remaining > 0)
                 {
-                    return LogicMath.Max((remaining + 59) / 20, 1);
+                    return LogicMath.Max((remaining + 59) / 60, 1);
                 }
             }
 
@@ -60,17 +52,15 @@
             {
                 return 16 * remaining;
             }
-            else
+
+            int ms = 1000 * (remaining / 60);
+
+            if (ms % 60 != 0)
             {
-                int ms = 1000 * (remaining / 60);
-
-                if (ms % 60 != 0)
-                {
-                    ms += 2133 * ms >> 7;
-                }
-
-                return ms;
+                ms += (2133 * ms) >> 7;
             }
+
+            return ms;
         }
 
         /// <summary>
@@ -106,7 +96,7 @@
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
-                totalTicks = (int)(1000L * totalTicks / 16);
+                totalTicks = (int) (1000L * totalTicks / 16);
             }
             else
             {

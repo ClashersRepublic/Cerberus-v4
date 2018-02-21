@@ -2,22 +2,21 @@
 {
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
 
     public sealed class LogicResourceProductionComponent : LogicComponent
     {
-        private LogicResourceData _resourceData;
-        private LogicTimer _resourceTimer;
+        private readonly LogicResourceData _resourceData;
+        private readonly LogicTimer _resourceTimer;
 
         private int _availableLoot;
         private int _maxResources;
         private int _productionPer100Hour;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicResourceProductionComponent"/> class.
+        ///     Initializes a new instance of the <see cref="LogicResourceProductionComponent" /> class.
         /// </summary>
         public LogicResourceProductionComponent(LogicGameObject gameObject, LogicResourceData data) : base(gameObject)
         {

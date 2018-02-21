@@ -71,7 +71,7 @@
         {
             return this._secondsUntilShutdown;
         }
-        
+
         /// <summary>
         ///     Sets the device token.
         /// </summary>

@@ -11,7 +11,7 @@
         private int _cooldownTime;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicCooldown"/> class.
+        ///     Initializes a new instance of the <see cref="LogicCooldown" /> class.
         /// </summary>
         public LogicCooldown()
         {
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicCooldown"/> class.
+        ///     Initializes a new instance of the <see cref="LogicCooldown" /> class.
         /// </summary>
         public LogicCooldown(int targetGlobalId, int cooldownSecs)
         {

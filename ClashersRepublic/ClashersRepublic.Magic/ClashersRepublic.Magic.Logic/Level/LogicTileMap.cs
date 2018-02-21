@@ -7,13 +7,13 @@
         private byte _passableFlag;
         private bool _roomEnabled;
 
-        private int _sizeX;
-        private int _sizeY;
+        private readonly int _sizeX;
+        private readonly int _sizeY;
 
         private LogicTile[] _tiles;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicTileMap"/> class.
+        ///     Initializes a new instance of the <see cref="LogicTileMap" /> class.
         /// </summary>
         public LogicTileMap(int x, int y)
         {
@@ -119,7 +119,6 @@
         /// </summary>
         public void RefreshPassable(LogicGameObject gameObject)
         {
-
         }
 
         /// <summary>
@@ -136,7 +135,7 @@
                     LogicTile tmp = this._tiles[i];
                     tmp.SetRoomIdx(tmp.IsFullyNotPassable() ? -1 : 0);
                 }
-                
+
                 for (int i = 0, roomId = 1; i < tileCount; i++)
                 {
                     LogicTile tmp = this._tiles[i];

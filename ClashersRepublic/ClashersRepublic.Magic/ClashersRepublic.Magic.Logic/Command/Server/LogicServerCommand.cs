@@ -7,7 +7,7 @@
         private int _id;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicServerCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicServerCommand" /> class.
         /// </summary>
         public LogicServerCommand()
         {

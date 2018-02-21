@@ -10,7 +10,7 @@
         private LogicLevel _level;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicAchievementManager"/> class.
+        ///     Initializes a new instance of the <see cref="LogicAchievementManager" /> class.
         /// </summary>
         public LogicAchievementManager(LogicLevel level)
         {
@@ -30,7 +30,6 @@
         /// </summary>
         public void RefreshStatus()
         {
-            
         }
 
         /// <summary>
@@ -55,7 +54,6 @@
         /// </summary>
         public void Tick()
         {
-            
         }
     }
 }

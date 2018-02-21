@@ -13,7 +13,7 @@
         private int _count;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicUnitSlot"/> class.
+        ///     Initializes a new instance of the <see cref="LogicUnitSlot" /> class.
         /// </summary>
         public LogicUnitSlot(LogicData data, int level, int count)
         {

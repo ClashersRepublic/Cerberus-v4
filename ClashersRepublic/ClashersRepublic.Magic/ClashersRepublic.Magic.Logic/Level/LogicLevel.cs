@@ -2,22 +2,21 @@
 {
     using ClashersRepublic.Magic.Logic.Achievement;
     using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Battle;
+    using ClashersRepublic.Magic.Logic.Cooldown;
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
+    using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Mode;
     using ClashersRepublic.Magic.Logic.Offer;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Worker;
-    using ClashersRepublic.Magic.Titan.Json;
-    using ClashersRepublic.Magic.Titan.Util;
-    using ClashersRepublic.Magic.Logic;
-    using ClashersRepublic.Magic.Logic.Battle;
-    using ClashersRepublic.Magic.Logic.Cooldown;
-    using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicLevel
     {
@@ -28,8 +27,8 @@
         private LogicTileMap _tileMap;
         private LogicRect _map;
 
-        private LogicGameObjectManager[] _gameObjectManagers;
-        private LogicWorkerManager[] _workerManagers;
+        private readonly LogicGameObjectManager[] _gameObjectManagers;
+        private readonly LogicWorkerManager[] _workerManagers;
         private LogicOfferManager _offerManager;
         private LogicAchievementManager _achievementManager;
         private LogicCooldownManager _cooldownManager;
@@ -37,10 +36,10 @@
         private LogicGameListener _gameListener;
         private LogicJSONObject _levelJSON;
 
-        private LogicArrayList<int> _layoutState;
-        private LogicArrayList<int> _layoutCooldown;
-        private LogicArrayList<int> _layoutStateVillage2;
-        private LogicArrayList<string> _armyNames;
+        private readonly LogicArrayList<int> _layoutState;
+        private readonly LogicArrayList<int> _layoutCooldown;
+        private readonly LogicArrayList<int> _layoutStateVillage2;
+        private readonly LogicArrayList<string> _armyNames;
         private LogicArrayList<LogicDataSlot> _unplacedObjects;
 
         private LogicArrayList<int> _newShopBuildings;
@@ -78,7 +77,7 @@
         private string _troopRequestMessage;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicLevel"/> class.
+        ///     Initializes a new instance of the <see cref="LogicLevel" /> class.
         /// </summary>
         public LogicLevel(LogicGameMode gameMode)
         {
@@ -526,16 +525,14 @@
                 if (false)
                 {
                 }
-                else
-                {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        this._gameObjectManagers[i].Load(this._levelJSON);
-                    }
 
-                    this._cooldownManager.Load(this._levelJSON);
-                    this._offerManager.Load(this._levelJSON);
+                for (int i = 0; i < 2; i++)
+                {
+                    this._gameObjectManagers[i].Load(this._levelJSON);
                 }
+
+                this._cooldownManager.Load(this._levelJSON);
+                this._offerManager.Load(this._levelJSON);
             }
         }
 
@@ -951,7 +948,7 @@
         {
             int state = this.GetState();
 
-            if ((state == 2 && !this._battleStarted) && this._battleLog.GetBattleStarted())
+            if (state == 2 && !this._battleStarted && this._battleLog.GetBattleStarted())
             {
                 this.BattleStarted();
             }

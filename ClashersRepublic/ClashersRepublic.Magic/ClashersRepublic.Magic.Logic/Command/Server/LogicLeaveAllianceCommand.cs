@@ -1,23 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Command.Server
 {
     using ClashersRepublic.Magic.Logic.Avatar;
-    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Level;
-    using ClashersRepublic.Magic.Logic.Mode;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicLeaveAllianceCommand : LogicServerCommand
     {
         private LogicLong _allianceId;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicLeaveAllianceCommand"/> class.
-        /// </summary>
-        public LogicLeaveAllianceCommand()
-        {
-            // LogicLeaveAllianceCommand.
-        }
 
         /// <summary>
         ///     Destructs this instance.
@@ -51,13 +41,12 @@
         /// </summary>
         public override int Execute(LogicLevel level)
         {
-            LogicClientAvatar playerAvatar = (LogicClientAvatar)level.GetPlayerAvatar();
+            LogicClientAvatar playerAvatar = (LogicClientAvatar) level.GetPlayerAvatar();
 
             if (playerAvatar != null)
             {
                 if (playerAvatar.IsInAlliance())
                 {
-
                 }
 
                 return 0;

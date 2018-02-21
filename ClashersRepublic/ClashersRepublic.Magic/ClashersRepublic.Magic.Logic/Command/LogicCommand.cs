@@ -10,7 +10,7 @@
         private int _executeSubTick;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicCommand" /> class.
         /// </summary>
         public LogicCommand()
         {

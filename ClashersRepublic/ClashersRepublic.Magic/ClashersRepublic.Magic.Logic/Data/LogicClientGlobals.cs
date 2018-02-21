@@ -33,7 +33,7 @@
         /// </summary>
         private int GetIntValue(string name)
         {
-            return this.GetGlobalData(name).NumberValue; 
+            return this.GetGlobalData(name).NumberValue;
         }
 
         /// <summary>

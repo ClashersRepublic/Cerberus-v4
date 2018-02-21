@@ -5,11 +5,11 @@
 
     public class LogicComponentManager
     {
-        private LogicLevel _level;
-        private LogicArrayList<LogicComponent>[] _components;
+        private readonly LogicLevel _level;
+        private readonly LogicArrayList<LogicComponent>[] _components;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicComponentManager"/> class.
+        ///     Initializes a new instance of the <see cref="LogicComponentManager" /> class.
         /// </summary>
         public LogicComponentManager(LogicLevel level)
         {
@@ -21,7 +21,7 @@
                 this._components[i] = new LogicArrayList<LogicComponent>(32);
             }
         }
-        
+
         /// <summary>
         ///     Adds the specified component to this instance.
         /// </summary>
@@ -128,7 +128,6 @@
         /// </summary>
         public void SubTick()
         {
-
         }
     }
 }

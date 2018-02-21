@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
-    using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Json;
 
@@ -10,7 +9,7 @@
         protected LogicGameObject _parent;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicComponent"/> class.
+        ///     Initializes a new instance of the <see cref="LogicComponent" /> class.
         /// </summary>
         public LogicComponent(LogicGameObject gameObject)
         {

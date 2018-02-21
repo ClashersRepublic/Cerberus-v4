@@ -16,14 +16,6 @@
         private bool _allianceCreate;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicJoinAllianceCommand"/> class.
-        /// </summary>
-        public LogicJoinAllianceCommand()
-        {
-            // LogicJoinAllianceCommand.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()
@@ -77,7 +69,7 @@
                     LogicResourceData resource = globals.GetAllianceCreateResourceData();
 
                     int removeCount = LogicMath.Min(globals.GetAllianceCreateCost(), playerAvatar.GetResourceCount(resource));
-                    
+
                     playerAvatar.CommodityCountChangeHelper(0, resource, -removeCount);
                 }
 

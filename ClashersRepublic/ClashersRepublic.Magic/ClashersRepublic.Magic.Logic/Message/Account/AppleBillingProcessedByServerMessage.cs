@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message.Account
 {
-    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
     public class AppleBillingProcessedByServerMessage : PiranhaMessage

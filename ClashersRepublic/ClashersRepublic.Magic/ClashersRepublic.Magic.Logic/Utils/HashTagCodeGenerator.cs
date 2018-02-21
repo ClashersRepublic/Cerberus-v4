@@ -8,7 +8,7 @@
         private readonly LogicLongToCodeConverterUtil _codeConverterUtil;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="HashTagCodeGenerator"/> class.
+        ///     Initializes a new instance of the <see cref="HashTagCodeGenerator" /> class.
         /// </summary>
         public HashTagCodeGenerator()
         {

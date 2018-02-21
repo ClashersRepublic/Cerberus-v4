@@ -143,7 +143,7 @@
         }
 
         /// <summary>
-        ///     Removes the <see cref="LogicClientHome"/> instance.
+        ///     Removes the <see cref="LogicClientHome" /> instance.
         /// </summary>
         public LogicClientHome RemoveLogicClientHome()
         {
@@ -153,7 +153,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicClientHome"/> instance.
+        ///     Sets the <see cref="LogicClientHome" /> instance.
         /// </summary>
         public void SetLogicClientHome(LogicClientHome logicClientHome)
         {
@@ -161,7 +161,7 @@
         }
 
         /// <summary>
-        ///     Removes the <see cref="LogicClientAvatar"/> instance.
+        ///     Removes the <see cref="LogicClientAvatar" /> instance.
         /// </summary>
         public LogicClientAvatar RemoveLogicClientAvatar()
         {
@@ -171,7 +171,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicClientAvatar"/> instance.
+        ///     Sets the <see cref="LogicClientAvatar" /> instance.
         /// </summary>
         public void SetLogicClientAvatar(LogicClientAvatar logicClientAvatar)
         {

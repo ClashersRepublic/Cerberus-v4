@@ -12,7 +12,7 @@
         private int _unitProductionType;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicUnitProduction"/> class.
+        ///     Initializes a new instance of the <see cref="LogicUnitProduction" /> class.
         /// </summary>
         public LogicUnitProduction(LogicLevel level, int unitProductionType)
         {
@@ -39,7 +39,6 @@
         /// </summary>
         public void Tick()
         {
-
         }
 
         /// <summary>
@@ -47,7 +46,6 @@
         /// </summary>
         public void Load(LogicJSONObject root)
         {
-            
         }
 
         /// <summary>

@@ -23,7 +23,7 @@
         {
             // AttackNpcMessage.
         }
-        
+
         /// <summary>
         ///     Decodes this instance.
         /// </summary>
@@ -68,7 +68,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="LogicNpcData"/> data.
+        ///     Gets the <see cref="LogicNpcData" /> data.
         /// </summary>
         public LogicNpcData GetNpcData()
         {
@@ -76,7 +76,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicNpcData"/> data.
+        ///     Sets the <see cref="LogicNpcData" /> data.
         /// </summary>
         public void SetNpcData(LogicNpcData data)
         {

@@ -10,7 +10,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         public LogicSpellData(CSVRow row, LogicDataTable table) : base(row, table)
         {
         }
-        
+
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
         protected int[] SpellForgeLevel { get; set; }

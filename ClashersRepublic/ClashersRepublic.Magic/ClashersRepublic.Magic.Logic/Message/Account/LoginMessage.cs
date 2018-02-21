@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message.Account
 {
-    using System;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Math;
@@ -129,7 +128,7 @@
                             {
                                 this.IMEI = this.Stream.ReadStringReference(900000);
                                 this.AndroidID = this.Stream.ReadStringReference(900000);
-                                
+
                                 if (!this.Stream.IsAtEnd())
                                 {
                                     this.Stream.ReadString(900000);

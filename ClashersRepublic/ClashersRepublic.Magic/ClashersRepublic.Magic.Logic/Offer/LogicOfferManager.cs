@@ -5,14 +5,6 @@
     public class LogicOfferManager
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicOfferManager"/> class.
-        /// </summary>
-        public LogicOfferManager()
-        {
-            // LogicOfferManager.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public void Destruct()
@@ -29,7 +21,6 @@
 
             if (jsonObject != null)
             {
-
             }
         }
 

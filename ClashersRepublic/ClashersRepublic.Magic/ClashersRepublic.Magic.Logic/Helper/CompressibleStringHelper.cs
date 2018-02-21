@@ -6,7 +6,7 @@
     public static class CompressibleStringHelper
     {
         /// <summary>
-        ///     Uncompresses the <see cref="LogicCompressibleString"/> instance.
+        ///     Uncompresses the <see cref="LogicCompressibleString" /> instance.
         /// </summary>
         public static void Uncompress(LogicCompressibleString str)
         {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        ///     Compresses the <see cref="LogicCompressibleString"/> instance.
+        ///     Compresses the <see cref="LogicCompressibleString" /> instance.
         /// </summary>
         public static void Compress(LogicCompressibleString str)
         {

@@ -12,7 +12,7 @@
         private LogicJSONObject _root;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChecksumHelper"/> class.
+        ///     Initializes a new instance of the <see cref="ChecksumHelper" /> class.
         /// </summary>
         public ChecksumHelper()
         {
@@ -21,7 +21,7 @@
         }
 
         /// <summary>
-        /// Starts to write a object.
+        ///     Starts to write a object.
         /// </summary>
         public void StartObject(string name)
         {
@@ -33,7 +33,7 @@
         }
 
         /// <summary>
-        /// Ends to write a object.
+        ///     Ends to write a object.
         /// </summary>
         public void EndObject()
         {
@@ -48,11 +48,11 @@
 
                     if (previousElement.Node.GetJSONNodeType() == 2)
                     {
-                        ((LogicJSONObject)previousElement.Node).Put(lastElement.Key, lastElement.Node);
+                        ((LogicJSONObject) previousElement.Node).Put(lastElement.Key, lastElement.Node);
                     }
                     else
                     {
-                        ((LogicJSONArray)previousElement.Node).Add(lastElement.Node);
+                        ((LogicJSONArray) previousElement.Node).Add(lastElement.Node);
                     }
 
                     this._childs.Remove(this._childs.Count - 1);
@@ -68,7 +68,7 @@
         }
 
         /// <summary>
-        /// Starts to write a array.
+        ///     Starts to write a array.
         /// </summary>
         public void StartArray(string name)
         {
@@ -92,7 +92,7 @@
         }
 
         /// <summary>
-        /// Writes a value.
+        ///     Writes a value.
         /// </summary>
         public void WriteValue(string name, int value)
         {
@@ -104,13 +104,13 @@
 
                 if (current.Node.GetJSONNodeType() == 2)
                 {
-                    ((LogicJSONObject)current.Node).Put(name, new LogicJSONNumber(value));
+                    ((LogicJSONObject) current.Node).Put(name, new LogicJSONNumber(value));
                 }
             }
         }
 
         /// <summary>
-        /// Ends to write a array.
+        ///     Ends to write a array.
         /// </summary>
         public void EndArray()
         {
@@ -123,7 +123,7 @@
 
                     Debugger.DoAssert(lastElement.Node.GetJSONNodeType() == 1, "ChecksumHelper::endArray() called but top is not an array");
 
-                    ((LogicJSONObject)previousElement.Node).Put(lastElement.Key, lastElement.Node);
+                    ((LogicJSONObject) previousElement.Node).Put(lastElement.Key, lastElement.Node);
 
                     this._childs.Remove(this._childs.Count - 1);
                 }
@@ -136,7 +136,7 @@
         }
 
         /// <summary>
-        /// Gets this instance to string.
+        ///     Gets this instance to string.
         /// </summary>
         public override string ToString()
         {
@@ -147,7 +147,7 @@
         {
             return helper._checksum;
         }
-        
+
         private struct Element
         {
             internal string Key;

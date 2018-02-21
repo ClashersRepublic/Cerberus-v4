@@ -14,7 +14,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             // LogicDecoData.
         }
-        
+
         protected string SWF { get; set; }
         protected string ExportName { get; set; }
         protected string ExportNameConstruction { get; set; }

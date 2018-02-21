@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
 
@@ -19,7 +18,7 @@
         private LogicEffectData _dieEffect;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicHitpointComponent"/> class.
+        ///     Initializes a new instance of the <see cref="LogicHitpointComponent" /> class.
         /// </summary>
         public LogicHitpointComponent(LogicGameObject gameObject, int hp, int team) : base(gameObject)
         {

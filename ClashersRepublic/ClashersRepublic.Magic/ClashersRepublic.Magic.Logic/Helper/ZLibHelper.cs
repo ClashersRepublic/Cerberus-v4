@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Libs.ZLib;
 
@@ -13,7 +12,7 @@
         /// </summary>
         public static int DecompressInMySQLFormat(byte[] input, int length, out byte[] output)
         {
-            int decompressedLength = input[0] | input[1] << 8 | input[2] << 16 | input[3] << 24;
+            int decompressedLength = input[0] | (input[1] << 8) | (input[2] << 16) | (input[3] << 24);
 
             using (MemoryStream inputStream = new MemoryStream(input, 4, input.Length - 4))
             {
@@ -34,7 +33,7 @@
         }
 
         /// <summary>
-        ///     Compresses the specified input in 
+        ///     Compresses the specified input in
         /// </summary>
         public static int CompressInZLibFormat(byte[] input, out byte[] output)
         {
@@ -43,7 +42,7 @@
             int uncompressedLength = input.Length;
 
             output = new byte[compressedLength + 4];
-            output[0] = (byte) (uncompressedLength);
+            output[0] = (byte) uncompressedLength;
             output[1] = (byte) (uncompressedLength >> 8);
             output[2] = (byte) (uncompressedLength >> 16);
             output[3] = (byte) (uncompressedLength >> 24);

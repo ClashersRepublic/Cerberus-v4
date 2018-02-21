@@ -8,14 +8,6 @@
         private int _fullTick;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicTime"/> class.
-        /// </summary>
-        public LogicTime()
-        {
-            // LogicTime.
-        }
-
-        /// <summary>
         ///     Increases the tick.
         /// </summary>
         public void IncreaseTick()
@@ -69,7 +61,7 @@
         {
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
-                return (int)(1000L * time / 64);
+                return (int) (1000L * time / 64);
             }
 
             return time / 15;
@@ -82,7 +74,7 @@
         {
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
-                return (int) ((long) time << 6 / 1000);
+                return (int) ((long) (time << 6) / 1000);
             }
 
             return time / 15;

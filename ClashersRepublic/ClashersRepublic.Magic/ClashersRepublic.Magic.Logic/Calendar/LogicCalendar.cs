@@ -9,7 +9,7 @@
         private LogicArrayList<LogicCalendarEvent> _activeCalendarEvents;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicCalendar"/> class.
+        ///     Initializes a new instance of the <see cref="LogicCalendar" /> class.
         /// </summary>
         public LogicCalendar()
         {

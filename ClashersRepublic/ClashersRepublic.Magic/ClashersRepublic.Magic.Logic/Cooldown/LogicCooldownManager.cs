@@ -5,10 +5,10 @@
 
     public class LogicCooldownManager
     {
-        private LogicArrayList<LogicCooldown> _cooldowns;
+        private readonly LogicArrayList<LogicCooldown> _cooldowns;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicCooldownManager"/> class.
+        ///     Initializes a new instance of the <see cref="LogicCooldownManager" /> class.
         /// </summary>
         public LogicCooldownManager()
         {

@@ -8,12 +8,12 @@
     public class LogicWorkerManager
     {
         private LogicLevel _level;
-        private LogicArrayList<LogicGameObject> _constructions;
+        private readonly LogicArrayList<LogicGameObject> _constructions;
 
         private int _workerCount;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicWorkerManager"/> class.
+        ///     Initializes a new instance of the <see cref="LogicWorkerManager" /> class.
         /// </summary>
         public LogicWorkerManager(LogicLevel level)
         {

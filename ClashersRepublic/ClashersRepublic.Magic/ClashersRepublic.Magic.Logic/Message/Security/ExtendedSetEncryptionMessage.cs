@@ -8,7 +8,7 @@
         private int _nonceMethod;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExtendedSetEncryptionMessage"/> class.
+        ///     Initializes a new instance of the <see cref="ExtendedSetEncryptionMessage" /> class.
         /// </summary>
         public ExtendedSetEncryptionMessage() : this(0)
         {
@@ -16,7 +16,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExtendedSetEncryptionMessage"/> class.
+        ///     Initializes a new instance of the <see cref="ExtendedSetEncryptionMessage" /> class.
         /// </summary>
         public ExtendedSetEncryptionMessage(short messageVersion) : base(messageVersion)
         {

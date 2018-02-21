@@ -10,7 +10,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         public LogicCharacterData(CSVRow row, LogicDataTable table) : base(row, table)
         {
         }
-        
+
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
         public string SWF { get; protected set; }

@@ -11,7 +11,7 @@
         private LogicData _buildingData;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
         /// </summary>
         public LogicBuyBuildingCommand()
         {
@@ -19,9 +19,9 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand"/> class.
+        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
         /// </summary>
-        public LogicBuyBuildingCommand(int x,int y, LogicBuildingData buildingData)
+        public LogicBuyBuildingCommand(int x, int y, LogicBuildingData buildingData)
         {
             this._x = x;
             this._y = y;
@@ -36,7 +36,7 @@
             this._x = stream.ReadInt();
             this._y = stream.ReadInt();
             this._buildingData = stream.ReadDataReference(0);
-        
+
             base.Decode(stream);
         }
 

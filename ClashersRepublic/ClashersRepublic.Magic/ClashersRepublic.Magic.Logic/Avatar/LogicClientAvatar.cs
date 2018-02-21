@@ -9,7 +9,6 @@
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
-    using ClashersRepublic.Magic.Logic;
 
     public sealed class LogicClientAvatar : LogicAvatar
     {
@@ -50,9 +49,9 @@
         private string _facebookId;
         private string _allianceName;
         private string _name;
-        
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicClientAvatar"/> class.
+        ///     Initializes a new instance of the <see cref="LogicClientAvatar" /> class.
         /// </summary>
         public LogicClientAvatar()
         {
@@ -108,7 +107,7 @@
             this._id = new LogicLong();
             this._homeId = new LogicLong();
         }
-        
+
         /// <summary>
         ///     Gets the checksum of this instance.
         /// </summary>
@@ -975,7 +974,7 @@
 
             this._legendLeagueTournamentEntry.Encode(encoder);
             this._legendLeagueTournamentVillage2Entry.Encode(encoder);
-            
+
             encoder.WriteInt(0);
             encoder.WriteInt(0);
             encoder.WriteInt(0);
@@ -1009,7 +1008,7 @@
             encoder.WriteInt(this._treasuryElixirCount);
             encoder.WriteInt(this._treasuryDarkElixirCount);
             encoder.WriteInt(0);
-            
+
             if (true)
             {
                 encoder.WriteBoolean(true);
@@ -1035,10 +1034,8 @@
                 encoder.WriteInt(0);
                 encoder.WriteLong(0);
             }
-            else
-            {
-                encoder.WriteBoolean(false);
-            }
+
+            encoder.WriteBoolean(false);
 
             encoder.WriteInt(this._resourceCap.Count);
 
@@ -1247,7 +1244,7 @@
             this._name = LogicJSONHelper.GetJSONString(jsonObject, "name");
             this._badgeId = LogicJSONHelper.GetJSONNumber(jsonObject, "badge_id");
             this._allianceExpLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_exp_level");
-            
+
             if (this._badgeId == -1)
             {
                 this._allianceId = null;
@@ -1304,7 +1301,7 @@
         }
 
         /// <summary>
-        ///     Loads the <see cref="LogicArrayList{T}"/> from json.
+        ///     Loads the <see cref="LogicArrayList{T}" /> from json.
         /// </summary>
         private void LoadDataSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicDataSlot> dataSlotArray)
         {
@@ -1341,7 +1338,7 @@
         }
 
         /// <summary>
-        ///     Loads the <see cref="LogicArrayList{T}"/> from json.
+        ///     Loads the <see cref="LogicArrayList{T}" /> from json.
         /// </summary>
         private void LoadUnitSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicUnitSlot> unitSlotArray)
         {
@@ -1434,7 +1431,7 @@
         }
 
         /// <summary>
-        ///     Saves the <see cref="LogicArrayList{T}"/> to json.
+        ///     Saves the <see cref="LogicArrayList{T}" /> to json.
         /// </summary>
         private void SaveDataSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicDataSlot> dataSlotArray)
         {
@@ -1451,7 +1448,7 @@
         }
 
         /// <summary>
-        ///     Saves the <see cref="LogicArrayList{T}"/> to json.
+        ///     Saves the <see cref="LogicArrayList{T}" /> to json.
         /// </summary>
         private void SaveUnitSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicUnitSlot> unitSlotArray)
         {

@@ -7,7 +7,7 @@
         private LogicLevel _level;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBattleLog"/> class.
+        ///     Initializes a new instance of the <see cref="LogicBattleLog" /> class.
         /// </summary>
         public LogicBattleLog(LogicLevel level)
         {
