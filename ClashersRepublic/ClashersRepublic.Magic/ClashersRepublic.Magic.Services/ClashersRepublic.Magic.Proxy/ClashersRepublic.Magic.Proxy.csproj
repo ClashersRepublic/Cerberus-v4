@@ -132,11 +132,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Account\GameAccount.cs" />
-    <Compile Include="Account\GameAccountManager.cs" />
     <Compile Include="ConsoleOut.cs" />
-    <Compile Include="Database\GameDatabase.cs" />
-    <Compile Include="Database\GameDatabaseManager.cs" />
     <Compile Include="Handler\CmdHandler.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
     <Compile Include="Message\MessageManager.cs" />

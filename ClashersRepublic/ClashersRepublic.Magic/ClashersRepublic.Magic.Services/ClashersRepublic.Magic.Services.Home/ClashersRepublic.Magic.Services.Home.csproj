@@ -118,7 +118,6 @@
   <ItemGroup>
     <Compile Include="ConsoleOut.cs" />
     <Compile Include="Database\GameDatabase.cs" />
-    <Compile Include="Database\GameDatabaseManager.cs" />
     <Compile Include="Game\Mode\GameMode.cs" />
     <Compile Include="Handler\CmdHandler.cs" />
     <Compile Include="Handler\ExitHandler.cs" />

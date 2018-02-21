@@ -49,7 +49,7 @@
 
             this._componentManager = new LogicComponentManager(level);
 
-            if (LogicDataTables.GetGlobalsInstance().UseNewTraining())
+            if (LogicDataTables.GetGlobals().UseNewTraining())
             {
                 this._unitProduction = new LogicUnitProduction(level, 2);
                 this._spellProduction = new LogicUnitProduction(level, 25);
@@ -302,7 +302,7 @@
         {
             this.DoDestucting();
 
-            if (LogicDataTables.GetGlobalsInstance().UseNewTraining())
+            if (LogicDataTables.GetGlobals().UseNewTraining())
             {
                 this._unitProduction.Tick();
                 this._spellProduction.Tick();
@@ -454,7 +454,7 @@
                     }
                 }
 
-                if (LogicDataTables.GetGlobalsInstance().UseNewTraining())
+                if (LogicDataTables.GetGlobals().UseNewTraining())
                 {
                     LogicJSONObject unitsObject = jsonObject.GetJSONObject("units");
                     LogicJSONObject spellsObjects = jsonObject.GetJSONObject("spells");

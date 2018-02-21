@@ -44,7 +44,7 @@
             this._trainCount = stream.ReadInt();
             this._slotId = stream.ReadInt();
 
-            LogicGlobals globals = LogicDataTables.GetGlobalsInstance();
+            LogicGlobals globals = LogicDataTables.GetGlobals();
 
             if (!globals.UseDragInTraining() && !globals.UseDragInTrainingFix() && !globals.UseDragInTrainingFix2())
             {

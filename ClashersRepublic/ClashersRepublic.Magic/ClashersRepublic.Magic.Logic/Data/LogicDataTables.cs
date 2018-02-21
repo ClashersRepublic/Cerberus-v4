@@ -217,7 +217,7 @@
         /// <summary>
         ///     Gets the globals instance.
         /// </summary>
-        public static LogicClientGlobals GetClientGlobalsInstance()
+        public static LogicClientGlobals GetClientGlobals()
         {
             return LogicDataTables._clientGlobals;
         }
@@ -225,7 +225,7 @@
         /// <summary>
         ///     Gets the globals instance.
         /// </summary>
-        public static LogicGlobals GetGlobalsInstance()
+        public static LogicGlobals GetGlobals()
         {
             return LogicDataTables._globals;
         }

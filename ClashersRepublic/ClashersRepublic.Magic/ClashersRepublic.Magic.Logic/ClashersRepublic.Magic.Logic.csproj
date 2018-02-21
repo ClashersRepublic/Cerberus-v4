@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Achievement\LogicAchievementManager.cs" />
+    <Compile Include="Avatar\Change\LogicAvatarChangeListener.cs" />
     <Compile Include="Avatar\LogicAvatar.cs" />
     <Compile Include="Avatar\LogicClientAvatar.cs" />
     <Compile Include="Battle\LogicBattleLog.cs" />
@@ -63,6 +64,8 @@
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
     <Compile Include="Command\LogicCommand.cs" />
     <Compile Include="Command\LogicCommandManager.cs" />
+    <Compile Include="Command\Server\LogicLeaveAllianceCommand.cs" />
+    <Compile Include="Command\Server\LogicJoinAllianceCommand.cs" />
     <Compile Include="Command\Server\LogicServerCommand.cs" />
     <Compile Include="Cooldown\LogicCooldown.cs" />
     <Compile Include="Cooldown\LogicCooldownManager.cs" />
@@ -134,6 +137,7 @@
     <Compile Include="Helper\CompressibleStringHelper.cs" />
     <Compile Include="Helper\LogicJSONHelper.cs" />
     <Compile Include="Helper\ZLibHelper.cs" />
+    <Compile Include="Home\Change\LogicHomeChangeListener.cs" />
     <Compile Include="Home\LogicClientHome.cs" />
     <Compile Include="League\Entry\LogicLegendLeagueTournamentEntry.cs" />
     <Compile Include="Level\LogicLevel.cs" />
@@ -142,13 +146,24 @@
     <Compile Include="Level\LogicTile.cs" />
     <Compile Include="Level\LogicTileMap.cs" />
     <Compile Include="LogicVersion.cs" />
+    <Compile Include="Message\Account\PersonalBreakStartedMessage.cs" />
+    <Compile Include="Message\Account\ShutdownStartedMessage.cs" />
+    <Compile Include="Message\Account\SetDeviceTokenMessage.cs" />
+    <Compile Include="Message\Account\ReportUserStatusMessage.cs" />
+    <Compile Include="Message\Account\ReportUserMessage.cs" />
+    <Compile Include="Message\Account\ResetAccountMessage.cs" />
+    <Compile Include="Message\Account\AppleBillingRequestMessage.cs" />
+    <Compile Include="Message\Account\AppleBillingProcessedByServerMessage.cs" />
     <Compile Include="Message\Account\KeepAliveServerMessage.cs" />
     <Compile Include="Message\Account\KeepAliveMessage.cs" />
+    <Compile Include="Message\Account\AccountSwitchedMessage.cs" />
     <Compile Include="Message\Account\LoginOkMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
+    <Compile Include="Message\Google\GoogleServiceAccountBoundMessage.cs" />
+    <Compile Include="Message\Google\GoogleServiceAccountAlreadyBoundMessage.cs" />
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
-    <Compile Include="Message\Battle\AttackNpcMessage.cs" />
+    <Compile Include="Message\Home\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />
     <Compile Include="Message\Home\WaitingToGoHomeMessage.cs" />
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
@@ -3476,6 +3491,7 @@
     <Folder Include="Command\Battle\" />
     <Folder Include="Message\Alliance\Stream\" />
     <Folder Include="Message\Avatar\Stream\" />
+    <Folder Include="Message\Battle\" />
     <Folder Include="Message\DeviceLink\" />
     <Folder Include="Message\Facebook\" />
     <Folder Include="Message\Friend\" />

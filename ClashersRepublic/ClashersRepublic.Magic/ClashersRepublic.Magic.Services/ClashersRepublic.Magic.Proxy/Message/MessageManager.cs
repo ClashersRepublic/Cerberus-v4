@@ -22,6 +22,7 @@
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
     using ClashersRepublic.Magic.Titan.Util;
+    using NetMQ;
 
     internal class MessageManager
     {
@@ -243,7 +244,12 @@
                         {
                             if (message.PassToken == account.PassToken)
                             {
-                                GameSession currentSession = account.CurrentSession;
+                                NetMQSocket serviceHomeEndPoint = ServiceManager.GetServiceSocket(10, message.AccountId.GetHigherInt());
+
+                                if (serviceHomeEndPoint != null)
+                                {
+                                    ServiceMessageManager.SendMessage(new CanBeLoggedMessage(), this.Client.NetworkToken.ConnectionId.ToString(), serviceHomeEndPoint);
+                                }
 
                                 if (currentSession != null)
                                 {

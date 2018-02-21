@@ -35,7 +35,7 @@
                 return id;
             }
 
-            return new LogicLong();
+            return null;
         }
 
         /// <summary>

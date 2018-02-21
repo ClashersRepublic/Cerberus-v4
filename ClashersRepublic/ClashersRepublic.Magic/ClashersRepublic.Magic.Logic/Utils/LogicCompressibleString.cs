@@ -1,7 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Utils
 {
     using System;
-    using ClashersRepublic.Magic.Logic.Helper;
+
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Json;
 
@@ -17,6 +17,16 @@
         public LogicCompressibleString()
         {
             // LogicCompressibleString.
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._stringValue = null;
+            this._compressedData = null;
+            this._compressedLength = 0;
         }
 
         /// <summary>
@@ -158,15 +168,6 @@
                 this._compressedData = Convert.FromBase64String(cString.GetStringValue());
                 this._compressedLength = this._compressedData.Length;
             }
-        }
-
-        /// <summary>
-        ///     Destructs this instance.
-        /// </summary>
-        public void Destruct()
-        {
-            this._stringValue = null;
-            this._compressedData = null;
         }
     }
 }

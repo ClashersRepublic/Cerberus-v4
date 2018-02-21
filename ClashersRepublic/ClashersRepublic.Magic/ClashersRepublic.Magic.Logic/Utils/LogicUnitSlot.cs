@@ -23,6 +23,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._data = null;
+        }
+
+        /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public void Decode(ByteStream stream)

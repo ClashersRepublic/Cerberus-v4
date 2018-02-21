@@ -31,7 +31,7 @@
         {
             int remaining = this._remainingTime - time;
 
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 if (remaining > 0)
                 {
@@ -56,7 +56,7 @@
         {
             int remaining = this._remainingTime - time;
 
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 return 16 * remaining;
             }
@@ -80,7 +80,7 @@
         {
             int totalTicks = 0;
 
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 totalTicks = (int) (1000L * totalTicks / 16);
             }
@@ -104,7 +104,7 @@
         {
             int totalTicks = 0;
 
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 totalTicks = (int)(1000L * totalTicks / 16);
             }

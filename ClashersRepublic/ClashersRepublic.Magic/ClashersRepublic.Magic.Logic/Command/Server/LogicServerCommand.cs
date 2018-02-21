@@ -15,6 +15,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
         ///     Gets the server command id.
         /// </summary>
         public int GetId()

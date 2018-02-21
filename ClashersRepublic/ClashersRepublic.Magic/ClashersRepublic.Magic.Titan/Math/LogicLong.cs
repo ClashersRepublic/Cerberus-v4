@@ -5,7 +5,7 @@
 
     [ComVisible(true)]
     [StructLayout(LayoutKind.Sequential, Size = 8)]
-    public struct LogicLong
+    public class LogicLong
     {
         private int _highInteger;
         private int _lowInteger;
@@ -13,11 +13,9 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicLong" /> struct.
         /// </summary>
-        /// <param name="Long">The long.</param>
-        public LogicLong(long Long)
+        public LogicLong()
         {
-            this._highInteger = (int) (Long >> 32);
-            this._lowInteger = (int) Long;
+            // LogicLong.
         }
 
         /// <summary>
@@ -29,6 +27,14 @@
         {
             this._highInteger = highInteger;
             this._lowInteger = lowInteger;
+        }
+
+        /// <summary>
+        ///     Clones this instance.
+        /// </summary>
+        public LogicLong Clone()
+        {
+            return new LogicLong(this._highInteger, this._lowInteger);
         }
 
         /// <summary>
@@ -99,7 +105,7 @@
 
         public static implicit operator LogicLong(long Long)
         {
-            return new LogicLong(Long);
+            return new LogicLong((int) (Long >> 32), (int) Long);
         }
 
         public static implicit operator long(LogicLong Long)

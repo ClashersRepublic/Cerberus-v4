@@ -135,7 +135,7 @@
                 this._newShopDecos.Add(0);
             }
 
-            LogicGlobals globalsInstance = LogicDataTables.GetGlobalsInstance();
+            LogicGlobals globalsInstance = LogicDataTables.GetGlobals();
 
             if (globalsInstance.LiveReplayEnabled())
             {
@@ -171,6 +171,14 @@
             {
                 this._armyNames.Add(string.Empty);
             }
+        }
+
+        /// <summary>
+        ///     Gets the game listener.
+        /// </summary>
+        public LogicGameListener GetGameListener()
+        {
+            return this._gameListener;
         }
 
         /// <summary>
@@ -435,7 +443,7 @@
 
                     if (numObject != null)
                     {
-                        int num = LogicMath.Min(numObject.GetIntValue(), 15 * LogicDataTables.GetGlobalsInstance().GetChallengeBaseSaveCooldown());
+                        int num = LogicMath.Min(numObject.GetIntValue(), 15 * LogicDataTables.GetGlobals().GetChallengeBaseSaveCooldown());
 
                         if (num > -1)
                         {
@@ -571,7 +579,7 @@
 
                 if (this._warBase)
                 {
-                    if (LogicDataTables.GetGlobalsInstance().RevertBrokenWarLayouts())
+                    if (LogicDataTables.GetGlobals().RevertBrokenWarLayouts())
                     {
                         /* if ( sub_1E436C(v22) != 1 )
                            {
@@ -812,7 +820,7 @@
         {
             this._battleStarted = true;
 
-            if (this._matchType == 4 && !LogicDataTables.GetGlobalsInstance().RemoveRevengeWhenBattleIsLoaded())
+            if (this._matchType == 4 && !LogicDataTables.GetGlobals().RemoveRevengeWhenBattleIsLoaded())
             {
             }
 

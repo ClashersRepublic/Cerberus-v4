@@ -1,16 +1,17 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Home
 {
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Logic.Home.Change;
     using ClashersRepublic.Magic.Logic.Utils;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
-    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicClientHome
     {
         private LogicLong _homeId;
-        
+        private LogicHomeChangeListener _listener;
+
         private int _shieldDurationSeconds;
         private int _guardDurationSeconds;
         private int _nextMaintenanceSeconds;
@@ -27,6 +28,47 @@
             this._compressibleHomeJson = new LogicCompressibleString();
             this._compressibleGlobalJson = new LogicCompressibleString();
             this._compressibleCalendarJson = new LogicCompressibleString();
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            if (this._compressibleGlobalJson != null)
+            {
+                this._compressibleGlobalJson.Destruct();
+                this._compressibleGlobalJson = null;
+            }
+
+            if (this._compressibleCalendarJson != null)
+            {
+                this._compressibleCalendarJson.Destruct();
+                this._compressibleCalendarJson = null;
+            }
+
+            if (this._compressibleHomeJson != null)
+            {
+                this._compressibleHomeJson.Destruct();
+                this._compressibleHomeJson = null;
+            }
+
+            if (this._listener != null)
+            {
+                this._listener.Destruct();
+                this._listener = null;
+            }
+
+            this._homeId = null;
+        }
+
+        /// <summary>
+        ///     Inits this instance.
+        /// </summary>
+        public void Init()
+        {
+            this._homeId = new LogicLong();
+            this._listener = new LogicHomeChangeListener();
         }
 
         /// <summary>
@@ -232,30 +274,6 @@
             jsonObject.Put("level", level);
 
             return jsonObject;
-        }
-
-        /// <summary>
-        ///     Destructs this instance.
-        /// </summary>
-        public void Destruct()
-        {
-            if (this._compressibleGlobalJson != null)
-            {
-                this._compressibleGlobalJson.Destruct();
-                this._compressibleGlobalJson = null;
-            }
-
-            if (this._compressibleCalendarJson != null)
-            {
-                this._compressibleCalendarJson.Destruct();
-                this._compressibleCalendarJson = null;
-            }
-
-            if (this._compressibleHomeJson != null)
-            {
-                this._compressibleHomeJson.Destruct();
-                this._compressibleHomeJson = null;
-            }
         }
     }
 }

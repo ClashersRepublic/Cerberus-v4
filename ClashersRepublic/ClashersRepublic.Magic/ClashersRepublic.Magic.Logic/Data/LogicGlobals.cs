@@ -10,6 +10,7 @@
         private int _startingGold2;
         private int _liveReplayFrequencySecs;
         private int _challengeBaseSaveCooldown;
+        private int _allianceCreateCost;
 
         private bool _useNewTraining;
 
@@ -20,6 +21,8 @@
         private bool _liveReplayEnabled;
         private bool _revertBrokenWarLayouts;
         private bool _removeRevengeWhenBattleIsLoaded;
+
+        private LogicResourceData _allianceCreateResourceData;
 
         /// <summary>
         ///     Creates references.
@@ -33,6 +36,7 @@
             this._startingElixir2 = this.GetIntValue("STARTING_ELIXIR2");
             this._liveReplayFrequencySecs = this.GetIntValue("LIVE_REPLAY_UPDATE_FREQUENCY_SECONDS");
             this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
+            this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
             this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
@@ -41,6 +45,8 @@
             this._revertBrokenWarLayouts = this.GetBoolValue("REVERT_BROKEN_WAR_LAYOUTS");
             this._liveReplayEnabled = this.GetBoolValue("LIVE_REPLAY_ENABLED");
             this._removeRevengeWhenBattleIsLoaded = this.GetBoolValue("REMOVE_REVENGE_WHEN_BATTLE_IS_LOADED");
+
+            this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
         }
 
         /// <summary>
@@ -66,7 +72,7 @@
         {
             return this.GetGlobalData(name).NumberValue;
         }
-
+        
         /// <summary>
         ///     Gets the number of starting diamonds.
         /// </summary>
@@ -117,6 +123,11 @@
             return this._challengeBaseSaveCooldown;
         }
 
+        public int GetAllianceCreateCost()
+        {
+            return this._allianceCreateCost;
+        }
+
         /// <summary>
         ///     Gets a value indicating whether the time is more accurate.
         /// </summary>
@@ -161,6 +172,14 @@
         public bool RemoveRevengeWhenBattleIsLoaded()
         {
             return this._removeRevengeWhenBattleIsLoaded;
+        }
+
+        /// <summary>
+        ///     Gets the alliance create <see cref="LogicResourceData"/> data.
+        /// </summary>
+        public LogicResourceData GetAllianceCreateResourceData()
+        {
+            return this._allianceCreateResourceData;
         }
     }
 }

@@ -25,6 +25,7 @@
 
         private int _allianceBadgeId;
         private int _allianceRole;
+        private int _allianceExpLevel;
         private int _legendaryScore;
         private int _legendaryScoreVillage2;
         private int _expLevel;
@@ -43,6 +44,7 @@
         private int _treasuryGoldCount;
         private int _treasuryElixirCount;
         private int _treasuryDarkElixirCount;
+        private int _redPackageState;
         private int _nameChangeState;
 
         private string _facebookId;
@@ -54,17 +56,57 @@
         /// </summary>
         public LogicClientAvatar()
         {
+            this._legendLeagueTournamentEntry = new LogicLegendLeagueTournamentEntry();
+            this._legendLeagueTournamentVillage2Entry = new LogicLegendLeagueTournamentEntry();
+
             this._expLevel = 1;
             this._nameChangeState = -1;
             this._attackRating = 1200;
             this._attackKFactor = 60;
             this._warPreference = 1;
 
+            this.InitBase();
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+
+            if (this._legendLeagueTournamentEntry != null)
+            {
+                this._legendLeagueTournamentEntry.Destruct();
+                this._legendLeagueTournamentEntry = null;
+            }
+
+            if (this._legendLeagueTournamentVillage2Entry != null)
+            {
+                this._legendLeagueTournamentVillage2Entry.Destruct();
+                this._legendLeagueTournamentVillage2Entry = null;
+            }
+
+            this._id = null;
+            this._homeId = null;
+            this._leagueInstanceId = null;
+            this._allianceId = null;
+            this._allianceName = null;
+            this._facebookId = null;
+            this._name = null;
+        }
+
+        /// <summary>
+        ///     Inits the base of members.
+        /// </summary>
+        public override void InitBase()
+        {
+            base.InitBase();
+
             this._name = string.Empty;
-            this._allianceName = string.Empty;
-            
-            this._legendLeagueTournamentEntry = new LogicLegendLeagueTournamentEntry();
-            this._legendLeagueTournamentVillage2Entry = new LogicLegendLeagueTournamentEntry();
+
+            this._id = new LogicLong();
+            this._homeId = new LogicLong();
         }
         
         /// <summary>
@@ -81,7 +123,7 @@
             checksumHelper.WriteValue("m_score", this._score);
             checksumHelper.WriteValue("m_duelScore", this._duelScore);
 
-            if (this._allianceId != 0)
+            if (this._allianceId != null)
             {
                 checksumHelper.WriteValue("isInAlliance", 13);
             }
@@ -95,7 +137,7 @@
         public static LogicClientAvatar GetDefaultAvatar()
         {
             LogicClientAvatar defaultAvatar = new LogicClientAvatar();
-            LogicGlobals globalsInstance = LogicDataTables.GetGlobalsInstance();
+            LogicGlobals globalsInstance = LogicDataTables.GetGlobals();
 
             defaultAvatar._diamonds = globalsInstance.GetStartingDiamonds();
             defaultAvatar._freeDiamonds = globalsInstance.GetStartingDiamonds();
@@ -122,6 +164,22 @@
         public void SetAllianceId(LogicLong value)
         {
             this._allianceId = value;
+        }
+
+        /// <summary>
+        ///     Gets the alliance name.
+        /// </summary>
+        public string GetAllianceName()
+        {
+            return this._allianceName;
+        }
+
+        /// <summary>
+        ///     Sets the alliance name.
+        /// </summary>
+        public void SetAllianceName(string value)
+        {
+            this._allianceName = value;
         }
 
         /// <summary>
@@ -158,12 +216,29 @@
         }
 
         /// <summary>
+        ///     Gets the alliance exp level.
+        /// </summary>
+        /// <returns></returns>
+        public int GetAllianceExpLevel()
+        {
+            return this._allianceExpLevel;
+        }
+
+        /// <summary>
+        ///     Sets the alliance exp level.
+        /// </summary>
+        public void SetAllianceExpLevel(int value)
+        {
+            this._allianceExpLevel = value;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the avatar is in alliance.
         /// </summary>
         /// <returns></returns>
         public override bool IsInAlliance()
         {
-            return this._allianceId != 0;
+            return this._allianceId != null;
         }
 
         /// <summary>
@@ -277,7 +352,590 @@
         /// </summary>
         public void Decode(ByteStream stream)
         {
-            // TODO: Implement LogicClientAvatar::decode();
+            this._id = stream.ReadLong();
+            this._homeId = stream.ReadLong();
+
+            if (stream.ReadBoolean())
+            {
+                this._allianceId = stream.ReadLong();
+                this._allianceName = stream.ReadString(900000);
+                this._allianceBadgeId = stream.ReadInt();
+                this._allianceRole = stream.ReadInt();
+                this._allianceExpLevel = stream.ReadInt();
+            }
+
+            if (stream.ReadBoolean())
+            {
+                this._leagueInstanceId = stream.ReadLong();
+            }
+
+            this._legendaryScore = stream.ReadInt();
+            this._legendaryScoreVillage2 = stream.ReadInt();
+            this._legendLeagueTournamentEntry.Decode(stream);
+            this._legendLeagueTournamentVillage2Entry.Decode(stream);
+
+            stream.ReadInt();
+            stream.ReadInt();
+            stream.ReadInt();
+
+            this._leagueType = stream.ReadInt();
+            this._allianceCastleLevel = stream.ReadInt();
+            this._allianceCastleUsedCapacity = stream.ReadInt();
+            this._allianceCastleTotalCapacity = stream.ReadInt();
+            this._allianceCastleUsedSpellCapacity = stream.ReadInt();
+            this._allianceCastleTotalSpellCapacity = stream.ReadInt();
+
+            this._townHallLevel = stream.ReadInt();
+            this._townHallLevelVillage2 = stream.ReadInt();
+
+            this._name = stream.ReadString(900000);
+            this._facebookId = stream.ReadString(900000);
+
+            this._expLevel = stream.ReadInt();
+            this._expPoints = stream.ReadInt();
+            this._diamonds = stream.ReadInt();
+            this._freeDiamonds = stream.ReadInt();
+            this._attackRating = stream.ReadInt();
+            this._attackKFactor = stream.ReadInt();
+            this._score = stream.ReadInt();
+            this._duelScore = stream.ReadInt();
+            this._attackWinCount = stream.ReadInt();
+            this._attackLoseCount = stream.ReadInt();
+            this._defenseWinCount = stream.ReadInt();
+            this._defenseLoseCount = stream.ReadInt();
+            this._treasuryGoldCount = stream.ReadInt();
+            this._treasuryElixirCount = stream.ReadInt();
+            this._treasuryDarkElixirCount = stream.ReadInt();
+
+            stream.ReadInt();
+
+            if (stream.ReadBoolean())
+            {
+                stream.ReadLong();
+            }
+
+            this._nameSetByUser = stream.ReadBoolean();
+            this._nameChangeState = stream.ReadInt();
+
+            stream.ReadInt();
+
+            this._redPackageState = stream.ReadInt();
+            this._warPreference = stream.ReadInt();
+
+            stream.ReadInt();
+            stream.ReadInt();
+
+            if (stream.ReadBoolean())
+            {
+                stream.ReadInt();
+                stream.ReadLong();
+            }
+
+            this.ClearDataSlotArray(this._resourceCap);
+            this.ClearDataSlotArray(this._resourceCount);
+            this.ClearDataSlotArray(this._unitCount);
+            this.ClearDataSlotArray(this._spellCount);
+            this.ClearDataSlotArray(this._unitUpgrade);
+            this.ClearDataSlotArray(this._spellUpgrade);
+            this.ClearDataSlotArray(this._heroUpgrade);
+            this.ClearDataSlotArray(this._heroHealth);
+            this.ClearDataSlotArray(this._heroState);
+            this.ClearUnitSlotArray(this._allianceUnitCount);
+            this.ClearDataSlotArray(this._achievementProgress);
+            this.ClearDataSlotArray(this._npcStars);
+            this.ClearDataSlotArray(this._lootedNpcGold);
+            this.ClearDataSlotArray(this._lootedNpcElixir);
+            this.ClearDataSlotArray(this._heroMode);
+            this.ClearDataSlotArray(this._variables);
+            this.ClearDataSlotArray(this._unitPreset1);
+            this.ClearDataSlotArray(this._unitPreset2);
+            this.ClearDataSlotArray(this._unitPreset3);
+            this.ClearDataSlotArray(this._previousArmy);
+            this.ClearDataSlotArray(this._eventUnitCounter);
+            this.ClearDataSlotArray(this._unitCountVillage2);
+            this.ClearDataSlotArray(this._unitCountNewVillage2);
+
+            if (this._missionCompleted.Count != 0)
+            {
+                do
+                {
+                    this._missionCompleted.Remove(0);
+                } while (this._missionCompleted.Count != 0);
+            }
+
+            if (this._achievementRewardClaimed.Count != 0)
+            {
+                do
+                {
+                    this._achievementRewardClaimed.Remove(0);
+                } while (this._achievementRewardClaimed.Count != 0);
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+                slot.Decode(stream);
+                this._resourceCap.Add(slot);
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._resourceCount.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - resource slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitCount.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unit slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._spellCount.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - spell slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitUpgrade.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unit upgrade slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._spellUpgrade.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - spell upgrade slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._heroUpgrade.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - hero upgrade slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._heroHealth.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - hero health slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._heroState.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - hero state slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicUnitSlot slot = new LogicUnitSlot(null, 0, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._allianceUnitCount.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - alliance unit data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicMissionData data = (LogicMissionData) stream.ReadDataReference(20);
+
+                if (data != null)
+                {
+                    this._missionCompleted.Add(data);
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicAchievementData data = (LogicAchievementData) stream.ReadDataReference(23);
+
+                if (data != null)
+                {
+                    this._achievementRewardClaimed.Add(data);
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._achievementProgress.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - achievement progress data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._npcStars.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - npc map progress data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._lootedNpcGold.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - npc looted gold data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._lootedNpcElixir.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - npc looted elixir data is NULL");
+                }
+            }
+
+            this._allianceUnitVisitCapacity = stream.ReadInt();
+            this._allianceUnitSpellVisitCapacity = stream.ReadInt();
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._heroMode.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - hero mode slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._variables.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - variables data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitPreset1.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unitPreset1 data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitPreset2.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unitPreset2 data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitPreset3.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unitPreset3 data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._previousArmy.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - previousArmySize data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._eventUnitCounter.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unitCounterForEvent data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitCountVillage2.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unit village2 slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                    this._unitCountNewVillage2.Add(slot);
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - unit village2 new slot data is NULL");
+                }
+            }
+
+            for (int i = 0, size = stream.ReadInt(); i < size; i++)
+            {
+                LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                slot.Decode(stream);
+
+                if (slot.GetData() != null)
+                {
+                }
+                else
+                {
+                    slot.Destruct();
+                    slot = null;
+
+                    Debugger.Error("LogicClientAvatar::decode - slot data is NULL");
+                }
+            }
         }
 
         /// <summary>
@@ -288,20 +946,21 @@
             encoder.WriteLong(this._id);
             encoder.WriteLong(this._homeId);
 
-            if (this._allianceId != 0)
+            if (this._allianceId != null)
             {
                 encoder.WriteBoolean(true);
                 encoder.WriteLong(this._allianceId);
                 encoder.WriteString(this._allianceName);
                 encoder.WriteInt(this._allianceBadgeId);
                 encoder.WriteInt(this._allianceRole);
+                encoder.WriteInt(this._allianceExpLevel);
             }
             else
             {
                 encoder.WriteBoolean(false);
             }
 
-            if (this._leagueInstanceId != 0)
+            if (this._leagueInstanceId != null)
             {
                 encoder.WriteBoolean(true);
                 encoder.WriteLong(this._leagueInstanceId);
@@ -325,8 +984,8 @@
             encoder.WriteInt(this._allianceCastleLevel);
             encoder.WriteInt(this._allianceCastleUsedCapacity);
             encoder.WriteInt(this._allianceCastleTotalCapacity);
-            encoder.WriteInt(this._allianceCastleSpellUsedCapacity);
-            encoder.WriteInt(this._allianceCastleSpellTotalCapacity);
+            encoder.WriteInt(this._allianceCastleUsedSpellCapacity);
+            encoder.WriteInt(this._allianceCastleTotalSpellCapacity);
 
             encoder.WriteInt(this._townHallLevel);
             encoder.WriteInt(this._townHallLevelVillage2);
@@ -365,7 +1024,7 @@
             encoder.WriteBoolean(false);
             encoder.WriteInt(this._nameChangeState);
             encoder.WriteInt(6900);
-            encoder.WriteInt(0);
+            encoder.WriteInt(this._redPackageState);
             encoder.WriteInt(this._warPreference);
             encoder.WriteInt(0);
             encoder.WriteInt(0);
@@ -493,8 +1152,8 @@
                 this._lootedNpcElixir[i].Encode(encoder);
             }
 
-            encoder.WriteInt(0);
-            encoder.WriteInt(0);
+            encoder.WriteInt(this._allianceUnitVisitCapacity);
+            encoder.WriteInt(this._allianceUnitSpellVisitCapacity);
 
             encoder.WriteInt(this._heroMode.Count);
 
@@ -570,91 +1229,111 @@
         }
 
         /// <summary>
-        ///     Loads this instance from json.
+        ///     Loads this instance for replay.
         /// </summary>
-        public void Load(LogicJSONObject json)
+        public void LoadFromReplay(LogicJSONObject jsonObject)
         {
-            this._id = new LogicLong(LogicJSONHelper.GetJSONNumber(json, "id_high"), LogicJSONHelper.GetJSONNumber(json, "id_low"));
-            this._homeId = new LogicLong(LogicJSONHelper.GetJSONNumber(json, "home_id_high"), LogicJSONHelper.GetJSONNumber(json, "home_id_low"));
-            this._allianceId = new LogicLong(LogicJSONHelper.GetJSONNumber(json, "alliance_id_high"), LogicJSONHelper.GetJSONNumber(json, "alliance_id_low"));
-            this._leagueInstanceId = new LogicLong(LogicJSONHelper.GetJSONNumber(json, "league_id_high"), LogicJSONHelper.GetJSONNumber(json, "league_id_low"));
+            LogicJSONNumber avatarIdLowObject = jsonObject.GetJSONNumber("avatar_id_low");
+            LogicJSONNumber avatarIdHighObject = jsonObject.GetJSONNumber("avatar_id_high");
+
+            if (avatarIdHighObject != null)
+            {
+                if (avatarIdLowObject != null)
+                {
+                    this._id = new LogicLong(avatarIdHighObject.GetIntValue(), avatarIdLowObject.GetIntValue());
+                }
+            }
+
+            this._name = LogicJSONHelper.GetJSONString(jsonObject, "name");
+            this._badgeId = LogicJSONHelper.GetJSONNumber(jsonObject, "badge_id");
+            this._allianceExpLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_exp_level");
             
-            this._name = LogicJSONHelper.GetJSONString(json, "name");
-            this._allianceName = LogicJSONHelper.GetJSONString(json, "alliance_name");
-            this._facebookId = LogicJSONHelper.GetJSONString(json, "facebook_id");
-
-            LogicJSONObject prvSeasonRankingJsonObject = json.GetJSONObject("previous_season_ranking");
-            LogicJSONObject bestSeasonRankingJsonObject = json.GetJSONObject("best_season_ranking");
-
-            if (prvSeasonRankingJsonObject != null)
+            if (this._badgeId == -1)
             {
-                this._legendLeagueTournamentEntry.ReadFromJSON(prvSeasonRankingJsonObject);
+                this._allianceId = null;
+            }
+            else
+            {
+                LogicJSONNumber allianceIdLowObject = jsonObject.GetJSONNumber("alliance_id_high");
+                LogicJSONNumber allianceIdHighObject = jsonObject.GetJSONNumber("alliance_id_low");
+
+                int allIdHigh = -1;
+                int allIdLow = -1;
+
+                if (allianceIdHighObject != null)
+                {
+                    if (allianceIdLowObject != null)
+                    {
+                        allIdHigh = allianceIdHighObject.GetIntValue();
+                        allIdLow = allianceIdLowObject.GetIntValue();
+                    }
+                }
+
+                this._allianceId = new LogicLong(allIdHigh, allIdLow);
+                this._allianceName = LogicJSONHelper.GetJSONString(jsonObject, "alliance_name");
             }
 
-            if (bestSeasonRankingJsonObject != null)
-            {
-                this._legendLeagueTournamentVillage2Entry.ReadFromJSON(bestSeasonRankingJsonObject);
-            }
+            this._allianceUnitVisitCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_unit_visit_capacity");
+            this._allianceUnitSpellVisitCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_unit_spell_visit_capacity");
+            this._leagueType = LogicJSONHelper.GetJSONNumber(jsonObject, "league_type");
+            this._expLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "xp_level");
 
-            this._allianceBadgeId = LogicJSONHelper.GetJSONNumber(json, "badge_id");
-            this._leagueType = LogicJSONHelper.GetJSONNumber(json, "league_type");
-            this._diamonds = LogicJSONHelper.GetJSONNumber(json, "diamonds");
-            this._freeDiamonds = LogicJSONHelper.GetJSONNumber(json, "free_diamonds");
-            this._expLevel = LogicJSONHelper.GetJSONNumber(json, "exp_level");
-            this._expPoints = LogicJSONHelper.GetJSONNumber(json, "exp_points");
-            this._score = LogicJSONHelper.GetJSONNumber(json, "score");
-            this._duelScore = LogicJSONHelper.GetJSONNumber(json, "duel_score");
-            this._townHallLevel = LogicJSONHelper.GetJSONNumber(json, "town_hall_level");
-            this._townHallLevelVillage2 = LogicJSONHelper.GetJSONNumber(json, "town_hall_level_village2");
-            this._treasuryGoldCount = LogicJSONHelper.GetJSONNumber(json, "treasury_gold_cnt");
-            this._treasuryElixirCount = LogicJSONHelper.GetJSONNumber(json, "treasury_elixir_cnt");
-            this._treasuryDarkElixirCount = LogicJSONHelper.GetJSONNumber(json, "treasury_dark_elixir_cnt");
+            this.LoadDataSlotArray(jsonObject, "units", this._unitCount);
+            this.LoadDataSlotArray(jsonObject, "spells", this._spellCount);
+            this.LoadDataSlotArray(jsonObject, "unit_upgrades", this._unitUpgrade);
+            this.LoadDataSlotArray(jsonObject, "spell_upgrades", this._spellUpgrade);
+            this.LoadDataSlotArray(jsonObject, "resources", this._resourceCount);
+            this.LoadUnitSlotArray(jsonObject, "alliance_units", this._allianceUnitCount);
+            this.LoadDataSlotArray(jsonObject, "hero_states", this._heroState);
+            this.LoadDataSlotArray(jsonObject, "hero_health", this._heroHealth);
+            this.LoadDataSlotArray(jsonObject, "hero_upgrade", this._heroUpgrade);
+            this.LoadDataSlotArray(jsonObject, "hero_modes", this._heroMode);
+            this.LoadDataSlotArray(jsonObject, "variables", this._variables);
+            this.LoadDataSlotArray(jsonObject, "units2", this._unitCountVillage2);
 
-            this.LoadDataSlotArrayList(this._resourceCap, json, "resource_caps");
-            this.LoadDataSlotArrayList(this._resourceCount, json, "resources");
-            this.LoadDataSlotArrayList(this._unitCount, json, "units");
-            this.LoadDataSlotArrayList(this._spellCount, json, "spells");
-            this.LoadDataSlotArrayList(this._unitUpgrade, json, "unit_upgrades");
-            this.LoadDataSlotArrayList(this._spellUpgrade, json, "spell_upgrades");
-            this.LoadUnitSlotArrayList(this._allianceUnitCount, json, "alliance_units");
-            this.LoadDataSlotArrayList(this._achievementProgress, json, "achievements");
-            this.LoadDataArrayList(this._achievementRewardClaimed, json, "achievements_claimed");
-            this.LoadDataArrayList(this._missionCompleted, json, "missions");
-            this.LoadDataSlotArrayList(this._npcStars, json, "npc_stars");
-            this.LoadDataSlotArrayList(this._lootedNpcGold, json, "npc_looted_gold");
-            this.LoadDataSlotArrayList(this._lootedNpcElixir, json, "npc_looted_elixir");
+            this._allianceCastleLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_lvl");
+            this._allianceCastleTotalCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_total");
+            this._allianceCastleUsedCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_used");
+            this._allianceCastleTotalSpellCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_total_sp");
+            this._allianceCastleUsedSpellCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_used_sp");
+            this._townHallLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "town_hall_lvl");
+            this._townHallLevelVillage2 = LogicJSONHelper.GetJSONNumber(jsonObject, "th_v2_lvl");
+            this._score = LogicJSONHelper.GetJSONNumber(jsonObject, "score");
+            this._duelScore = LogicJSONHelper.GetJSONNumber(jsonObject, "duel_score");
+            this._redPackageState = LogicJSONHelper.GetJSONNumber(jsonObject, "red_package_state");
         }
 
         /// <summary>
-        ///     Loads the specified data slot array list.
+        ///     Loads the <see cref="LogicArrayList{T}"/> from json.
         /// </summary>
-        private void LoadDataArrayList(LogicArrayList<LogicData> dataArrayList, LogicJSONObject jsonObject, string key)
+        private void LoadDataSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicDataSlot> dataSlotArray)
         {
-            if (dataArrayList.Count != 0)
-            {
-                do
-                {
-                    dataArrayList.Remove(0);
-                } while (dataArrayList.Count != 0);
-            }
+            this.ClearDataSlotArray(dataSlotArray);
 
             LogicJSONArray jsonArray = jsonObject.GetJSONArray(key);
 
             if (jsonArray != null)
             {
-                dataArrayList.EnsureCapacity(jsonArray.Size());
+                int arraySize = jsonArray.Size();
 
-                for (int i = 0; i < jsonArray.Size(); i++)
+                if (arraySize != 0)
                 {
-                    LogicJSONNumber id = (LogicJSONNumber) jsonArray[i];
+                    dataSlotArray.EnsureCapacity(arraySize);
 
-                    if (id != null && id.GetIntValue() != 0)
+                    for (int i = 0; i < arraySize; i++)
                     {
-                        LogicData data = LogicDataTables.GetDataById(id.GetIntValue());
+                        LogicJSONObject obj = jsonArray.GetJSONObject(i);
 
-                        if (data != null)
+                        if (obj != null)
                         {
-                            dataArrayList.Add(data);
+                            LogicDataSlot slot = new LogicDataSlot(null, 0);
+
+                            slot.ReadFromJSON(obj);
+
+                            if (slot.GetData() != null)
+                            {
+                                dataSlotArray.Add(slot);
+                            }
                         }
                     }
                 }
@@ -662,187 +1341,130 @@
         }
 
         /// <summary>
-        ///     Loads the specified data slot array list.
+        ///     Loads the <see cref="LogicArrayList{T}"/> from json.
         /// </summary>
-        private void LoadDataSlotArrayList(LogicArrayList<LogicDataSlot> dataSlotArrayList, LogicJSONObject jsonObject, string key)
+        private void LoadUnitSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicUnitSlot> unitSlotArray)
         {
-            if (dataSlotArrayList.Count != 0)
-            {
-                do
-                {
-                    dataSlotArrayList.Remove(0);
-                } while (dataSlotArrayList.Count != 0);
-            }
+            this.ClearUnitSlotArray(unitSlotArray);
 
             LogicJSONArray jsonArray = jsonObject.GetJSONArray(key);
 
             if (jsonArray != null)
             {
-                dataSlotArrayList.EnsureCapacity(jsonArray.Size());
+                int arraySize = jsonArray.Size();
 
-                for (int i = 0; i < jsonArray.Size(); i++)
+                if (arraySize != 0)
                 {
-                    LogicDataSlot slot = new LogicDataSlot(null, 0);
-                    slot.ReadFromJSON((LogicJSONObject) jsonArray[i]);
+                    unitSlotArray.EnsureCapacity(arraySize);
 
-                    if (slot.GetData() != null)
+                    for (int i = 0; i < arraySize; i++)
                     {
-                        dataSlotArrayList.Add(slot);
+                        LogicJSONObject obj = jsonArray.GetJSONObject(i);
+
+                        if (obj != null)
+                        {
+                            LogicUnitSlot slot = new LogicUnitSlot(null, 0, 0);
+
+                            slot.ReadFromJSON(obj);
+
+                            if (slot.GetData() != null)
+                            {
+                                unitSlotArray.Add(slot);
+                            }
+                        }
                     }
                 }
             }
         }
 
         /// <summary>
-        ///     Loads the specified unit slot array list.
+        ///     Saves this instance to replay.
         /// </summary>
-        private void LoadUnitSlotArrayList(LogicArrayList<LogicUnitSlot> unitSlotArrayList, LogicJSONObject jsonObject, string key)
+        public void SaveToReplay(LogicJSONObject jsonObject)
         {
-            if (unitSlotArrayList.Count != 0)
+            if (this._id != null)
             {
-                do
-                {
-                    unitSlotArrayList.Remove(0);
-                } while (unitSlotArrayList.Count != 0);
+                jsonObject.Put("avatar_id_high", new LogicJSONNumber(this._id.GetHigherInt()));
+                jsonObject.Put("avatar_id_low", new LogicJSONNumber(this._id.GetLowerInt()));
             }
-
-            LogicJSONArray jsonArray = jsonObject.GetJSONArray(key);
-
-            if (jsonArray != null)
-            {
-                unitSlotArrayList.EnsureCapacity(jsonArray.Size());
-
-                for (int i = 0; i < jsonArray.Size(); i++)
-                {
-                    LogicUnitSlot slot = new LogicUnitSlot(null, 0, 0);
-                    slot.ReadFromJSON((LogicJSONObject)jsonArray[i]);
-
-                    if (slot.GetData() != null)
-                    {
-                        unitSlotArrayList.Add(slot);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Saves this instance to json.
-        /// </summary>
-        public LogicJSONObject Save()
-        {
-            LogicJSONObject jsonObject = new LogicJSONObject();
-
-            jsonObject.Put("id_high", new LogicJSONNumber(this._id.GetHigherInt()));
-            jsonObject.Put("id_low", new LogicJSONNumber(this._id.GetLowerInt()));
-
-            jsonObject.Put("home_id_high", new LogicJSONNumber(this._homeId.GetHigherInt()));
-            jsonObject.Put("home_id_low", new LogicJSONNumber(this._homeId.GetLowerInt()));
-
-            jsonObject.Put("alliance_id_high", new LogicJSONNumber(this._allianceId.GetHigherInt()));
-            jsonObject.Put("alliance_id_low", new LogicJSONNumber(this._allianceId.GetLowerInt()));
-
-            jsonObject.Put("league_id_high", new LogicJSONNumber(this._leagueInstanceId.GetHigherInt()));
-            jsonObject.Put("league_id_low", new LogicJSONNumber(this._leagueInstanceId.GetLowerInt()));
 
             jsonObject.Put("name", new LogicJSONString(this._name));
-            jsonObject.Put("alliance_name", new LogicJSONString(this._allianceName));
-            jsonObject.Put("facebook_id", new LogicJSONString(this._facebookId));
+            jsonObject.Put("alliance_name", new LogicJSONString(this._allianceName ?? string.Empty));
+            jsonObject.Put("xp_level", new LogicJSONNumber(this._expLevel));
 
-            LogicJSONObject legendLeagueTournamentEntry = new LogicJSONObject();
-            LogicJSONObject legendLeagueTournamentEntryVillage2 = new LogicJSONObject();
+            if (this._allianceId != null)
+            {
+                jsonObject.Put("alliance_id_high", new LogicJSONNumber(this._allianceId.GetHigherInt()));
+                jsonObject.Put("alliance_id_low", new LogicJSONNumber(this._allianceId.GetLowerInt()));
+                jsonObject.Put("badge_id", new LogicJSONNumber(this._badgeId));
+                jsonObject.Put("alliance_exp_level", new LogicJSONNumber(this._allianceExpLevel));
+                jsonObject.Put("alliance_unit_visit_capacity", new LogicJSONNumber(this._allianceUnitVisitCapacity));
+                jsonObject.Put("alliance_unit_spell_visit_capacity", new LogicJSONNumber(this._allianceUnitSpellVisitCapacity));
+            }
 
-            this._legendLeagueTournamentEntry.WriteToJSON(legendLeagueTournamentEntry);
-            this._legendLeagueTournamentVillage2Entry.WriteToJSON(legendLeagueTournamentEntryVillage2);
-
-            jsonObject.Put("legend_league_tournament", legendLeagueTournamentEntry);
-            jsonObject.Put("legend_league_tournament_village2", legendLeagueTournamentEntryVillage2);
-
-            jsonObject.Put("badge_id", new LogicJSONNumber(this._allianceBadgeId));
             jsonObject.Put("league_type", new LogicJSONNumber(this._leagueType));
-            jsonObject.Put("diamonds", new LogicJSONNumber(this._diamonds));
-            jsonObject.Put("free_diamonds", new LogicJSONNumber(this._freeDiamonds));
-            jsonObject.Put("exp_level", new LogicJSONNumber(this._expLevel));
-            jsonObject.Put("exp_points", new LogicJSONNumber(this._expPoints));
+
+            this.SaveDataSlotArray(jsonObject, "units", this._unitCount);
+            this.SaveDataSlotArray(jsonObject, "spells", this._unitCount);
+            this.SaveDataSlotArray(jsonObject, "unit_upgrades", this._unitUpgrade);
+            this.SaveDataSlotArray(jsonObject, "spell_upgrades", this._spellUpgrade);
+            this.SaveDataSlotArray(jsonObject, "resources", this._resourceCount);
+            this.SaveUnitSlotArray(jsonObject, "alliance_units", this._allianceUnitCount);
+            this.SaveDataSlotArray(jsonObject, "hero_states", this._heroState);
+            this.SaveDataSlotArray(jsonObject, "hero_health", this._heroHealth);
+            this.SaveDataSlotArray(jsonObject, "hero_upgrade", this._heroUpgrade);
+            this.SaveDataSlotArray(jsonObject, "hero_modes", this._heroMode);
+            this.SaveDataSlotArray(jsonObject, "variables", this._variables);
+            this.SaveDataSlotArray(jsonObject, "units2", this._unitCountVillage2);
+
+            jsonObject.Put("castle_lvl", new LogicJSONNumber(this._allianceCastleLevel));
+            jsonObject.Put("castle_total", new LogicJSONNumber(this._allianceCastleTotalCapacity));
+            jsonObject.Put("castle_used", new LogicJSONNumber(this._allianceCastleUsedCapacity));
+            jsonObject.Put("castle_total_sp", new LogicJSONNumber(this._allianceCastleTotalSpellCapacity));
+            jsonObject.Put("castle_used_sp", new LogicJSONNumber(this._allianceCastleUsedSpellCapacity));
+            jsonObject.Put("town_hall_lvl", new LogicJSONNumber(this._townHallLevel));
+            jsonObject.Put("th_v2_lvl", new LogicJSONNumber(this._townHallLevelVillage2));
             jsonObject.Put("score", new LogicJSONNumber(this._score));
             jsonObject.Put("duel_score", new LogicJSONNumber(this._duelScore));
-            jsonObject.Put("town_hall_level", new LogicJSONNumber(this._townHallLevel));
-            jsonObject.Put("town_hall_level_village2", new LogicJSONNumber(this._townHallLevelVillage2));
 
-            this.SaveDataSlotArrayList(this._resourceCap, jsonObject, "resource_caps");
-            this.SaveDataSlotArrayList(this._resourceCount, jsonObject, "resources");
-            this.SaveDataSlotArrayList(this._unitCount, jsonObject, "units");
-            this.SaveDataSlotArrayList(this._spellCount, jsonObject, "spells");
-            this.SaveDataSlotArrayList(this._unitUpgrade, jsonObject, "unit_upgrades");
-            this.SaveDataSlotArrayList(this._spellUpgrade, jsonObject, "spell_upgrades");
-            this.SaveUnitSlotArrayList(this._allianceUnitCount, jsonObject, "alliance_units");
-            this.SaveDataSlotArrayList(this._achievementProgress, jsonObject, "achievements");
-            this.SaveDataArrayList(this._achievementRewardClaimed, jsonObject, "achievements_claimed");
-            this.SaveDataArrayList(this._missionCompleted, jsonObject, "missions");
-            this.SaveDataSlotArrayList(this._npcStars, jsonObject, "npc_stars");
-            this.SaveDataSlotArrayList(this._lootedNpcGold, jsonObject, "npc_looted_gold");
-            this.SaveDataSlotArrayList(this._lootedNpcElixir, jsonObject, "npc_looted_elixir");
-
-            return jsonObject;
+            if (this._redPackageState != 0)
+            {
+                jsonObject.Put("red_package_state", new LogicJSONNumber(this._redPackageState));
+            }
         }
 
         /// <summary>
-        ///     Saves the specified data slot array list to json.
+        ///     Saves the <see cref="LogicArrayList{T}"/> to json.
         /// </summary>
-        private void SaveDataSlotArrayList(LogicArrayList<LogicDataSlot> dataSlotArrayList, LogicJSONObject jsonObject, string key)
+        private void SaveDataSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicDataSlot> dataSlotArray)
         {
-            LogicJSONArray jsonArray = new LogicJSONArray(dataSlotArrayList.Count);
+            LogicJSONArray jsonArray = new LogicJSONArray(dataSlotArray.Count);
 
-            for (int i = 0; i < dataSlotArrayList.Count; i++)
+            for (int i = 0; i < dataSlotArray.Count; i++)
             {
-                LogicJSONObject slotObject = new LogicJSONObject();
-                dataSlotArrayList[i].WriteToJSON(slotObject);
-                jsonArray.Add(slotObject);
+                LogicJSONObject obj = new LogicJSONObject();
+                dataSlotArray[i].WriteToJSON(obj);
+                jsonArray.Add(obj);
             }
 
             jsonObject.Put(key, jsonArray);
         }
 
         /// <summary>
-        ///     Saves the specified unit slot array list to json.
+        ///     Saves the <see cref="LogicArrayList{T}"/> to json.
         /// </summary>
-        private void SaveUnitSlotArrayList(LogicArrayList<LogicUnitSlot> unitSlotArrayList, LogicJSONObject jsonObject, string key)
+        private void SaveUnitSlotArray(LogicJSONObject jsonObject, string key, LogicArrayList<LogicUnitSlot> unitSlotArray)
         {
-            LogicJSONArray jsonArray = new LogicJSONArray(unitSlotArrayList.Count);
+            LogicJSONArray jsonArray = new LogicJSONArray(unitSlotArray.Count);
 
-            for (int i = 0; i < unitSlotArrayList.Count; i++)
+            for (int i = 0; i < unitSlotArray.Count; i++)
             {
-                LogicJSONObject slotObject = new LogicJSONObject();
-                unitSlotArrayList[i].WriteToJSON(slotObject);
-                jsonArray.Add(slotObject);
+                LogicJSONObject obj = new LogicJSONObject();
+                unitSlotArray[i].WriteToJSON(obj);
+                jsonArray.Add(obj);
             }
 
             jsonObject.Put(key, jsonArray);
-        }
-
-        /// <summary>
-        ///     Saves the specified data array list to json.
-        /// </summary>
-        private void SaveDataArrayList(LogicArrayList<LogicData> dataArrayList, LogicJSONObject jsonObject, string key)
-        {
-            LogicJSONArray jsonArray = new LogicJSONArray(dataArrayList.Count);
-
-            for (int i = 0; i < dataArrayList.Count; i++)
-            {
-                if (dataArrayList[i] != null)
-                {
-                    jsonArray.Add(new LogicJSONNumber(dataArrayList[i].GetGlobalID()));
-                }
-            }
-
-            jsonObject.Put(key, jsonArray);
-        }
-
-        /// <summary>
-        ///     Destructs this instance.
-        /// </summary>
-        public void Destruct()
-        {
-            // TODO: Implement LogicClientAvatar::destruct();
         }
     }
 }

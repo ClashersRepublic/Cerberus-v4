@@ -41,7 +41,7 @@
         /// </summary>
         public static int GetMSInTicks(int time)
         {
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 return 16 * time;
             }
@@ -54,7 +54,7 @@
         /// </summary>
         public static int GetSecondsInTicks(int time)
         {
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 return (int) (1000L * time / 16);
             }
@@ -67,7 +67,7 @@
         /// </summary>
         public static int GetCooldownSecondsInTicks(int time)
         {
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 return (int)(1000L * time / 64);
             }
@@ -80,7 +80,7 @@
         /// </summary>
         public static int GetCooldownTicksInSeconds(int time)
         {
-            if (LogicDataTables.GetGlobalsInstance().MoreAccurateTime())
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
                 return (int) ((long) time << 6 / 1000);
             }

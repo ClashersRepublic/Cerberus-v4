@@ -2,86 +2,54 @@
 {
     using System;
     using System.Collections.Generic;
-
-    using ClashersRepublic.Magic.Services.Home.Home;
-    using ClashersRepublic.Magic.Services.Logic.Log;
-    using ClashersRepublic.Magic.Titan.Math;
+    using System.Net;
+    using ClashersRepublic.Magic.Services.Logic;
+    using ClashersRepublic.Magic.Titan.Json;
     using Couchbase;
-    using Couchbase.Configuration.Client;
     using Couchbase.Core;
 
-    internal class GameDatabase
+    internal static class GameDatabase
     {
-        private int _id;
-
-        private IBucket _homeBucket;
-        private IBucket _counterBucket;
-
-
-        private Cluster _cluster;
+        private static ICluster _cluster;
+        private static IBucket _homeBucket;
+        private static IBucket _accBucket;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GameDatabase"/> class.
+        ///     Initializes this instance.
         /// </summary>
-        internal GameDatabase(int id, string serverUrl, string userName, string passToken)
+        internal static void Initialize()
         {
-            this._id = id;
-
-            this._cluster = new Cluster(new ClientConfiguration
+            using (WebClient www = new WebClient())
             {
-                Servers = new List<Uri>
+                GameDatabase.LoadConfig(www.DownloadString(Config.DatabaseFile));
+            }
+        }
+
+        /// <summary>
+        ///     Loads the config file.
+        /// </summary>
+        private static void LoadConfig(string file)
+        {
+            LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(file);
+            LogicJSONArray serverArray = jsonObject.GetJSONArray("servers");
+
+            List<Uri> servers = new List<Uri>(serverArray.Size());
+
+            for (int i = 0; i < serverArray.Size(); i++)
+            {
+                servers.Add(new Uri(serverArray.GetJSONString(i).GetStringValue()));
+            }
+
+            GameDatabase._cluster = new Cluster
+            {
+                Configuration =
                 {
-                    new Uri("http://" + serverUrl)
+                    Servers = servers
                 }
-            });
-            this._cluster.Authenticate(userName, passToken);
+            };
 
-            this._homeBucket = this._cluster.OpenBucket("magic-homes");
-            this._counterBucket = this._cluster.OpenBucket("magic-counters");
-
-            if (!this._counterBucket.Exists("acc_counters"))
-            {
-                this._counterBucket.Insert("acc_counters", 0);
-            }
-        }
-
-        /// <summary>
-        ///     Gets the higher id.
-        /// </summary>
-        internal int GetHigherId()
-        {
-            return (int) this._counterBucket.Get<ulong>("acc_counters").Value;
-        }
-
-        /// <summary>
-        ///     Inserts a new home.
-        /// </summary>
-        internal void InsertHome(GameHome home)
-        {
-            if (home.Id.IsZero())
-            {
-                Logging.Error(this, "GameDatabase::insertHome id not set");
-                return;
-            }
-
-            IDocumentResult result = this._homeBucket.Insert(new Document<GameHome>
-            {
-                Id = home.Id.GetLowerInt().ToString(),
-                Content = home
-            });
-
-            if (!result.Success)
-            {
-                Logging.Error(this, "GameDatabase::insertHome insert failed, status: " + result.Status);
-            }
-        }
-
-        /// <summary>
-        ///     Gets the specified document.
-        /// </summary>
-        internal GameHome GetAccount(int lowId)
-        {
-            return this._homeBucket.GetDocument<GameHome>(lowId.ToString()).Content;
+            GameDatabase._accBucket = GameDatabase._cluster.OpenBucket("magic-acc");
+            GameDatabase._homeBucket = GameDatabase._cluster.OpenBucket("magic-home");
         }
     }
 }

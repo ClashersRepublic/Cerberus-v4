@@ -8,16 +8,21 @@
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
     using ClashersRepublic.Magic.Logic;
+    using ClashersRepublic.Magic.Logic.Avatar.Change;
 
     public class LogicAvatar
     {
+        protected LogicAvatarChangeListener _listener;
+
         protected int _townHallLevel;
         protected int _townHallLevelVillage2;
         protected int _allianceCastleLevel;
         protected int _allianceCastleTotalCapacity;
         protected int _allianceCastleUsedCapacity;
-        protected int _allianceCastleSpellTotalCapacity;
-        protected int _allianceCastleSpellUsedCapacity;
+        protected int _allianceCastleTotalSpellCapacity;
+        protected int _allianceCastleUsedSpellCapacity;
+        protected int _allianceUnitVisitCapacity;
+        protected int _allianceUnitSpellVisitCapacity;
         protected int _badgeId;
         protected int _leagueType;
 
@@ -57,7 +62,14 @@
         public LogicAvatar()
         {
             this._allianceCastleLevel = -1;
+        }
 
+        /// <summary>
+        ///     Inits the base of members.
+        /// </summary>
+        public virtual void InitBase()
+        {
+            this._listener = new LogicAvatarChangeListener();
             this._resourceCount = new LogicArrayList<LogicDataSlot>();
             this._resourceCap = new LogicArrayList<LogicDataSlot>();
             this._unitCount = new LogicArrayList<LogicDataSlot>();
@@ -80,11 +92,169 @@
             this._unitPreset3 = new LogicArrayList<LogicDataSlot>();
             this._previousArmy = new LogicArrayList<LogicDataSlot>();
             this._eventUnitCounter = new LogicArrayList<LogicDataSlot>();
-
             this._allianceUnitCount = new LogicArrayList<LogicUnitSlot>();
-
             this._achievementRewardClaimed = new LogicArrayList<LogicData>();
             this._missionCompleted = new LogicArrayList<LogicData>();
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            if (this._listener != null)
+            {
+                this._listener.Destruct();
+                this._listener = null;
+            }
+
+            if (this._resourceCap != null)
+            {
+                this.ClearDataSlotArray(this._resourceCap);
+                this._resourceCap = null;
+            }
+
+            if (this._unitCount != null)
+            {
+                this.ClearDataSlotArray(this._unitCount);
+                this._unitCount = null;
+            }
+
+            if (this._spellCount != null)
+            {
+                this.ClearDataSlotArray(this._spellCount);
+                this._spellCount = null;
+            }
+
+            if (this._unitUpgrade != null)
+            {
+                this.ClearDataSlotArray(this._unitUpgrade);
+                this._unitUpgrade = null;
+            }
+
+            if (this._spellUpgrade != null)
+            {
+                this.ClearDataSlotArray(this._spellUpgrade);
+                this._spellUpgrade = null;
+            }
+
+            if (this._heroUpgrade != null)
+            {
+                this.ClearDataSlotArray(this._heroUpgrade);
+                this._heroUpgrade = null;
+            }
+
+            if (this._heroHealth != null)
+            {
+                this.ClearDataSlotArray(this._heroHealth);
+                this._heroHealth = null;
+            }
+
+            if (this._heroState != null)
+            {
+                this.ClearDataSlotArray(this._heroState);
+                this._heroState = null;
+            }
+
+            if (this._allianceUnitCount != null)
+            {
+                this.ClearUnitSlotArray(this._allianceUnitCount);
+                this._allianceUnitCount = null;
+            }
+
+            if (this._achievementProgress != null)
+            {
+                this.ClearDataSlotArray(this._achievementProgress);
+                this._achievementProgress = null;
+            }
+
+            if (this._npcStars != null)
+            {
+                this.ClearDataSlotArray(this._npcStars);
+                this._npcStars = null;
+            }
+
+            if (this._lootedNpcGold != null)
+            {
+                this.ClearDataSlotArray(this._lootedNpcGold);
+                this._lootedNpcGold = null;
+            }
+
+            if (this._lootedNpcElixir != null)
+            {
+                this.ClearDataSlotArray(this._lootedNpcElixir);
+                this._lootedNpcElixir = null;
+            }
+
+            if (this._heroMode != null)
+            {
+                this.ClearDataSlotArray(this._heroMode);
+                this._heroMode = null;
+            }
+
+            if (this._variables != null)
+            {
+                this.ClearDataSlotArray(this._variables);
+                this._variables = null;
+            }
+
+            if (this._unitPreset1 != null)
+            {
+                this.ClearDataSlotArray(this._unitPreset1);
+                this._unitPreset1 = null;
+            }
+
+            if (this._unitPreset2 != null)
+            {
+                this.ClearDataSlotArray(this._unitPreset2);
+                this._unitPreset2 = null;
+            }
+
+            if (this._unitPreset3 != null)
+            {
+                this.ClearDataSlotArray(this._unitPreset3);
+                this._unitPreset3 = null;
+            }
+
+            if (this._previousArmy != null)
+            {
+                this.ClearDataSlotArray(this._previousArmy);
+                this._previousArmy = null;
+            }
+
+            if (this._eventUnitCounter != null)
+            {
+                this.ClearDataSlotArray(this._eventUnitCounter);
+                this._eventUnitCounter = null;
+            }
+
+            if (this._unitCountVillage2 != null)
+            {
+                this.ClearDataSlotArray(this._unitCountVillage2);
+                this._unitCountVillage2 = null;
+            }
+
+            if (this._unitCountNewVillage2 != null)
+            {
+                this.ClearDataSlotArray(this._unitCountNewVillage2);
+                this._unitCountNewVillage2 = null;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicAvatarChangeListener"/> instance.
+        /// </summary>
+        public LogicAvatarChangeListener GetChangeListener()
+        {
+            return this._listener;
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="LogicAvatarChangeListener"/> instance.
+        /// </summary>
+        public void SetChangeListener(LogicAvatarChangeListener listener)
+        {
+            this._listener = listener;
         }
 
         /// <summary>
@@ -214,8 +384,14 @@
                                 if (newResourceCount > resourceCount)
                                 {
                                     this.SetResourceCount((LogicResourceData) data, count);
+                                    this._listener.CommodityCountChanged(0, data, count);
                                 }
                             }
+                        }
+                        else
+                        {
+                            this.SetResourceCount((LogicResourceData) data, count);
+                            this._listener.CommodityCountChanged(0, data, count);
                         }
                     }
                     else if (commodityType == 1)
@@ -225,6 +401,36 @@
 
                     break;
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Clears the data slot array.
+        /// </summary>
+        public void ClearDataSlotArray(LogicArrayList<LogicDataSlot> dataSlotArray)
+        {
+            if (dataSlotArray.Count != 0)
+            {
+                do
+                {
+                    dataSlotArray[0].Destruct();
+                    dataSlotArray.Remove(0);
+                } while (dataSlotArray.Count != 0);
+            }
+        }
+
+        /// <summary>
+        ///     Clears the unit slot array.
+        /// </summary>
+        public void ClearUnitSlotArray(LogicArrayList<LogicUnitSlot> unitSlotArray)
+        {
+            if (unitSlotArray.Count != 0)
+            {
+                do
+                {
+                    unitSlotArray[0].Destruct();
+                    unitSlotArray.Remove(0);
+                } while (unitSlotArray.Count != 0);
             }
         }
 
@@ -836,14 +1042,14 @@
             if (this._allianceCastleLevel == -1)
             {
                 this._allianceCastleTotalCapacity = 0;
-                this._allianceCastleSpellTotalCapacity = 0;
+                this._allianceCastleTotalSpellCapacity = 0;
             }
             else
             {
                 LogicBuildingData allianceCastleData = LogicDataTables.GetAllianceCastleData();
 
                 this._allianceCastleTotalCapacity = allianceCastleData.GetUnitStorageCapacity(level);
-                this._allianceCastleSpellTotalCapacity = allianceCastleData.GetAltUnitStorageCapacity(level);
+                this._allianceCastleTotalSpellCapacity = allianceCastleData.GetAltUnitStorageCapacity(level);
             }
         }
 
@@ -868,7 +1074,7 @@
         /// </summary>
         public int GetAllianceCastleTotalSpellCapacity()
         {
-            return this._allianceCastleSpellTotalCapacity;
+            return this._allianceCastleTotalSpellCapacity;
         }
 
         /// <summary>
@@ -884,7 +1090,7 @@
         /// </summary>
         public int GetAllianceCastleUsedSpellCapacity()
         {
-            return this._allianceCastleSpellUsedCapacity;
+            return this._allianceCastleUsedSpellCapacity;
         }
 
         /// <summary>
@@ -900,7 +1106,7 @@
         /// </summary>
         public int GetAllianceCastleFreeSpellCapacity()
         {
-            return this._allianceCastleSpellTotalCapacity - this._allianceCastleSpellUsedCapacity;
+            return this._allianceCastleTotalSpellCapacity - this._allianceCastleUsedSpellCapacity;
         }
     }
 }

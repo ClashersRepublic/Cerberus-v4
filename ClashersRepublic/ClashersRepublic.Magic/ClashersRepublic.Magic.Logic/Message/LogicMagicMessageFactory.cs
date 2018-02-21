@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
-    using ClashersRepublic.Magic.Logic.Message.Battle;
     using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Message.Security;
@@ -38,6 +37,36 @@
                     case 10108:
                     {
                         message = new KeepAliveMessage();
+                        break;
+                    }
+
+                    case 10113:
+                    {
+                        message = new SetDeviceTokenMessage();
+                        break;
+                    }
+
+                    case 10116:
+                    {
+                        message = new ResetAccountMessage();
+                        break;
+                    }
+
+                    case 10117:
+                    {
+                        message = new ReportUserMessage();
+                        break;
+                    }
+
+                    case 10118:
+                    {
+                        message = new AccountSwitchedMessage();
+                        break;
+                    }
+
+                    case 10150:
+                    {
+                        message = new AppleBillingRequestMessage();
                         break;
                     }
 
@@ -91,6 +120,42 @@
                     case 20108:
                     {
                         message = new KeepAliveServerMessage();
+                        break;
+                    }
+
+                    case 20117:
+                    {
+                        message = new ReportUserStatusMessage();
+                        break;
+                    }
+
+                    case 20151:
+                    {
+                        message = new AppleBillingProcessedByServerMessage();
+                        break;
+                    }
+
+                    case 20161:
+                    {
+                        message = new ShutdownStartedMessage();
+                        break;
+                    }
+
+                    case 20171:
+                    {
+                        message = new PersonalBreakStartedMessage();
+                        break;
+                    }
+
+                    case 20261:
+                    {
+                        message = new GoogleServiceAccountBoundMessage();
+                        break;
+                    }
+
+                    case 20262:
+                    {
+                        message = new GoogleServiceAccountAlreadyBoundMessage();
                         break;
                     }
 

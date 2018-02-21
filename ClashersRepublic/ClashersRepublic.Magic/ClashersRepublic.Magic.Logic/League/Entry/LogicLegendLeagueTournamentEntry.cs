@@ -23,7 +23,15 @@
         /// </summary>
         public LogicLegendLeagueTournamentEntry()
         {
-            
+            // LogicLegendLeagueTournamentEntry.
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            // Destruct.
         }
 
         /// <summary>

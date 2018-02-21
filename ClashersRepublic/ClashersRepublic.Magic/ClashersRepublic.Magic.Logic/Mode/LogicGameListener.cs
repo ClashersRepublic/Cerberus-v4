@@ -17,13 +17,9 @@
         {
             // Destruct.
         }
-
-        /// <summary>
-        ///     Called when the replay failed.
-        /// </summary>
-        public virtual void ReplayFailed()
-        {
-            
-        }
+        
+        public virtual void ReplayFailed() { }
+        public virtual void AllianceCreated() { }
+        public virtual void AllianceJoined() { }
     }
 }

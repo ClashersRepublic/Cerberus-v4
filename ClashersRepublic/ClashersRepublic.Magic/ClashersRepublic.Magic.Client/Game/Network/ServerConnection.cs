@@ -149,7 +149,7 @@
                         ResourceSha = ResourceManager.FingerprintSha
                     };
 
-                    if (LogicDataTables.GetClientGlobalsInstance().PepperEnabled())
+                    if (LogicDataTables.GetClientGlobals().PepperEnabled())
                     {
                         ClientHelloMessage clientHelloMessage = new ClientHelloMessage
                         {

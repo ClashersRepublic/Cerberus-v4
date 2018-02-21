@@ -1,36 +1,34 @@
-﻿namespace ClashersRepublic.Magic.Logic.Message.Battle
+﻿namespace ClashersRepublic.Magic.Logic.Message.Account
 {
-    using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Message;
 
-    public class AttackNpcMessage : PiranhaMessage
+    public class ReportUserStatusMessage : PiranhaMessage
     {
-        public LogicData LogicNpcData;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AttackNpcMessage" /> class.
+        ///     Initializes a new instance of the <see cref="ReportUserStatusMessage" /> class.
         /// </summary>
-        public AttackNpcMessage() : this(0)
+        public ReportUserStatusMessage() : this(0)
         {
-            // AttackNpcMessage.
+            // ReportUserStatusMessage.
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AttackNpcMessage" /> class
+        ///     Initializes a new instance of the <see cref="ReportUserStatusMessage" /> class.
         /// </summary>
-        public AttackNpcMessage(short messageVersion) : base(messageVersion)
+        public ReportUserStatusMessage(short messageVersion) : base(messageVersion)
         {
-            // AttackNpcMessage.
+            // ReportUserStatusMessage.
         }
-        
+
         /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public override void Decode()
         {
             base.Decode();
-            this.LogicNpcData =  this.Stream.ReadDataReference(16);
+
+            this.Stream.ReadInt();
+            this.Stream.ReadInt();
         }
 
         /// <summary>
@@ -39,7 +37,9 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteDataReference(this.LogicNpcData);
+
+            this.Stream.WriteInt(0);
+            this.Stream.WriteInt(0);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@
         /// </summary>
         public override short GetMessageType()
         {
-            return 14134;
+            return 20117;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
         /// </summary>
         public override int GetServiceNodeType()
         {
-            return 10;
+            return 1;
         }
 
         /// <summary>
@@ -64,7 +64,6 @@
         public override void Destruct()
         {
             base.Destruct();
-            this.LogicNpcData = null;
         }
     }
 }
