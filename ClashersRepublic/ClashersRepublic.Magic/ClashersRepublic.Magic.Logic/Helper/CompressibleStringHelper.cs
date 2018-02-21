@@ -33,7 +33,7 @@
             if (strInstance != null)
             {
                 byte[] uncompressedData = LogicStringUtil.GetBytes(strInstance);
-                int compressedLength = ZLibHelper.ConpressInZLibFormat(uncompressedData, out byte[] compressedData);
+                int compressedLength = ZLibHelper.CompressInZLibFormat(uncompressedData, out byte[] compressedData);
 
                 if (compressedLength > 0)
                 {

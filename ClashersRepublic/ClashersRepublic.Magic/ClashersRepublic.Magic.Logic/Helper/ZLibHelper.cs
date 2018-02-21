@@ -36,7 +36,7 @@
         /// <summary>
         ///     Compresses the specified input in 
         /// </summary>
-        public static int ConpressInZLibFormat(byte[] input, out byte[] output)
+        public static int CompressInZLibFormat(byte[] input, out byte[] output)
         {
             byte[] compressed = ZLibCompressor.Compress(input, CompressionLevel.Level1);
             int compressedLength = compressed.Length;
