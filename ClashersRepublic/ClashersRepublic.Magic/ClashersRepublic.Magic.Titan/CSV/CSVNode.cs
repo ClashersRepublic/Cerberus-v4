@@ -30,9 +30,6 @@
                 LogicArrayList<string> columnNames = this.ParseLine(lines[0]);
                 LogicArrayList<string> columnTypes = this.ParseLine(lines[1]);
 
-                this._table.ColumnNames.EnsureCapacity(columnNames.Count);
-                this._table.Columns.EnsureCapacity(columnTypes.Count);
-
                 for (int i = 0; i < columnNames.Count; i++)
                 {
                     this._table.AddColumn(columnNames[i]);

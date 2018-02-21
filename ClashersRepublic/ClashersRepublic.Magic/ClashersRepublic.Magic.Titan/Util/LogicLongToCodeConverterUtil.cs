@@ -1,16 +1,15 @@
 ﻿namespace ClashersRepublic.Magic.Titan.Util
 {
-    using System;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicLongToCodeConverterUtil
     {
-        private string _hashTag;
-        private string _conversionChars;
+        private readonly string _hashTag;
+        private readonly string _conversionChars;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicLongToCodeConverterUtil"/> class.
+        ///     Initializes a new instance of the <see cref="LogicLongToCodeConverterUtil" /> class.
         /// </summary>
         public LogicLongToCodeConverterUtil(string hashTag, string conversionChars)
         {
@@ -19,7 +18,7 @@
         }
 
         /// <summary>
-        ///     Converts the <see cref="LogicLong"/> to code.
+        ///     Converts the <see cref="LogicLong" /> to code.
         /// </summary>
         public string ToCode(LogicLong logicLong)
         {
@@ -27,7 +26,7 @@
 
             if (highValue < 256)
             {
-                return this._hashTag + this.Convert((long) logicLong.GetLowerInt() << 8 | (uint) highValue);
+                return this._hashTag + this.Convert(((long) logicLong.GetLowerInt() << 8) | (uint) highValue);
             }
 
             Debugger.Warning("Cannot convert the code to string. Higher int value too large");
@@ -47,7 +46,7 @@
 
                 if (id != -1)
                 {
-                   return new LogicLong((int) (id % 256), (int) (id >> 8 & 0x7FFFFFFF));
+                    return new LogicLong((int) (id % 256), (int) ((id >> 8) & 0x7FFFFFFF));
                 }
             }
             else
@@ -59,7 +58,7 @@
         }
 
         /// <summary>
-        ///     Converts the <see cref="string"/> to id.
+        ///     Converts the <see cref="string" /> to id.
         /// </summary>
         private long ConvertCode(string code)
         {
@@ -97,7 +96,7 @@
 
                 for (int i = 11; i >= 0; i--)
                 {
-                    code[i] = this._conversionChars[(int)(value % conversionCharsCount)];
+                    code[i] = this._conversionChars[(int) (value % conversionCharsCount)];
                     value /= conversionCharsCount;
 
                     if (value == 0)
@@ -108,10 +107,8 @@
 
                 return new string(code);
             }
-            else
-            {
-                Debugger.Warning("LogicLongToCodeConverter: value to convert cannot be negative");
-            }
+
+            Debugger.Warning("LogicLongToCodeConverter: value to convert cannot be negative");
 
             return null;
         }

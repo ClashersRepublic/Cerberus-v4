@@ -9,7 +9,7 @@
         /// </summary>
         public virtual int Decrypt(byte[] input, byte[] output, int length)
         {
-            byte[] decrypted = new byte[input.Length];
+            byte[] decrypted = new byte[length];
             Array.Copy(input, decrypted, length);
             return 0;
         }
@@ -19,7 +19,7 @@
         /// </summary>
         public virtual int Encrypt(byte[] input, byte[] output, int length)
         {
-            byte[] encrypted = new byte[input.Length];
+            byte[] encrypted = new byte[length];
             Array.Copy(input, encrypted, length);
             return 0;
         }

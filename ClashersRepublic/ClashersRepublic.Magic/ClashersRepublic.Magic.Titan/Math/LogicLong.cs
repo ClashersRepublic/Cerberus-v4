@@ -110,7 +110,7 @@
 
         public static implicit operator long(LogicLong Long)
         {
-            return (long) Long._highInteger << 32 | (uint) Long._lowInteger;
+            return ((long) Long._highInteger << 32) | (uint) Long._lowInteger;
         }
     }
 }

@@ -9,7 +9,7 @@
         private PiranhaMessage _piranhaMessage;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UdpMessage"/> class.
+        ///     Initializes a new instance of the <see cref="UdpMessage" /> class.
         /// </summary>
         public UdpMessage()
         {
@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UdpMessage"/> class.
+        ///     Initializes a new instance of the <see cref="UdpMessage" /> class.
         /// </summary>
         public UdpMessage(byte messageId)
         {

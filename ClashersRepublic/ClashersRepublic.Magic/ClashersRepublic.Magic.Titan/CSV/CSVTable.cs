@@ -5,24 +5,24 @@
 
     public class CSVTable
     {
-        public LogicArrayList<string> ColumnNames;
-        public LogicArrayList<CSVColumn> Columns;
-        public LogicArrayList<CSVRow> Rows;
+        private readonly LogicArrayList<string> _columnNameList;
+        private readonly LogicArrayList<CSVColumn> _columnList;
+        private readonly LogicArrayList<CSVRow> _rowList;
 
-        public CSVNode Node;
+        private readonly CSVNode _node;
 
-        public int Size;
+        private readonly int Size;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CSVTable" /> class.
         /// </summary>
         public CSVTable(CSVNode node, int size)
         {
-            this.ColumnNames = new LogicArrayList<string>();
-            this.Columns = new LogicArrayList<CSVColumn>();
-            this.Rows = new LogicArrayList<CSVRow>();
+            this._columnNameList = new LogicArrayList<string>();
+            this._columnList = new LogicArrayList<CSVColumn>();
+            this._rowList = new LogicArrayList<CSVRow>();
 
-            this.Node = node;
+            this._node = node;
             this.Size = size;
         }
 
@@ -31,7 +31,7 @@
         /// </summary>
         public void AddAndConvertValue(string value, int columnIndex)
         {
-            CSVColumn column = this.Columns[columnIndex];
+            CSVColumn column = this._columnList[columnIndex];
 
             if (!string.IsNullOrEmpty(value))
             {
@@ -63,7 +63,7 @@
                         }
                         else
                         {
-                            Debugger.Warning("CSVTable::addAndConvertValue invalid value '" + value + "' in Boolean column '" + this.ColumnNames[columnIndex] + "', " + this.GetFileName());
+                            Debugger.Warning("CSVTable::addAndConvertValue invalid value '" + value + "' in Boolean column '" + this._columnNameList[columnIndex] + "', " + this.GetFileName());
                             column.AddBooleanValue(false);
                         }
 
@@ -82,7 +82,7 @@
         /// </summary>
         public void AddColumn(string name)
         {
-            this.ColumnNames.Add(name);
+            this._columnNameList.Add(name);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@
         /// </summary>
         public void AddColumnType(int type)
         {
-            this.Columns.Add(new CSVColumn(type, this.Size));
+            this._columnList.Add(new CSVColumn(type, this.Size));
         }
 
         /// <summary>
@@ -98,7 +98,7 @@
         /// </summary>
         public void AddRow(CSVRow row)
         {
-            this.Rows.Add(row);
+            this._rowList.Add(row);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@
         /// </summary>
         public void ColumnNamesLoaded()
         {
-            this.Columns.EnsureCapacity(this.ColumnNames.Count);
+            this._columnList.EnsureCapacity(this._columnNameList.Count);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@
         /// </summary>
         public void CreateRow()
         {
-            this.Rows.Add(new CSVRow(this));
+            this._rowList.Add(new CSVRow(this));
         }
 
         /// <summary>
@@ -122,26 +122,26 @@
         /// </summary>
         public int GetArraySizeAt(CSVRow row, int columnIdx)
         {
-            if (this.Rows.Count > 0)
+            if (this._rowList.Count > 0)
             {
-                int rowIdx = this.Rows.IndexOf(row);
+                int rowIdx = this._rowList.IndexOf(row);
 
                 if (rowIdx != -1)
                 {
-                    CSVColumn column = this.Columns[columnIdx];
+                    CSVColumn column = this._columnList[columnIdx];
 
                     int nextRowOffset;
 
-                    if (rowIdx + 1 >= this.Rows.Count)
+                    if (rowIdx + 1 >= this._rowList.Count)
                     {
                         nextRowOffset = column.GetSize();
                     }
                     else
                     {
-                        nextRowOffset = this.Rows[rowIdx + 1].GetRowOffset();
+                        nextRowOffset = this._rowList[rowIdx + 1].GetRowOffset();
                     }
 
-                    return column.GetArraySize(this.Rows[rowIdx].GetRowOffset(), nextRowOffset);
+                    return column.GetArraySize(this._rowList[rowIdx].GetRowOffset(), nextRowOffset);
                 }
             }
 
@@ -153,7 +153,7 @@
         /// </summary>
         public string GetColumnName(int idx)
         {
-            return this.ColumnNames[idx];
+            return this._columnNameList[idx];
         }
 
         /// <summary>
@@ -161,7 +161,7 @@
         /// </summary>
         public int GetColumnIndexByName(string name)
         {
-            return this.ColumnNames.IndexOf(name);
+            return this._columnNameList.IndexOf(name);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@
         /// </summary>
         public int GetColumnCount()
         {
-            return this.ColumnNames.Count;
+            return this._columnNameList.Count;
         }
 
         /// <summary>
@@ -177,7 +177,7 @@
         /// </summary>
         public int GetColumnRowCount()
         {
-            return this.Columns[0].GetSize();
+            return this._columnList[0].GetSize();
         }
 
         /// <summary>
@@ -185,7 +185,7 @@
         /// </summary>
         public int GetColumnTypeCount()
         {
-            return this.Columns.Count;
+            return this._columnList.Count;
         }
 
         /// <summary>
@@ -193,7 +193,7 @@
         /// </summary>
         public string GetFileName()
         {
-            return this.Node.GetFileName();
+            return this._node.GetFileName();
         }
 
         /// <summary>
@@ -201,11 +201,11 @@
         /// </summary>
         public bool GetBooleanValue(string name, int index)
         {
-            int columnIndex = this.ColumnNames.IndexOf(name);
+            int columnIndex = this._columnNameList.IndexOf(name);
 
             if (columnIndex != -1)
             {
-                return this.Columns[columnIndex].GetBooleanValue(index);
+                return this._columnList[columnIndex].GetBooleanValue(index);
             }
 
             return false;
@@ -218,7 +218,7 @@
         {
             if (columnIndex != -1)
             {
-                return this.Columns[columnIndex].GetBooleanValue(index);
+                return this._columnList[columnIndex].GetBooleanValue(index);
             }
 
             return false;
@@ -229,11 +229,11 @@
         /// </summary>
         public int GetIntegerValue(string name, int index)
         {
-            int columnIndex = this.ColumnNames.IndexOf(name);
+            int columnIndex = this._columnNameList.IndexOf(name);
 
             if (columnIndex != -1)
             {
-                return this.Columns[columnIndex].GetIntegerValue(index);
+                return this._columnList[columnIndex].GetIntegerValue(index);
             }
 
             return 0;
@@ -246,7 +246,7 @@
         {
             if (columnIndex != -1)
             {
-                return this.Columns[columnIndex].GetIntegerValue(index);
+                return this._columnList[columnIndex].GetIntegerValue(index);
             }
 
             return 0;
@@ -257,11 +257,11 @@
         /// </summary>
         public string GetValue(string name, int index)
         {
-            int columnIndex = this.ColumnNames.IndexOf(name);
+            int columnIndex = this._columnNameList.IndexOf(name);
 
             if (columnIndex != -1)
             {
-                return this.Columns[columnIndex].GetStringValue(index);
+                return this._columnList[columnIndex].GetStringValue(index);
             }
 
             return string.Empty;
@@ -274,7 +274,7 @@
         {
             if (columnIndex != -1)
             {
-                return this.Columns[columnIndex].GetStringValue(index);
+                return this._columnList[columnIndex].GetStringValue(index);
             }
 
             return string.Empty;
@@ -285,7 +285,7 @@
         /// </summary>
         public CSVRow GetRowAt(int index)
         {
-            return this.Rows[index];
+            return this._rowList[index];
         }
 
         /// <summary>
@@ -293,7 +293,7 @@
         /// </summary>
         public int GetRowCount()
         {
-            return this.Rows.Count;
+            return this._rowList.Count;
         }
 
         /// <summary>
@@ -301,9 +301,9 @@
         /// </summary>
         public void ValidateColumnTypes()
         {
-            if (this.ColumnNames.Count != this.Columns.Count)
+            if (this._columnNameList.Count != this._columnList.Count)
             {
-                Debugger.Warning($"Column name count {this.ColumnNames.Count}, column type count {this.Columns.Count}, file {this.GetFileName()}");
+                Debugger.Warning($"Column name count {this._columnNameList.Count}, column type count {this._columnList.Count}, file {this.GetFileName()}");
             }
         }
     }

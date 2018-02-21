@@ -30,7 +30,7 @@
             {
                 this._key[i] = (byte) i;
             }
-            
+
             for (int i = 0, j = 0; i < 256; i++)
             {
                 j = (j + this._key[i] + key[i % key.Length]) % 256;

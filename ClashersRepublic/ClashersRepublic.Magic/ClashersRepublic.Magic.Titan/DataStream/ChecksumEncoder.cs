@@ -6,8 +6,9 @@
     public class ChecksumEncoder
     {
         private int _checksum;
-        private bool _enabled;
         private int _snapshotChecksum;
+
+        private bool _enabled;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ChecksumEncoder" /> class.

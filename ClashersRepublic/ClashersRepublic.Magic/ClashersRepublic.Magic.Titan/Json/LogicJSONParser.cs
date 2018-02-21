@@ -89,59 +89,6 @@
                             builder.Append(charValue);
                         }
                     }
-
-                    /*
-                    switch (charValue)
-                    {
-                        case '\b':
-                        {
-                            builder.Append("\\b");
-                            break;
-                        }
-
-                        case '\t':
-                        {
-                            builder.Append("\\t");
-                            break;
-                        }
-
-                        case '\n':
-                        {
-                            builder.Append("\\n");
-                            break;
-                        }
-
-                        case '\f':
-                        {
-                            builder.Append("\\f");
-                            break;
-                        }
-
-                        case '\r':
-                        {
-                            builder.Append("\\r");
-                            break;
-                        }
-
-                        case '"':
-                        {
-                            builder.Append("\\\"");
-                            break;
-                        }
-
-                        case '/':
-                        {
-                            builder.Append("\\/");
-                            break;
-                        }
-
-                        default:
-                        {
-                            builder.Append(charValue);
-                            break;
-                        }
-                    }
-                    */
                 }
             }
 

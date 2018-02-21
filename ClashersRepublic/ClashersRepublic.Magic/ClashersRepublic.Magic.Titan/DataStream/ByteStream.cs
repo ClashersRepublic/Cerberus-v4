@@ -277,7 +277,7 @@
 
                 Debugger.Warning("Too long String encountered, max " + maxCapacity);
             }
-            
+
             return null;
         }
 
@@ -303,7 +303,7 @@
 
                 Debugger.Warning("Too long String encountered, max " + maxCapacity);
             }
-            
+
             return string.Empty;
         }
 
@@ -512,7 +512,7 @@
         public override void WriteBytes(byte[] value, int length)
         {
             base.WriteBytes(value, length);
-            
+
             if (value == null)
             {
                 this.WriteIntToByteArray(-1);

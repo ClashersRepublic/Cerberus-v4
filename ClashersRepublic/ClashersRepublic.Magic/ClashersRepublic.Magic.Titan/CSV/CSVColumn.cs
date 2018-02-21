@@ -23,11 +23,6 @@
             switch (type)
             {
                 case -1:
-                {
-                    this._stringValue.EnsureCapacity(size);
-                    break;
-                }
-
                 case 0:
                 {
                     this._stringValue.EnsureCapacity(size);
@@ -113,28 +108,6 @@
         /// </summary>
         public int GetArraySize(int startOffset, int endOffset)
         {
-            /*
-            switch (this.ColumnType)
-            {
-                case 0:
-                {
-                    return this._stringValue.Count;
-                }
-
-                case 1:
-                {
-                    return this._intValue.Count;
-                }
-
-                case 2:
-                {
-                    return this._boolValue.Count;
-                }
-            }
-
-            return 0;
-            */
-
             return endOffset - startOffset;
         }
 
@@ -169,6 +142,7 @@
         {
             switch (this.ColumnType)
             {
+                case -1:
                 case 0:
                 {
                     return this._stringValue.Count;

@@ -17,16 +17,6 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PiranhaMessage" /> class.
-        /// </summary>
-        public PiranhaMessage(short messageVersion, int streamCapacity)
-        {
-            this.Stream = new ByteStream(10);
-            this.Version = messageVersion;
-            this.Stream.EnsureCapacity(streamCapacity);
-        }
-
-        /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public virtual void Decode()
@@ -54,7 +44,6 @@
         public virtual void Destruct()
         {
             this.Stream.Destruct();
-            this.Version = 0;
         }
 
         /// <summary>
@@ -90,6 +79,14 @@
         }
 
         /// <summary>
+        ///     Gets the message bytes.
+        /// </summary>
+        public byte[] GetMessageBytes()
+        {
+            return this.Stream.GetByteArray();
+        }
+
+        /// <summary>
         ///     Gets the length of encoding.
         /// </summary>
         public int GetEncodingLength()
@@ -103,15 +100,6 @@
         public ByteStream GetByteStream()
         {
             return this.Stream;
-        }
-
-        /// <summary>
-        ///     Destructors of this instance.
-        /// </summary>
-        ~PiranhaMessage()
-        {
-            this.Stream = null;
-            this.Version = 0;
         }
     }
 }

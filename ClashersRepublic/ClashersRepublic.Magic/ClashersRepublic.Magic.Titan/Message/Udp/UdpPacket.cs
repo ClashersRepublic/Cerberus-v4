@@ -6,13 +6,13 @@
 
     public class UdpPacket
     {
-        private LogicArrayList<UdpMessage> _messages;
+        private readonly LogicArrayList<UdpMessage> _messages;
 
         private byte[] _ackMessageIds;
         private int _ackMessageIdCount;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UdpPacket"/> class.
+        ///     Initializes a new instance of the <see cref="UdpPacket" /> class.
         /// </summary>
         public UdpPacket()
         {
@@ -106,7 +106,7 @@
                 }
             }
         }
-        
+
         /// <summary>
         ///     Adds the specified message.
         /// </summary>

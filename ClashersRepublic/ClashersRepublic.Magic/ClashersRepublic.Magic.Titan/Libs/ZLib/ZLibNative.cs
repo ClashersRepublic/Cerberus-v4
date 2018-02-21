@@ -81,7 +81,7 @@
                 {
                     #if NET40
                     throw new ArgumentException("Please provide zlibwapi.dll");
-                    #else
+                                        #else
                     // Use .Net Framework's clrcompression instead
                     string fxDir = RuntimeEnvironment.GetRuntimeDirectory();
                     dllPath = Path.Combine(fxDir, "clrcompression.dll");

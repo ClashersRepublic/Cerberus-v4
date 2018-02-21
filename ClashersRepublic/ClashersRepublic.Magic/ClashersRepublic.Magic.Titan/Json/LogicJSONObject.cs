@@ -6,8 +6,8 @@
 
     public class LogicJSONObject : LogicJSONNode
     {
-        private readonly LogicArrayList<LogicJSONNode> _items;
         private readonly LogicArrayList<string> _keys;
+        private readonly LogicArrayList<LogicJSONNode> _items;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicJSONObject" /> class.
@@ -47,13 +47,14 @@
 
             LogicJSONNode node = this._items[itemIndex];
 
-            if (node.GetJSONNodeType() != 1)
+            if (node.GetJSONNodeType() == 1)
             {
-                Debugger.Warning("LogicJSONObject::getJSONArray type is " + node.GetJSONNodeType() + ", key " + key);
-                return null;
+                return (LogicJSONArray) node;
             }
 
-            return (LogicJSONArray) node;
+            Debugger.Warning("LogicJSONObject::getJSONArray type is " + node.GetJSONNodeType() + ", key " + key);
+
+            return null;
         }
 
         /// <summary>
@@ -70,13 +71,14 @@
 
             LogicJSONNode node = this._items[itemIndex];
 
-            if (node.GetJSONNodeType() != 5)
+            if (node.GetJSONNodeType() == 5)
             {
-                Debugger.Warning("LogicJSONObject::getJSONBoolean type is " + node.GetJSONNodeType() + ", key " + key);
-                return null;
+                return (LogicJSONBoolean) node;
             }
 
-            return (LogicJSONBoolean) node;
+            Debugger.Warning("LogicJSONObject::getJSONBoolean type is " + node.GetJSONNodeType() + ", key " + key);
+
+            return null;
         }
 
         /// <summary>
@@ -93,13 +95,14 @@
 
             LogicJSONNode node = this._items[itemIndex];
 
-            if (node.GetJSONNodeType() != 3)
+            if (node.GetJSONNodeType() == 3)
             {
-                Debugger.Warning("LogicJSONObject::getJSONNumber type is " + node.GetJSONNodeType() + ", key " + key);
-                return null;
+                return (LogicJSONNumber) node;
             }
 
-            return (LogicJSONNumber) node;
+            Debugger.Warning("LogicJSONObject::getJSONNumber type is " + node.GetJSONNodeType() + ", key " + key);
+
+            return null;
         }
 
         /// <summary>
@@ -116,13 +119,14 @@
 
             LogicJSONNode node = this._items[itemIndex];
 
-            if (node.GetJSONNodeType() != 2)
+            if (node.GetJSONNodeType() == 2)
             {
-                Debugger.Warning("LogicJSONObject::getJSONObject type is " + node.GetJSONNodeType() + ", key " + key);
-                return null;
+                return (LogicJSONObject) node;
             }
 
-            return (LogicJSONObject) node;
+            Debugger.Warning("LogicJSONObject::getJSONObject type is " + node.GetJSONNodeType() + ", key " + key);
+
+            return null;
         }
 
         /// <summary>
@@ -139,13 +143,14 @@
 
             LogicJSONNode node = this._items[itemIndex];
 
-            if (node.GetJSONNodeType() != 4)
+            if (node.GetJSONNodeType() == 4)
             {
-                Debugger.Warning("LogicJSONObject::getJSONString type is " + node.GetJSONNodeType() + ", key " + key);
-                return null;
+                return (LogicJSONString) node;
             }
 
-            return (LogicJSONString) node;
+            Debugger.Warning("LogicJSONObject::getJSONString type is " + node.GetJSONNodeType() + ", key " + key);
+
+            return null;
         }
 
         /// <summary>
