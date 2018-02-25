@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClashersRepublic.Magic.Services.Core</RootNamespace>
+    <AssemblyName>ClashersRepublic.Magic.Services.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Build\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Build\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AsyncIO, Version=0.0.0.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AsyncIO.0.1.40\lib\net40\AsyncIO.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConsoleOut.cs" />
+    <Compile Include="Libs\Colorful\ColorAlternator.cs" />
+    <Compile Include="Libs\Colorful\ColorAlternatorFactory.cs" />
+    <Compile Include="Libs\Colorful\ColorExtensions.cs" />
+    <Compile Include="Libs\Colorful\ColorfulConsoleBack.cs" />
+    <Compile Include="Libs\Colorful\ColorfulConsoleFront.cs" />
+    <Compile Include="Libs\Colorful\ColorManager.cs" />
+    <Compile Include="Libs\Colorful\ColorManagerFactory.cs" />
+    <Compile Include="Libs\Colorful\ColorMapper.cs" />
+    <Compile Include="Libs\Colorful\ColorMappingException.cs" />
+    <Compile Include="Libs\Colorful\COLORREF.cs" />
+    <Compile Include="Libs\Colorful\ColorStore.cs" />
+    <Compile Include="Libs\Colorful\ConsoleAccessException.cs" />
+    <Compile Include="Libs\Colorful\DefaultFonts.cs" />
+    <Compile Include="Libs\Colorful\ExtensionMethods.cs" />
+    <Compile Include="Libs\Colorful\Figlet.cs" />
+    <Compile Include="Libs\Colorful\FigletFont.cs" />
+    <Compile Include="Libs\Colorful\Formatter.cs" />
+    <Compile Include="Libs\Colorful\FrequencyBasedColorAlternator.cs" />
+    <Compile Include="Libs\Colorful\GradientGenerator.cs" />
+    <Compile Include="Libs\Colorful\IPrototypable.cs" />
+    <Compile Include="Libs\Colorful\MatchLocation.cs" />
+    <Compile Include="Libs\Colorful\Pattern.cs" />
+    <Compile Include="Libs\Colorful\PatternBasedColorAlternator.cs" />
+    <Compile Include="Libs\Colorful\PatternCollection.cs" />
+    <Compile Include="Libs\Colorful\StyleClass.cs" />
+    <Compile Include="Libs\Colorful\StyledString.cs" />
+    <Compile Include="Libs\Colorful\Styler.cs" />
+    <Compile Include="Libs\Colorful\StyleSheet.cs" />
+    <Compile Include="Libs\Colorful\TaskQueue.cs" />
+    <Compile Include="Libs\Colorful\TextAnnotator.cs" />
+    <Compile Include="Libs\Colorful\TextFormatter.cs" />
+    <Compile Include="Libs\Colorful\TextPattern.cs" />
+    <Compile Include="Libs\Colorful\TextPatternCollection.cs" />
+    <Compile Include="Libs\NetMQ\BufferPool.cs" />
+    <Compile Include="Libs\NetMQ\Core\Address.cs" />
+    <Compile Include="Libs\NetMQ\Core\Command.cs" />
+    <Compile Include="Libs\NetMQ\Core\CommandType.cs" />
+    <Compile Include="Libs\NetMQ\Core\Config.cs" />
+    <Compile Include="Libs\NetMQ\Core\Ctx.cs" />
+    <Compile Include="Libs\NetMQ\Core\ErrorHelper.cs" />
+    <Compile Include="Libs\NetMQ\Core\IMsgSink.cs" />
+    <Compile Include="Libs\NetMQ\Core\IMsgSource.cs" />
+    <Compile Include="Libs\NetMQ\Core\IOObject.cs" />
+    <Compile Include="Libs\NetMQ\Core\IOThread.cs" />
+    <Compile Include="Libs\NetMQ\Core\IPollEvents.cs" />
+    <Compile Include="Libs\NetMQ\Core\IProactorEvents.cs" />
+    <Compile Include="Libs\NetMQ\Core\ITimerEvent.cs" />
+    <Compile Include="Libs\NetMQ\Core\Mailbox.cs" />
+    <Compile Include="Libs\NetMQ\Core\MonitorEvent.cs" />
+    <Compile Include="Libs\NetMQ\Core\Options.cs" />
+    <Compile Include="Libs\NetMQ\Core\Own.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Dealer.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Pair.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Pub.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Pull.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Push.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Rep.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Req.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Router.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Stream.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Sub.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Utils\ArrayExtensions.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Utils\Distribution.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Utils\FairQueueing.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Utils\LoadBalancer.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Utils\MultiTrie.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\Utils\Trie.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\XPub.cs" />
+    <Compile Include="Libs\NetMQ\Core\Patterns\XSub.cs" />
+    <Compile Include="Libs\NetMQ\Core\Pipe.cs" />
+    <Compile Include="Libs\NetMQ\Core\Reaper.cs" />
+    <Compile Include="Libs\NetMQ\Core\SessionBase.cs" />
+    <Compile Include="Libs\NetMQ\Core\SocketBase.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\ByteArraySegment.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\DecoderBase.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\EncoderBase.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\IDecoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\IEncoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\IEngine.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Ipc\IpcAddress.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Ipc\IpcConnector.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Ipc\IpcListener.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Pgm\PgmAddress.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Pgm\PgmListener.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Pgm\PgmSender.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Pgm\PgmSession.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Pgm\PgmSocket.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\RawDecoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\RawEncoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\StreamEngine.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Tcp\TcpAddress.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Tcp\TcpConnector.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\Tcp\TcpListener.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\V1Decoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\V1Encoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\V2Decoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\V2Encoder.cs" />
+    <Compile Include="Libs\NetMQ\Core\Transports\V2Protocol.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\AtomicCounter.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\ByteArrayEqualityComparer.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\Clock.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\OpCode.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\Poller.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\PollerBase.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\Proactor.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\Signaler.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\SocketUtility.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\StopSignaler.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\StringLib.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\Switch.cs" />
+    <Compile Include="Libs\NetMQ\Core\Utils\YQueue.cs" />
+    <Compile Include="Libs\NetMQ\Core\YPipe.cs" />
+    <Compile Include="Libs\NetMQ\Core\ZmqSocketOption.cs" />
+    <Compile Include="Libs\NetMQ\Core\ZObject.cs" />
+    <Compile Include="Libs\NetMQ\EmptyArray.cs" />
+    <Compile Include="Libs\NetMQ\Endianness.cs" />
+    <Compile Include="Libs\NetMQ\ErrorCode.cs" />
+    <Compile Include="Libs\NetMQ\ErrorPollingException.cs" />
+    <Compile Include="Libs\NetMQ\EventDelegator.cs" />
+    <Compile Include="Libs\NetMQ\INetMQPoller.cs" />
+    <Compile Include="Libs\NetMQ\InterfaceCollection.cs" />
+    <Compile Include="Libs\NetMQ\IOutgoingSocket.cs" />
+    <Compile Include="Libs\NetMQ\IReceivingSocket.cs" />
+    <Compile Include="Libs\NetMQ\ISocketPollable.cs" />
+    <Compile Include="Libs\NetMQ\ISocketPollableCollection.cs" />
+    <Compile Include="Libs\NetMQ\Monitoring\NetMQMonitor.cs" />
+    <Compile Include="Libs\NetMQ\Monitoring\NetMQMonitorEventArgs.cs" />
+    <Compile Include="Libs\NetMQ\Msg.cs" />
+    <Compile Include="Libs\NetMQ\NetMQActor.cs" />
+    <Compile Include="Libs\NetMQ\NetMQBeacon.cs" />
+    <Compile Include="Libs\NetMQ\NetMQConfig.cs" />
+    <Compile Include="Libs\NetMQ\NetMQContext.cs" />
+    <Compile Include="Libs\NetMQ\NetMQException.cs" />
+    <Compile Include="Libs\NetMQ\NetMQFrame.cs" />
+    <Compile Include="Libs\NetMQ\NetMQMessage.cs" />
+    <Compile Include="Libs\NetMQ\NetMQPoller.cs" />
+    <Compile Include="Libs\NetMQ\NetMQProactor.cs" />
+    <Compile Include="Libs\NetMQ\NetMQQueue.cs" />
+    <Compile Include="Libs\NetMQ\NetMQSelector.cs" />
+    <Compile Include="Libs\NetMQ\NetMQSocket.cs" />
+    <Compile Include="Libs\NetMQ\NetMQSocketEventArgs.cs" />
+    <Compile Include="Libs\NetMQ\NetMQTimer.cs" />
+    <Compile Include="Libs\NetMQ\NetworkOrderBitsConverter.cs" />
+    <Compile Include="Libs\NetMQ\OutgoingSocketExtensions.cs" />
+    <Compile Include="Libs\NetMQ\Poller.cs" />
+    <Compile Include="Libs\NetMQ\PollEvents.cs" />
+    <Compile Include="Libs\NetMQ\Proxy.cs" />
+    <Compile Include="Libs\NetMQ\ReceivingSocketExtensions.cs" />
+    <Compile Include="Libs\NetMQ\SendReceiveConstants.cs" />
+    <Compile Include="Libs\NetMQ\SocketEvents.cs" />
+    <Compile Include="Libs\NetMQ\SocketOptions.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\DealerSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\PairSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\PublisherSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\PullSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\PushSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\RequestSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\ResponseSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\RouterSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\StreamSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\SubscriberSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\XPublisherSocket.cs" />
+    <Compile Include="Libs\NetMQ\Sockets\XSubscriberSocket.cs" />
+    <Compile Include="Libs\NetMQ\ZmqNamespacePlaceholder.cs" />
+    <Compile Include="Libs\NetMQ\ZmqSocketType.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="Message\Account\AccoutBanCreatedMessage.cs" />
+    <Compile Include="Message\Account\AccountBanRevokedMessage.cs" />
+    <Compile Include="Message\Account\RevokeAccountBanMessage.cs" />
+    <Compile Include="Message\Account\CreateAccountBanMessage.cs" />
+    <Compile Include="Message\Account\LoginClientFailedMessage.cs" />
+    <Compile Include="Message\Account\LoginClientOkMessage.cs" />
+    <Compile Include="Message\Account\LoginClientMessage.cs" />
+    <Compile Include="Message\Account\CreateAccountFailedMessage.cs" />
+    <Compile Include="Message\Account\CreateAccountOkMessage.cs" />
+    <Compile Include="Message\Account\CreateAccountMessage.cs" />
+    <Compile Include="Message\Avatar\SetAvatarDataMessage.cs" />
+    <Compile Include="Message\Avatar\AvatarDataMessage.cs" />
+    <Compile Include="Message\Avatar\CreateAvatarFailedMessage.cs" />
+    <Compile Include="Message\Avatar\CreateAvatarMessage.cs" />
+    <Compile Include="Message\Avatar\AskForAvatarMessage.cs" />
+    <Compile Include="Message\Avatar\CreateAvatarOkMessage.cs" />
+    <Compile Include="Message\INetMessageManager.cs" />
+    <Compile Include="Message\NetMessage.cs" />
+    <Compile Include="Message\NetMessageFactory.cs" />
+    <Compile Include="Message\Session\SetSessionSocketMessage.cs" />
+    <Compile Include="Message\Session\RemoveSessionSocketMessage.cs" />
+    <Compile Include="Message\Session\UpdateSessionSocketMessage.cs" />
+    <Compile Include="Message\Session\UpdateSessionSocketListMessage.cs" />
+    <Compile Include="Network\Handler\NetHandler.cs" />
+    <Compile Include="Network\NetGateway.cs" />
+    <Compile Include="Network\NetManager.cs" />
+    <Compile Include="Network\NetMessaging.cs" />
+    <Compile Include="Network\NetPacket.cs" />
+    <Compile Include="Network\NetUtils.cs" />
+    <Compile Include="Network\Session\NetSession.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceManager.cs" />
+    <Compile Include="ServiceCore.cs" />
+    <Compile Include="Web\WebManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
+      <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
+      <Name>ClashersRepublic.Magic.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
+      <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
+      <Name>ClashersRepublic.Magic.Titan</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="resources.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

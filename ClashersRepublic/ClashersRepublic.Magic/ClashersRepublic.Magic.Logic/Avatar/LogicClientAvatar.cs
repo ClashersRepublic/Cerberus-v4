@@ -234,7 +234,6 @@
         /// <summary>
         ///     Gets a value indicating whether the avatar is in alliance.
         /// </summary>
-        /// <returns></returns>
         public override bool IsInAlliance()
         {
             return this._allianceId != null;
@@ -1034,8 +1033,10 @@
                 encoder.WriteInt(0);
                 encoder.WriteLong(0);
             }
-
-            encoder.WriteBoolean(false);
+            else
+            {
+                encoder.WriteBoolean(false);
+            }
 
             encoder.WriteInt(this._resourceCap.Count);
 

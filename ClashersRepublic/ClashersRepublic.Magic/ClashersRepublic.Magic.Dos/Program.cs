@@ -43,7 +43,6 @@
             {
                 string cmd = Console.ReadLine();
 
-
                 if (cmd != null)
                 {
                     if (cmd.StartsWith("/"))

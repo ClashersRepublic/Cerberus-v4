@@ -5,7 +5,7 @@
     public class PiranhaMessage
     {
         protected ByteStream Stream;
-        protected short Version;
+        protected int Version;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PiranhaMessage" /> class.
@@ -57,7 +57,7 @@
         /// <summary>
         ///     Gets the message version of this instance.
         /// </summary>
-        public short GetMessageVersion()
+        public int GetMessageVersion()
         {
             return this.Version;
         }
@@ -65,7 +65,7 @@
         /// <summary>
         ///     Sets the version of message.
         /// </summary>
-        public void SetMessageVersion(short version)
+        public void SetMessageVersion(int version)
         {
             this.Version = version;
         }

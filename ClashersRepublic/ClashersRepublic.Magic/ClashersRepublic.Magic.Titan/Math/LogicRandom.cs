@@ -24,19 +24,45 @@
         }
 
         /// <summary>
+        ///     Gets the iterated random seed.
+        /// </summary>
+        public int GetIteratedRandomSeed()
+        {
+            return this._seed;
+        }
+
+        /// <summary>
+        ///     Sets the iterated random seed.
+        /// </summary>
+        public void SetIteratedRandomSeed(int value)
+        {
+            this._seed = value;
+        }
+
+        /// <summary>
+        ///     Iterates the specified random seed.
+        /// </summary>
+        public int IterateRandomSeed(int seed)
+        {
+            if (seed == 0)
+            {
+                seed = -1;
+            }
+
+            int tmp = seed ^ (seed << 13);
+            int tmp2 = tmp ^ (tmp >> 17);
+
+            return tmp2 ^ 32 * tmp2;
+        }
+
+        /// <summary>
         ///     Returns a random int between 0 and Max.
         /// </summary>
         public int Rand(int max)
         {
             if (max > 0)
             {
-                if (this._seed == 0)
-                {
-                    this._seed = -1;
-                }
-
-                int tmp = this._seed ^ (this._seed << 13) ^ ((this._seed ^ (this._seed << 13)) >> 17);
-                this._seed = tmp ^ (32 * tmp);
+                this._seed = this.IterateRandomSeed(this._seed);
 
                 if (this._seed < 0)
                 {

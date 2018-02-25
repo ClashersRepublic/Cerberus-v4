@@ -18,7 +18,7 @@
         public string UpdateUrl;
         public string ContentUrl;
 
-        public byte[] ResourceFingerprintData;
+        public byte[] CompressedFingerprintJson;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoginFailedMessage" /> class.
@@ -33,7 +33,7 @@
         /// </summary>
         public LoginFailedMessage(short messageVersion) : base(messageVersion)
         {
-            this.ResourceFingerprintData = new byte[0];
+            this.CompressedFingerprintJson = new byte[0];
         }
 
         /// <summary>
@@ -51,7 +51,7 @@
             this.Reason = this.Stream.ReadString(900000);
             this.EndMaintenanceTime = this.Stream.ReadInt();
             this.BannedShowHelpshiftContact = this.Stream.ReadBoolean();
-            this.ResourceFingerprintData = this.Stream.ReadBytes(this.Stream.ReadBytesLength(), 900000);
+            this.CompressedFingerprintJson = this.Stream.ReadBytes(this.Stream.ReadBytesLength(), 900000);
 
             int contentUrlListSize = this.Stream.ReadInt();
 
@@ -89,7 +89,7 @@
             this.Stream.WriteString(this.Reason);
             this.Stream.WriteInt(this.EndMaintenanceTime);
             this.Stream.WriteBoolean(this.BannedShowHelpshiftContact);
-            this.Stream.WriteBytes(this.ResourceFingerprintData, this.ResourceFingerprintData.Length);
+            this.Stream.WriteBytes(this.CompressedFingerprintJson, this.CompressedFingerprintJson.Length);
 
             if (this.ContentUrlList != null)
             {

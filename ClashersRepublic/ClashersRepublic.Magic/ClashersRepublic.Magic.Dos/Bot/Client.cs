@@ -7,6 +7,7 @@
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Titan;
+    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class Client
@@ -73,7 +74,7 @@
         /// </summary>
         internal void ConnectToLocalServer()
         {
-            this.ConnectTo("192.168.1.203", 9339);
+            this.ConnectTo("127.0.0.1", 9339);
         }
 
         /// <summary>
@@ -83,6 +84,7 @@
         {
             LoginMessage loginMessage = new LoginMessage
             {
+                AccountId = new LogicLong(),
                 ClientMajorVersion = LogicVersion.MajorVersion,
                 ClientBuildVersion = LogicVersion.BuildVersion,
                 ResourceSha = "f4e97369bfe07c3923d63c0c5ec89925e9b5ae2a"
@@ -121,7 +123,7 @@
                         encodingLength -= this._receiveEncrypter.GetOverheadEncryption();
                     }
 
-                    PiranhaMessage message = LogicMagicMessageFactory.CreateMessageByType(messageType);
+                    PiranhaMessage message = LogicMagicMessageFactory.Instance.CreateMessageByType(messageType);
              
                     if (message != null)
                     {

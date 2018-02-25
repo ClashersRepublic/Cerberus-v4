@@ -7,14 +7,23 @@
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
 
-    public static class LogicMagicMessageFactory
+    public class LogicMagicMessageFactory : LogicMessageFactory
     {
         public const string RC4_KEY = "fhsd6f86f67rt8fw78fw789we78r9789wer6re";
+        public static readonly LogicMessageFactory Instance;
+
+        /// <summary>
+        ///     Initializes static members.
+        /// </summary>
+        static LogicMagicMessageFactory()
+        {
+            LogicMagicMessageFactory.Instance = new LogicMagicMessageFactory();
+        }
 
         /// <summary>
         ///     Creates a message by type.
         /// </summary>
-        public static PiranhaMessage CreateMessageByType(int type)
+        public override PiranhaMessage CreateMessageByType(int type)
         {
             PiranhaMessage message = null;
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic", "ClashersRepublic.Magic", "{FA91CD4C-F7CA-4192-B627-ACC023DC70B3}"
 EndProject
@@ -11,23 +11,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Tita
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Services", "ClashersRepublic.Magic.Services", "{C8EB6250-54E2-4979-8733-E08F89AD6A43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Logic", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Logic\ClashersRepublic.Magic.Services.Logic.csproj", "{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Tools.Patcher", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Tools.Patcher\ClashersRepublic.Magic.Tools.Patcher.csproj", "{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Proxy", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Proxy\ClashersRepublic.Magic.Proxy.csproj", "{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Home", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Home\ClashersRepublic.Magic.Services.Home.csproj", "{D5642E1F-164A-4A9E-8321-C933FF01ACCC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Client", "ClashersRepublic.Magic\ClashersRepublic.Magic.Client\ClashersRepublic.Magic.Client.csproj", "{2AEE0ABF-3302-47A0-9481-898E191C122F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Patcher", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Patcher\ClashersRepublic.Magic.Patcher.csproj", "{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Downloader", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Downloader\ClashersRepublic.Magic.Downloader.csproj", "{E2101C54-1CED-4DF7-9312-BB2D16273875}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Tools.Downloader", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Tools.Downloader\ClashersRepublic.Magic.Tools.Downloader.csproj", "{E2101C54-1CED-4DF7-9312-BB2D16273875}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClashersRepublic.Magic.Tools", "ClashersRepublic.Magic.Tools", "{B3E8571A-CDD2-4EE9-A21E-435C0418EE11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Dos", "ClashersRepublic.Magic\ClashersRepublic.Magic.Dos\ClashersRepublic.Magic.Dos.csproj", "{3CCBCB24-CADC-4735-A421-D13248553E4E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Tools.Csv", "ClashersRepublic.Magic\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Tools.Csv\ClashersRepublic.Magic.Tools.Csv.csproj", "{012DCD06-F0F0-4FCD-8BA5-FAC0E7123453}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Core", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Core\ClashersRepublic.Magic.Services.Core.csproj", "{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Proxy", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Proxy\ClashersRepublic.Magic.Services.Proxy.csproj", "{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Account", "ClashersRepublic.Magic.Services.Account\ClashersRepublic.Magic.Services.Account.csproj", "{7F345FD7-F589-4D42-94AE-2AAF7975C485}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,38 +51,6 @@ Global
 		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Release|x64.ActiveCfg = Release|x64
 		{43215ECC-9F60-49FF-81C3-CD801DE09CF3}.Release|x64.Build.0 = Release|x64
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Debug|x64.ActiveCfg = Debug|x64
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Debug|x64.Build.0 = Debug|x64
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Release|x64.ActiveCfg = Release|x64
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A}.Release|x64.Build.0 = Release|x64
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Debug|x64.Build.0 = Debug|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Release|x64.ActiveCfg = Release|Any CPU
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F}.Release|x64.Build.0 = Release|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Debug|x64.Build.0 = Debug|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|x64.ActiveCfg = Release|Any CPU
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC}.Release|x64.Build.0 = Release|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Debug|x64.Build.0 = Debug|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|x64.ActiveCfg = Release|Any CPU
-		{2AEE0ABF-3302-47A0-9481-898E191C122F}.Release|x64.Build.0 = Release|Any CPU
 		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -117,6 +83,30 @@ Global
 		{012DCD06-F0F0-4FCD-8BA5-FAC0E7123453}.Release|Any CPU.Build.0 = Release|Any CPU
 		{012DCD06-F0F0-4FCD-8BA5-FAC0E7123453}.Release|x64.ActiveCfg = Release|Any CPU
 		{012DCD06-F0F0-4FCD-8BA5-FAC0E7123453}.Release|x64.Build.0 = Release|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Debug|x64.Build.0 = Debug|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Release|x64.ActiveCfg = Release|Any CPU
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0}.Release|x64.Build.0 = Release|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Debug|x64.Build.0 = Debug|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Release|x64.ActiveCfg = Release|Any CPU
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86}.Release|x64.Build.0 = Release|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Debug|x64.Build.0 = Debug|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|x64.ActiveCfg = Release|Any CPU
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,15 +115,14 @@ Global
 		{2C270700-8C61-4CAF-AECB-E7EC5FACEBDA} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{43215ECC-9F60-49FF-81C3-CD801DE09CF3} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{C8EB6250-54E2-4979-8733-E08F89AD6A43} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
-		{4AC76F21-4318-4BFF-9EB8-35AD3C11BC3A} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
-		{0183C8FA-7365-4FD7-B789-2A5EDC526D8F} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
-		{D5642E1F-164A-4A9E-8321-C933FF01ACCC} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
-		{2AEE0ABF-3302-47A0-9481-898E191C122F} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{1DF27A9E-2324-4EE7-9211-3F85F61E1A55} = {B3E8571A-CDD2-4EE9-A21E-435C0418EE11}
 		{E2101C54-1CED-4DF7-9312-BB2D16273875} = {B3E8571A-CDD2-4EE9-A21E-435C0418EE11}
 		{B3E8571A-CDD2-4EE9-A21E-435C0418EE11} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{3CCBCB24-CADC-4735-A421-D13248553E4E} = {FA91CD4C-F7CA-4192-B627-ACC023DC70B3}
 		{012DCD06-F0F0-4FCD-8BA5-FAC0E7123453} = {B3E8571A-CDD2-4EE9-A21E-435C0418EE11}
+		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{7F345FD7-F589-4D42-94AE-2AAF7975C485} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9AC9358-C999-40A2-8BE8-E0A1C68DF50A}

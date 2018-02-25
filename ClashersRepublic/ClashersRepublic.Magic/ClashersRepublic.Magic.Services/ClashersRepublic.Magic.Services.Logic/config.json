@@ -1,8 +1,0 @@
-{
-  "server_id": 0,
-  "resources": {
-    "service_file": "https://raw.githubusercontent.com/Mimi8298/services/master/services.json",
-    "database_file": "https://raw.githubusercontent.com/Mimi8298/services/master/databases.json",
-    "config_server": "https://raw.githubusercontent.com/Mimi8298/services/master/s/"
-  }
-}
