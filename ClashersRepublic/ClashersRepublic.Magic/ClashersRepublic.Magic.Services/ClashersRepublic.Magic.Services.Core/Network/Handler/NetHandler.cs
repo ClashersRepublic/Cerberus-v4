@@ -43,6 +43,7 @@
 
                     for (int i = 0; i < packet.GetNetMessageCount(); i++)
                     {
+                        messages[i].Decode();
                         this._messageManager.ReceiveMessage(messages[i]);
                     }
                 }
@@ -78,7 +79,7 @@
         /// <summary>
         ///     Sends the specified packet.
         /// </summary>
-        internal void Send(NetMQSocket socket, NetPacket packet)
+        internal void Send(NetSocket socket, NetPacket packet)
         {
             this._sendQueue.Enqueue(new SendItem(packet, socket));
         }
@@ -94,12 +95,12 @@
         private struct SendItem
         {
             internal readonly NetPacket Packet;
-            internal readonly NetMQSocket DestinationSocket;
+            internal readonly NetSocket DestinationSocket;
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="SendItem"/> struct.
             /// </summary>
-            internal SendItem(NetPacket packet, NetMQSocket socket)
+            internal SendItem(NetPacket packet, NetSocket socket)
             {
                 this.Packet = packet;
                 this.DestinationSocket = socket;

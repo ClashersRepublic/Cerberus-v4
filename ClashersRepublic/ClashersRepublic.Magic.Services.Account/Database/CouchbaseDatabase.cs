@@ -18,9 +18,10 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="CouchbaseDatabase"/> class.
         /// </summary>
-        internal CouchbaseDatabase(ClientConfiguration configuration)
+        internal CouchbaseDatabase(ClientConfiguration configuration, string userName, string password)
         {
             this._cluster = new Cluster(configuration);
+            this._cluster.Authenticate(userName, password);
             this._accountBucket = this._cluster.OpenBucket("magic-accounts");
             this._counterBucket = this._cluster.OpenBucket("magic-counters");
         }
@@ -31,6 +32,26 @@
         public int GetHigherId()
         {
             return (int) this._counterBucket.Get<ulong>("acc-counters").Value;
+        }
+
+        /// <summary>
+        ///     Sets the higher id.
+        /// </summary>
+        public void SetHigherId(int id)
+        {
+            this._counterBucket.Replace(new Document<ulong>
+            {
+                Id = "acc-counters",
+                Content = (ulong) id
+            });
+        }
+
+        /// <summary>
+        ///     Sets the higher id.
+        /// </summary>
+        public void IncrementHigherId()
+        {
+            this._counterBucket.Increment("acc-counters");
         }
 
         /// <summary>

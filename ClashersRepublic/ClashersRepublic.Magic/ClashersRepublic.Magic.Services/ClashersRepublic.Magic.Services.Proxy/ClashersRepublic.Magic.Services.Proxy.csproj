@@ -49,7 +49,8 @@
     <Compile Include="Network\NetworkManager.cs" />
     <Compile Include="Network\NetworkMessaging.cs" />
     <Compile Include="Network\NetworkToken.cs" />
-    <Compile Include="Network\Session\NetSessionManager.cs" />
+    <Compile Include="Network\Session\NetProxySession.cs" />
+    <Compile Include="Network\Session\NetProxySessionManager.cs" />
     <Compile Include="Network\Udp\NetworkUdpGateway.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

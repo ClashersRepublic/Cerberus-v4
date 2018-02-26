@@ -19,13 +19,14 @@
         /// </summary>
         internal NetPacket()
         {
+            this._protocolVersion = 1;
             this._messages = new LogicArrayList<NetMessage>();
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetPacket"/> class.
         /// </summary>
-        internal NetPacket(byte[] buffer, int length)
+        internal NetPacket(byte[] buffer, int length) : this()
         {
             this.Decode(buffer, length);
         }
@@ -64,7 +65,7 @@
 
                         for (int i = 0; i < messageCount; i++)
                         {
-                            short messageType = stream.ReadShort();
+                            int messageType = stream.ReadVInt();
                             int encodingLength = stream.ReadVInt();
                             byte[] encodingByteArray = stream.ReadBytes(encodingLength, 0xFFFFFF);
 
@@ -76,10 +77,12 @@
                                 continue;
                             }
 
-                            message.SetSessionId(this._sessionId, length);
+                            message.SetSessionId(this._sessionId, this._sessionIdLength);
                             message.SetServiceNodeType(this._serviceNodeType);
                             message.SetServiceNodeId(this._serviceNodeId);
                             message.GetByteStream().SetByteArray(encodingByteArray, encodingLength);
+
+                            this._messages.Add(message);
                         }
                     }
                 }

@@ -7,6 +7,8 @@
     internal interface IDatabase
     {
         int GetHigherId();
+        void SetHigherId(int id);
+        void IncrementHigherId();
 
         bool InsertDocument(long id, Account account);
         Task<IDocumentResult<Account>> InsertDocumentAsync(long id, Account account);

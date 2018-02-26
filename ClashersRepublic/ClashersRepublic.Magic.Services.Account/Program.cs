@@ -3,6 +3,7 @@
     using System;
     using System.Drawing;
     using System.Reflection;
+
     using ClashersRepublic.Magic.Services.Account.Handler;
     using ClashersRepublic.Magic.Services.Core;
 

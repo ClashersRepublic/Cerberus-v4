@@ -1,8 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
-    using System;
-    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
-    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
     using ClashersRepublic.Magic.Services.Core.Web;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
@@ -12,18 +9,20 @@
         private static string _netVersion;
         private static string _netEnvironment;
 
-        private static LogicArrayList<NetMQSocket>[] _endPoints;
+        private static int[] _scrambler;
+        private static LogicArrayList<NetSocket>[] _endPoints;
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         public static void Initialize()
         {
-            NetManager._endPoints = new LogicArrayList<NetMQSocket>[28];
+            NetManager._scrambler = new int[28];
+            NetManager._endPoints = new LogicArrayList<NetSocket>[28];
 
             for (int i = 0; i < 28; i++)
             {
-                NetManager._endPoints[i] = new LogicArrayList<NetMQSocket>(10);
+                NetManager._endPoints[i] = new LogicArrayList<NetSocket>(10);
             }
 
             NetManager.LoadConfig();
@@ -65,6 +64,16 @@
                         for (int i = 0; i < proxyArray.Size(); i++)
                         {
                             NetManager.CreateSocket(proxyArray.GetJSONString(i).GetStringValue(), 1);
+                        }
+                    }
+
+                    LogicJSONArray accountArray = nodeObject.GetJSONArray("account");
+
+                    if (accountArray != null)
+                    {
+                        for (int i = 0; i < accountArray.Size(); i++)
+                        {
+                            NetManager.CreateSocket(accountArray.GetJSONString(i).GetStringValue(), 2);
                         }
                     }
 
@@ -138,14 +147,14 @@
         {
             if (serviceNodeType > -1 && serviceNodeType < NetManager._endPoints.Length)
             {
-                NetManager._endPoints[serviceNodeType].Add(new DealerSocket(">tcp://" + host + ":" + NetUtils.GetNetPort(serviceNodeType)));
+                NetManager._endPoints[serviceNodeType].Add(new NetSocket(serviceNodeType, NetManager._endPoints[serviceNodeType].Count, host));
             }
         }
 
         /// <summary>
-        ///     Gets the <see cref="NetMQSocket"/> of the specified service node.
+        ///     Gets the <see cref="NetSocket"/> of the specified service node.
         /// </summary>
-        public static NetMQSocket GetServiceNodeEndPoint(int serviceNodeType, int serviceNodeId)
+        public static NetSocket GetServiceNodeEndPoint(int serviceNodeType, int serviceNodeId)
         {
             if (serviceNodeType > -1 && serviceNodeType < NetManager._endPoints.Length)
             {
@@ -153,6 +162,28 @@
             }
 
             Logging.Warning(typeof(NetManager), "NetManager::getServiceNodeEndPoint serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets a random <see cref="NetSocket"/> instance.
+        /// </summary>
+        public static NetSocket GetRandomEndPoint(int serviceNodeType)
+        {
+            if (serviceNodeType > -1 && serviceNodeType < NetManager._endPoints.Length)
+            {
+                if (NetManager._endPoints[serviceNodeType].Count != 0)
+                {
+                    NetSocket socket = NetManager._endPoints[serviceNodeType][NetManager._scrambler[serviceNodeType]];
+                    NetManager._scrambler[serviceNodeType] = NetManager._scrambler[serviceNodeType] % NetManager._endPoints[serviceNodeType].Count;
+                    return socket;
+                }
+            }
+            else
+            {
+                Logging.Warning(typeof(NetManager), "NetManager::getRandomEndPoint serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+            }
 
             return null;
         }

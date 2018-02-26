@@ -1,9 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Session
 {
-    using ClashersRepublic.Magic.Titan.Math;
-
     public class UpdateSessionSocketListMessage : NetMessage
     {
+        private bool[] _isSetList;
         private byte[] _sessionSocketList;
 
         /// <summary>
@@ -11,7 +10,8 @@
         /// </summary>
         public UpdateSessionSocketListMessage() : base()
         {
-            // UpdateSessionSocketListMessage.
+            this._isSetList = new bool[28];
+            this._sessionSocketList = new byte[28];
         }
 
         /// <summary>
@@ -20,6 +20,8 @@
         public override void Destruct()
         {
             base.Destruct();
+
+            this._isSetList = null;
             this._sessionSocketList = null;
         }
 
@@ -29,7 +31,19 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteBytesWithoutLength(this._sessionSocketList, 28);
+
+            for (int i = 0; i < 28; i++)
+            {
+                this.Stream.WriteBoolean(this._isSetList[i]);
+            }
+
+            for (int i = 0; i < 28; i++)
+            {
+                if (this._isSetList[i])
+                {
+                    this.Stream.WriteByte(this._sessionSocketList[i]);
+                }
+            }
         }
 
         /// <summary>
@@ -38,7 +52,19 @@
         public override void Decode()
         {
             base.Decode();
-            this._sessionSocketList = this.Stream.ReadBytes(28, 28);
+
+            for (int i = 0; i < 28; i++)
+            {
+                this._isSetList[i] = this.Stream.ReadBoolean();
+            }
+
+            for (int i = 0; i < 28; i++)
+            {
+                if (this._isSetList[i])
+                {
+                    this._sessionSocketList[i] = this.Stream.ReadByte();
+                }
+            }
         }
 
         /// <summary>
@@ -65,6 +91,24 @@
         public void SetSessionSocketList(byte[] value)
         {
             this._sessionSocketList = value;
+        }
+
+        /// <summary>
+        ///     Removes the set socket list.
+        /// </summary>
+        public bool[] RemoveIsSetList()
+        {
+            bool[] tmp = this._isSetList;
+            this._isSetList = null;
+            return tmp;
+        }
+
+        /// <summary>
+        ///     Sets the set list.
+        /// </summary>
+        public void SetIsSetList(bool[] value)
+        {
+            this._isSetList = value;
         }
     }
 }

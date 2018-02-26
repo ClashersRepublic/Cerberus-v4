@@ -1,9 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Network.Message
 {
     using ClashersRepublic.Magic.Services.Account.Game;
+    using ClashersRepublic.Magic.Services.Account.Network.Session;
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
+    using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Titan.Math;
 
@@ -20,7 +22,7 @@
                     this.LoginClientMessageReceived((LoginClientMessage) message);
                     break;
                 case 10103:
-                    this.CreateAccountMessage((CreateAccountMessage) message);
+                    this.CreateAccountMessageReceived((CreateAccountMessage) message);
                     break;
                 case 10104:
                     this.CreateAccountBanMessageReceived((CreateAccountBanMessage) message);
@@ -65,15 +67,34 @@
                     {
                         if (account.PassToken.Equals(message.RemovePassToken()))
                         {
-                            LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
+                            NetAccountSession session = NetAccountSessionManager.TryCreate(account, message.GetSessionId());
 
-                            loginClientOkMessage.SetAccountId(account.Id);
-                            loginClientOkMessage.SetHomeId(account.Id);
-                            loginClientOkMessage.SetPassToken(account.PassToken);
+                            if (session != null)
+                            {
+                                if (account.Session != null)
+                                {
+                                    // Abort
+                                }
 
-                            this.SendResponseMessage(message, loginClientOkMessage);
+                                session.SetServiceNodeId(1, message.GetServiceNodeId());
+                                session.SetServiceNodeId(2, ServiceCore.ServiceNodeId);
+                                session.SetServiceNodeId(9, account.Id.GetHigherInt());
 
-                            return;
+                                account.SetSession(session);
+
+                                LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
+                                UpdateSessionSocketListMessage updateSessionSocketListMessage = new UpdateSessionSocketListMessage();
+
+                                loginClientOkMessage.SetAccountId(account.Id);
+                                loginClientOkMessage.SetHomeId(account.Id);
+                                loginClientOkMessage.SetPassToken(account.PassToken);
+                                loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
+                                updateSessionSocketListMessage.SetSessionSocketList(session.ServiceNodeIDs);
+                                
+                                this.SendResponseMessage(message, loginClientOkMessage);            
+
+                                return;
+                            }
                         }
                     }
                 }
@@ -85,9 +106,9 @@
         }
 
         /// <summary>
-        ///     Called when the <see cref="CreateAccountMessage"/> is received.
+        ///     Called when the <see cref="CreateAccountMessageReceived"/> is received.
         /// </summary>
-        internal void CreateAccountMessage(CreateAccountMessage message)
+        internal void CreateAccountMessageReceived(CreateAccountMessage message)
         {
             if (AccountManager.TryCreateAccount(out LogicLong accountId, out Account account))
             {

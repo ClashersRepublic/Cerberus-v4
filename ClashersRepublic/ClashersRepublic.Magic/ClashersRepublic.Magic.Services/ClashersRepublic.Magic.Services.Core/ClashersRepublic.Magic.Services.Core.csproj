@@ -239,6 +239,7 @@
     <Compile Include="Network\NetManager.cs" />
     <Compile Include="Network\NetMessaging.cs" />
     <Compile Include="Network\NetPacket.cs" />
+    <Compile Include="Network\NetSocket.cs" />
     <Compile Include="Network\NetUtils.cs" />
     <Compile Include="Network\Session\NetSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

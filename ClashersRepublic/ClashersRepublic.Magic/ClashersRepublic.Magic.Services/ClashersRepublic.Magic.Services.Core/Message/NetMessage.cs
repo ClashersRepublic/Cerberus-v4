@@ -20,6 +20,14 @@
         }
 
         /// <summary>
+        ///     Gets the session id.
+        /// </summary>
+        public byte[] GetSessionId()
+        {
+            return this.SessionId;
+        }
+
+        /// <summary>
         ///     Removes the session id.
         /// </summary>
         public byte[] RemoveSessionId()
@@ -75,7 +83,7 @@
         /// </summary>
         public byte GetServiceNodeId()
         {
-            return this.ServiceNodeType;
+            return this.ServiceNodeId;
         }
 
         /// <summary>

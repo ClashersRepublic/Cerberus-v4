@@ -17,10 +17,10 @@
             {
                 Servers = new List<Uri>
                 {
-                    new Uri("127.0.0.1")
+                    new Uri("http://127.0.0.1")
                 }
             };
-            DatabaseManager._database = new CouchbaseDatabase(configuration);
+            DatabaseManager._database = new CouchbaseDatabase(configuration, "MagicServer", "HlB18qOxGj1DPLYbQof4cjoAN9SxMpuwoOymYxrQs13QtTbB2313JNkltbZAF7pp");
         }
 
         /// <summary>

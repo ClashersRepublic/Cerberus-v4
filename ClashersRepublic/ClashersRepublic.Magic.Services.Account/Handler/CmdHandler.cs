@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Services.Account.Network.Session;
 
     internal static class CmdHandler
     {
@@ -25,6 +26,8 @@
                             case "close":
                             case "quit":
                                 CmdHandler.Close();
+                                break;
+                            case "test":
                                 break;
                         }
                     }

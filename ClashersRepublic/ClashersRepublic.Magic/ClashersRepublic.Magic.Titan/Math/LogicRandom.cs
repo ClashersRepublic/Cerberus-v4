@@ -48,10 +48,10 @@
             {
                 seed = -1;
             }
-
+            
             int tmp = seed ^ (seed << 13);
             int tmp2 = tmp ^ (tmp >> 17);
-
+            
             return tmp2 ^ 32 * tmp2;
         }
 
@@ -73,6 +73,14 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Returns a random int between 0 and Max.
+        /// </summary>
+        public int Rand()
+        {
+            return this._seed = this.IterateRandomSeed(this._seed);
         }
 
         /// <summary>

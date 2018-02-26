@@ -1,7 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Game
 {
     using System.Collections.Concurrent;
-    using System.Runtime.CompilerServices;
+
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Titan.Math;
@@ -97,10 +97,15 @@
 
             if (AccountManager.TryAdd(account))
             {
-                if (DatabaseManager.GetDatabase().InsertDocument(accountId, account))
+                IDatabase database = DatabaseManager.GetDatabase();
+
+                if (database.InsertDocument(accountId, account))
                 {
+                    database.IncrementHigherId();
                     return true;
                 }
+
+                AccountManager.TryRemove(accountId, out account);
             }
 
             return false;

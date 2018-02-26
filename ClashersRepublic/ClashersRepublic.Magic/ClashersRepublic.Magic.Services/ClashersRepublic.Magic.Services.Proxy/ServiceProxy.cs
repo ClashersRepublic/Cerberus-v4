@@ -4,12 +4,11 @@
     using ClashersRepublic.Magic.Logic.Data;
 
     using ClashersRepublic.Magic.Services.Core;
-    using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Services.Proxy.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
-
+    using ClashersRepublic.Magic.Services.Proxy.Network.Session;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -42,12 +41,13 @@
             LogicDataTables.Initialize();
             ServiceProxy.Random = new LogicRandom(LogicTimeUtil.GetTimestamp());
         }
-
+        
         /// <summary>
         ///     Initializes the network part.
         /// </summary>
         internal static void InitNetwork()
         {
+            NetProxySessionManager.Initialize();
             NetworkManager.Initialize();
             MessageHandler.Initialize();
         }

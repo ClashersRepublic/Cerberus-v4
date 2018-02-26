@@ -1,8 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
-    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
+    using System;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Network.Handler;
+
     using ClashersRepublic.Magic.Titan.DataStream;
 
     public static class NetMessaging
@@ -35,35 +36,45 @@
         /// </summary>
         public static void Send(int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionLength, NetMessage message)
         {
-            NetMQSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
+            NetSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
 
             if (destinationSocket != null)
             {
-                NetPacket netPacket = new NetPacket();
-
-                netPacket.AddMessage(message);
-                netPacket.SetSessionId(sessionId, sessionLength);
-                netPacket.SetServiceNodeId(ServiceCore.ServiceNodeId);
-                netPacket.SetServiceNodeType(ServiceCore.ServiceNodeType);
-
-                NetMessaging._messageHandler.Send(destinationSocket, netPacket);
+                NetMessaging.Send(destinationSocket, sessionId, sessionLength, message);
             }
+        }
+
+        /// <summary>
+        ///     Sends the specified message.
+        /// </summary>
+        public static void Send(NetSocket destinationSocket, byte[] sessionId, int sessionLength, NetMessage message)
+        {
+            if (destinationSocket == null)
+            {
+                throw new ArgumentNullException("destinationSocket");
+            }
+
+            message.Encode();
+
+            NetPacket netPacket = new NetPacket();
+
+            netPacket.AddMessage(message);
+            netPacket.SetSessionId(sessionId, sessionLength);
+            netPacket.SetServiceNodeId(ServiceCore.ServiceNodeId);
+            netPacket.SetServiceNodeType(ServiceCore.ServiceNodeType);
+
+            NetMessaging._messageHandler.Send(destinationSocket, netPacket);
         }
 
         /// <summary>
         ///     Sends the specified <see cref="NetPacket"/> instance.
         /// </summary>
-        internal static void InternalSend(NetMQSocket serverSocket, NetPacket packet)
+        internal static void InternalSend(NetSocket serverSocket, NetPacket packet)
         {
             ByteStream byteStream = new ByteStream(10);
 
             packet.Encode(byteStream);
-
-            int encodingLength = byteStream.GetOffset();
-            byte[] encodingByteArray = byteStream.GetByteArray();
-
-            NetGateway.Send(encodingByteArray, encodingLength, serverSocket);
-
+            serverSocket.Send(byteStream.GetByteArray(), byteStream.GetOffset());
             byteStream.Destruct();
         }
 

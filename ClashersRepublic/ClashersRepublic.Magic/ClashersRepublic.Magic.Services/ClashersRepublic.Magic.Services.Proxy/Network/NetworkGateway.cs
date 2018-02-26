@@ -3,6 +3,7 @@
     using System;
     using System.Net;
     using System.Net.Sockets;
+     
     using ClashersRepublic.Magic.Services.Core;
 
     internal class NetworkGateway
@@ -109,10 +110,8 @@
                         {
                             try
                             {
-                                if (!token.HandleData())
+                                if (token.HandleData())
                                 {
-                                    NetworkGateway.Disconnect(asyncEvent);
-
                                     if (token.ConnectionId != 0)
                                     {
                                         if (!token.Socket.ReceiveAsync(asyncEvent))
@@ -120,6 +119,10 @@
                                             NetworkGateway.ProcessReceive(asyncEvent);
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    NetworkGateway.Disconnect(asyncEvent);
                                 }
                             }
                             catch (Exception)

@@ -3,6 +3,7 @@
     using System.Timers;
 
     using ClashersRepublic.Magic.Logic.Data;
+    using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Network.Message;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
@@ -10,10 +11,9 @@
     
     internal static class ServiceAccount
     {
-        private const int ServiceNodeType = 1;
+        private const int ServiceNodeType = 2;
 
         internal static Timer TitleTimer { get; private set; }
-        internal static NetAccountSessionMan Session { get; private set; }
 
         /// <summary>
         ///     Initializes this instance.
@@ -22,6 +22,8 @@
         {
             ServiceCore.Initialize(ServiceAccount.ServiceNodeType, new NetMessageManager(), args);
             ServiceAccount.InitLogic();
+            ServiceAccount.InitGame();
+            ServiceAccount.InitNetwork();
 
             ServiceAccount.TitleTimer = new Timer(50);
             ServiceAccount.TitleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
@@ -34,6 +36,7 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
+            DatabaseManager.Initialize();
         }
 
         /// <summary>
@@ -41,7 +44,7 @@
         /// </summary>
         internal static void InitNetwork()
         {
-            ServiceAccount.Session = new NetAccountSession();
+            NetAccountSessionManager.Initialize();
         }
 
         /// <summary>

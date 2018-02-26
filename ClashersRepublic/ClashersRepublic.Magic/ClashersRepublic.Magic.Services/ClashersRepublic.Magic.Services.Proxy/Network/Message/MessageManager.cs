@@ -1,11 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.Message
 {
-    using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Core.Message.Account;
+    using ClashersRepublic.Magic.Services.Core.Network;
+    using ClashersRepublic.Magic.Services.Proxy.Network.Session;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
-    using ClashersRepublic.Magic.Titan.Util;
 
     internal class MessageManager
     {
@@ -91,7 +93,7 @@
         {
             if (message.GetProtocol() == 1)
             {
-                if (message.GetMajorVersion() == 9 && message.GetBuildVersion() == 256)
+                if (message.GetMajorVersion() == LogicVersion.MajorVersion && message.GetBuildVersion() == LogicVersion.BuildVersion)
                 {
                     this.SendLoginFailedMessage(7);
                 }
@@ -111,15 +113,77 @@
         /// </summary>
         private void LoginMessageReceived(LoginMessage message)
         {
-            if (message.ClientMajorVersion == 9 && message.ClientBuildVersion == 256)
+            this._messaging.ScramblerSeed = message.ScramblerSeed;
+
+            if (message.ClientMajorVersion == LogicVersion.MajorVersion && message.ClientBuildVersion == LogicVersion.BuildVersion)
             {
                 if (message.ResourceSha == ResourceManager.FingerprintSha)
                 {
-                    if (!message.AccountId.IsZero())
+                    if (message.AccountId.IsZero())
                     {
                         if (message.PassToken == null)
                         {
+                            NetSocket socket = NetManager.GetRandomEndPoint(2);
 
+                            if (socket != null)
+                            {
+                                NetProxySession session = NetProxySessionManager.TryCreate(this._client);
+
+                                if (session != null)
+                                {
+                                    this._client.SetSession(session);
+                                    byte[] sessionId = session.SessionId;
+
+                                    NetMessaging.Send(socket, sessionId, sessionId.Length, new CreateAccountMessage());
+                                }
+                                else
+                                {
+                                    this.SendLoginFailedMessage(1);
+                                }
+                            }
+                            else
+                            {
+                                this.SendLoginFailedMessage(1, "Internal server error");
+                            }
+                        }
+                        else
+                        {
+                            this.SendLoginFailedMessage(1);
+                        }
+                    }
+                    else
+                    {
+                        if (message.PassToken != null)
+                        {
+                            NetSocket socket = NetManager.GetServiceNodeEndPoint(2, message.AccountId.GetHigherInt());
+
+                            if (socket != null)
+                            {
+                                NetProxySession session = NetProxySessionManager.TryCreate(this._client);
+
+                                if (session != null)
+                                {
+                                    this._client.SetSession(session);
+                                    byte[] sessionId = session.SessionId;
+
+                                    LoginClientMessage loginClientMessage = new LoginClientMessage();
+                                    loginClientMessage.SetAccountId(message.AccountId);
+                                    loginClientMessage.SetPassToken(message.PassToken);
+                                    NetMessaging.Send(socket, sessionId, sessionId.Length, loginClientMessage);
+                                }
+                                else
+                                {
+                                    this.SendLoginFailedMessage(1);
+                                }
+                            }
+                            else
+                            {
+                                this.SendLoginFailedMessage(1, "Internal server error");
+                            }
+                        }
+                        else
+                        {
+                            this.SendLoginFailedMessage(1);
                         }
                     }
                 }

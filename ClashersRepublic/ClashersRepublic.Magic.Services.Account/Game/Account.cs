@@ -1,7 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Game
 {
+    using ClashersRepublic.Magic.Services.Account.Network.Session;
     using ClashersRepublic.Magic.Services.Core;
-    using ClashersRepublic.Magic.Services.Core.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -11,7 +12,7 @@
         ///     Gets the <see cref="Account"/> id.
         /// </summary>
         internal LogicLong Id { get; }
-
+        
         /// <summary>
         ///     Gets the password token.
         /// </summary>
@@ -33,9 +34,19 @@
         internal AccountBan CurrentBan { get; private set; }
 
         /// <summary>
+        ///     Gets the <see cref="NetAccountSession"/> in progress.
+        /// </summary>
+        internal NetAccountSession Session { get; private set; }
+
+        /// <summary>
         ///     Gets the total ban count.
         /// </summary>
         internal int TotalBan { get; private set; }
+
+        /// <summary>
+        ///     Gets the account created date.
+        /// </summary>
+        internal string AccountCreatedDate { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Account"/> class.
@@ -45,8 +56,17 @@
             this.Id = accountId;
             this.PassToken = passToken;
 
+            this.AccountCreatedDate = LogicTimeUtil.GetTimestampMS();
             this.IPs = new LogicArrayList<string>(20);
             this.LastSessions = new LogicArrayList<int>(50);
+        }
+
+        /// <summary>
+        ///     Sets the account created date.
+        /// </summary>
+        public void SetAccountCreatedDate(string value)
+        {
+            this.AccountCreatedDate = value;
         }
 
         /// <summary>
@@ -108,6 +128,14 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="NetAccountSession"/> instance.
+        /// </summary>
+        internal void SetSession(NetAccountSession session)
+        {
+            this.Session = session;
         }
 
         internal class AccountBan
