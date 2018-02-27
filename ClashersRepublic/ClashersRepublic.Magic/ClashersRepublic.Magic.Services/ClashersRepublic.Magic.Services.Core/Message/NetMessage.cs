@@ -12,7 +12,7 @@
         protected byte ServiceNodeType;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetMessage"/> class.
+        ///     Initializes a new instance of the <see cref="NetMessage" /> class.
         /// </summary>
         public NetMessage()
         {
@@ -111,7 +111,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="ByteStream"/> instance.
+        ///     Gets the <see cref="ByteStream" /> instance.
         /// </summary>
         public ByteStream GetByteStream()
         {

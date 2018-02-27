@@ -92,7 +92,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Utils
             {
                 #if NETSTANDARD1_3
                 return Volatile.Read(ref m_load);
-                #else
+                                #else
                 Thread.MemoryBarrier();
                 return this.m_load;
                 #endif

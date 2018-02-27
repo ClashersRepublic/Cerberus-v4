@@ -7,14 +7,6 @@
         private LogicLong _avatarId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CreateAvatarOkMessage"/> instance.
-        /// </summary>
-        public CreateAvatarOkMessage() : base()
-        {
-            // CreateAvatarOkMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

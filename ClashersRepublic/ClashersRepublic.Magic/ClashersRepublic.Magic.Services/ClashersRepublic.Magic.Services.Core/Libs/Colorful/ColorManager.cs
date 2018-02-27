@@ -85,7 +85,7 @@
                 #if NETSTANDARD1_3
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                #endif
+                                #endif
                 return this.GetConsoleColorNative(color);
 
                 #if NETSTANDARD1_3
@@ -94,7 +94,7 @@
                 {
                     return color.ToNearestConsoleColor();
                 }
-                #endif
+                                #endif
             }
             // If no NETSTANDARD1_3, but still not running on Windows, catch the exception and approximate the requested color.
             catch

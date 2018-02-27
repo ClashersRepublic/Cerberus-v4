@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Account
 {
-    using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class CreateAccountOkMessage : NetMessage
@@ -8,14 +7,6 @@
         private LogicLong _accountId;
         private LogicLong _homeId;
         private string _passToken;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="CreateAccountOkMessage"/> instance.
-        /// </summary>
-        public CreateAccountOkMessage() : base()
-        {
-            // CreateAccountOkMessage.
-        }
 
         /// <summary>
         ///     Destructs this instance.

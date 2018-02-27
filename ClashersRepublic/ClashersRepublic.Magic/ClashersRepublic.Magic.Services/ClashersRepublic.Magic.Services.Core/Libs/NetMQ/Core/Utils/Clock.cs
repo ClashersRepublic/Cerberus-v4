@@ -110,7 +110,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Utils
         {
             #if NETSTANDARD1_3
             return 0;
-            #else
+                        #else
             return Clock.s_rdtscSupported ? (long) Opcode.Rdtsc() : 0;
             #endif
         }

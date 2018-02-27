@@ -16,14 +16,6 @@
         private int _daysSinceStartedPlaying;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginClientOkMessage"/> instance.
-        /// </summary>
-        public LoginClientOkMessage() : base()
-        {
-            // LoginClientOkMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

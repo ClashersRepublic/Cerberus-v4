@@ -2,15 +2,16 @@
 {
     using System;
     using System.Net.Sockets;
+
     using ClashersRepublic.Magic.Services.Core;
 
     internal class NetworkToken
     {
-        private byte[] _receiveBytes;
-        private int _receiveBytesLength;
-
         private const int MaxAllocBufferSize = 32768;
         private const int InitAllocBufferSize = 1024;
+
+        private byte[] _receiveBytes;
+        private int _receiveBytesLength;
 
         /// <summary>
         ///     Gets the <see cref="System.Net.Sockets.Socket"/> instance.
@@ -139,6 +140,11 @@
         {
             if (this.ConnectionId != 0)
             {
+                if (this._receiveBytesLength != length)
+                {
+                    Array.Copy(this._receiveBytes, length, this._receiveBytes, 0, this._receiveBytesLength - length);
+                }
+
                 this._receiveBytesLength -= length;
             }
         }

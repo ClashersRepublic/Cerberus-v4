@@ -3,14 +3,6 @@
     public class AccountBanRevokedMessage : NetMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AccountBanRevokedMessage"/> instance.
-        /// </summary>
-        public AccountBanRevokedMessage() : base()
-        {
-            // AccountBanRevokedMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

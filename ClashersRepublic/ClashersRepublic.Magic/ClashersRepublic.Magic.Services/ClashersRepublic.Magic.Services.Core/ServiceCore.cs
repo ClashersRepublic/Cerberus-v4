@@ -7,7 +7,7 @@
     public static class ServiceCore
     {
         private static bool _initialized;
-        
+
         /// <summary>
         ///     Gets the service node type.
         /// </summary>

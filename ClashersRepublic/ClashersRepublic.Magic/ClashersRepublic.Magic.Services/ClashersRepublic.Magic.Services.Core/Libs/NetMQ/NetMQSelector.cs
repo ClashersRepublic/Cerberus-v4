@@ -142,7 +142,7 @@
                     throw new FaultException(x, xMsg);
                     #else
                     throw new FaultException(innerException: x, message: "Within SocketUtility.Select");
-                    #endif
+                                        #endif
                 }
 
                 for (int i = 0; i < itemsCount; i++)

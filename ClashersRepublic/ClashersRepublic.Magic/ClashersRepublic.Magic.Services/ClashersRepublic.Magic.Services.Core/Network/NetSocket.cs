@@ -21,7 +21,7 @@
         public NetMQSocket Socket { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetSocket"/> class.
+        ///     Initializes a new instance of the <see cref="NetSocket" /> class.
         /// </summary>
         public NetSocket(int type, int id, string socket)
         {

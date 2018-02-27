@@ -374,7 +374,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core
                     throw NetMQException.Create(xMsg, ErrorCode.TooManyOpenSockets);
                     #else
                     throw NetMQException.Create(ErrorCode.TooManyOpenSockets);
-                    #endif
+                                        #endif
                 }
 
                 // Choose a slot for the socket.

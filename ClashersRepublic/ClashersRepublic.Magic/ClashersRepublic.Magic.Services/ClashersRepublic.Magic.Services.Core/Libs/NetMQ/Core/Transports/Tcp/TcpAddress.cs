@@ -110,7 +110,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Transports.Tcp
             {
                 #if NETSTANDARD1_3
                 var availableAddresses = Dns.GetHostEntryAsync(addrStr).Result.AddressList;
-                #else
+                                #else
                 IPAddress[] availableAddresses = Dns.GetHostEntry(addrStr).AddressList;
                 #endif
 

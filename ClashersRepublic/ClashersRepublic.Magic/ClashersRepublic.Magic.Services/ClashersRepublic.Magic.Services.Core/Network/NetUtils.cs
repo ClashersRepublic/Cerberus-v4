@@ -11,7 +11,7 @@
             {
                 return 5000 + serviceNodeType;
             }
-            
+
             return -1;
         }
     }

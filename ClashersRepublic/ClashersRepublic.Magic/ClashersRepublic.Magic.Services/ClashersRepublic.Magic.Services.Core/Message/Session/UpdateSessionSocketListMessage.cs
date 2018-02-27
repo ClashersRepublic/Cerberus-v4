@@ -6,9 +6,9 @@
         private byte[] _sessionSocketList;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UpdateSessionSocketListMessage"/> instance.
+        ///     Initializes a new instance of the <see cref="UpdateSessionSocketListMessage" /> instance.
         /// </summary>
-        public UpdateSessionSocketListMessage() : base()
+        public UpdateSessionSocketListMessage()
         {
             this._isSetList = new bool[28];
             this._sessionSocketList = new byte[28];

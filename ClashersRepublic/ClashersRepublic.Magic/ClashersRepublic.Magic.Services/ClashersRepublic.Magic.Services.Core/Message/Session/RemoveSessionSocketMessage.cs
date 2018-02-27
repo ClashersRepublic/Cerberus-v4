@@ -5,14 +5,6 @@
         private byte _sessionSocketType;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RemoveSessionSocketMessage"/> instance.
-        /// </summary>
-        public RemoveSessionSocketMessage() : base()
-        {
-            // RemoveSessionSocketMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

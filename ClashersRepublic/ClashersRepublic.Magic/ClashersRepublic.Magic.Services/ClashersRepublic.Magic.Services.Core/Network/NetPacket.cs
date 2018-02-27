@@ -15,7 +15,7 @@
         private byte[] _sessionId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetPacket"/> class.
+        ///     Initializes a new instance of the <see cref="NetPacket" /> class.
         /// </summary>
         internal NetPacket()
         {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetPacket"/> class.
+        ///     Initializes a new instance of the <see cref="NetPacket" /> class.
         /// </summary>
         internal NetPacket(byte[] buffer, int length) : this()
         {
@@ -198,7 +198,7 @@
         }
 
         /// <summary>
-        ///     Adds the specified <see cref="NetMessage"/>.
+        ///     Adds the specified <see cref="NetMessage" />.
         /// </summary>
         internal void AddMessage(NetMessage message)
         {
@@ -214,7 +214,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="NetMessage"/> count.
+        ///     Gets the <see cref="NetMessage" /> count.
         /// </summary>
         internal int GetNetMessageCount()
         {

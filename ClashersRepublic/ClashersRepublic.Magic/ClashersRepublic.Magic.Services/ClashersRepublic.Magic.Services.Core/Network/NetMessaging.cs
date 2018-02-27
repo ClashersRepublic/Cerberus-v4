@@ -3,7 +3,6 @@
     using System;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Network.Handler;
-
     using ClashersRepublic.Magic.Titan.DataStream;
 
     public static class NetMessaging
@@ -67,7 +66,7 @@
         }
 
         /// <summary>
-        ///     Sends the specified <see cref="NetPacket"/> instance.
+        ///     Sends the specified <see cref="NetPacket" /> instance.
         /// </summary>
         internal static void InternalSend(NetSocket serverSocket, NetPacket packet)
         {
@@ -79,7 +78,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="INetMessageManager"/> instance.
+        ///     Sets the <see cref="INetMessageManager" /> instance.
         /// </summary>
         public static void SetMessageManager(INetMessageManager manager)
         {

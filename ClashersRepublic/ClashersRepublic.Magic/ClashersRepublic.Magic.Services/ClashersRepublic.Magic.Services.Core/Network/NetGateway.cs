@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
     using System.Threading;
-
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
 

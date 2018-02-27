@@ -8,14 +8,6 @@
         private string _passToken;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginClientMessage"/> instance.
-        /// </summary>
-        public LoginClientMessage() : base()
-        {
-            // LoginClientMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

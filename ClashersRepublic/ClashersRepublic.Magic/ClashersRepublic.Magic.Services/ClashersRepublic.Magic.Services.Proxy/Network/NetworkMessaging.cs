@@ -37,8 +37,7 @@
         ///     Gets or Sets the scrambler seed.
         /// </summary>
         internal int ScramblerSeed { get; set; }
-
-        private bool _encrypterSet;
+        
         private int _pepperState;
 
         /// <summary>
@@ -103,7 +102,7 @@
 
                     Array.Copy(buffer, 7, encodingByteArray, 0, encodingLength);
 
-                    if (!this._encrypterSet)
+                    if (this._receiveEncrypter == null)
                     {
                         if (this._pepperState == 0)
                         {

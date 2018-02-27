@@ -7,14 +7,6 @@
         private LogicClientAvatar _logicClientAvatar;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SetAvatarDataMessage"/> instance.
-        /// </summary>
-        public SetAvatarDataMessage() : base()
-        {
-            // SetAvatarDataMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()
@@ -55,7 +47,7 @@
         }
 
         /// <summary>
-        ///     Removes the <see cref="LogicClientAvatar"/> instance.
+        ///     Removes the <see cref="LogicClientAvatar" /> instance.
         /// </summary>
         public LogicClientAvatar RemoveLogicClientAvatar()
         {
@@ -65,7 +57,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicClientAvatar"/> instance.
+        ///     Sets the <see cref="LogicClientAvatar" /> instance.
         /// </summary>
         public void SetLogicClientAvatar(LogicClientAvatar instance)
         {

@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core
 {
     using System.IO;
-
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
@@ -54,7 +53,7 @@
 
             if (ResourceManager.FingerprintJson != null)
             {
-                LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(ResourceManager.FingerprintJson);
+                LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(ResourceManager.FingerprintJson);
 
                 ResourceManager.FingerprintSha = LogicJSONHelper.GetJSONString(jsonObject, "sha");
                 ResourceManager.FingerprintVersion = LogicJSONHelper.GetJSONString(jsonObject, "version");
@@ -94,7 +93,7 @@
 
             if (File.Exists("resources.json"))
             {
-                LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(File.ReadAllText("resources.json"));
+                LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(File.ReadAllText("resources.json"));
                 LogicJSONArray contentArray = jsonObject.GetJSONArray("content");
                 LogicJSONArray chronosContentArray = jsonObject.GetJSONArray("chronosContent");
                 LogicJSONArray appStoreArray = jsonObject.GetJSONArray("appstore");

@@ -1,5 +1,4 @@
 #if !NETSTANDARD1_3
-using System.Security.Permissions;
 #endif
 
 namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ
@@ -7,6 +6,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ
     using System;
     using System.Net.Sockets;
     using System.Runtime.Serialization;
+    using System.Security.Permissions;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core;
     using JetBrains.Annotations;
 

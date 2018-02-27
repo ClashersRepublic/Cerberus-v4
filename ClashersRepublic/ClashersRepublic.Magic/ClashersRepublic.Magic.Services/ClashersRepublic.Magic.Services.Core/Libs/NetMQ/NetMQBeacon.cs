@@ -66,7 +66,7 @@
 
                     #if NET35
                     m_udpSocket.Close();
-                    #else
+                                        #else
                     this.m_udpSocket.Dispose();
                     #endif
                 }
@@ -157,7 +157,7 @@
                 // the beacon might never been configured
                 #if NET35
                 m_udpSocket?.Close();
-                #else
+                                #else
                 this.m_udpSocket?.Dispose();
                 #endif
             }
@@ -307,7 +307,7 @@
                 {
                     #if NETSTANDARD1_3
                     return m_hostName = Dns.GetHostEntryAsync(boundTo).Result.HostName;
-                    #else
+                                        #else
                     return this.m_hostName = Dns.GetHostEntry(boundTo).HostName;
                     #endif
                 }

@@ -20,7 +20,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ConsoleOut"/> class.
+        ///     Initializes a new instance of the <see cref="ConsoleOut" /> class.
         /// </summary>
         public ConsoleOut()
         {

@@ -4,33 +4,18 @@
 
     public class NetSession
     {
-        private byte[] _sessionId;
-        private string _sessionName;
-        
         private readonly NetSocket[] _serviceNodeSockets;
 
 
         /// <summary>
         ///     Gets the session id.
         /// </summary>
-        public byte[] SessionId
-        {
-            get
-            {
-                return this._sessionId;
-            }
-        }
+        public byte[] SessionId { get; private set; }
 
         /// <summary>
         ///     Gets the session name.
         /// </summary>
-        public string SessionName
-        {
-            get
-            {
-                return this._sessionName;
-            }
-        }
+        public string SessionName { get; private set; }
 
         /// <summary>
         ///     Gets the id of all servers.
@@ -54,12 +39,12 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetSession"/> class.
+        ///     Initializes a new instance of the <see cref="NetSession" /> class.
         /// </summary>
         public NetSession(byte[] sessionId, string sessionName)
         {
-            this._sessionId = sessionId;
-            this._sessionName = sessionName;
+            this.SessionId = sessionId;
+            this.SessionName = sessionName;
 
             this._serviceNodeSockets = new NetSocket[28];
         }
@@ -74,10 +59,10 @@
                 this._serviceNodeSockets[i] = null;
             }
 
-            this._sessionId = null;
-            this._sessionName = null;
+            this.SessionId = null;
+            this.SessionName = null;
         }
-        
+
         /// <summary>
         ///     Sets the service node id.
         /// </summary>
@@ -106,7 +91,7 @@
         }
 
         /// <summary>
-        ///     Sends the <see cref="UpdateSessionSocketListMessage"/> message to all service nodes.
+        ///     Sends the <see cref="UpdateSessionSocketListMessage" /> message to all service nodes.
         /// </summary>
         public void SendSessionUpdateListMessage()
         {
@@ -133,7 +118,7 @@
                     message.SetIsSetList(setSocketList);
                     message.SetSessionSocketList(sessionSocketList);
 
-                    NetMessaging.Send(i, sessionSocketList[i], this._sessionId, this._sessionId.Length, message);
+                    NetMessaging.Send(i, sessionSocketList[i], this.SessionId, this.SessionId.Length, message);
                 }
             }
         }

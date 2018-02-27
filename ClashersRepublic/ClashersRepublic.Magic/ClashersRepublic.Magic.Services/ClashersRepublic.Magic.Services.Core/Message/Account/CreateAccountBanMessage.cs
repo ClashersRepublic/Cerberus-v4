@@ -9,14 +9,6 @@
         private int _endTime;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CreateAccountBanMessage"/> instance.
-        /// </summary>
-        public CreateAccountBanMessage() : base()
-        {
-            // CreateAccountBanMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

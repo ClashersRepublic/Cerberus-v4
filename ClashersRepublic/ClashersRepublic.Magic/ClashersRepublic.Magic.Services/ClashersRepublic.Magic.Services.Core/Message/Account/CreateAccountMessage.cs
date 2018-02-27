@@ -3,14 +3,6 @@
     public class CreateAccountMessage : NetMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CreateAccountMessage"/> instance.
-        /// </summary>
-        public CreateAccountMessage() : base()
-        {
-            // CreateAccountMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

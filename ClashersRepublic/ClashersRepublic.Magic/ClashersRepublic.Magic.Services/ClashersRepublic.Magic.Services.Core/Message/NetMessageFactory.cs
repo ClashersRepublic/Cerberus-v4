@@ -7,7 +7,7 @@
     public class NetMessageFactory
     {
         /// <summary>
-        ///     Creates a new <see cref="NetMessage"/> instance by type.
+        ///     Creates a new <see cref="NetMessage" /> instance by type.
         /// </summary>
         public static NetMessage CreateMessageByType(int messageType)
         {

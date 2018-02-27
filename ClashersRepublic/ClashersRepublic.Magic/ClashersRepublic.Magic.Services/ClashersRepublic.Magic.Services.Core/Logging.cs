@@ -3,7 +3,6 @@
     using System;
     using System.Diagnostics;
     using ClashersRepublic.Magic.Titan.Debug;
-
     using CDebug = System.Diagnostics.Debug;
     using LogicDebugger = ClashersRepublic.Magic.Titan.Debug.Debugger;
 

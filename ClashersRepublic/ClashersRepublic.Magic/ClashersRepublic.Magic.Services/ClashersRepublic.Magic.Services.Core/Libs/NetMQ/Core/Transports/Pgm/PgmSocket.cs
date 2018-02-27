@@ -1,11 +1,10 @@
 ﻿#if DEBUG
-using System.Diagnostics;
-
 #endif
 
 namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Transports.Pgm
 {
     using System;
+    using System.Diagnostics;
     using System.Net.Sockets;
     using System.Text;
     using AsyncIO;
@@ -102,7 +101,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Transports.Pgm
 
                 #if NETSTANDARD1_3
                 bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-                #else
+                                #else
                 PlatformID p = Environment.OSVersion.Platform;
                 bool isWindows = true;
                 switch (p)

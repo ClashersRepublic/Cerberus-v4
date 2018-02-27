@@ -5,14 +5,6 @@
         private int _errorCode;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LoginClientFailedMessage"/> instance.
-        /// </summary>
-        public LoginClientFailedMessage() : base()
-        {
-            // LoginClientFailedMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

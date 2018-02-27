@@ -152,7 +152,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="NetSocket"/> of the specified service node.
+        ///     Gets the <see cref="NetSocket" /> of the specified service node.
         /// </summary>
         public static NetSocket GetServiceNodeEndPoint(int serviceNodeType, int serviceNodeId)
         {
@@ -167,7 +167,7 @@
         }
 
         /// <summary>
-        ///     Gets a random <see cref="NetSocket"/> instance.
+        ///     Gets a random <see cref="NetSocket" /> instance.
         /// </summary>
         public static NetSocket GetRandomEndPoint(int serviceNodeType)
         {

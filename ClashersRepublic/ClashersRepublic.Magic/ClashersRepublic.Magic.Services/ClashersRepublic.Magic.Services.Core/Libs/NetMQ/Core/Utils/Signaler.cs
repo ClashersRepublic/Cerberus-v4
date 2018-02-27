@@ -75,7 +75,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Utils
             {
                 #if NET35
                 m_writeSocket.Close();
-                #else
+                                #else
                 this.m_writeSocket.Dispose();
                 #endif
             }
@@ -87,7 +87,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Utils
             {
                 #if NET35
                 m_readSocket.Close();
-                #else
+                                #else
                 this.Handle.Dispose();
                 #endif
             }

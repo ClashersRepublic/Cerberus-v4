@@ -33,7 +33,7 @@
 
         #if NET35
         private Thread m_pollerThread;
-        #endif
+                #endif
 
         #region Scheduling
 
@@ -138,7 +138,7 @@
         {
             action();
         }
-        #endif
+                #endif
 
         #endregion
 
@@ -335,7 +335,7 @@
 
             #if NET35
             m_pollerThread = Thread.CurrentThread;
-            #else
+                        #else
             SynchronizationContext oldSynchronisationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new NetMQSynchronizationContext(this));
             this.m_isSchedulerThread.Value = true;
@@ -480,7 +480,7 @@
                 {
                     #if NET35
                     m_pollerThread = null;
-                    #else
+                                        #else
                     this.m_isSchedulerThread.Value = false;
                     SynchronizationContext.SetSynchronizationContext(oldSynchronisationContext);
                     #endif
@@ -506,7 +506,7 @@
             // If 'stop' was requested from the scheduler thread, we cannot block
             #if NET35
             if (m_pollerThread != Thread.CurrentThread)
-            #else
+                        #else
             if (!this.m_isSchedulerThread.Value)
                 #endif
             {
@@ -657,7 +657,7 @@
         }
 
         bool ISynchronizeInvoke.InvokeRequired => !CanExecuteTaskInline;
-        #endif
+                #endif
 
         #endregion
 

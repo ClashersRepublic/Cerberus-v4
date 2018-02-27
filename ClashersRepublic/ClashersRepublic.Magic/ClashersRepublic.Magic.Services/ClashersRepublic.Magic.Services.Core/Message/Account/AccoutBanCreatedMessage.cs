@@ -3,14 +3,6 @@
     public class AccoutBanCreatedMessage : NetMessage
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AccoutBanCreatedMessage"/> instance.
-        /// </summary>
-        public AccoutBanCreatedMessage() : base()
-        {
-            // AccoutBanCreatedMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

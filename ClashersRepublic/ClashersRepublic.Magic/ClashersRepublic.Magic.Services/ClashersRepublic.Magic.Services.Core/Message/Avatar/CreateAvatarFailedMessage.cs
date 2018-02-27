@@ -5,14 +5,6 @@
         private int _errorCode;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CreateAvatarFailedMessage"/> instance.
-        /// </summary>
-        public CreateAvatarFailedMessage() : base()
-        {
-            // CreateAvatarFailedMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

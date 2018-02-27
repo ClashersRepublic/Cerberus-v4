@@ -1,11 +1,11 @@
 ﻿#if !NET35
-using System.Threading.Tasks;
 #endif
 
 namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Monitoring
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using AsyncIO;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
@@ -362,7 +362,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Monitoring
 
             #if NET35
             m_isStoppedEvent.Close();
-            #else
+                        #else
             this.m_isStoppedEvent.Dispose();
             #endif
 

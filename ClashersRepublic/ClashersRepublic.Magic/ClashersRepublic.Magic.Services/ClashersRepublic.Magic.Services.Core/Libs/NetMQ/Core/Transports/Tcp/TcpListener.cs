@@ -134,7 +134,7 @@ namespace ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Core.Transports.Tcp
                 // This command is failing on linux
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     m_handle.ExclusiveAddressUse = false;
-                #else
+                                #else
                 this.m_handle.ExclusiveAddressUse = false;
                 #endif
                 this.m_handle.Bind(this.m_address.Address);

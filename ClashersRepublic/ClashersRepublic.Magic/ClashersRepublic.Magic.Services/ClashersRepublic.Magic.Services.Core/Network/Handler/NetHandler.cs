@@ -2,8 +2,6 @@
 {
     using System.Collections.Concurrent;
     using System.Threading;
-
-    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -17,7 +15,7 @@
         private INetMessageManager _messageManager;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetHandler"/> class.
+        ///     Initializes a new instance of the <see cref="NetHandler" /> class.
         /// </summary>
         public NetHandler()
         {
@@ -31,7 +29,7 @@
         }
 
         /// <summary>
-        ///     Task for the receive <see cref="Thread"/>.
+        ///     Task for the receive <see cref="Thread" />.
         /// </summary>
         private void ReceiveTask()
         {
@@ -53,7 +51,7 @@
         }
 
         /// <summary>
-        ///     Tasks for the send <see cref="Thread"/>.
+        ///     Tasks for the send <see cref="Thread" />.
         /// </summary>
         private void SendTask()
         {
@@ -85,7 +83,7 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="INetMessageManager"/> instance.
+        ///     Sets the <see cref="INetMessageManager" /> instance.
         /// </summary>
         internal void SetMessageManager(INetMessageManager manager)
         {
@@ -98,7 +96,7 @@
             internal readonly NetSocket DestinationSocket;
 
             /// <summary>
-            ///     Initializes a new instance of the <see cref="SendItem"/> struct.
+            ///     Initializes a new instance of the <see cref="SendItem" /> struct.
             /// </summary>
             internal SendItem(NetPacket packet, NetSocket socket)
             {

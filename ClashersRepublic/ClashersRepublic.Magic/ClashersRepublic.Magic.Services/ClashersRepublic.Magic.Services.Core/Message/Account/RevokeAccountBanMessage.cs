@@ -7,14 +7,6 @@
         private LogicLong _accountId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RevokeAccountBanMessage"/> instance.
-        /// </summary>
-        public RevokeAccountBanMessage() : base()
-        {
-            // RevokeAccountBanMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

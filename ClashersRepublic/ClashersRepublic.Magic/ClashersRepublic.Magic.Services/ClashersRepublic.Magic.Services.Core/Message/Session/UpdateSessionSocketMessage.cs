@@ -6,14 +6,6 @@
         private byte _sessionSocketId;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UpdateSessionSocketMessage"/> instance.
-        /// </summary>
-        public UpdateSessionSocketMessage() : base()
-        {
-            // UpdateSessionSocketMessage.
-        }
-
-        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()
