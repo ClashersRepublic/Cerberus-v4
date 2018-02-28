@@ -27,6 +27,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Account", "ClashersRepublic.Magic.Services.Account\ClashersRepublic.Magic.Services.Account.csproj", "{7F345FD7-F589-4D42-94AE-2AAF7975C485}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Avatar", "ClashersRepublic.Magic.Services.Avatar\ClashersRepublic.Magic.Services.Avatar.csproj", "{BAA71A8B-B622-4009-84CB-C30FC664D9BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Stream", "ClashersRepublic.Magic.Services.Stream\ClashersRepublic.Magic.Services.Stream.csproj", "{070273BF-CC4C-498B-85AB-E693DD2D30DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Home", "ClashersRepublic.Magic.Services.Home\ClashersRepublic.Magic.Services.Home.csproj", "{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +113,30 @@ Global
 		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|x64.ActiveCfg = Release|Any CPU
 		{7F345FD7-F589-4D42-94AE-2AAF7975C485}.Release|x64.Build.0 = Release|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Debug|x64.Build.0 = Debug|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Release|x64.ActiveCfg = Release|Any CPU
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF}.Release|x64.Build.0 = Release|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Debug|x64.Build.0 = Debug|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Release|x64.ActiveCfg = Release|Any CPU
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE}.Release|x64.Build.0 = Release|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Debug|x64.Build.0 = Debug|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Release|x64.ActiveCfg = Release|Any CPU
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +153,9 @@ Global
 		{B65255B6-7AAB-4260-BDEF-523B7E7EADF0} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 		{DCDC7851-FA74-4D50-AD8E-8B851AAECB86} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 		{7F345FD7-F589-4D42-94AE-2AAF7975C485} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{BAA71A8B-B622-4009-84CB-C30FC664D9BF} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{070273BF-CC4C-498B-85AB-E693DD2D30DE} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
+		{887C2EA1-F963-4C0B-AC8F-0FF986185BCA} = {C8EB6250-54E2-4979-8733-E08F89AD6A43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9AC9358-C999-40A2-8BE8-E0A1C68DF50A}

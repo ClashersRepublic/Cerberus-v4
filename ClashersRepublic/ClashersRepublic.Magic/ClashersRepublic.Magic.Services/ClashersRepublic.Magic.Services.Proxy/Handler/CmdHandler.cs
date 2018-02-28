@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Services.Core.Message.Account;
+    using ClashersRepublic.Magic.Services.Core.Network;
 
     internal static class CmdHandler
     {
@@ -25,6 +27,12 @@
                             case "close":
                             case "quit":
                                 CmdHandler.Close();
+                                break;
+                            case "test":
+                                for (int i = 0; i < 10000; i++)
+                                {
+                                    NetMessaging.Send(NetManager.GetRandomEndPoint(2), new byte[10], 10, new CreateAccountMessage());
+                                }
                                 break;
                         }
                     }

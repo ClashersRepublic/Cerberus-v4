@@ -6,6 +6,7 @@
     {
         private LogicLong _accountId;
         private string _passToken;
+        private string _ip;
 
         /// <summary>
         ///     Destructs this instance.
@@ -16,6 +17,7 @@
 
             this._accountId = null;
             this._passToken = null;
+            this._ip = null;
         }
 
         /// <summary>
@@ -27,6 +29,7 @@
 
             this.Stream.WriteLong(this._accountId);
             this.Stream.WriteString(this._passToken);
+            this.Stream.WriteString(this._ip);
         }
 
         /// <summary>
@@ -38,6 +41,7 @@
 
             this._accountId = this.Stream.ReadLong();
             this._passToken = this.Stream.ReadString(900000);
+            this._ip = this.Stream.ReadString(900000);
         }
 
         /// <summary>

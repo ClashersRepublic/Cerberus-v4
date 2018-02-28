@@ -36,10 +36,7 @@
         /// </summary>
         public void Send(byte[] buffer, int length)
         {
-            if (!this.Socket.TrySendFrame(buffer, length))
-            {
-                Logging.Error(this, "NetSocket::send");
-            }
+            this.Socket.SendFrame(buffer, length);
         }
     }
 }

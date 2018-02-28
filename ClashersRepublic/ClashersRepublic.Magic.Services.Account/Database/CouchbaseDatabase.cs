@@ -24,6 +24,11 @@
             this._cluster.Authenticate(userName, password);
             this._accountBucket = this._cluster.OpenBucket("magic-accounts");
             this._counterBucket = this._cluster.OpenBucket("magic-counters");
+
+            if (!this._counterBucket.Exists("acc-counters"))
+            {
+                this._counterBucket.Insert("acc-counters", 0);
+            }
         }
 
         /// <summary>

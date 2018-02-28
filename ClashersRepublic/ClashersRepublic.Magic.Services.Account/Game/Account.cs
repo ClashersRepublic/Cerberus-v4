@@ -1,32 +1,34 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Game
 {
+    using ClashersRepublic.Magic.Logic.Helper;
+
     using ClashersRepublic.Magic.Services.Account.Network.Session;
+    using ClashersRepublic.Magic.Services.Account.Serializer;
     using ClashersRepublic.Magic.Services.Core;
 
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
+    using Newtonsoft.Json;
+
+    [JsonConverter(typeof(AccountSerializer))]
     internal class Account
     {
         /// <summary>
         ///     Gets the <see cref="Account"/> id.
         /// </summary>
-        internal LogicLong Id { get; }
+        internal LogicLong Id { get; private set; }
         
         /// <summary>
         ///     Gets the password token.
         /// </summary>
-        internal string PassToken { get; }
-
-        /// <summary>
-        ///     Gets the list of different ip addresses that connected to this <see cref="Account"/>.
-        /// </summary>
-        internal LogicArrayList<string> IPs { get; }
-
+        internal string PassToken { get; private set; }
+        
         /// <summary>
         ///     Gets the list of last sessions.
         /// </summary>
-        internal LogicArrayList<int> LastSessions { get; }
+        internal LogicArrayList<AccountSession> LastSessions { get; }
 
         /// <summary>
         ///     Gets the current ban.
@@ -44,6 +46,11 @@
         internal int TotalBan { get; private set; }
 
         /// <summary>
+        ///     Gets the play time in seconds
+        /// </summary>
+        internal int PlayTimeSecs { get; private set; }
+
+        /// <summary>
         ///     Gets the account created date.
         /// </summary>
         internal string AccountCreatedDate { get; private set; }
@@ -51,45 +58,55 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="Account"/> class.
         /// </summary>
-        public Account(LogicLong accountId, string passToken)
+        public Account()
+        {
+            this.Id = new LogicLong();
+            this.LastSessions = new LogicArrayList<AccountSession>(20);
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Account"/> class.
+        /// </summary>
+        public Account(LogicLong accountId, string passToken) : this()
         {
             this.Id = accountId;
             this.PassToken = passToken;
 
             this.AccountCreatedDate = LogicTimeUtil.GetTimestampMS();
-            this.IPs = new LogicArrayList<string>(20);
-            this.LastSessions = new LogicArrayList<int>(50);
         }
-
-        /// <summary>
-        ///     Sets the account created date.
-        /// </summary>
-        public void SetAccountCreatedDate(string value)
-        {
-            this.AccountCreatedDate = value;
-        }
-
+        
         /// <summary>
         ///     Called when a new session is started.
         /// </summary>
-        internal void SessionStarted(int timestamp, string ip)
+        internal void SessionStarted(int timestamp, string ip, string deviceModel)
         {
-            if (this.IPs.IndexOf(ip) == -1)
-            {
-                if (this.IPs.Count >= 20)
-                {
-                    this.IPs.Remove(0);
-                }
-
-                this.IPs.Add(ip);
-            }
-
-            if (this.LastSessions.Count >= 50)
+            if (this.LastSessions.Count >= 20)
             {
                 this.LastSessions.Remove(0);
             }
 
-            this.LastSessions.Add(timestamp);
+            this.LastSessions.Add(new AccountSession(timestamp, ip));
+        }
+
+        /// <summary>
+        ///     Called when the session is ended.
+        /// </summary>
+        internal void EndSession()
+        {
+            if (this.LastSessions.Count != 0)
+            {
+                AccountSession session = this.LastSessions[this.LastSessions.Count - 1];
+
+                if (session.EndTime == 0)
+                {
+                    session.SetEndTime(LogicTimeUtil.GetTimestamp());
+
+                    if (session.EndTime > session.StartTime)
+                    {
+                        this.PlayTimeSecs += session.EndTime - session.StartTime;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -117,17 +134,14 @@
         /// </summary>
         internal bool RevokeBan()
         {
-            if (this.CurrentBan == null)
-            {
-                Logging.Warning(this, "Account::createBan ban is NULL");
-            }
-            else
+            bool success = this.CurrentBan != null;
+
+            if (success)
             {
                 this.CurrentBan = null;
-                return true;
             }
 
-            return false;
+            return success;
         }
 
         /// <summary>
@@ -138,17 +152,75 @@
             this.Session = session;
         }
 
+        /// <summary>
+        ///     Saves this instance to json.
+        /// </summary>
+        internal void Save(LogicJSONObject jsonObject)
+        {
+            jsonObject.Put("acc_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
+            jsonObject.Put("acc_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
+            jsonObject.Put("pass_t", new LogicJSONString(this.PassToken));
+            jsonObject.Put("pt_secs", new LogicJSONNumber(this.PlayTimeSecs));
+            jsonObject.Put("acc_cr", new LogicJSONString(this.AccountCreatedDate));
+            jsonObject.Put("t_ban", new LogicJSONNumber(this.TotalBan));
+            
+            LogicJSONArray sessionArray = new LogicJSONArray();
+
+            for (int i = 0; i < this.LastSessions.Count; i++)
+            {
+                LogicJSONObject obj = new LogicJSONObject();
+                this.LastSessions[i].Save(obj);
+                sessionArray.Add(obj);
+            }
+
+            jsonObject.Put("sessions", sessionArray);
+
+            if (this.CurrentBan != null)
+            {
+                LogicJSONObject banObject = new LogicJSONObject();
+                this.CurrentBan.Save(banObject);
+                jsonObject.Put("ban", banObject);
+            }
+        }
+
+        /// <summary>
+        ///     Loads this instance from json.
+        /// </summary>
+        internal void Load(LogicJSONObject jsonObject)
+        {
+            this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "acc_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "acc_lo"));
+            this.PassToken = LogicJSONHelper.GetJSONString(jsonObject, "pass_t");
+            this.PlayTimeSecs = LogicJSONHelper.GetJSONNumber(jsonObject, "pt_secs");
+            this.AccountCreatedDate = LogicJSONHelper.GetJSONString(jsonObject, "acc_cr");
+            this.TotalBan = LogicJSONHelper.GetJSONNumber(jsonObject, "t_ban");
+
+            LogicJSONArray sessionArray = jsonObject.GetJSONArray("sessions");
+
+            if (sessionArray != null)
+            {
+                int size = LogicMath.Min(sessionArray.Size(), 20);
+
+                for (int i = 0; i < size; i++)
+                {
+                    LogicJSONObject obj = sessionArray.GetJSONObject(i);
+                    AccountSession session = new AccountSession();
+                    session.Load(obj);
+                    this.LastSessions.Add(session);
+                }
+            }
+        }
+
         internal class AccountBan
         {
             /// <summary>
             ///     Gets the ban reason.
             /// </summary>
-            internal string BanReason { get; }
+            internal string BanReason { get; private set; }
 
             /// <summary>
             ///     Gets the timestamp of the end ban time.
             /// </summary>
-            internal int EndBanTime { get; }
+            internal int EndBanTime { get; private set; }
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="AccountBan"/> class.
@@ -165,6 +237,94 @@
             internal bool IsPermanentBan()
             {
                 return this.EndBanTime == -1;
+            }
+
+            /// <summary>
+            ///     Saves this instance to json.
+            /// </summary>
+            internal void Save(LogicJSONObject jsonObject)
+            {
+                jsonObject.Put("rs", new LogicJSONString(this.BanReason));
+                jsonObject.Put("et", new LogicJSONNumber(this.EndBanTime));
+            }
+
+            /// <summary>
+            ///     Loads this instance from json.
+            /// </summary>
+            internal void Load(LogicJSONObject jsonObject)
+            {
+                this.BanReason = LogicJSONHelper.GetJSONString(jsonObject, "rs");
+                this.EndBanTime = LogicJSONHelper.GetJSONNumber(jsonObject, "et");
+            }
+        }
+
+        internal class AccountSession
+        {
+            /// <summary>
+            ///     Gets the start time.
+            /// </summary>
+            internal int StartTime { get; private set; }
+
+            /// <summary>
+            ///     Gets the end time.
+            /// </summary>
+            internal int EndTime { get; private set; }
+
+            /// <summary>
+            ///     Gets the end point.
+            /// </summary>
+            internal string EndPoint { get; private set; }
+
+            /// <summary>
+            ///     Gets the device model.
+            /// </summary>
+            internal string DeviceModel { get; private set; }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="AccountSession"/> class.
+            /// </summary>
+            internal AccountSession()
+            {
+                // AccountSession.
+            }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="AccountSession"/> class.
+            /// </summary>
+            internal AccountSession(int startTime, string ip)
+            {
+                this.StartTime = startTime;
+                this.EndPoint = ip;
+            }
+
+            /// <summary>
+            ///     Sets the end time.
+            /// </summary>
+            internal void SetEndTime(int endTime)
+            {
+                this.EndTime = endTime;
+            }
+
+            /// <summary>
+            ///     Saves this instance to json.
+            /// </summary>
+            internal void Save(LogicJSONObject jsonObject)
+            {
+                jsonObject.Put("st", new LogicJSONNumber(this.StartTime));
+                jsonObject.Put("et", new LogicJSONNumber(this.EndTime));
+                jsonObject.Put("ep", new LogicJSONString(this.EndPoint));
+                jsonObject.Put("dm", new LogicJSONString(this.DeviceModel));
+            }
+
+            /// <summary>
+            ///     Loads this instance from json.
+            /// </summary>
+            internal void Load(LogicJSONObject jsonObject)
+            {
+                this.StartTime = LogicJSONHelper.GetJSONNumber(jsonObject, "st");
+                this.EndTime = LogicJSONHelper.GetJSONNumber(jsonObject, "et");
+                this.EndPoint = LogicJSONHelper.GetJSONString(jsonObject, "ep");
+                this.DeviceModel = LogicJSONHelper.GetJSONString(jsonObject, "dm");
             }
         }
     }

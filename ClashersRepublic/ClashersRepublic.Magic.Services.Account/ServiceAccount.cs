@@ -11,9 +11,8 @@
     
     internal static class ServiceAccount
     {
-        private const int ServiceNodeType = 2;
-
-        internal static Timer TitleTimer { get; private set; }
+        private const int ServiceNodeType = 2;    
+        private static Timer _titleTimer;
 
         /// <summary>
         ///     Initializes this instance.
@@ -21,13 +20,25 @@
         internal static void Initialize(string[] args)
         {
             ServiceCore.Initialize(ServiceAccount.ServiceNodeType, new NetMessageManager(), args);
+
             ServiceAccount.InitLogic();
             ServiceAccount.InitGame();
             ServiceAccount.InitNetwork();
 
-            ServiceAccount.TitleTimer = new Timer(50);
-            ServiceAccount.TitleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
-            ServiceAccount.TitleTimer.Start();
+            ServiceAccount._titleTimer = new Timer(50);
+            ServiceAccount._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
+            ServiceAccount._titleTimer.Start();
+
+            ServiceAccount.Start();
+            ServiceCore.Start();
+        }
+
+        /// <summary>
+        ///     Called for start the account service node.
+        /// </summary>
+        internal static void Start()
+        {
+            AccountManager.LoadAccounts();
         }
 
         /// <summary>

@@ -7,6 +7,7 @@
     public static class ServiceCore
     {
         private static bool _initialized;
+        private static bool _started;
 
         /// <summary>
         ///     Gets the service node type.
@@ -42,6 +43,19 @@
         }
 
         /// <summary>
+        ///     Starts the gateway.
+        /// </summary>
+        public static void Start()
+        {
+            if (ServiceCore._started)
+            {
+                return;
+            }
+
+            NetGateway.Initialize();
+        }
+
+        /// <summary>
         ///     Initializes the logic part.
         /// </summary>
         private static void InitLogic()
@@ -66,7 +80,6 @@
             NetManager.Initialize();
             NetMessaging.Initialize();
             NetMessaging.SetMessageManager(messageManager);
-            NetGateway.Initialize();
         }
     }
 }

@@ -25,12 +25,16 @@
         internal static void Initialize(string[] args)
         {
             ServiceCore.Initialize(ServiceProxy.ServiceNodeType, new NetMessageManager(), args);
+
             ServiceProxy.InitLogic();
             ServiceProxy.InitNetwork();
 
+            ServiceProxy.Random = new LogicRandom(LogicTimeUtil.GetTimestamp());
             ServiceProxy.TitleTimer = new Timer(50);
             ServiceProxy.TitleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
             ServiceProxy.TitleTimer.Start();
+
+            ServiceCore.Start();
         }
 
         /// <summary>
@@ -39,7 +43,6 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
-            ServiceProxy.Random = new LogicRandom(LogicTimeUtil.GetTimestamp());
         }
         
         /// <summary>

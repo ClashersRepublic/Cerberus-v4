@@ -3,7 +3,7 @@
     using System;
     using System.Drawing;
     using System.Reflection;
-
+    using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Handler;
     using ClashersRepublic.Magic.Services.Core;
 
@@ -38,7 +38,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - Accounts: " + AccountManager.TotalAccounts;
         }
     }
 }

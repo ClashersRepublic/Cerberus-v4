@@ -40,16 +40,5 @@
                 NetMessaging.OnReceive(buffer, buffer.Length);
             }
         }
-
-        /// <summary>
-        ///     Sends the specified packet.
-        /// </summary>
-        internal static void Send(byte[] buffer, int length, NetMQSocket socket)
-        {
-            if (!socket.TrySendFrame(buffer, length))
-            {
-                Logging.Error(typeof(NetGateway), "NetGateway::send send failed");
-            }
-        }
     }
 }

@@ -78,7 +78,7 @@
 
                                 session.SetServiceNodeId(1, message.GetServiceNodeId());
                                 session.SetServiceNodeId(2, ServiceCore.ServiceNodeId);
-                                session.SetServiceNodeId(9, account.Id.GetHigherInt());
+                                session.SetServiceNodeId(3, account.Id.GetHigherInt());
 
                                 account.SetSession(session);
 

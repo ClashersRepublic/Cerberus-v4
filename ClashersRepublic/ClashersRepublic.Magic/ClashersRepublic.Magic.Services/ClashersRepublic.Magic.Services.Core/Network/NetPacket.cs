@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Titan.DataStream;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal class NetPacket

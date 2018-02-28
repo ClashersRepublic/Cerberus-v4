@@ -16,6 +16,17 @@
         private static ConcurrentDictionary<long, Account> _accounts;
 
         /// <summary>
+        ///     Gets the total accounts.
+        /// </summary>
+        internal static int TotalAccounts
+        {
+            get
+            {
+                return AccountManager._accounts.Count;
+            }
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
@@ -24,14 +35,12 @@
 
             AccountManager._random = new LogicRandom(LogicTimeUtil.GetTimestamp());
             AccountManager._accounts = new ConcurrentDictionary<long, Account>();
-
-            AccountManager.LoadAccounts();
         }
 
         /// <summary>
         ///     Loads all accounts from database.
         /// </summary>
-        private static void LoadAccounts()
+        internal static void LoadAccounts()
         {
             IDatabase database = DatabaseManager.GetDatabase();
 

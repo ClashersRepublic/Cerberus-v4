@@ -73,6 +73,7 @@
     <Compile Include="Network\Session\NetAccountSessionManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer\AccountSerializer.cs" />
     <Compile Include="ServiceAccount.cs" />
   </ItemGroup>
   <ItemGroup>
