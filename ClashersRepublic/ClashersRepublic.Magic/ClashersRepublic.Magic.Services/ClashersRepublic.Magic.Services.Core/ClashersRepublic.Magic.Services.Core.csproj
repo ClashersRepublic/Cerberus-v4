@@ -227,6 +227,7 @@
     <Compile Include="Message\Avatar\CreateAvatarMessage.cs" />
     <Compile Include="Message\Avatar\AskForAvatarMessage.cs" />
     <Compile Include="Message\Avatar\CreateAvatarOkMessage.cs" />
+    <Compile Include="Message\GlobalChat\UpdateAvatarDataMesssage.cs" />
     <Compile Include="Message\INetMessageManager.cs" />
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />

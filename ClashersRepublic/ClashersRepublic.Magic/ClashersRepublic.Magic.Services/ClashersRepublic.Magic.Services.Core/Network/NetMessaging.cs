@@ -33,36 +33,60 @@
         /// <summary>
         ///     Sends the specified message.
         /// </summary>
-        public static void Send(int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionLength, NetMessage message)
+        public static void Send(int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionIdLength, NetMessage message)
         {
             NetSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
 
             if (destinationSocket != null)
             {
-                NetMessaging.Send(destinationSocket, sessionId, sessionLength, message);
+                NetMessaging.Send(destinationSocket, sessionId, sessionIdLength, message);
             }
         }
 
         /// <summary>
         ///     Sends the specified message.
         /// </summary>
-        public static void Send(NetSocket destinationSocket, byte[] sessionId, int sessionLength, NetMessage message)
+        public static void Send(int serviceNodeType, int serviceNodeId, NetMessage message)
+        {
+            NetSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
+
+            if (destinationSocket != null)
+            {
+                NetMessaging.Send(destinationSocket, message);
+            }
+        }
+
+        /// <summary>
+        ///     Sends the specified message.
+        /// </summary>
+        public static void Send(NetSocket destinationSocket, byte[] sessionId, int sessionIdLength, NetMessage message)
         {
             if (destinationSocket == null)
             {
                 throw new ArgumentNullException("destinationSocket");
             }
 
+            message.SetSessionId(sessionId, sessionIdLength);
+            message.SetServiceNodeType((byte)ServiceCore.ServiceNodeType);
+            message.SetServiceNodeId((byte)ServiceCore.ServiceNodeId);
             message.Encode();
+            destinationSocket.AddMessage(message);
+        }
 
-            NetPacket netPacket = new NetPacket();
+        /// <summary>
+        ///     Sends the specified message.
+        /// </summary>
+        public static void Send(NetSocket destinationSocket, NetMessage message)
+        {
+            if (destinationSocket == null)
+            {
+                throw new ArgumentNullException("destinationSocket");
+            }
 
-            netPacket.AddMessage(message);
-            netPacket.SetSessionId(sessionId, sessionLength);
-            netPacket.SetServiceNodeId(ServiceCore.ServiceNodeId);
-            netPacket.SetServiceNodeType(ServiceCore.ServiceNodeType);
-
-            NetMessaging._messageHandler.Send(destinationSocket, netPacket);
+            message.SetServiceNodeType((byte)ServiceCore.ServiceNodeType);
+            message.SetServiceNodeId((byte)ServiceCore.ServiceNodeId);
+            message.Encode();
+            destinationSocket.AddMessage(message);
         }
 
         /// <summary>

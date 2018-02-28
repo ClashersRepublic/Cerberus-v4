@@ -29,7 +29,7 @@
                                 CmdHandler.Close();
                                 break;
                             case "test":
-                                for (int i = 0; i < 10000; i++)
+                                for (int i = 0; i < 100000; i++)
                                 {
                                     NetMessaging.Send(NetManager.GetRandomEndPoint(2), new byte[10], 10, new CreateAccountMessage());
                                 }

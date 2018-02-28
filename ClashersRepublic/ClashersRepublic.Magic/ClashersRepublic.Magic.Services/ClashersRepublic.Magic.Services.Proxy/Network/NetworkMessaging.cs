@@ -7,7 +7,6 @@
     using ClashersRepublic.Magic.Logic.Message.Security;
 
     using ClashersRepublic.Magic.Services.Core;
-    using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
 
     using ClashersRepublic.Magic.Titan;

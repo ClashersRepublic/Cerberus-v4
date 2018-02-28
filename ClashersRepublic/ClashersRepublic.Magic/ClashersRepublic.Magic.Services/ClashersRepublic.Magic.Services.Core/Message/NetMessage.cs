@@ -133,7 +133,10 @@
         /// </summary>
         public virtual void Decode()
         {
-            // Decode.
+            this.ServiceNodeType = this.Stream.ReadByte();
+            this.ServiceNodeId = this.Stream.ReadByte();
+            this.SessionIdLength = this.Stream.ReadByte();
+            this.SessionId = this.Stream.ReadBytes(this.SessionIdLength, 0xFF);
         }
 
         /// <summary>
@@ -141,7 +144,10 @@
         /// </summary>
         public virtual void Encode()
         {
-            // Encode.
+            this.Stream.WriteByte(this.ServiceNodeType);
+            this.Stream.WriteByte(this.ServiceNodeId);
+            this.Stream.WriteByte(this.SessionIdLength);
+            this.Stream.WriteBytesWithoutLength(this.SessionId, this.SessionIdLength);
         }
 
         /// <summary>

@@ -38,7 +38,8 @@
         /// </summary>
         internal void SendMessage(NetMessage message, int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionIdLength)
         {
-            NetMessaging.Send(serviceNodeType, serviceNodeId, sessionId, sessionIdLength, message);
+            message.SetSessionId(sessionId, sessionIdLength);
+            NetMessaging.Send(serviceNodeType, serviceNodeId, message);
         }
 
         /// <summary>
@@ -48,8 +49,10 @@
         {
             int sessionIdLength = requestMessage.GetSessionIdLength();
             byte[] sessionId = requestMessage.RemoveSessionId();
+            
+            responseMessage.SetSessionId(sessionId, sessionIdLength);
 
-            NetMessaging.Send(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), sessionId, sessionIdLength, responseMessage);
+            NetMessaging.Send(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), responseMessage);
         }
 
         /// <summary>

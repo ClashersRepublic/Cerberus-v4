@@ -117,8 +117,9 @@
 
                     message.SetIsSetList(setSocketList);
                     message.SetSessionSocketList(sessionSocketList);
+                    message.SetSessionId(this.SessionId, this.SessionId.Length);
 
-                    NetMessaging.Send(i, sessionSocketList[i], this.SessionId, this.SessionId.Length, message);
+                    NetMessaging.Send(i, sessionSocketList[i], message);
                 }
             }
         }
