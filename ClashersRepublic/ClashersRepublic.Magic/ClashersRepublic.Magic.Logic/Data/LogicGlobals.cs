@@ -17,7 +17,7 @@
         private bool _dragInTraining;
         private bool _dragInTrainingFix;
         private bool _dragInTrainingFix2;
-
+        private bool _useNewPathFinder;
         private bool _liveReplayEnabled;
         private bool _revertBrokenWarLayouts;
         private bool _removeRevengeWhenBattleIsLoaded;
@@ -37,6 +37,7 @@
             this._liveReplayFrequencySecs = this.GetIntValue("LIVE_REPLAY_UPDATE_FREQUENCY_SECONDS");
             this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
             this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
+            this._useNewTraining = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
             this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
@@ -172,6 +173,11 @@
         public bool RemoveRevengeWhenBattleIsLoaded()
         {
             return this._removeRevengeWhenBattleIsLoaded;
+        }
+
+        public bool UseNewPathFinder()
+        {
+            return this._useNewPathFinder;
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Level
 {
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
+    using ClashersRepublic.Magic.Logic.Util;
 
     public sealed class LogicTileMap
     {
@@ -11,6 +13,7 @@
         private readonly int _sizeY;
 
         private LogicTile[] _tiles;
+        private LogicPathFinder _pathFinder;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicTileMap" /> class.
@@ -23,7 +26,7 @@
 
             for (int i = 0; i < this._tiles.Length; i++)
             {
-                this._tiles[i] = new LogicTile();
+                this._tiles[i] = new LogicTile((byte) (i % x), (byte) (i / x));
             }
         }
 
@@ -36,8 +39,11 @@
             {
                 for (int i = 0; i < this._tiles.Length; i++)
                 {
-                    this._tiles[i].Destruct();
-                    this._tiles[i] = null;
+                    if (this._tiles[i] != null)
+                    {
+                        this._tiles[i].Destruct();
+                        this._tiles[i] = null;
+                    }
                 }
 
                 this._tiles = null;
@@ -45,25 +51,85 @@
         }
 
         /// <summary>
-        ///     Adds the specified gameobject to tiles.
+        ///     Gets the size x.
+        /// </summary>
+        public int GetSizeX()
+        {
+            return this._sizeX;
+        }
+
+        /// <summary>
+        ///     Gets the size y.
+        /// </summary>
+        public int GetSizeY()
+        {
+            return this._sizeY;
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicTile"/> instance.
+        /// </summary>
+        public LogicTile GetTile(int x, int y)
+        {
+            if (x > -1 && y > -1)
+            {
+                if (this._sizeX > x && this._sizeY > y)
+                {
+                    return this._tiles[x + this._sizeX * y];
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicPathFinder"/> instance.
+        /// </summary>
+        public LogicPathFinder GetPathFinder()
+        {
+            if (this._pathFinder == null)
+            {
+                if (LogicDataTables.GetGlobals().UseNewPathFinder())
+                {
+                    this._pathFinder = new LogicPathFinderNew(this);
+                }
+                else
+                {
+                    this._pathFinder = new LogicPathFinderOld(this);
+                }
+            }
+
+            return this._pathFinder;
+        }
+
+        /// <summary>
+        ///     Adds the specified <see cref="LogicGameObject"/> instance to tiles.
         /// </summary>
         public void AddGameObject(LogicGameObject gameObject)
         {
-            int tileX = gameObject.GetTileX();
-            int tileY = gameObject.GetTileY();
-
-            if (tileX >= 0)
+            if (gameObject.IsStaticObject())
             {
-                if (tileY >= 0)
-                {
-                    int sizeX = gameObject.GetWidthInTiles();
-                    int sizeY = gameObject.GetHeightInTiles();
+                int tileX = gameObject.GetTileX();
+                int tileY = gameObject.GetTileY();
 
-                    for (int i = 0; i < sizeY; i++)
+                if (tileX >= 0)
+                {
+                    if (tileY >= 0)
                     {
-                        for (int j = 0; j < sizeX; j++)
+                        int sizeX = gameObject.GetWidthInTiles();
+                        int sizeY = gameObject.GetHeightInTiles();
+
+                        for (int i = 0; i < sizeY; i++)
                         {
-                            this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                            for (int j = 0; j < sizeX; j++)
+                            {
+                                this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                            }
+                        }
+
+                        if (!gameObject.IsPassable())
+                        {
+                            this.UpdateRoomIndices();
                         }
                     }
                 }
@@ -75,28 +141,70 @@
         /// </summary>
         public void GameObjectMoved(LogicGameObject gameObject, int oldTileX, int oldTileY)
         {
-            int tileX = gameObject.GetTileX();
-            int tileY = gameObject.GetTileY();
-
-            if (tileX >= 0)
+            if (gameObject.IsStaticObject())
             {
-                if (tileY >= 0)
-                {
-                    int sizeX = gameObject.GetWidthInTiles();
-                    int sizeY = gameObject.GetHeightInTiles();
+                int tileX = gameObject.GetTileX();
+                int tileY = gameObject.GetTileY();
 
-                    for (int i = 0; i < sizeY; i++)
+                if (tileX >= 0)
+                {
+                    if (tileY >= 0)
                     {
-                        for (int j = 0; j < sizeX; j++)
+                        int sizeX = gameObject.GetWidthInTiles();
+                        int sizeY = gameObject.GetHeightInTiles();
+
+                        for (int i = 0; i < sizeY; i++)
                         {
-                            this._tiles[oldTileX + j + this._sizeX * oldTileY].RemoveGameObject(gameObject);
-                            this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                            for (int j = 0; j < sizeX; j++)
+                            {
+                                this._tiles[oldTileX + j + this._sizeX * oldTileY].RemoveGameObject(gameObject);
+                                this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                            }
+                        }
+
+                        if (!gameObject.IsPassable())
+                        {
+                            this.UpdateRoomIndices();
                         }
                     }
                 }
             }
         }
 
+        /// <summary>
+        ///     Removes the specified <see cref="LogicGameObject"/> instance.
+        /// </summary>
+        public void RemoveGameObject(LogicGameObject gameObject)
+        {
+            if (gameObject.IsStaticObject())
+            {
+                int tileX = gameObject.GetTileX();
+                int tileY = gameObject.GetTileY();
+
+                if (tileX >= 0)
+                {
+                    if (tileY >= 0)
+                    {
+                        int sizeX = gameObject.GetWidthInTiles();
+                        int sizeY = gameObject.GetHeightInTiles();
+
+                        for (int i = 0; i < sizeY; i++)
+                        {
+                            for (int j = 0; j < sizeX; j++)
+                            {
+                                this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                            }
+                        }
+
+                        if (!gameObject.IsPassable())
+                        {
+                            this.UpdateRoomIndices();
+                        }
+                    }
+                }
+            }
+        }
+        
         /// <summary>
         ///     Enables the room indices.
         /// </summary>
@@ -115,10 +223,37 @@
         }
 
         /// <summary>
-        ///     Refreshes passable of this gameobject.
+        ///     Refreshes passable of the specified <see cref="LogicGameObject"/> instance..
         /// </summary>
         public void RefreshPassable(LogicGameObject gameObject)
         {
+            if (gameObject.IsStaticObject())
+            {
+                int tileX = gameObject.GetTileX();
+                int tileY = gameObject.GetTileY();
+
+                if (tileX >= 0)
+                {
+                    if (tileY >= 0)
+                    {
+                        int sizeX = gameObject.GetWidthInTiles();
+                        int sizeY = gameObject.GetHeightInTiles();
+
+                        for (int i = 0; i < sizeY; i++)
+                        {
+                            for (int j = 0; j < sizeX; j++)
+                            {
+                                this._tiles[tileX + j + this._sizeX * tileY].RefreshPassableFlag();
+                            }
+                        }
+
+                        if (!gameObject.IsPassable())
+                        {
+                            this.UpdateRoomIndices();
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -151,7 +286,7 @@
         /// <summary>
         ///     Fills the specified room.
         /// </summary>
-        public void FillRoom(int tileIndex, int value)
+        public void FillRoom(int tileIndex, int roomIdx)
         {
             LogicTile tile = this._tiles[tileIndex];
 
@@ -159,6 +294,47 @@
             {
                 // TODO Implement LogicTileMap::fillRoom.
             }
+        }
+
+        /// <summary>
+        ///     Gets if the specified position is a valid attack position.
+        /// </summary>
+        public bool IsValidAttackPos(int x, int y)
+        {
+            for (int i = 0, posX = x - 1; i < 2; i++, posX++)
+            {
+                for (int j = 0, posY = y - 1; j < 2; j++, posY++)
+                {
+                    if (this._sizeX > posX && this._sizeY > posY)
+                    {
+                        if (posX > -1 && posY > -1)
+                        {
+                            LogicTile tile = this._tiles[posX + this._sizeX * posY];
+
+                            if (tile != null)
+                            {
+                                for (int k = 0; k < tile.GetGameObjectCount(); k++)
+                                {
+                                    LogicGameObject gameObject = tile.GetGameObject(k);
+
+                                    if (!gameObject.IsPassable())
+                                    {
+                                        if (gameObject is LogicBuilding building)
+                                        {
+                                            if (!building.GetBuildingData().Hidden)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

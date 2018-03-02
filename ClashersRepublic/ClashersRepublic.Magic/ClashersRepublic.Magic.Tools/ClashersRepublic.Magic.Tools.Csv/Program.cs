@@ -85,8 +85,8 @@
                 }
 
                 columnName[i - 1] = name;
-
-                switch (csvTable.Columns[i].ColumnType)
+                
+                switch (csvTable.GetCSVColumn(i).ColumnType)
                 {
                     case 0:
                     {

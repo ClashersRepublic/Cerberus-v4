@@ -76,6 +76,10 @@
     <Compile Include="Math\LogicVector2.cs" />
     <Compile Include="Message\LogicMessageFactory.cs" />
     <Compile Include="Message\PiranhaMessage.cs" />
+    <Compile Include="Message\Security\ClientCryptoErrorMessage.cs" />
+    <Compile Include="Message\Security\CryptoErrorMessage.cs" />
+    <Compile Include="Message\Account\TitanDisconnectedMessage.cs" />
+    <Compile Include="Message\Security\SetEncryptionMessage.cs" />
     <Compile Include="Message\Security\ServerHelloMessage.cs" />
     <Compile Include="Message\Security\ClientHelloMessage.cs" />
     <Compile Include="Message\Udp\UdpMessage.cs" />

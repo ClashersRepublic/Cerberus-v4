@@ -236,9 +236,49 @@
         }
 
         /// <summary>
+        ///     Gets the passable subtiles at edge.
+        /// </summary>
+        public virtual int PassableSubtilesAtEdge()
+        {
+            return 1;
+        }
+
+        /// <summary>
         ///     Gets the gameobject type.
         /// </summary>
-        public int GetGameObjectType()
+        public virtual int GetGameObjectType()
+        {
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicGameObject"/> instance is a static object.
+        /// </summary>
+        public virtual bool IsStaticObject()
+        {
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicGameObject"/> instance is passable.
+        /// </summary>
+        public virtual bool IsPassable()
+        {
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicGameObject"/> instance is unbuildable.
+        /// </summary>
+        public virtual bool IsUnbuildable()
+        {
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the path finder cost.
+        /// </summary>
+        public virtual int GetPathFinderCost()
         {
             return 0;
         }

@@ -4,7 +4,7 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
-    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
@@ -549,7 +549,7 @@
         /// <summary>
         ///     Gets the resource count.
         /// </summary>
-        public int GetResourceCount(LogicResourceData data)
+        public virtual int GetResourceCount(LogicResourceData data)
         {
             if (!data.PremiumCurrency)
             {

@@ -2,7 +2,7 @@
 {
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home.Change;
-    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;

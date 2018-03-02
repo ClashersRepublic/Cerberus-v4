@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.DataStream;
 
     public static class ByteStreamHelper

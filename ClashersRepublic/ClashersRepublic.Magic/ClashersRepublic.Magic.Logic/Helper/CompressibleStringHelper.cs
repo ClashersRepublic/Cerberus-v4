@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Helper
 {
-    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.Util;
 
     public static class CompressibleStringHelper

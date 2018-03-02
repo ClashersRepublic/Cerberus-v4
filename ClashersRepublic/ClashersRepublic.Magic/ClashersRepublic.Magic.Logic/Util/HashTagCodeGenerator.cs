@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Logic.Utils
+﻿namespace ClashersRepublic.Magic.Logic.Util
 {
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;

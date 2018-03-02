@@ -1,10 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message.Security
 {
-    using ClashersRepublic.Magic.Titan.Message;
+    using ClashersRepublic.Magic.Titan.Message.Security;
 
-    public class ExtendedSetEncryptionMessage : PiranhaMessage
+    public class ExtendedSetEncryptionMessage : SetEncryptionMessage
     {
-        private byte[] _nonce;
+        public const string INTEGRATION_NONCE = "77035c098d0a04753b77167c7133cdd4b7052813ed47c461";
+        public const string STAGE_NONCE = "4c444a4b4c396876736b6c3b6473766b666c73676a90fbef";
+        public const string DEFAULT_NONCE = "nonce";
+
         private int _nonceMethod;
 
         /// <summary>
@@ -29,8 +32,6 @@
         public override void Decode()
         {
             base.Decode();
-
-            this._nonce = this.Stream.ReadBytes(this.Stream.ReadBytesLength(), 900000);
             this._nonceMethod = this.Stream.ReadInt();
         }
 
@@ -40,52 +41,15 @@
         public override void Encode()
         {
             base.Encode();
-
-            this.Stream.WriteBytes(this._nonce, this._nonce.Length);
             this.Stream.WriteInt(this._nonceMethod);
         }
-
-        /// <summary>
-        ///     Gets the message type of this message.
-        /// </summary>
-        public override short GetMessageType()
-        {
-            return 20000;
-        }
-
-        /// <summary>
-        ///     Gets the service node type of this message.
-        /// </summary>
-        public override int GetServiceNodeType()
-        {
-            return 1;
-        }
-
+        
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()
         {
             base.Destruct();
-            this._nonce = null;
-        }
-
-        /// <summary>
-        ///     Removes the nonce.
-        /// </summary>
-        public byte[] RemoveNonce()
-        {
-            byte[] tmp = this._nonce;
-            this._nonce = null;
-            return tmp;
-        }
-
-        /// <summary>
-        ///     Sets the nonce.
-        /// </summary>
-        public void SetNonce(byte[] value)
-        {
-            this._nonce = value;
         }
 
         /// <summary>

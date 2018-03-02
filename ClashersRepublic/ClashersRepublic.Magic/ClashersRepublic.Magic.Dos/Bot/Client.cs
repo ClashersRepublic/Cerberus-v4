@@ -40,8 +40,8 @@
         /// </summary>
         internal void InitEncrypters(string nonce)
         {
-            this._sendEncrypter = new RC4Encrypter(LogicMagicMessageFactory.RC4_KEY, nonce);
-            this._receiveEncrypter = new RC4Encrypter(LogicMagicMessageFactory.RC4_KEY, nonce);
+            this._sendEncrypter = new RC4Encrypter(LogicMessagingConstants.RC4_KEY, nonce);
+            this._receiveEncrypter = new RC4Encrypter(LogicMessagingConstants.RC4_KEY, nonce);
         }
 
         /// <summary>

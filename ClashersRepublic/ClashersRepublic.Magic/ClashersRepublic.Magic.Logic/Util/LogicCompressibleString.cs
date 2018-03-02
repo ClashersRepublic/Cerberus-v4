@@ -1,7 +1,6 @@
-﻿namespace ClashersRepublic.Magic.Logic.Utils
+﻿namespace ClashersRepublic.Magic.Logic.Util
 {
     using System;
-
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Json;
 

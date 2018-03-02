@@ -289,6 +289,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="CSVColumn"/> instance at the specified index.
+        /// </summary>
+        public CSVColumn GetCSVColumn(int index)
+        {
+            return this._columnList[index];
+        }
+
+        /// <summary>
         ///     Gets the number of rows.
         /// </summary>
         public int GetRowCount()

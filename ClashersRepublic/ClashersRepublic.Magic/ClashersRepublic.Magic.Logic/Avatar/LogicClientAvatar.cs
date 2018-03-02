@@ -3,7 +3,7 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.League.Entry;
-    using ClashersRepublic.Magic.Logic.Utils;
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
@@ -335,6 +335,19 @@
             return this._leagueType;
         }
 
+        /// <summary>
+        ///     Gets the resource count.
+        /// </summary>
+        public override int GetResourceCount(LogicResourceData data)
+        {
+            if (data.PremiumCurrency)
+            {
+                return this._diamonds;
+            }
+
+            return base.GetResourceCount(data);
+        }
+        
         /// <summary>
         ///     Gets the league type data instance.
         /// </summary>

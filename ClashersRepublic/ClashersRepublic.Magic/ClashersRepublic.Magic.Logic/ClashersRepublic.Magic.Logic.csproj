@@ -141,11 +141,11 @@
     <Compile Include="Home\LogicClientHome.cs" />
     <Compile Include="League\Entry\LogicLegendLeagueTournamentEntry.cs" />
     <Compile Include="Level\LogicLevel.cs" />
-    <Compile Include="Level\LogicPathFinder.cs" />
     <Compile Include="Level\LogicRect.cs" />
     <Compile Include="Level\LogicTile.cs" />
     <Compile Include="Level\LogicTileMap.cs" />
     <Compile Include="LogicVersion.cs" />
+    <Compile Include="Message\Account\DisconnectedMessage.cs" />
     <Compile Include="Message\Account\PersonalBreakStartedMessage.cs" />
     <Compile Include="Message\Account\ShutdownStartedMessage.cs" />
     <Compile Include="Message\Account\SetDeviceTokenMessage.cs" />
@@ -169,6 +169,7 @@
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
     <Compile Include="Message\Home\OutOfSyncMessage.cs" />
     <Compile Include="Message\LogicMagicMessageFactory.cs" />
+    <Compile Include="Message\LogicMessagingConstants.cs" />
     <Compile Include="Mode\LogicGameListener.cs" />
     <Compile Include="Mode\LogicGameMode.cs" />
     <Compile Include="Offer\LogicOfferManager.cs" />
@@ -177,10 +178,14 @@
     <Compile Include="Time\LogicTimer.cs" />
     <Compile Include="Unit\LogicUnitProduction.cs" />
     <Compile Include="Message\Security\ExtendedSetEncryptionMessage.cs" />
-    <Compile Include="Utils\HashTagCodeGenerator.cs" />
-    <Compile Include="Utils\LogicCompressibleString.cs" />
-    <Compile Include="Utils\LogicDataSlot.cs" />
-    <Compile Include="Utils\LogicUnitSlot.cs" />
+    <Compile Include="Util\HashTagCodeGenerator.cs" />
+    <Compile Include="Util\LogicCompressibleString.cs" />
+    <Compile Include="Util\LogicDataSlot.cs" />
+    <Compile Include="Util\LogicPathFinderOld.cs" />
+    <Compile Include="Util\LogicPathFinderNew.cs" />
+    <Compile Include="Util\LogicPathFinder.cs" />
+    <Compile Include="Util\LogicSavedPath.cs" />
+    <Compile Include="Util\LogicUnitSlot.cs" />
     <Compile Include="Worker\LogicWorkerManager.cs" />
   </ItemGroup>
   <ItemGroup>
