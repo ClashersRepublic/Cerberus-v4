@@ -6,7 +6,6 @@
 
     public sealed class LogicTileMap
     {
-        private byte _passableFlag;
         private bool _roomEnabled;
 
         private readonly int _sizeX;

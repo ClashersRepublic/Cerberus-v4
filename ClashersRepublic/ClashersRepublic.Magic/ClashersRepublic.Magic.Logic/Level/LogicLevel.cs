@@ -681,34 +681,41 @@
             LogicDataTable trapTable = LogicDataTables.GetTable(11);
             LogicDataTable decoTable = LogicDataTables.GetTable(17);
 
+            int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
+            int expLevel = this._homeOwnerAvatar.GetExpLevel();
+
             LogicJSONArray newShopBuildingArray = new LogicJSONArray();
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < this._newShopBuildings.Count; i++)
             {
-                LogicData data = buildingTable.GetItemAt(i);
-
                 int currentNewItemCount = this._newShopBuildings[i];
-                int unlockedShopItemCount = this.GetUnlockedShopItemCount(i, 0);
+                int unlockedShopItemCount = this.GetShopUnlockCount(buildingTable.GetItemAt(i), townHallLevel);
 
-                newShopBuildingArray.Add(new LogicJSONNumber(currentNewItemCount - unlockedShopItemCount));
+                newShopBuildingArray.Add(new LogicJSONNumber(unlockedShopItemCount - currentNewItemCount));
             }
 
             jsonObject.Put("newShopBuildings", newShopBuildingArray);
 
             LogicJSONArray newShopTrapArray = new LogicJSONArray();
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < this._newShopTraps.Count; i++)
             {
-                // TODO: Implement newShopBuildings.
+                int currentNewItemCount = this._newShopTraps[i];
+                int unlockedShopItemCount = this.GetShopUnlockCount(trapTable.GetItemAt(i), townHallLevel);
+
+                newShopTrapArray.Add(new LogicJSONNumber(unlockedShopItemCount - currentNewItemCount));
             }
 
             jsonObject.Put("newShopTraps", newShopTrapArray);
 
             LogicJSONArray newShopDecoArray = new LogicJSONArray();
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < this._newShopDecos.Count; i++)
             {
-                // TODO: Implement newShopBuildings.
+                int currentNewItemCount = this._newShopDecos[i];
+                int unlockedShopItemCount = this.GetShopUnlockCount(decoTable.GetItemAt(i), expLevel);
+
+                newShopDecoArray.Add(new LogicJSONNumber(unlockedShopItemCount - currentNewItemCount));
             }
 
             jsonObject.Put("newShopDecos", newShopDecoArray);
@@ -752,21 +759,7 @@
 
             this._unplacedObjects.Add(obj);
         }
-
-        /// <summary>
-        ///     Gets the number of unlocked shop item.
-        /// </summary>
-        public int GetUnlockedShopItemCount(int dataIndex, int dataType)
-        {
-            int count = 0;
-
-            switch (dataType)
-            {
-            }
-
-            return count;
-        }
-
+        
         /// <summary>
         ///     Gets the shop unlock count for specified data.
         /// </summary>
