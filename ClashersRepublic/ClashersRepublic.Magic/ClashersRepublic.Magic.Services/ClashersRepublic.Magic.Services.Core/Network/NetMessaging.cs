@@ -53,8 +53,8 @@
                 throw new ArgumentNullException("destinationSocket");
             }
 
-            message.SetServiceNodeType((byte) ServiceCore.ServiceNodeType);
-            message.SetServiceNodeId((byte) ServiceCore.ServiceNodeId);
+            message.SetServiceNodeType(ServiceCore.ServiceNodeType);
+            message.SetServiceNodeId(ServiceCore.ServiceNodeId);
             message.SetSessionId(sessionId, sessionIdLength);
             message.Encode();
 

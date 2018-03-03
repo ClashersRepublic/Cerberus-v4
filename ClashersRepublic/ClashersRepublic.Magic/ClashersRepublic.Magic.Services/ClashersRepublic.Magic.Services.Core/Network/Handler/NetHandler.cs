@@ -44,12 +44,13 @@
 
                     if (message != null)
                     {
+                        message.Decode();
                         this._messageManager.ReceiveMessage(message);
                     }
 
                     packet.Destruct();
                 }
-
+                
                 Thread.Sleep(1);
             }
         }

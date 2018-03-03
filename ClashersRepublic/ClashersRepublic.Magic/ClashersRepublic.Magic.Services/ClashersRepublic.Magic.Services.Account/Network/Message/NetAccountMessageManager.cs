@@ -2,11 +2,11 @@
 {
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
-    using ClashersRepublic.Magic.Services.Core;
+    
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
-    using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Titan.Math;
 
     internal class NetAccountMessageManager : NetMessageManager
@@ -50,38 +50,34 @@
 
             if (!accountId.IsZero())
             {
-                if (accountId.GetHigherInt() == ServiceCore.ServiceNodeId)
+                if (AccountManager.TryGetAccount(accountId, out Account account))
                 {
-                    if (AccountManager.TryGetAccount(accountId, out Account account))
+                    if (account.PassToken.Equals(message.RemovePassToken()))
                     {
-                        if (account.PassToken.Equals(message.RemovePassToken()))
+                        NetAccountSession session = NetAccountSessionManager.TryCreate(account, message.GetSessionId());
+
+                        if (session != null)
                         {
-                            NetAccountSession session = NetAccountSessionManager.TryCreate(account, message.GetSessionId());
-
-                            if (session != null)
+                            if (account.Session != null)
                             {
-                                if (account.Session != null)
-                                {
-                                    // Abort
-                                }
-
-                                session.SetServiceNodeId(1, message.GetServiceNodeId(), true);
-                                session.SetServiceNodeId(2, ServiceCore.ServiceNodeId, true);
-                                session.SetServiceNodeId(3, account.Id.GetHigherInt(), true);
-
-                                account.SetSession(session);
-
-                                LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
-
-                                loginClientOkMessage.SetAccountId(account.Id);
-                                loginClientOkMessage.SetHomeId(account.Id);
-                                loginClientOkMessage.SetPassToken(account.PassToken);
-                                loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
-
-                                NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
-
-                                return;
+                                // Abort
                             }
+
+                            account.SetSession(session);
+
+                            LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
+
+                            loginClientOkMessage.SetAccountId(account.Id);
+                            loginClientOkMessage.SetHomeId(account.Id);
+                            loginClientOkMessage.SetPassToken(account.PassToken);
+                            loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
+
+                            NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
+
+                            session.SetServiceNodeId(3, NetManager.GetServiceNodeId(3, accountId));
+                            session.SetServiceNodeId(10, NetManager.GetServiceNodeId(10, accountId));
+
+                            return;
                         }
                     }
                 }

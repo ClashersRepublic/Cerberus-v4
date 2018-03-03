@@ -1,15 +1,21 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
+    using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Services.Core.Web;
     using ClashersRepublic.Magic.Titan.Json;
+    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     public static class NetManager
     {
         private static string _netVersion;
         private static string _netEnvironment;
+        private static string _databaseUserName;
+        private static string _databasePassword;
 
         private static int[] _scrambler;
+        private static string[] _databaseUrls;
+
         private static LogicArrayList<NetSocket>[] _endPoints;
 
         /// <summary>
@@ -18,6 +24,7 @@
         public static void Initialize()
         {
             NetManager._scrambler = new int[28];
+            NetManager._databaseUrls = new string[0];
             NetManager._endPoints = new LogicArrayList<NetSocket>[28];
 
             for (int i = 0; i < 28; i++)
@@ -137,6 +144,26 @@
                         }
                     }
                 }
+
+                LogicJSONObject databaseObject = jsonObject.GetJSONObject("database");
+
+                if (databaseObject != null)
+                {
+                    LogicJSONArray urls = databaseObject.GetJSONArray("urls");
+
+                    if (urls != null)
+                    {
+                        NetManager._databaseUrls = new string[urls.Size()];
+
+                        for (int i = 0; i < urls.Size(); i++)
+                        {
+                            NetManager._databaseUrls[i] = urls.GetJSONString(i).GetStringValue();
+                        }
+                    }
+
+                    NetManager._databaseUserName = LogicJSONHelper.GetJSONString(databaseObject, "user");
+                    NetManager._databasePassword = LogicJSONHelper.GetJSONString(databaseObject, "pass");
+                }
             }
         }
 
@@ -149,6 +176,38 @@
             {
                 NetManager._endPoints[serviceNodeType].Add(new NetSocket(serviceNodeType, NetManager._endPoints[serviceNodeType].Count, host));
             }
+        }
+
+        /// <summary>
+        ///     Gets the database username.
+        /// </summary>
+        public static string GetDatabaseUserName()
+        {
+            return NetManager._databaseUserName;
+        }
+
+        /// <summary>
+        ///     Gets the database password.
+        /// </summary>
+        public static string GetDatabasePassword()
+        {
+            return NetManager._databasePassword;
+        }
+
+        /// <summary>
+        ///     Gets the database urls.
+        /// </summary>
+        public static string[] GetDatabaseUrls()
+        {
+            return NetManager._databaseUrls;
+        }
+
+        /// <summary>
+        ///     Gets the number of server for the specified service node.
+        /// </summary>
+        public static int GetServerCount(int serviceNodeType)
+        {
+            return NetManager._endPoints[serviceNodeType].Count;
         }
 
         /// <summary>
@@ -186,6 +245,26 @@
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///     Gets the service node id with document id.
+        /// </summary>
+        public static int GetServiceNodeId(int serviceNodeType, LogicLong documentId)
+        {
+            if (serviceNodeType > -1 && serviceNodeType < NetManager._endPoints.Length)
+            {
+                if (documentId.GetLowerInt() > 0)
+                {
+                    return (documentId.GetLowerInt() - 1) % NetManager._endPoints[serviceNodeType].Count;
+                }
+            }
+            else
+            {
+                Logging.Warning(typeof(NetManager), "NetManager::getServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+            }
+
+            return -1;
         }
     }
 }

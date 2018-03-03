@@ -58,9 +58,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\CouchbaseDatabase.cs" />
     <Compile Include="Database\DatabaseManager.cs" />
-    <Compile Include="Database\IDatabase.cs" />
     <Compile Include="Game\Account.cs" />
     <Compile Include="Game\AccountManager.cs" />
     <Compile Include="Handler\CmdHandler.cs" />

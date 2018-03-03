@@ -30,16 +30,6 @@
                                 CmdHandler.Close();
                                 break;
                             case "test":
-                                Stopwatch watch = new Stopwatch();
-                                watch.Start();
-
-                                for (int i = 0; i < 1_000_000; i++)
-                                {
-                                    AccountManager.TryCreateAccount(out _, out _);
-                                }
-
-                                watch.Stop();
-                                Console.WriteLine(watch.Elapsed.TotalMilliseconds);
                                 break;
                         }
                     }

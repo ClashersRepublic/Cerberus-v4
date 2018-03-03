@@ -2,33 +2,60 @@
 {
     using System;
     using System.Collections.Generic;
+
+    using ClashersRepublic.Magic.Services.Core.Database;
+    using ClashersRepublic.Magic.Services.Core.Network;
+
     using Couchbase.Configuration.Client;
 
     internal static class DatabaseManager
     {
-        private static IDatabase _database;
+        private static int _scrambler;
+        private static IDatabase[] _databases;
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            ClientConfiguration configuration = new ClientConfiguration
+            DatabaseManager._databases = new IDatabase[NetManager.GetDatabaseUrls().Length];
+
+            for (int i = 0; i < DatabaseManager._databases.Length; i++)
             {
-                Servers = new List<Uri>
+                DatabaseManager._databases[i] = new CouchbaseDatabase(i, new ClientConfiguration
                 {
-                    new Uri("http://127.0.0.1")
-                }
-            };
-            DatabaseManager._database = new CouchbaseDatabase(configuration, "magic-accounts", "MagicServer", "HlB18qOxGj1DPLYbQof4cjoAN9SxMpuwoOymYxrQs13QtTbB2313JNkltbZAF7pp");
+                    Servers = new List<Uri>
+                    {
+                        new Uri("http://" + NetManager.GetDatabaseUrls()[i])
+                    }
+                }, "magic-accounts", NetManager.GetDatabaseUserName(), NetManager.GetDatabasePassword());
+            }
+        }
+
+        /// <summary>
+        ///     Iterates the scrambler.
+        /// </summary>
+        internal static int IterateScrambler()
+        {
+            int tmp = DatabaseManager._scrambler;
+            DatabaseManager._scrambler = (DatabaseManager._scrambler + 1) % DatabaseManager._databases.Length;
+            return tmp;
+        }
+
+        /// <summary>
+        ///     Gets the number of database.
+        /// </summary>
+        internal static int GetDatabaseCount()
+        {
+            return DatabaseManager._databases.Length;
         }
 
         /// <summary>
         ///     Gets the <see cref="IDatabase"/> instance.
         /// </summary>
-        internal static IDatabase GetDatabase()
+        internal static IDatabase GetDatabase(int idx)
         {
-            return DatabaseManager._database;
+            return DatabaseManager._databases[idx];
         }
     }
 }

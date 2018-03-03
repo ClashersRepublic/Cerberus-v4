@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
@@ -134,7 +135,7 @@
                                     this._client.SetSession(session);
                                     byte[] sessionId = session.SessionId;
 
-                                    NetMessaging.Send(socket, sessionId, sessionId.Length, new CreateAccountMessage());
+                                    NetMessageManager.SendMessage(socket, sessionId, sessionId.Length, new CreateAccountMessage());
                                 }
                                 else
                                 {
@@ -155,7 +156,7 @@
                     {
                         if (message.PassToken != null)
                         {
-                            NetSocket socket = NetManager.GetServiceNodeEndPoint(2, message.AccountId.GetHigherInt());
+                            NetSocket socket = NetManager.GetServiceNodeEndPoint(2, NetManager.GetServiceNodeId(2, message.AccountId));
 
                             if (socket != null)
                             {
@@ -169,7 +170,7 @@
                                     LoginClientMessage loginClientMessage = new LoginClientMessage();
                                     loginClientMessage.SetAccountId(message.AccountId);
                                     loginClientMessage.SetPassToken(message.PassToken);
-                                    NetMessaging.Send(socket, sessionId, sessionId.Length, loginClientMessage);
+                                    NetMessageManager.SendMessage(socket, sessionId, sessionId.Length, loginClientMessage);
                                 }
                                 else
                                 {

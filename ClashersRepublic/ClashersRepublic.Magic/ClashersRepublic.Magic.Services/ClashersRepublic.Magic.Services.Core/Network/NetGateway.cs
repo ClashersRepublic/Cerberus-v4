@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
     using System.Threading;
+
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
 
@@ -14,7 +15,7 @@
         /// </summary>
         public static void Initialize()
         {
-            NetGateway._listener = new DealerSocket("@tcp://*:" + NetUtils.GetNetPort(ServiceCore.ServiceNodeType));
+            NetGateway._listener = new DealerSocket("@tcp://*:" + NetUtils.GetNetPort(ServiceCore.ServiceNodeType, ServiceCore.ServiceNodeId));
             NetGateway._receiveThread = new Thread(NetGateway.Receive);
             NetGateway._receiveThread.Start();
         }

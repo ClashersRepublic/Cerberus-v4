@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
+    using System.Threading;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
 
@@ -28,7 +29,7 @@
             this.Type = type;
             this.Id = id;
 
-            this.Socket = new DealerSocket(">tcp://" + socket + ":" + NetUtils.GetNetPort(type));
+            this.Socket = new DealerSocket(">tcp://" + socket + ":" + NetUtils.GetNetPort(type, id));
         }
         
         /// <summary>
@@ -36,7 +37,10 @@
         /// </summary>
         public void Send(byte[] buffer, int length)
         {
-            this.Socket.SendFrame(buffer, length);
+            while (!this.Socket.TrySendFrame(buffer, length))
+            {
+                Thread.Sleep(5);
+            }
         }
     }
 }

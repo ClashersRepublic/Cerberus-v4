@@ -8,8 +8,8 @@
 
         protected byte[] SessionId;
         protected byte SessionIdLength;
-        protected byte ServiceNodeId;
-        protected byte ServiceNodeType;
+        protected int ServiceNodeId;
+        protected int ServiceNodeType;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetMessage" /> class.
@@ -65,7 +65,7 @@
         /// <summary>
         ///     Gets the sender service node type.
         /// </summary>
-        public byte GetServiceNodeType()
+        public int GetServiceNodeType()
         {
             return this.ServiceNodeType;
         }
@@ -73,7 +73,7 @@
         /// <summary>
         ///     Sets the sender service node type.
         /// </summary>
-        public void SetServiceNodeType(byte value)
+        public void SetServiceNodeType(int value)
         {
             this.ServiceNodeType = value;
         }
@@ -81,7 +81,7 @@
         /// <summary>
         ///     Gets the sender service node id.
         /// </summary>
-        public byte GetServiceNodeId()
+        public int GetServiceNodeId()
         {
             return this.ServiceNodeId;
         }
@@ -89,7 +89,7 @@
         /// <summary>
         ///     Sets the sender service node id.
         /// </summary>
-        public void SetServiceNodeId(byte value)
+        public void SetServiceNodeId(int value)
         {
             this.ServiceNodeId = value;
         }
@@ -144,8 +144,8 @@
         /// </summary>
         public virtual void Encode()
         {
-            this.Stream.WriteByte(this.ServiceNodeType);
-            this.Stream.WriteByte(this.ServiceNodeId);
+            this.Stream.WriteVInt(this.ServiceNodeType);
+            this.Stream.WriteVInt(this.ServiceNodeId);
             this.Stream.WriteByte(this.SessionIdLength);
             this.Stream.WriteBytesWithoutLength(this.SessionId, this.SessionIdLength);
         }

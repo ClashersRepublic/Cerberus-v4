@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Network;
 
@@ -29,9 +30,14 @@
                                 CmdHandler.Close();
                                 break;
                             case "test":
-                                for (int i = 0; i < 100000; i++)
+                                for (int i = 0; i < 10000; i++)
                                 {
-                                    NetMessaging.Send(NetManager.GetRandomEndPoint(2), new byte[10], 10, new CreateAccountMessage());
+                                    NetSocket socket = NetManager.GetRandomEndPoint(2);
+
+                                    if (socket != null)
+                                    {
+                                        NetMessageManager.SendMessage(socket, new byte[10], 10, new CreateAccountMessage());
+                                    }
                                 }
                                 break;
                         }

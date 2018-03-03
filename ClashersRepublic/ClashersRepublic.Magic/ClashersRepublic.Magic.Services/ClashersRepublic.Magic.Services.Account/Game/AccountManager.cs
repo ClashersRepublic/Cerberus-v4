@@ -1,18 +1,19 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Game
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Diagnostics;
     using System.Threading.Tasks;
+    using System.Collections.Concurrent;
+
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Core.Database;
+    using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal static class AccountManager
     {
-        private static int _accountCounter;
+        private static int[] _accountCounters;
         private static string _passTokenChars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
         private static LogicRandom _random;
@@ -34,8 +35,7 @@
         /// </summary>
         internal static void Initialize()
         {
-            AccountManager._accountCounter = 0;
-
+            AccountManager._accountCounters = new int[DatabaseManager.GetDatabaseCount()];
             AccountManager._random = new LogicRandom(LogicTimeUtil.GetTimestamp());
             AccountManager._accounts = new ConcurrentDictionary<long, Account>();
         }
@@ -45,27 +45,32 @@
         /// </summary>
         internal static void LoadAccounts()
         {
-            IDatabase database = DatabaseManager.GetDatabase();
-
-            if (database != null)
+            for (int highId = 0; highId < DatabaseManager.GetDatabaseCount(); highId++)
             {
-                AccountManager._accountCounter = database.GetHigherId();
-                
-                Parallel.For(1, AccountManager._accountCounter + 1, new ParallelOptions {MaxDegreeOfParallelism = 3}, id =>
+                IDatabase database = DatabaseManager.GetDatabase(highId);
+
+                if (database != null)
                 {
-                    string json = database.GetDocument(new LogicLong(ServiceCore.ServiceNodeId, id));
-
-                    if (json != null)
+                    int maxLowId = database.GetHigherId();
+                    
+                    Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 3 }, id =>
                     {
-                        Account account = new Account();
-                        account.Load(json);
-                        AccountManager.TryAdd(account);
-                    }
-                });
-            }
-            else
-            {
-                Logging.Warning(typeof(AccountManager), "AccountManager::loadAccounts pDatabase->NULL");
+                        string json = database.GetDocument(new LogicLong(highId, id));
+
+                        if (json != null)
+                        {
+                            Account account = new Account();
+                            account.Load(json);
+                            AccountManager.TryAdd(account);
+
+                            AccountManager._accountCounters[highId] = id;
+                        }
+                    });
+                }
+                else
+                {
+                    Logging.Warning(typeof(AccountManager), "AccountManager::loadAccounts pDatabase->NULL");
+                }
             }
         }
 
@@ -109,21 +114,56 @@
         }
 
         /// <summary>
+        ///     Gets a random higher id for a new account.
+        /// </summary>
+        private static int GetRandomHigherId()
+        {
+            int idx = -1;
+            int minId = 0x7fffffff;
+
+            for (int i = 0; i < AccountManager._accountCounters.Length; i++)
+            {
+                if (AccountManager._accountCounters[i] < minId)
+                {
+                    idx = i;
+                    minId = AccountManager._accountCounters[i];
+                }
+            }
+
+            return idx;
+        }
+
+        /// <summary>
         ///     Tries to create a new <see cref="Account"/> instance.
         /// </summary>
         internal static bool TryCreateAccount(out LogicLong accountId, out Account account)
         {
-            accountId = new LogicLong(ServiceCore.ServiceNodeId, ++AccountManager._accountCounter);
-            account = new Account(accountId, AccountManager.GeneratePassToken());
+            int highId = AccountManager.GetRandomHigherId();
 
-            bool success = AccountManager.TryAdd(account);
-
-            if (success)
+            if (highId != -1)
             {
-                DatabaseManager.GetDatabase().InsertDocument(accountId, LogicJSONParser.CreateJSONString(account.Save()));
+                IDatabase database = DatabaseManager.GetDatabase(highId);
+
+                if (database != null)
+                {
+                    accountId = new LogicLong(highId, AccountManager._accountCounters[highId] += NetManager.GetServerCount(ServiceCore.ServiceNodeType));
+                    account = new Account(accountId, AccountManager.GeneratePassToken());
+
+                    bool success = AccountManager.TryAdd(account);
+
+                    if (success)
+                    {
+                        database.InsertDocument(accountId, LogicJSONParser.CreateJSONString(account.Save()));
+                    }
+                    
+                    return success;
+                }
             }
 
-            return success;
+            accountId = null;
+            account = null;
+
+            return false;
         }
 
         /// <summary>
@@ -131,13 +171,7 @@
         /// </summary>
         internal static bool TryGetAccount(LogicLong accountId, out Account account)
         {
-            if (accountId.GetHigherInt() == ServiceCore.ServiceNodeId)
-            {
-                return AccountManager.TryGet(accountId, out account);
-            }
-
-            account = null;
-            return false;
+            return AccountManager.TryGet(accountId, out account);
         }
     }
 }

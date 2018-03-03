@@ -7,8 +7,7 @@
     public class NetSession
     {
         private readonly NetSocket[] _serviceNodeSockets;
-
-
+        
         /// <summary>
         ///     Gets the session id.
         /// </summary>
@@ -18,12 +17,7 @@
         ///     Gets the session name.
         /// </summary>
         public string SessionName { get; private set; }
-
-        /// <summary>
-        ///     Gets the account id.
-        /// </summary>
-        public LogicLong AccountId { get; private set; }
-
+        
         /// <summary>
         ///     Gets the id of all servers.
         /// </summary>
@@ -48,9 +42,8 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetSession" /> class.
         /// </summary>
-        public NetSession(LogicLong accountId, byte[] sessionId, string sessionName)
+        public NetSession(byte[] sessionId, string sessionName)
         {
-            this.AccountId = accountId;
             this.SessionId = sessionId;
             this.SessionName = sessionName;
 
@@ -74,7 +67,7 @@
         /// <summary>
         ///     Sets the service node id.
         /// </summary>
-        public void SetServiceNodeId(int serviceNodeType, int serviceNodeId, bool askMessage = false)
+        public virtual void SetServiceNodeId(int serviceNodeType, int serviceNodeId)
         {
             if (serviceNodeType > -1 && serviceNodeType < this._serviceNodeSockets.Length)
             {
@@ -85,13 +78,6 @@
                     if (socket != null)
                     {
                         this._serviceNodeSockets[serviceNodeType] = socket;
-
-                        if (askMessage)
-                        {
-                            AskForBindServerMessage ask = new AskForBindServerMessage();
-                            ask.SetAccountId(this.AccountId);
-                            NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, ask);
-                        }
                     }
                 }
                 else
