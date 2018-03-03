@@ -1,9 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
     using System;
+
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Network.Handler;
-    using ClashersRepublic.Magic.Titan.DataStream;
 
     public static class NetMessaging
     {
@@ -24,7 +24,7 @@
         {
             NetPacket packet = new NetPacket(buffer, length);
 
-            if (packet.GetNetMessageCount() != 0)
+            if (packet.GetNetMessage() != null)
             {
                 NetMessaging._messageHandler.Receive(packet);
             }
@@ -33,20 +33,7 @@
         /// <summary>
         ///     Sends the specified message.
         /// </summary>
-        public static void Send(int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionIdLength, NetMessage message)
-        {
-            NetSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
-
-            if (destinationSocket != null)
-            {
-                NetMessaging.Send(destinationSocket, sessionId, sessionIdLength, message);
-            }
-        }
-
-        /// <summary>
-        ///     Sends the specified message.
-        /// </summary>
-        public static void Send(int serviceNodeType, int serviceNodeId, NetMessage message)
+        internal static void Send(int serviceNodeType, int serviceNodeId, NetMessage message, byte[] sessionId = null, int sessionIdLength = 0)
         {
             NetSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
 
@@ -55,56 +42,28 @@
                 NetMessaging.Send(destinationSocket, message);
             }
         }
-
+        
         /// <summary>
         ///     Sends the specified message.
         /// </summary>
-        public static void Send(NetSocket destinationSocket, byte[] sessionId, int sessionIdLength, NetMessage message)
+        internal static void Send(NetSocket destinationSocket, NetMessage message, byte[] sessionId = null, int sessionIdLength = 0)
         {
             if (destinationSocket == null)
             {
                 throw new ArgumentNullException("destinationSocket");
             }
 
-            message.SetSessionId(sessionId, sessionIdLength);
-            message.SetServiceNodeType((byte)ServiceCore.ServiceNodeType);
-            message.SetServiceNodeId((byte)ServiceCore.ServiceNodeId);
+            message.SetServiceNodeType((byte) ServiceCore.ServiceNodeType);
+            message.SetServiceNodeId((byte) ServiceCore.ServiceNodeId);
             message.Encode();
-            destinationSocket.AddMessage(message);
+
+            NetMessaging._messageHandler.Send(destinationSocket, new NetPacket(message));
         }
-
+        
         /// <summary>
-        ///     Sends the specified message.
+        ///     Sets the <see cref="NetMessageManager" /> instance.
         /// </summary>
-        public static void Send(NetSocket destinationSocket, NetMessage message)
-        {
-            if (destinationSocket == null)
-            {
-                throw new ArgumentNullException("destinationSocket");
-            }
-
-            message.SetServiceNodeType((byte)ServiceCore.ServiceNodeType);
-            message.SetServiceNodeId((byte)ServiceCore.ServiceNodeId);
-            message.Encode();
-            destinationSocket.AddMessage(message);
-        }
-
-        /// <summary>
-        ///     Sends the specified <see cref="NetPacket" /> instance.
-        /// </summary>
-        internal static void InternalSend(NetSocket serverSocket, NetPacket packet)
-        {
-            ByteStream byteStream = new ByteStream(10);
-
-            packet.Encode(byteStream);
-            serverSocket.Send(byteStream.GetByteArray(), byteStream.GetOffset());
-            byteStream.Destruct();
-        }
-
-        /// <summary>
-        ///     Sets the <see cref="INetMessageManager" /> instance.
-        /// </summary>
-        public static void SetMessageManager(INetMessageManager manager)
+        public static void SetMessageManager(NetMessageManager manager)
         {
             NetMessaging._messageHandler.SetMessageManager(manager);
         }

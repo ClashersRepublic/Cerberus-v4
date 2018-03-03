@@ -2,17 +2,19 @@
 {
     using System.Collections.Concurrent;
     using System.Threading;
+
     using ClashersRepublic.Magic.Services.Core.Message;
-    using ClashersRepublic.Magic.Titan.Util;
+    using ClashersRepublic.Magic.Titan.DataStream;
 
     public class NetHandler
     {
         private readonly Thread _sendThread;
         private readonly Thread _receiveThread;
+        private readonly ConcurrentQueue<SendItem> _sendQueue;
         private readonly ConcurrentQueue<NetPacket> _receiveQueue;
-        private readonly NetSocket[] _sockets;
+        private readonly ByteStream _writeStream;
 
-        private INetMessageManager _messageManager;
+        private NetMessageManager _messageManager;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetHandler" /> class.
@@ -22,7 +24,8 @@
             this._sendThread = new Thread(this.SendTask);
             this._receiveThread = new Thread(this.ReceiveTask);
             this._receiveQueue = new ConcurrentQueue<NetPacket>();
-            this._sockets = NetManager.Get();
+            this._sendQueue = new ConcurrentQueue<SendItem>();
+            this._writeStream = new ByteStream(20);
 
             this._sendThread.Start();
             this._receiveThread.Start();
@@ -37,12 +40,11 @@
             {
                 while (this._receiveQueue.TryDequeue(out NetPacket packet))
                 {
-                    LogicArrayList<NetMessage> messages = packet.GetNetMessages();
+                    NetMessage message = packet.GetNetMessage();
 
-                    for (int i = 0; i < packet.GetNetMessageCount(); i++)
+                    if (message != null)
                     {
-                        messages[i].Decode();
-                        this._messageManager.ReceiveMessage(messages[i]);
+                        this._messageManager.ReceiveMessage(message);
                     }
 
                     packet.Destruct();
@@ -59,9 +61,16 @@
         {
             while (true)
             {
-                for (int i = 0; i < this._sockets.Length; i++)
+                while (this._sendQueue.TryDequeue(out SendItem item))
                 {
-                    this._sockets[i].OnWakeup();
+                    NetSocket socket = item.Socket;
+                    NetPacket packet = item.Packet;
+
+                    packet.Encode(this._writeStream);
+                    socket.Send(this._writeStream.GetByteArray(), this._writeStream.GetOffset());
+                    packet.Destruct();
+
+                    this._writeStream.SetOffset(0);
                 }
 
                 Thread.Sleep(1);
@@ -75,13 +84,43 @@
         {
             this._receiveQueue.Enqueue(packet);
         }
-        
+
         /// <summary>
-        ///     Sets the <see cref="INetMessageManager" /> instance.
+        ///     Sends the specified packet.
         /// </summary>
-        internal void SetMessageManager(INetMessageManager manager)
+        internal void Send(NetSocket socket, NetPacket packet)
+        {
+            this._sendQueue.Enqueue(new SendItem(socket, packet));
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="NetMessageManager" /> instance.
+        /// </summary>
+        internal void SetMessageManager(NetMessageManager manager)
         {
             this._messageManager = manager;
+        }
+
+        private struct SendItem
+        {
+            /// <summary>
+            ///     Gets the <see cref="NetMessage"/> instance.
+            /// </summary>
+            internal NetPacket Packet { get; }
+
+            /// <summary>
+            ///     Gets the <see cref="NetSocket"/> instance.
+            /// </summary>
+            internal NetSocket Socket { get; }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="SendItem"/> struct.
+            /// </summary>
+            internal SendItem(NetSocket socket, NetPacket packet)
+            {
+                this.Socket = socket;
+                this.Packet = packet;
+            }
         }
     }
 }

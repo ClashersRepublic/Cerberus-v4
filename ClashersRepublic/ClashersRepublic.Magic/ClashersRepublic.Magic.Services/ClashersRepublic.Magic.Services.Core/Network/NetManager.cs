@@ -27,37 +27,7 @@
 
             NetManager.LoadConfig();
         }
-
-        /// <summary>
-        ///     Gets all sockets.
-        /// </summary>
-        public static NetSocket[] Get()
-        {
-            LogicArrayList<NetSocket> tmp = new LogicArrayList<NetSocket>();
-
-            for (int i = 0; i < NetManager._endPoints.Length; i++)
-            {
-                for (int j = 0; j < NetManager._endPoints[i].Count; j++)
-                {
-                    tmp.Add(NetManager._endPoints[i][j]);       
-                }
-            }
-
-            NetSocket[] sockets = new NetSocket[tmp.Count];
-
-            if (tmp.Count != 0)
-            {
-                int i = 0;
-                do
-                {
-                    sockets[i++] = tmp[0];
-                    tmp.Remove(0);
-                } while (tmp.Count != 0);
-            }
-
-            return sockets;
-        }
-
+        
         /// <summary>
         ///     Loads the config.
         /// </summary>

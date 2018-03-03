@@ -227,10 +227,11 @@
     <Compile Include="Message\Avatar\CreateAvatarMessage.cs" />
     <Compile Include="Message\Avatar\AskForAvatarMessage.cs" />
     <Compile Include="Message\Avatar\CreateAvatarOkMessage.cs" />
-    <Compile Include="Message\GlobalChat\UpdateAvatarDataMesssage.cs" />
-    <Compile Include="Message\INetMessageManager.cs" />
+    <Compile Include="Message\GlobalChat\GlobalChatAvatarEntryMessage.cs" />
+    <Compile Include="Message\GlobalChat\GlobalChatAvatarEntry.cs" />
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />
+    <Compile Include="Message\NetMessageManager.cs" />
     <Compile Include="Message\Session\SetSessionSocketMessage.cs" />
     <Compile Include="Message\Session\RemoveSessionSocketMessage.cs" />
     <Compile Include="Message\Session\UpdateSessionSocketMessage.cs" />
