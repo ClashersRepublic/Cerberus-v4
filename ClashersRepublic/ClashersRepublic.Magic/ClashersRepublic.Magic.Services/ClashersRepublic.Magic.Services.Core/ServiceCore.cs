@@ -22,7 +22,7 @@
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
-        public static void Initialize(int serviceNodeType, INetMessageManager messageManager, string[] args)
+        public static void Initialize(int serviceNodeType, NetMessageManager messageManager, string[] args)
         {
             if (ServiceCore._initialized)
             {
@@ -74,7 +74,7 @@
         /// <summary>
         ///     Initializes the net part.
         /// </summary>
-        private static void InitNet(INetMessageManager messageManager)
+        private static void InitNet(NetMessageManager messageManager)
         {
             WebManager.Initialize();
             NetManager.Initialize();

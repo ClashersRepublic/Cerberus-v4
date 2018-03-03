@@ -65,12 +65,11 @@
     <Compile Include="Game\AccountManager.cs" />
     <Compile Include="Handler\CmdHandler.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
-    <Compile Include="Network\Message\NetMessageManager.cs" />
+    <Compile Include="Network\Message\NetAccountMessageManager.cs" />
     <Compile Include="Network\Session\NetAccountSession.cs" />
     <Compile Include="Network\Session\NetAccountSessionManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializer\AccountSerializer.cs" />
     <Compile Include="ServiceAccount.cs" />
   </ItemGroup>
   <ItemGroup>

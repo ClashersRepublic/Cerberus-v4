@@ -1,8 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Session
 {
-    public class RemoveSessionSocketMessage : NetMessage
+    using ClashersRepublic.Magic.Titan.Math;
+
+    public class AskForBindServerMessage : NetMessage
     {
-        private byte _sessionSocketType;
+        private LogicLong _accountId;
 
         /// <summary>
         ///     Destructs this instance.
@@ -10,6 +12,7 @@
         public override void Destruct()
         {
             base.Destruct();
+            this._accountId = null;
         }
 
         /// <summary>
@@ -18,7 +21,7 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteByte(this._sessionSocketType);
+            this.Stream.WriteLong(this._accountId);
         }
 
         /// <summary>
@@ -27,7 +30,7 @@
         public override void Decode()
         {
             base.Decode();
-            this._sessionSocketType = this.Stream.ReadByte();
+            this._accountId = this.Stream.ReadLong();
         }
 
         /// <summary>
@@ -35,23 +38,25 @@
         /// </summary>
         public override int GetMessageType()
         {
-            return 10300;
+            return 10302;
         }
 
         /// <summary>
-        ///     Gets the session socket type.
+        ///     Removes the account id.
         /// </summary>
-        public byte GetSessionSocketType()
+        public LogicLong RemoveAccountId()
         {
-            return this._sessionSocketType;
+            LogicLong tmp = this._accountId;
+            this._accountId = null;
+            return tmp;
         }
 
         /// <summary>
-        ///     Sets the session socket type.
+        ///     Sets the account id.
         /// </summary>
-        public void SetSessionSocketType(byte value)
+        public void SetAccountId(LogicLong value)
         {
-            this._sessionSocketType = value;
+            this._accountId = value;
         }
     }
 }

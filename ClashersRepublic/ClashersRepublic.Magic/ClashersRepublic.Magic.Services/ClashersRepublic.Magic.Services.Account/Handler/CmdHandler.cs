@@ -1,7 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Handler
 {
     using System;
-    using ClashersRepublic.Magic.Services.Account.Network.Session;
+    using System.Diagnostics;
+
+    using ClashersRepublic.Magic.Services.Account.Game;
 
     internal static class CmdHandler
     {
@@ -28,6 +30,16 @@
                                 CmdHandler.Close();
                                 break;
                             case "test":
+                                Stopwatch watch = new Stopwatch();
+                                watch.Start();
+
+                                for (int i = 0; i < 1_000_000; i++)
+                                {
+                                    AccountManager.TryCreateAccount(out _, out _);
+                                }
+
+                                watch.Stop();
+                                Console.WriteLine(watch.Elapsed.TotalMilliseconds);
                                 break;
                         }
                     }

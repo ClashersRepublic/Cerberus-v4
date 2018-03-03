@@ -24,8 +24,12 @@
                     case 10201: return new AskForAvatarMessage();
                     case 10202: return new SetAvatarDataMessage();
 
-                    case 10300: return new RemoveSessionSocketMessage();
-                    case 10301: return new SetSessionSocketMessage();
+                    case 10300: return new BindServerMessage();
+                    case 10301: return new UnbindServerMessage();
+                    case 10302: return new AskForBindServerMessage();
+                    case 10303: return new ClientDisconnectedMessage();
+
+                    case 10400: return new ForwardPiranhaMessage();
                 }
             }
             else
@@ -42,9 +46,6 @@
                     case 20201: return new CreateAvatarOkMessage();
                     case 20202: return new CreateAvatarFailedMessage();
                     case 20203: return new AvatarDataMessage();
-
-                    case 20300: return new UpdateSessionSocketListMessage();
-                    case 20301: return new UpdateSessionSocketMessage();
                 }
             }
 

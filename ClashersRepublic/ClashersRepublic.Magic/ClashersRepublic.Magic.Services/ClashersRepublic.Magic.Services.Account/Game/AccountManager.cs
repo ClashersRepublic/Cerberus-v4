@@ -1,9 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Game
 {
+    using System;
     using System.Collections.Concurrent;
-
+    using System.Diagnostics;
+    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -44,16 +47,25 @@
         {
             IDatabase database = DatabaseManager.GetDatabase();
 
-            AccountManager._accountCounter = database.GetHigherId();
-
-            for (int lowId = 1, highId = ServiceCore.ServiceNodeId; lowId <= AccountManager._accountCounter; lowId++)
+            if (database != null)
             {
-                Account account = database.GetDocument(new LogicLong(highId, lowId));
-
-                if (account != null)
+                AccountManager._accountCounter = database.GetHigherId();
+                
+                Parallel.For(1, AccountManager._accountCounter + 1, new ParallelOptions {MaxDegreeOfParallelism = 3}, id =>
                 {
-                    AccountManager.TryAdd(account);
-                }
+                    string json = database.GetDocument(new LogicLong(ServiceCore.ServiceNodeId, id));
+
+                    if (json != null)
+                    {
+                        Account account = new Account();
+                        account.Load(json);
+                        AccountManager.TryAdd(account);
+                    }
+                });
+            }
+            else
+            {
+                Logging.Warning(typeof(AccountManager), "AccountManager::loadAccounts pDatabase->NULL");
             }
         }
 
@@ -104,20 +116,14 @@
             accountId = new LogicLong(ServiceCore.ServiceNodeId, ++AccountManager._accountCounter);
             account = new Account(accountId, AccountManager.GeneratePassToken());
 
-            if (AccountManager.TryAdd(account))
+            bool success = AccountManager.TryAdd(account);
+
+            if (success)
             {
-                IDatabase database = DatabaseManager.GetDatabase();
-
-                if (database.InsertDocument(accountId, account))
-                {
-                    database.IncrementHigherId();
-                    return true;
-                }
-
-                AccountManager.TryRemove(accountId, out account);
+                DatabaseManager.GetDatabase().InsertDocument(accountId, LogicJSONParser.CreateJSONString(account.Save()));
             }
 
-            return false;
+            return success;
         }
 
         /// <summary>

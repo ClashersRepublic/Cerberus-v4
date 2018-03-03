@@ -2,18 +2,19 @@
 {
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message.Account;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
-    using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
-    internal class NetMessageManager : INetMessageManager
+    internal class NetProxyMessageManager : NetMessageManager
     {
         /// <summary>
         ///     Receives the specicified <see cref="NetMessage"/>.
         /// </summary>
-        public void ReceiveMessage(NetMessage message)
+        public override void ReceiveMessage(NetMessage message)
         {
             switch (message.GetMessageType())
             {
@@ -33,22 +34,11 @@
         }
 
         /// <summary>
-        ///     Sends the message to the specified service node.
+        ///     Sends the response <see cref="NetMessage"/> to the requester.
         /// </summary>
-        internal void SendMessage(NetMessage message, int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionIdLength)
+        internal static void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
         {
-            NetMessaging.Send(serviceNodeType, serviceNodeId, sessionId, sessionIdLength, message);
-        }
-
-        /// <summary>
-        ///     Sends the response message to requester.
-        /// </summary>
-        internal void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
-        {
-            int sessionIdLength = requestMessage.GetSessionIdLength();
-            byte[] sessionId = requestMessage.RemoveSessionId();
-
-            NetMessaging.Send(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), sessionId, sessionIdLength, responseMessage);
+            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), requestMessage.GetSessionIdLength(), responseMessage);
         }
 
         /// <summary>
@@ -67,7 +57,7 @@
                         LoginClientMessage loginClientMessage = new LoginClientMessage();
                         loginClientMessage.SetAccountId(message.RemoveAccountId());
                         loginClientMessage.SetPassToken(message.RemovePassToken());
-                        NetMessaging.Send(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, sessionId.Length, loginClientMessage);
+                        NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, sessionId.Length, loginClientMessage);
                     }
                 }
             }

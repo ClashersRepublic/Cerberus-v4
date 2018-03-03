@@ -1,34 +1,67 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Database
 {
-    using System.Threading.Tasks;
-
+    using System.Collections.Concurrent;
+    using System.Threading;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Core;
-
     using Couchbase;
     using Couchbase.Configuration.Client;
     using Couchbase.Core;
+    using Couchbase.N1QL;
+    using Newtonsoft.Json.Linq;
 
     internal class CouchbaseDatabase : IDatabase
     {
         private readonly ICluster _cluster;
         private readonly IBucket _accountBucket;
-        private readonly IBucket _counterBucket;
+
+        private readonly string _bucketName;
+
+        private readonly Thread _saveThread;
+        private readonly Thread _insertThread;
+        private readonly ConcurrentQueue<Item> _saveQueue;
+        private readonly ConcurrentQueue<Item> _insertQueue;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CouchbaseDatabase"/> class.
         /// </summary>
-        internal CouchbaseDatabase(ClientConfiguration configuration, string userName, string password)
+        internal CouchbaseDatabase(ClientConfiguration configuration, string bucket, string userName, string password)
         {
+            this._bucketName = bucket;
+
             this._cluster = new Cluster(configuration);
             this._cluster.Authenticate(userName, password);
-            this._accountBucket = this._cluster.OpenBucket("magic-accounts");
-            this._counterBucket = this._cluster.OpenBucket("magic-counters");
+            this._accountBucket = this._cluster.OpenBucket(bucket);
 
-            if (!this._counterBucket.Exists("acc-counters"))
+            this._saveQueue = new ConcurrentQueue<Item>();
+            this._insertQueue = new ConcurrentQueue<Item>();
+            this._insertThread = new Thread(() =>
             {
-                this._counterBucket.Insert("acc-counters", 0);
-            }
+                while (true)
+                {
+                    while (this._insertQueue.TryDequeue(out Item document))
+                    {
+                        this._accountBucket.Insert(document.Key, document.Json);
+                    }
+
+                    Thread.Sleep(1);
+                }
+            });
+            this._saveThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    while (this._saveQueue.TryDequeue(out Item document))
+                    {
+                        this._accountBucket.Replace(document.Key, document.Json);
+                    }
+
+                    Thread.Sleep(1);
+                }
+            });
+
+            this._insertThread.Start();
+            this._saveThread.Start();
         }
 
         /// <summary>
@@ -36,109 +69,77 @@
         /// </summary>
         public int GetHigherId()
         {
-            return (int) this._counterBucket.Get<ulong>("acc-counters").Value;
-        }
+            IQueryResult<dynamic> result = this._accountBucket.Query<dynamic>(new QueryRequest().Statement("SELECT MAX(acc_lo) FROM `" + this._bucketName + "` WHERE acc_hi == " + ServiceCore.ServiceNodeId));
 
-        /// <summary>
-        ///     Sets the higher id.
-        /// </summary>
-        public void SetHigherId(int id)
-        {
-            this._counterBucket.Replace(new Document<ulong>
+            if (result.Success)
             {
-                Id = "acc-counters",
-                Content = (ulong) id
-            });
-        }
+                if (result.Rows.Count != 0)
+                {
+                    JValue value = result.Rows[0]["$1"];
 
-        /// <summary>
-        ///     Sets the higher id.
-        /// </summary>
-        public void IncrementHigherId()
-        {
-            this._counterBucket.Increment("acc-counters");
-        }
+                    if (value == null || value.Type == JTokenType.Null)
+                    {
+                        return 0;
+                    }
 
+                    return (int) value;
+                }
+            }
+
+            return 0;
+        }
+        
         /// <summary>
         ///     Inserts the specified document.
         /// </summary>
-        public bool InsertDocument(long id, Account account)
+        public void InsertDocument(long id, string json)
         {
             if (id != 0)
             {
-                return this._accountBucket.Insert(new Document<Account>
-                {
-                    Id = id.ToString(),
-                    Content = account
-                }).Success;
+                this._insertQueue.Enqueue(new Item(id.ToString(), json));
             }
             else
             {
                 Logging.Warning(this, "CouchbaseDatabase::insertDocument id is 0");
             }
-
-            return false;
-        }
-
-        /// <summary>
-        ///     Inserts the specified document in async.
-        /// </summary>
-        public async Task<IDocumentResult<Account>> InsertDocumentAsync(long id, Account account)
-        {
-            if (id != 0)
-            {
-                return await this._accountBucket.InsertAsync(new Document<Account>
-                {
-                    Id = id.ToString(),
-                    Content = account
-                });
-            }
-            else
-            {
-                Logging.Warning(this, "CouchbaseDatabase::insertDocument id is 0");
-            }
-
-            return null;
         }
 
         /// <summary>
         ///     Gets the document in database.
         /// </summary>
-        public Account GetDocument(long id)
+        public string GetDocument(long id)
         {
-            return this._accountBucket.Get<Account>(id.ToString()).Value;
-        }
-
-        /// <summary>
-        ///     Gets the document in database in async.
-        /// </summary>
-        public async Task<IOperationResult<Account>> GetDocumentAsync(long id)
-        {
-            return await this._accountBucket.GetAsync<Account>(id.ToString());
+            return this._accountBucket.GetDocument<string>(id.ToString()).Content;
         }
 
         /// <summary>
         ///     Updates the document stocked in database.
         /// </summary>
-        public void UpdateDocument(long id, Account account)
+        public void UpdateDocument(long id, string json)
         {
-            this._accountBucket.Replace(new Document<Account>
-            {
-                Id = id.ToString(),
-                Content = account
-            });
+            this._saveQueue.Enqueue(new Item(id.ToString(), json));
         }
 
-        /// <summary>
-        ///     Updates the document stocked in database in async.
-        /// </summary>
-        public void UpdateDocumentAsync(long id, Account account)
+        private struct Item
         {
-            this._accountBucket.ReplaceAsync(new Document<Account>
+            /// <summary>
+            ///     Gets the key.
+            /// </summary>
+            internal string Key { get; }
+
+            /// <summary>
+            ///     Gets the json value.
+            /// </summary>
+            internal string Json { get; }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="Item"/> struct.
+            /// </summary>
+            internal Item(string key, string json)
             {
-                Id = id.ToString(),
-                Content = account
-            });
+                this.Key = key;
+                this.Json = json;
+            }
         }
     }
 }

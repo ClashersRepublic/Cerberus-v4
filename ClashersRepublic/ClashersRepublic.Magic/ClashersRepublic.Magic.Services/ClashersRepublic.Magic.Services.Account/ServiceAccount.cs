@@ -19,7 +19,7 @@
         /// </summary>
         internal static void Initialize(string[] args)
         {
-            ServiceCore.Initialize(ServiceAccount.ServiceNodeType, new NetMessageManager(), args);
+            ServiceCore.Initialize(ServiceAccount.ServiceNodeType, new NetAccountMessageManager(), args);
 
             ServiceAccount.InitLogic();
             ServiceAccount.InitGame();

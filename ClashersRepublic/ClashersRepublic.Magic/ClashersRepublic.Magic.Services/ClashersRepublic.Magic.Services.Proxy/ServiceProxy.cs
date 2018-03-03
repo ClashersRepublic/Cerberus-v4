@@ -24,7 +24,7 @@
         /// </summary>
         internal static void Initialize(string[] args)
         {
-            ServiceCore.Initialize(ServiceProxy.ServiceNodeType, new NetMessageManager(), args);
+            ServiceCore.Initialize(ServiceProxy.ServiceNodeType, new NetProxyMessageManager(), args);
 
             ServiceProxy.InitLogic();
             ServiceProxy.InitNetwork();

@@ -9,12 +9,12 @@
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Titan.Math;
 
-    internal class NetMessageManager : INetMessageManager
+    internal class NetAccountMessageManager : NetMessageManager
     {
         /// <summary>
         ///     Receives the specicified <see cref="NetMessage"/>.
         /// </summary>
-        public void ReceiveMessage(NetMessage message)
+        public override void ReceiveMessage(NetMessage message)
         {
             switch (message.GetMessageType())
             {
@@ -34,25 +34,11 @@
         }
 
         /// <summary>
-        ///     Sends the message to the specified service node.
+        ///     Sends the response <see cref="NetMessage"/> to the requester.
         /// </summary>
-        internal void SendMessage(NetMessage message, int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionIdLength)
+        internal static void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
         {
-            message.SetSessionId(sessionId, sessionIdLength);
-            NetMessaging.Send(serviceNodeType, serviceNodeId, message);
-        }
-
-        /// <summary>
-        ///     Sends the response message to requester.
-        /// </summary>
-        internal void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
-        {
-            int sessionIdLength = requestMessage.GetSessionIdLength();
-            byte[] sessionId = requestMessage.RemoveSessionId();
-            
-            responseMessage.SetSessionId(sessionId, sessionIdLength);
-
-            NetMessaging.Send(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), responseMessage);
+            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), requestMessage.GetSessionIdLength(), responseMessage);
         }
 
         /// <summary>
@@ -79,22 +65,20 @@
                                     // Abort
                                 }
 
-                                session.SetServiceNodeId(1, message.GetServiceNodeId());
-                                session.SetServiceNodeId(2, ServiceCore.ServiceNodeId);
-                                session.SetServiceNodeId(3, account.Id.GetHigherInt());
+                                session.SetServiceNodeId(1, message.GetServiceNodeId(), true);
+                                session.SetServiceNodeId(2, ServiceCore.ServiceNodeId, true);
+                                session.SetServiceNodeId(3, account.Id.GetHigherInt(), true);
 
                                 account.SetSession(session);
 
                                 LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
-                                UpdateSessionSocketListMessage updateSessionSocketListMessage = new UpdateSessionSocketListMessage();
 
                                 loginClientOkMessage.SetAccountId(account.Id);
                                 loginClientOkMessage.SetHomeId(account.Id);
                                 loginClientOkMessage.SetPassToken(account.PassToken);
                                 loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
-                                updateSessionSocketListMessage.SetSessionSocketList(session.ServiceNodeIDs);
-                                
-                                this.SendResponseMessage(message, loginClientOkMessage);            
+
+                                NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
 
                                 return;
                             }
@@ -105,7 +89,7 @@
 
             LoginClientFailedMessage responseMessage = new LoginClientFailedMessage();
             responseMessage.SetErrorCode(1);
-            this.SendResponseMessage(message, responseMessage);
+            NetAccountMessageManager.SendResponseMessage(message, responseMessage);
         }
 
         /// <summary>
@@ -121,13 +105,13 @@
                 createAccountOkMessage.SetHomeId(accountId);
                 createAccountOkMessage.SetPassToken(account.PassToken);
 
-                this.SendResponseMessage(message, createAccountOkMessage);
+                NetAccountMessageManager.SendResponseMessage(message, createAccountOkMessage);
             }
             else
             {
                 CreateAccountFailedMessage createAccountFailedMessage = new CreateAccountFailedMessage();
                 createAccountFailedMessage.SetErrorCode(1);
-                this.SendResponseMessage(message, createAccountFailedMessage);
+                NetAccountMessageManager.SendResponseMessage(message, createAccountFailedMessage);
             }
         }
 
@@ -148,7 +132,7 @@
                         {
                             if (account.CreateBan(message.GetReason(), message.GetEndTime()))
                             {
-                                this.SendResponseMessage(message, new AccoutBanCreatedMessage());
+                                NetAccountMessageManager.SendResponseMessage(message, new AccoutBanCreatedMessage());
                             }
                         }
                     }
@@ -171,7 +155,7 @@
                     {
                         if (account.RevokeBan())
                         {
-                            this.SendResponseMessage(message, new AccountBanRevokedMessage());
+                            NetAccountMessageManager.SendResponseMessage(message, new AccountBanRevokedMessage());
                         }
                     }
                 }

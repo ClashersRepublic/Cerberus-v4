@@ -43,7 +43,7 @@
     <Compile Include="Handler\ExitHandler.cs" />
     <Compile Include="Network\Handler\MessageHandler.cs" />
     <Compile Include="Network\Message\MessageManager.cs" />
-    <Compile Include="Network\Message\NetMessageManager.cs" />
+    <Compile Include="Network\Message\NetProxyMessageManager.cs" />
     <Compile Include="Network\NetworkClient.cs" />
     <Compile Include="Network\NetworkGateway.cs" />
     <Compile Include="Network\NetworkManager.cs" />

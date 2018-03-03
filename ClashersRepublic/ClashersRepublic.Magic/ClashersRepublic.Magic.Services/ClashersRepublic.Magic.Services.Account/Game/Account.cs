@@ -3,7 +3,6 @@
     using ClashersRepublic.Magic.Logic.Helper;
 
     using ClashersRepublic.Magic.Services.Account.Network.Session;
-    using ClashersRepublic.Magic.Services.Account.Serializer;
     using ClashersRepublic.Magic.Services.Core;
 
     using ClashersRepublic.Magic.Titan.Json;
@@ -11,8 +10,7 @@
     using ClashersRepublic.Magic.Titan.Util;
 
     using Newtonsoft.Json;
-
-    [JsonConverter(typeof(AccountSerializer))]
+    
     internal class Account
     {
         /// <summary>
@@ -155,8 +153,10 @@
         /// <summary>
         ///     Saves this instance to json.
         /// </summary>
-        internal void Save(LogicJSONObject jsonObject)
+        internal LogicJSONObject Save()
         {
+            LogicJSONObject jsonObject = new LogicJSONObject();
+
             jsonObject.Put("acc_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
             jsonObject.Put("acc_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
             jsonObject.Put("pass_t", new LogicJSONString(this.PassToken));
@@ -181,13 +181,17 @@
                 this.CurrentBan.Save(banObject);
                 jsonObject.Put("ban", banObject);
             }
+
+            return jsonObject;
         }
 
         /// <summary>
         ///     Loads this instance from json.
         /// </summary>
-        internal void Load(LogicJSONObject jsonObject)
+        internal void Load(string json)
         {
+            LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
+
             this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "acc_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "acc_lo"));
             this.PassToken = LogicJSONHelper.GetJSONString(jsonObject, "pass_t");
             this.PlayTimeSecs = LogicJSONHelper.GetJSONNumber(jsonObject, "pt_secs");

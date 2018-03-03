@@ -10,7 +10,7 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetAccountSession"/> class.
         /// </summary>
-        internal NetAccountSession(Account account, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
+        internal NetAccountSession(Account account, byte[] sessionId, string sessionName) : base(account.Id, sessionId, sessionName)
         {
             this._account = account;
         }

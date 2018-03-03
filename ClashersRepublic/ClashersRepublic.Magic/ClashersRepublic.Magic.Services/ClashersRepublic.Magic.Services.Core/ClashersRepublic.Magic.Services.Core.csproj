@@ -232,10 +232,11 @@
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />
     <Compile Include="Message\NetMessageManager.cs" />
-    <Compile Include="Message\Session\SetSessionSocketMessage.cs" />
-    <Compile Include="Message\Session\RemoveSessionSocketMessage.cs" />
-    <Compile Include="Message\Session\UpdateSessionSocketMessage.cs" />
-    <Compile Include="Message\Session\UpdateSessionSocketListMessage.cs" />
+    <Compile Include="Message\Network\ForwardPiranhaMessage.cs" />
+    <Compile Include="Message\Session\ClientDisconnectedMessage.cs" />
+    <Compile Include="Message\Session\AskForBindServerMessage.cs" />
+    <Compile Include="Message\Session\UnbindServerMessage.cs" />
+    <Compile Include="Message\Session\BindServerMessage.cs" />
     <Compile Include="Network\Handler\NetHandler.cs" />
     <Compile Include="Network\NetGateway.cs" />
     <Compile Include="Network\NetManager.cs" />

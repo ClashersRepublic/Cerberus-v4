@@ -20,7 +20,7 @@
                     new Uri("http://127.0.0.1")
                 }
             };
-            DatabaseManager._database = new CouchbaseDatabase(configuration, "MagicServer", "HlB18qOxGj1DPLYbQof4cjoAN9SxMpuwoOymYxrQs13QtTbB2313JNkltbZAF7pp");
+            DatabaseManager._database = new CouchbaseDatabase(configuration, "magic-accounts", "MagicServer", "HlB18qOxGj1DPLYbQof4cjoAN9SxMpuwoOymYxrQs13QtTbB2313JNkltbZAF7pp");
         }
 
         /// <summary>
