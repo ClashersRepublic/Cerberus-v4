@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
 
+    using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Network;
-
+    
     using Couchbase.Configuration.Client;
 
     internal static class DatabaseManager
@@ -18,7 +19,7 @@
         /// </summary>
         internal static void Initialize()
         {
-            DatabaseManager._databases = new IDatabase[NetManager.GetDatabaseUrls().Length];
+            DatabaseManager._databases = new IDatabase[ServiceSettings.GetDatabaseUrls().Length];
 
             for (int i = 0; i < DatabaseManager._databases.Length; i++)
             {
@@ -26,9 +27,9 @@
                 {
                     Servers = new List<Uri>
                     {
-                        new Uri("http://" + NetManager.GetDatabaseUrls()[i])
+                        new Uri("http://" + ServiceSettings.GetDatabaseUrls()[i])
                     }
-                }, "magic-accounts", NetManager.GetDatabaseUserName(), NetManager.GetDatabasePassword());
+                }, "magic-accounts", ServiceSettings.GetDatabaseUserName(), ServiceSettings.GetDatabasePassword());
             }
         }
 
@@ -55,7 +56,14 @@
         /// </summary>
         internal static IDatabase GetDatabase(int idx)
         {
-            return DatabaseManager._databases[idx];
+            if (idx > -1 && idx < DatabaseManager._databases.Length)
+            {
+                return DatabaseManager._databases[idx];
+            }
+
+            Logging.Warning(typeof(DatabaseManager), string.Format("DatabaseManager::getDatabase idx out of bands {0}/{1}", idx, DatabaseManager._databases.Length));
+
+            return null;
         }
     }
 }

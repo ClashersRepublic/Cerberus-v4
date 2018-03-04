@@ -4,11 +4,11 @@
     using ClashersRepublic.Magic.Logic.Data;
 
     using ClashersRepublic.Magic.Services.Core;
-
     using ClashersRepublic.Magic.Services.Proxy.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -16,8 +16,8 @@
     {
         private const int ServiceNodeType = 1;
 
-        internal static LogicRandom Random;
         internal static Timer TitleTimer;
+        internal static LogicRandom Random;
 
         /// <summary>
         ///     Initializes this instance.

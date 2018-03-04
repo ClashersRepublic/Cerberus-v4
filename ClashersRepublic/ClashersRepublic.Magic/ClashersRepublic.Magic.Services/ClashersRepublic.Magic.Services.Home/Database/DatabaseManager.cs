@@ -1,10 +1,10 @@
-﻿namespace ClashersRepublic.Magic.Services.Avatar.Database
+﻿namespace ClashersRepublic.Magic.Services.Home.Database
 {
     using System;
     using System.Collections.Generic;
 
+    using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
-    using ClashersRepublic.Magic.Services.Core.Network;
 
     using Couchbase.Configuration.Client;
 
@@ -18,7 +18,7 @@
         /// </summary>
         internal static void Initialize()
         {
-            DatabaseManager._databases = new IDatabase[NetManager.GetDatabaseUrls().Length];
+            DatabaseManager._databases = new IDatabase[ServiceSettings.GetDatabaseUrls().Length];
 
             for (int i = 0; i < DatabaseManager._databases.Length; i++)
             {
@@ -26,9 +26,9 @@
                 {
                     Servers = new List<Uri>
                     {
-                        new Uri("http://" + NetManager.GetDatabaseUrls()[i])
+                        new Uri("http://" + ServiceSettings.GetDatabaseUrls()[i])
                     }
-                }, "magic-avatars", NetManager.GetDatabaseUserName(), NetManager.GetDatabasePassword());
+                }, "magic-homes", ServiceSettings.GetDatabaseUserName(), ServiceSettings.GetDatabasePassword());
             }
         }
 

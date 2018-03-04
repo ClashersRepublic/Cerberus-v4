@@ -1,10 +1,11 @@
-﻿namespace ClashersRepublic.Magic.Services.Core.Message.Avatar
+﻿namespace ClashersRepublic.Magic.Services.Core.Message.Session
 {
     using ClashersRepublic.Magic.Titan.Math;
 
-    public class CreateAvatarMessage : NetMessage
+    public class ServerBoundMessage : NetMessage
     {
         private LogicLong _accountId;
+        private int[] _endPoints;
 
         /// <summary>
         ///     Destructs this instance.
@@ -13,6 +14,7 @@
         {
             base.Destruct();
             this._accountId = null;
+            this._endPoints = null;
         }
 
         /// <summary>
@@ -22,6 +24,11 @@
         {
             base.Encode();
             this.Stream.WriteLong(this._accountId);
+
+            for (byte i = 0; i < 28; i++)
+            {
+                this.Stream.WriteVInt(this._endPoints[i]);
+            }
         }
 
         /// <summary>
@@ -31,6 +38,12 @@
         {
             base.Decode();
             this._accountId = this.Stream.ReadLong();
+            this._endPoints = new int[28];
+
+            for (byte i = 0; i < 28; i++)
+            {
+                this._endPoints[i] = this.Stream.ReadVInt();
+            }
         }
 
         /// <summary>
@@ -38,7 +51,7 @@
         /// </summary>
         public override int GetMessageType()
         {
-            return 10200;
+            return 10302;
         }
 
         /// <summary>
@@ -57,6 +70,24 @@
         public void SetAccountId(LogicLong value)
         {
             this._accountId = value;
+        }
+
+        /// <summary>
+        ///     Removes the end point array.
+        /// </summary>
+        public int[] RemoveEndPoints()
+        {
+            int[] tmp = this._endPoints;
+            this._endPoints = null;
+            return tmp;
+        }
+
+        /// <summary>
+        ///     Sets the end point array.
+        /// </summary>
+        public void SetEndPoints(int[] value)
+        {
+            this._endPoints = value;
         }
     }
 }

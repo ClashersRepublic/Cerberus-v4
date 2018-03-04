@@ -246,21 +246,18 @@
     <Compile Include="Message\Account\CreateAccountFailedMessage.cs" />
     <Compile Include="Message\Account\CreateAccountOkMessage.cs" />
     <Compile Include="Message\Account\CreateAccountMessage.cs" />
-    <Compile Include="Message\Avatar\SetAvatarDataMessage.cs" />
     <Compile Include="Message\Avatar\AvatarDataMessage.cs" />
-    <Compile Include="Message\Avatar\CreateAvatarFailedMessage.cs" />
-    <Compile Include="Message\Avatar\CreateAvatarMessage.cs" />
+    <Compile Include="Message\Avatar\CreateHomeMessage.cs" />
     <Compile Include="Message\Avatar\AskForAvatarMessage.cs" />
-    <Compile Include="Message\Avatar\CreateAvatarOkMessage.cs" />
     <Compile Include="Message\GlobalChat\GlobalChatAvatarEntryMessage.cs" />
     <Compile Include="Message\GlobalChat\GlobalChatAvatarEntry.cs" />
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />
     <Compile Include="Message\NetMessageManager.cs" />
     <Compile Include="Message\Network\ForwardPiranhaMessage.cs" />
-    <Compile Include="Message\Session\ClientDisconnectedMessage.cs" />
-    <Compile Include="Message\Session\AskForBindServerMessage.cs" />
-    <Compile Include="Message\Session\UnbindServerMessage.cs" />
+    <Compile Include="Message\Session\ServerBoundMessage.cs" />
+    <Compile Include="Message\Session\UpdateServerEndPointMessage.cs" />
+    <Compile Include="Message\Session\ServerUnboundMessage.cs" />
     <Compile Include="Message\Session\BindServerMessage.cs" />
     <Compile Include="Network\Handler\NetHandler.cs" />
     <Compile Include="Network\NetGateway.cs" />
@@ -273,6 +270,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="ServiceCore.cs" />
+    <Compile Include="ServiceSettings.cs" />
     <Compile Include="Web\WebManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -203,14 +203,14 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar avatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave)
         {
             if (home != null)
             {
                 this._time = 0;
                 this._state = 1;
                 this._level.SetHome(home, true);
-                this._level.SetHomeOwnerAvatar(avatar);
+                this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
 
                 this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._time, false, -1);

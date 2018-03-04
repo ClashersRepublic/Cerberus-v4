@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
 
     public class NetMessageFactory
@@ -20,14 +21,13 @@
                     case 10104: return new CreateAccountBanMessage();
                     case 10105: return new RevokeAccountBanMessage();
 
-                    case 10200: return new CreateAvatarMessage();
+                    case 10200: return new CreateHomeMessage();
                     case 10201: return new AskForAvatarMessage();
-                    case 10202: return new SetAvatarDataMessage();
 
                     case 10300: return new BindServerMessage();
-                    case 10301: return new UnbindServerMessage();
-                    case 10302: return new AskForBindServerMessage();
-                    case 10303: return new ClientDisconnectedMessage();
+                    case 10301: return new ServerUnboundMessage();
+                    case 10302: return new ServerBoundMessage();
+                    case 10303: return new UpdateServerEndPointMessage();
 
                     case 10400: return new ForwardPiranhaMessage();
                 }
@@ -42,9 +42,7 @@
                     case 20104: return new LoginClientOkMessage();
                     case 20105: return new AccoutBanCreatedMessage();
                     case 20106: return new AccountBanRevokedMessage();
-
-                    case 20201: return new CreateAvatarOkMessage();
-                    case 20202: return new CreateAvatarFailedMessage();
+                        
                     case 20203: return new AvatarDataMessage();
                 }
             }

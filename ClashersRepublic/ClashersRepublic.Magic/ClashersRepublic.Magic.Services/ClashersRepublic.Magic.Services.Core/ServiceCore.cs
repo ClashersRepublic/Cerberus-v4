@@ -37,6 +37,8 @@
                 ServiceCore.ServiceNodeId = int.Parse(args[0]);
             }
 
+            WebManager.Initialize();
+
             ServiceCore.InitConfig();
             ServiceCore.InitLogic();
             ServiceCore.InitNet(messageManager);
@@ -69,6 +71,7 @@
         private static void InitConfig()
         {
             Logging.Initialize();
+            ServiceSettings.Initialize();
         }
 
         /// <summary>
@@ -76,7 +79,6 @@
         /// </summary>
         private static void InitNet(NetMessageManager messageManager)
         {
-            WebManager.Initialize();
             NetManager.Initialize();
             NetMessaging.Initialize();
             NetMessaging.SetMessageManager(messageManager);

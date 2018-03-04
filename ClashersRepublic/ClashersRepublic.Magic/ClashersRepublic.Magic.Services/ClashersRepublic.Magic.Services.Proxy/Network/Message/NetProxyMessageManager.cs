@@ -6,8 +6,10 @@
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
-
+    using ClashersRepublic.Magic.Services.Core.Message.Network;
+    using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
+    using ClashersRepublic.Magic.Titan.Message;
 
     internal class NetProxyMessageManager : NetMessageManager
     {
@@ -18,6 +20,10 @@
         {
             switch (message.GetMessageType())
             {
+                case 10400:
+                    this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
+                    break;
+
                 case 20101:
                     this.CreateAccountOkMessageReceived((CreateAccountOkMessage) message);
                     break;
@@ -133,7 +139,32 @@
                         loginOkMessage.ContentUrlList = ResourceManager.ContentUrlList;
                         loginOkMessage.ChronosContentUrlList = ResourceManager.ChronosContentUrlList;
 
+                        session.SetAccountId(loginOkMessage.AccountId);
                         session.Client.MessageManager.SendMessage(loginOkMessage);
+                        session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.AccountId));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when the <see cref="ForwardPiranhaMessage"/> is received.
+        /// </summary>
+        internal void ForwardPiranhaMessageReceived(ForwardPiranhaMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (sessionId != null)
+            {
+                PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+
+                if (piranhaMessage != null)
+                {
+                    piranhaMessage.GetByteStream().SetOffset(piranhaMessage.GetByteStream().GetLength());
+
+                    if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+                    {
+                        session.Client.MessageManager.SendMessage(piranhaMessage);
                     }
                 }
             }

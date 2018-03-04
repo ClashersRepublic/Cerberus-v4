@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Services.Avatar.Handler
+﻿namespace ClashersRepublic.Magic.Services.Home.Handler
 {
     using System;
     using System.Runtime.InteropServices;

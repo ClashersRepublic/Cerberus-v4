@@ -9,7 +9,7 @@
         {
             if (serviceNodeType > -1 && serviceNodeType < 28)
             {
-                return 5000 + 256 * serviceNodeType + serviceNodeId;
+                return 5000 + 512 * serviceNodeType + serviceNodeId;
             }
 
             return -1;

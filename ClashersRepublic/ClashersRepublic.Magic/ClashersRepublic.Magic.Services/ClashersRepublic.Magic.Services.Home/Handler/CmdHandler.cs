@@ -1,9 +1,6 @@
-﻿namespace ClashersRepublic.Magic.Services.Avatar.Handler
+﻿namespace ClashersRepublic.Magic.Services.Home.Handler
 {
     using System;
-    using System.Diagnostics;
-
-    using ClashersRepublic.Magic.Services.Avatar.Game;
 
     internal static class CmdHandler
     {

@@ -12,7 +12,7 @@
         ///     Gets the client state.
         /// </summary>
         internal int State { get; set; }
-        
+
         /// <summary>
         ///     Gets the <see cref="MessageManager"/> instance.
         /// </summary>
@@ -34,6 +34,23 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        internal void Destruct()
+        {
+            if (this._session != null)
+            {
+                NetProxySessionManager.TryRemove(this._session.SessionName, out _);
+
+                this._session.UnbindAllServers();
+                this._session.Destruct();
+                this._session = null;
+            }
+
+            this._networkToken = null;
+        }
+
+        /// <summary>
         ///     Gets the <see cref="NetProxySession"/> instance.
         /// </summary>
         internal NetProxySession GetSession()
@@ -47,14 +64,6 @@
         internal void SetSession(NetProxySession session)
         {
             this._session = session;
-        }
-
-        /// <summary>
-        ///     Destructs this instance.
-        /// </summary>
-        private void Destruct()
-        {
-            this._networkToken = null;
         }
     }
 }

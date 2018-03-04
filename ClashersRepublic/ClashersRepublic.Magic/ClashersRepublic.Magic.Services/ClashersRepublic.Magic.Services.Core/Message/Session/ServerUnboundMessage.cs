@@ -1,8 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Session
 {
-    using ClashersRepublic.Magic.Titan.Math;
-
-    public class ClientDisconnectedMessage : NetMessage
+    public class ServerUnboundMessage : NetMessage
     {
         /// <summary>
         ///     Destructs this instance.
@@ -33,7 +31,7 @@
         /// </summary>
         public override int GetMessageType()
         {
-            return 10303;
+            return 10301;
         }
     }
 }

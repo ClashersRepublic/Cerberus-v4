@@ -1,8 +1,8 @@
-﻿namespace ClashersRepublic.Magic.Services.Core.Message.Session
+﻿namespace ClashersRepublic.Magic.Services.Core.Message.Avatar
 {
     using ClashersRepublic.Magic.Titan.Math;
 
-    public class AskForBindServerMessage : NetMessage
+    public class CreateHomeMessage : NetMessage
     {
         private LogicLong _accountId;
 
@@ -38,7 +38,7 @@
         /// </summary>
         public override int GetMessageType()
         {
-            return 10302;
+            return 10200;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@
     using System.Reflection;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Handler;
+    using ClashersRepublic.Magic.Services.Account.Network.Session;
     using ClashersRepublic.Magic.Services.Core;
 
     internal class Program
@@ -38,7 +39,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Accounts: " + AccountManager.TotalAccounts;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Sessions: " + NetAccountSessionManager.TotalSessions + " - Accounts: " + AccountManager.TotalAccounts;
         }
     }
 }

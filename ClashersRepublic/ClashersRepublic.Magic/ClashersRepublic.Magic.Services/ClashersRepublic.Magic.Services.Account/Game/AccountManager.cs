@@ -45,25 +45,33 @@
         /// </summary>
         internal static void LoadAccounts()
         {
-            for (int highId = 0; highId < DatabaseManager.GetDatabaseCount(); highId++)
+            int dbCount = DatabaseManager.GetDatabaseCount();
+
+            for (int i = 0; i < dbCount; i++)
             {
-                IDatabase database = DatabaseManager.GetDatabase(highId);
+                IDatabase database = DatabaseManager.GetDatabase(i);
 
                 if (database != null)
                 {
+                    int highId = i;
                     int maxLowId = database.GetHigherId();
                     
                     Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 3 }, id =>
                     {
-                        string json = database.GetDocument(new LogicLong(highId, id));
+                        LogicLong accId = new LogicLong(highId, id);
 
-                        if (json != null)
+                        if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, id) == ServiceCore.ServiceNodeId)
                         {
-                            Account account = new Account();
-                            account.Load(json);
-                            AccountManager.TryAdd(account);
+                            string json = database.GetDocument(accId);
 
-                            AccountManager._accountCounters[highId] = id;
+                            if (json != null)
+                            {
+                                Account account = new Account();
+                                account.Load(json);
+                                AccountManager.TryAdd(account);
+
+                                AccountManager._accountCounters[highId] = LogicMath.Max(id, AccountManager._accountCounters[highId]);
+                            }
                         }
                     });
                 }

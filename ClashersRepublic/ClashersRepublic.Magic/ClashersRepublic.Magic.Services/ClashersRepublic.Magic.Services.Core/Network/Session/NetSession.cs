@@ -1,12 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network.Session
 {
-    using ClashersRepublic.Magic.Services.Core.Message;
-    using ClashersRepublic.Magic.Services.Core.Message.Session;
-    using ClashersRepublic.Magic.Titan.Math;
-
     public class NetSession
     {
-        private readonly NetSocket[] _serviceNodeSockets;
+        protected readonly NetSocket[] _serviceNodeSockets;
         
         /// <summary>
         ///     Gets the session id.
@@ -21,18 +17,15 @@
         /// <summary>
         ///     Gets the id of all servers.
         /// </summary>
-        public byte[] ServiceNodeIDs
+        public int[] ServiceNodeIDs
         {
             get
             {
-                byte[] tmp = new byte[28];
+                int[] tmp = new int[28];
 
                 for (int i = 0; i < 28; i++)
                 {
-                    if (this._serviceNodeSockets[i] != null)
-                    {
-                        tmp[i] = (byte) this._serviceNodeSockets[i].Id;
-                    }
+                    tmp[i] = this._serviceNodeSockets[i] != null ? this._serviceNodeSockets[i].Id : -1;
                 }
 
                 return tmp;
@@ -65,13 +58,30 @@
         }
 
         /// <summary>
-        ///     Sets the service node id.
+        ///     Gets the service node end point.
         /// </summary>
-        public virtual void SetServiceNodeId(int serviceNodeType, int serviceNodeId)
+        public NetSocket GetServiceNodeEndPoint(int serviceNodeType)
         {
             if (serviceNodeType > -1 && serviceNodeType < this._serviceNodeSockets.Length)
             {
-                if (serviceNodeId <= 0xFF)
+                return this._serviceNodeSockets[serviceNodeType];
+            }
+            else
+            {
+                Logging.Warning(this, "NetSession::setServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Sets the service node id.
+        /// </summary>
+        public void SetServiceNodeId(int serviceNodeType, int serviceNodeId)
+        {
+            if (serviceNodeType > -1 && serviceNodeType < this._serviceNodeSockets.Length)
+            {
+                if (serviceNodeId > -1)
                 {
                     NetSocket socket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
 
@@ -82,7 +92,7 @@
                 }
                 else
                 {
-                    Logging.Warning(this, "NetSession::setServiceNodeId serviceNodeId too big (" + serviceNodeId + ")");
+                    this._serviceNodeSockets[serviceNodeType] = null;
                 }
             }
             else

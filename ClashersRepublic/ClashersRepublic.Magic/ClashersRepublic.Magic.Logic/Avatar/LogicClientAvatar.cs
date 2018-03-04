@@ -1585,8 +1585,10 @@
         /// <summary>
         ///     Saves this instance.
         /// </summary>
-        public void Save(LogicJSONObject jsonObject)
+        public LogicJSONObject Save()
         {
+            LogicJSONObject jsonObject = new LogicJSONObject();
+
             jsonObject.Put("avatar_id_high", new LogicJSONNumber(this._id.GetHigherInt()));
             jsonObject.Put("avatar_id_low", new LogicJSONNumber(this._id.GetLowerInt()));
             jsonObject.Put("home_id_high", new LogicJSONNumber(this._homeId.GetHigherInt()));
@@ -1694,6 +1696,8 @@
             {
                 jsonObject.Put("red_package_state", new LogicJSONNumber(this._redPackageState));
             }
+
+            return jsonObject;
         }
 
         /// <summary>

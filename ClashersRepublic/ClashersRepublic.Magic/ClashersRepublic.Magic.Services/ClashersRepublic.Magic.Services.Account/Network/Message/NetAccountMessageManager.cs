@@ -6,6 +6,7 @@
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
@@ -30,6 +31,10 @@
                     break;
                 case 10105:
                     this.RevokeAccountBanMessageReceived((RevokeAccountBanMessage) message);
+                    break;
+
+                case 10301:
+                    this.ServerUnboundMessageReceived((ServerUnboundMessage) message);
                     break;
             }
         }
@@ -74,10 +79,7 @@
                             loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
 
                             NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
-
-                            session.SetServiceNodeId(3, NetManager.GetServiceNodeId(3, accountId));
-                            session.SetServiceNodeId(10, NetManager.GetServiceNodeId(10, accountId));
-
+                            
                             return;
                         }
                     }
@@ -96,9 +98,9 @@
         {
             if (AccountManager.TryCreateAccount(out LogicLong accountId, out Account account))
             {
-                CreateAvatarMessage createAvatarMessage = new CreateAvatarMessage();
-                createAvatarMessage.SetAccountId(accountId);
-                NetMessageManager.SendMessage(3, NetManager.GetServiceNodeId(3, accountId), createAvatarMessage);
+                CreateHomeMessage createHomeMessage = new CreateHomeMessage();
+                createHomeMessage.SetAccountId(accountId);
+                NetMessageManager.SendMessage(10, NetManager.GetDocumentOwnerId(10, accountId), createHomeMessage);
 
                 LoginClientOkMessage createAccountOkMessage = new LoginClientOkMessage();
 
@@ -159,6 +161,22 @@
                             NetAccountMessageManager.SendResponseMessage(message, new AccountBanRevokedMessage());
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ServerUnboundMessage"/> is received.
+        /// </summary>
+        internal void ServerUnboundMessageReceived(ServerUnboundMessage message)
+        {
+            byte[] sessionId = message.GetSessionId();
+
+            if (sessionId != null)
+            {
+                if (NetAccountSessionManager.TryRemove(sessionId, out NetAccountSession session))
+                {
+
                 }
             }
         }

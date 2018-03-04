@@ -135,6 +135,9 @@
                                     this._client.SetSession(session);
                                     byte[] sessionId = session.SessionId;
 
+                                    session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
+                                    session.SetServiceNodeId(2, socket.Id);
+
                                     NetMessageManager.SendMessage(socket, sessionId, sessionId.Length, new CreateAccountMessage());
                                 }
                                 else
@@ -156,7 +159,7 @@
                     {
                         if (message.PassToken != null)
                         {
-                            NetSocket socket = NetManager.GetServiceNodeEndPoint(2, NetManager.GetServiceNodeId(2, message.AccountId));
+                            NetSocket socket = NetManager.GetServiceNodeEndPoint(2, NetManager.GetDocumentOwnerId(2, message.AccountId));
 
                             if (socket != null)
                             {
@@ -166,6 +169,9 @@
                                 {
                                     this._client.SetSession(session);
                                     byte[] sessionId = session.SessionId;
+
+                                    session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
+                                    session.SetServiceNodeId(2, socket.Id);
 
                                     LoginClientMessage loginClientMessage = new LoginClientMessage();
                                     loginClientMessage.SetAccountId(message.AccountId);

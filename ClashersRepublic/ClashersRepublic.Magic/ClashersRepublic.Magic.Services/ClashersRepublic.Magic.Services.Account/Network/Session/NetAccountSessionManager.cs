@@ -10,6 +10,17 @@
         private static ConcurrentDictionary<string, NetAccountSession> _sessions;
 
         /// <summary>
+        ///     Gets the total sessions.
+        /// </summary>
+        internal static int TotalSessions
+        {
+            get
+            {
+                return NetAccountSessionManager._sessions.Count;
+            }
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()

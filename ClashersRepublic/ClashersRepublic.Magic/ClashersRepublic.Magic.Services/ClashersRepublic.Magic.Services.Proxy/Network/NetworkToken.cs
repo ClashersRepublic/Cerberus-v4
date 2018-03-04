@@ -21,7 +21,7 @@
         /// <summary>
         ///     Gets the <see cref="NetworkClient"/> instance.
         /// </summary>
-        internal NetworkClient Client { get; }
+        internal NetworkClient Client { get; private set; }
 
         /// <summary>
         ///     Gets the <see cref="NetworkMessaging"/> instance.
@@ -56,6 +56,12 @@
         /// </summary>
         internal void Destruct()
         {
+            if (this.Client != null)
+            {
+                this.Client.Destruct();
+                this.Client = null;
+            }
+
             this._receiveBytes = null;
             this._receiveBytesLength = 0;
             this.ConnectionId = 0;
