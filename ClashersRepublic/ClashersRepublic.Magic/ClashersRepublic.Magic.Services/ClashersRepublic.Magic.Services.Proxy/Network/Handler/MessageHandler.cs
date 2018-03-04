@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.Handler
 {
-    using System.Collections.Concurrent;
     using System.Threading;
     using ClashersRepublic.Magic.Titan.Message;
 

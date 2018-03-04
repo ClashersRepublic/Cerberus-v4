@@ -39,7 +39,7 @@
 
             if (destinationSocket != null)
             {
-                NetMessaging.Send(destinationSocket, message);
+                NetMessaging.Send(destinationSocket, message, sessionId, sessionIdLength);
             }
         }
         

@@ -74,7 +74,7 @@
             {
                 if (NetProxySessionManager.TryGet(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out NetProxySession session))
                 {
-                    if (session.Client.State == 1)
+                    if (session.Client.State != 6 && session.Client.State != -1)
                     {
                         session.Client.MessageManager.SendLoginFailedMessage(1, "Internal server error");
                     }
@@ -93,7 +93,7 @@
             {
                 if (NetProxySessionManager.TryGet(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out NetProxySession session))
                 {
-                    if (session.Client.State == 1)
+                    if (session.Client.State != 6 && session.Client.State != -1)
                     {
                         session.Client.MessageManager.SendLoginFailedMessage(1, "Internal server error");
                     }
