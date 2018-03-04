@@ -85,10 +85,11 @@
                 {
                     if (compressibleHomeJSON.Get() == null)
                     {
+                        Logging.Debug(this, "GameMode::init level JSON is NULL, load default");
                         compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
                     }
 
-                    // CompressibleStringHelper.Compress(compressibleHomeJSON);
+                    CompressibleStringHelper.Compress(compressibleHomeJSON);
                 }
                 
                 compressibleCalendarJSON.Set("{}");

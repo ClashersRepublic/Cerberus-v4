@@ -34,25 +34,31 @@
         public override void Decode()
         {
             base.Decode();
-
-            this._logicClientHome = new LogicClientHome();
-            this._logicClientAvatar = new LogicClientAvatar();
-
+            
             this._currentTimestamp = this.Stream.ReadInt();
             this.Stream.ReadInt();
             this._secondsSinceLastSave = this.Stream.ReadInt();
 
+            this._logicClientHome = new LogicClientHome();
             this._logicClientHome.Decode(this.Stream);
+            this._logicClientAvatar = new LogicClientAvatar();
             this._logicClientAvatar.Decode(this.Stream);
 
             this.Stream.ReadInt();
             this.Stream.ReadInt();
 
+            /* sub_36BCBC - START */
+
             this.Stream.ReadInt();
             this.Stream.ReadInt();
 
             this.Stream.ReadInt();
             this.Stream.ReadInt();
+
+            this.Stream.ReadInt();
+            this.Stream.ReadInt();
+
+            /* sub_36BCBC - END */
 
             this.Stream.ReadInt();
         }
@@ -71,6 +77,9 @@
             this._logicClientHome.Encode(this.Stream);
             this._logicClientAvatar.Encode(this.Stream);
 
+            this.Stream.WriteInt(0);
+            this.Stream.WriteInt(0);
+
             this.Stream.WriteInt(352);
             this.Stream.WriteInt(1190797808);
 
@@ -80,7 +89,7 @@
             this.Stream.WriteInt(352);
             this.Stream.WriteInt(1192597808);
 
-            this.Stream.WriteInt(1);
+            this.Stream.WriteInt(0);
         }
 
         /// <summary>
@@ -179,3 +188,5 @@
         }
     }
 }
+ 
+ 

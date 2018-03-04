@@ -59,6 +59,7 @@
             this._legendLeagueTournamentVillage2Entry = new LogicLegendLeagueTournamentEntry();
 
             this._expLevel = 1;
+            this._badgeId = -1;
             this._nameChangeState = -1;
             this._attackRating = 1200;
             this._attackKFactor = 60;
@@ -1193,14 +1194,7 @@
             {
                 this._unitPreset2[i].Encode(encoder);
             }
-
-            encoder.WriteInt(this._unitPreset2.Count);
-
-            for (int i = 0; i < this._unitPreset2.Count; i++)
-            {
-                this._unitPreset2[i].Encode(encoder);
-            }
-
+            
             encoder.WriteInt(this._unitPreset3.Count);
 
             for (int i = 0; i < this._unitPreset3.Count; i++)
@@ -1260,11 +1254,40 @@
                 this._homeId = new LogicLong(homeIdHighObject.GetIntValue(), homeIdLowObject.GetIntValue());
             }
 
-            this._name = LogicJSONHelper.GetJSONString(jsonObject, "name");
-            this._nameSetByUser = LogicJSONHelper.GetJSONBoolean(jsonObject, "name_set");
-            this._nameChangeState = LogicJSONHelper.GetJSONNumber(jsonObject, "name_change_state");
-            this._badgeId = LogicJSONHelper.GetJSONNumber(jsonObject, "badge_id");
-            this._allianceExpLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_exp_level");
+            LogicJSONString nameObject = jsonObject.GetJSONString("name");
+
+            if (nameObject != null)
+            {
+                this._name = nameObject.GetStringValue();
+            }
+
+            LogicJSONBoolean nameSetObject = jsonObject.GetJSONBoolean("name_set");
+
+            if (nameSetObject != null)
+            {
+                this._nameSetByUser = nameSetObject.IsTrue();
+            }
+
+            LogicJSONNumber nameChangeStateObject = jsonObject.GetJSONNumber("name_change_state");
+
+            if (nameChangeStateObject != null)
+            {
+                this._nameChangeState = nameChangeStateObject.GetIntValue();
+            }
+            
+            LogicJSONNumber badgeIdObject = jsonObject.GetJSONNumber("badge_id");
+
+            if (badgeIdObject != null)
+            {
+                this._badgeId = badgeIdObject.GetIntValue();
+            }
+
+            LogicJSONNumber allianceExpLevelObject = jsonObject.GetJSONNumber("alliance_exp_level");
+
+            if (allianceExpLevelObject != null)
+            {
+                this._allianceExpLevel = allianceExpLevelObject.GetIntValue();
+            }
 
             if (this._badgeId == -1)
             {
@@ -1449,9 +1472,26 @@
                 }
             }
 
-            this._name = LogicJSONHelper.GetJSONString(jsonObject, "name");
-            this._badgeId = LogicJSONHelper.GetJSONNumber(jsonObject, "badge_id");
-            this._allianceExpLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_exp_level");
+            LogicJSONString nameObject = jsonObject.GetJSONString("name");
+
+            if (nameObject != null)
+            {
+                this._name = nameObject.GetStringValue();
+            }
+            
+            LogicJSONNumber badgeIdObject = jsonObject.GetJSONNumber("badge_id");
+
+            if (badgeIdObject != null)
+            {
+                this._badgeId = badgeIdObject.GetIntValue();
+            }
+
+            LogicJSONNumber allianceExpLevelObject = jsonObject.GetJSONNumber("alliance_exp_level");
+
+            if (allianceExpLevelObject != null)
+            {
+                this._allianceExpLevel = allianceExpLevelObject.GetIntValue();
+            }
 
             if (this._badgeId == -1)
             {
