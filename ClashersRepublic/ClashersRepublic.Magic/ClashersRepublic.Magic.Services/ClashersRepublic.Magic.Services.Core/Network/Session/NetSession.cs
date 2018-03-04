@@ -46,7 +46,7 @@
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
-        public void Destruct()
+        public virtual void Destruct()
         {
             for (int i = 0; i < 28; i++)
             {

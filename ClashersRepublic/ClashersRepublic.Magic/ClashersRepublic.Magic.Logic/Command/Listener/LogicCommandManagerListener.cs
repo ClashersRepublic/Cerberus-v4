@@ -11,7 +11,15 @@
         }
 
         /// <summary>
-        ///     Called when the specified command has been executed.
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            // Destruct.
+        }
+
+        /// <summary>
+        ///     Called when the specified <see cref="LogicCommand"/> has been executed.
         /// </summary>
         public virtual void CommandExecuted(LogicCommand command)
         {
@@ -19,7 +27,7 @@
         }
 
         /// <summary>
-        ///     Called when the specified command has not been executed correctly.
+        ///     Called when the specified <see cref="LogicCommand"/> has not been executed correctly.
         /// </summary>
         public virtual void CommandExecuteFailed(LogicCommand command, string log)
         {

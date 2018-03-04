@@ -151,10 +151,7 @@
 
                             if (!message.IsServerToClientMessage())
                             {
-                                if (message.GetServiceNodeType() == 1)
-                                {
-                                    this._receiveMessageQueue.Enqueue(message);
-                                }
+                                this._receiveMessageQueue.Enqueue(message);
                             }
                         }
                         catch (Exception exception)

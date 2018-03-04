@@ -65,8 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Game\Command\CommandManagerListener.cs" />
     <Compile Include="Game\Home.cs" />
     <Compile Include="Game\HomeManager.cs" />
+    <Compile Include="Game\Message\MessageManager.cs" />
     <Compile Include="Game\Mode\GameMode.cs" />
     <Compile Include="Handler\CmdHandler.cs" />
     <Compile Include="Handler\ExitHandler.cs" />

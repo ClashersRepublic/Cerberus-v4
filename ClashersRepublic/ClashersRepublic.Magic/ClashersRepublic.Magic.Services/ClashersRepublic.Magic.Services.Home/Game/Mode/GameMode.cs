@@ -1,8 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game.Mode
 {
     using System;
+
     using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Command.Listener;
+    using ClashersRepublic.Magic.Logic.Command.Server;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Message.Home;
@@ -10,6 +13,7 @@
     using ClashersRepublic.Magic.Logic.Util;
 
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Home.Game.Command;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
     using ClashersRepublic.Magic.Services.Home.Resource;
     using ClashersRepublic.Magic.Titan.Util;
@@ -18,6 +22,7 @@
     {
         private Home _home;
         private LogicGameMode _logicGameMode;
+        private LogicArrayList<LogicServerCommand> _bufferedServerCommands;
 
         private bool _defenseMode;
 
@@ -38,6 +43,7 @@
         internal GameMode(Home home)
         {
             this._home = home;
+            this._bufferedServerCommands = new LogicArrayList<LogicServerCommand>(40);
         }
 
         /// <summary>
@@ -45,7 +51,6 @@
         /// </summary>
         internal void DeInit()
         {
-            Console.WriteLine("DEINIT");
         }
 
         /// <summary>
@@ -53,8 +58,6 @@
         /// </summary>
         internal void Init()
         {
-            Console.WriteLine("INIT");
-
             if (this.Session == null)
             {
                 throw new NullReferenceException("pSession->NULL");
@@ -144,7 +147,7 @@
                 }
 
                 this._logicGameMode = new LogicGameMode();
-                this._logicGameMode.GetCommandManager().SetListener(new LogicCommandManagerListener()); // TODO: Create LogicCommandManagerListener
+                this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
 
                 switch (mode)
                 {
@@ -156,6 +159,159 @@
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        ///     Adds the specified available <see cref="LogicServerCommand"/> instance.
+        /// </summary>
+        internal void AddAvailableServerCommand(LogicServerCommand serverCommand)
+        {
+            int currentServerCommandId = serverCommand.GetId();
+            int newServerCommandId = -1;
+
+            if (currentServerCommandId == -1)
+            {
+                newServerCommandId = this._bufferedServerCommands.IndexOf(null);
+
+                if (newServerCommandId != -1)
+                {
+                    this._bufferedServerCommands[newServerCommandId] = serverCommand;
+                }
+                else
+                {
+                    this._bufferedServerCommands.Add(null);
+                    this._bufferedServerCommands[newServerCommandId = this._bufferedServerCommands.Count - 1] = serverCommand;
+                }
+            }
+            else
+            {
+                if (this._bufferedServerCommands.Count <= currentServerCommandId)
+                {
+                    do
+                    {
+                        this._bufferedServerCommands.Add(null);
+                    } while (this._bufferedServerCommands.Count <= currentServerCommandId);
+
+                    this._bufferedServerCommands[newServerCommandId = currentServerCommandId] = serverCommand;
+                }
+                else if (this._bufferedServerCommands[newServerCommandId = currentServerCommandId] == null)
+                {
+                    this._bufferedServerCommands[newServerCommandId = currentServerCommandId] = serverCommand;
+                }
+                else
+                {
+                    Logging.Warning(this, "GameMode::addAvailableServerCommand trying to override a server command");
+                }
+            }
+
+            if (newServerCommandId != -1)
+            {
+                serverCommand.SetId(newServerCommandId);
+
+                if (this.Session != null)
+                {
+                    if (this._logicGameMode.GetState() == 1)
+                    {
+                        AvailableServerCommand availableServerCommand = new AvailableServerCommand();
+                        availableServerCommand.SetServerCommand(serverCommand);
+                        this.Session.SendPiranhaMessage(1, availableServerCommand);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets if the specified <see cref="LogicServerCommand"/> instance is a buffered server command.
+        /// </summary>
+        internal bool IsBufferedServerCommand(LogicServerCommand serverCommand)
+        {
+            int serverCommandId = serverCommand.GetId();
+
+            if (serverCommandId != -1)
+            {
+                if (this._bufferedServerCommands.Count > serverCommandId)
+                {
+                    LogicServerCommand bufferedServerCommand = this._bufferedServerCommands[serverCommandId];
+
+                    if (bufferedServerCommand.GetCommandType() == serverCommand.GetCommandType())
+                    {
+                        return true;
+                    }
+
+                    Logging.Debug(this, "GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Removes the specified <see cref="LogicServerCommand"/> instance of the buffered server commands.
+        /// </summary>
+        internal void RemoveServerCommand(LogicServerCommand serverCommand)
+        {
+            int serverCommandId = serverCommand.GetId();
+
+            if (serverCommandId != -1)
+            {
+                if (this._bufferedServerCommands.Count > serverCommandId)
+                {
+                    this._bufferedServerCommands[serverCommandId] = null;
+                }
+                else
+                {
+                    Logging.Warning(this, string.Format("GameMode::removeServerCommand idx is out of bands {0}/{1}", serverCommandId, this._bufferedServerCommands.Count));
+                }
+            }
+            else
+            {
+                Logging.Warning(this, "GameMode::removeServerCommand id is not set");
+            }
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicCommandManager"/> instance.
+        /// </summary>
+        /// <returns></returns>
+        internal LogicCommandManager GetCommandManager()
+        {
+            return this._logicGameMode.GetCommandManager();
+        }
+
+        /// <summary>
+        ///     Called when client turn message is received.
+        /// </summary>
+        internal void ClientTurnReceived(int subTick, int checksum, LogicArrayList<LogicCommand> commands)
+        {
+            if (commands != null)
+            {
+                LogicCommandManager commandManager = this.GetCommandManager();
+
+                for (int i = 0; i < commands.Count; i++)
+                {
+                    LogicCommand command = commands[i];
+
+                    if (command.IsServerCommand())
+                    {
+                        if (!this.IsBufferedServerCommand((LogicServerCommand) command))
+                        {
+                            continue;
+                        }
+                    }
+
+                    commandManager.AddCommand(command);
+                }
+            }
+
+            if (this._logicGameMode.GetLogicTime() < subTick)
+            {
+                do
+                {
+                    this._logicGameMode.UpdateOneSubTick();
+                } while (this._logicGameMode.GetLogicTime() < subTick);
+            }
+
+            Logging.Debug(this, string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} command_count: {2}", subTick, checksum, commands?.Count ?? 0));
         }
 
         private enum GAME

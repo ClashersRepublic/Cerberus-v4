@@ -5,11 +5,20 @@
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Home.Game;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
+    using ClashersRepublic.Magic.Services.Home.Game.Message;
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class NetHomeSession : NetSession
     {
+        /// <summary>
+        ///     Gets the <see cref="Game.Home"/> instance.
+        /// </summary>
         internal Home Home { get; private set; }
+
+        /// <summary>
+        ///     Gets the <see cref="MessageManager"/> instance.
+        /// </summary>
+        internal MessageManager PiranhaMessageManager { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetHomeSession"/> class.
@@ -17,13 +26,22 @@
         internal NetHomeSession(Home home, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
         {
             this.Home = home;
+            this.PiranhaMessageManager = new MessageManager(this, home.GameMode);
         }
 
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
-        internal void Destruct()
+        public override void Destruct()
         {
+            base.Destruct();
+
+            if (this.PiranhaMessageManager != null)
+            {
+                this.PiranhaMessageManager.Destruct();
+                this.PiranhaMessageManager = null;
+            }
+
             this.Home = null;
         }
 

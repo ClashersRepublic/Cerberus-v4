@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Command.Server
 {
     using ClashersRepublic.Magic.Titan.DataStream;
+    using ClashersRepublic.Magic.Titan.Debug;
 
     public class LogicServerCommand : LogicCommand
     {
@@ -17,9 +18,10 @@
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
-        public virtual void Destruct()
+        public override void Destruct()
         {
-            // Destruct.
+            base.Destruct();
+            this._id = -1;
         }
 
         /// <summary>
@@ -44,6 +46,12 @@
         public override void Decode(ByteStream stream)
         {
             this._id = stream.ReadInt();
+
+            if (this._id == -1)
+            {
+                Debugger.Error("LogicServerCommand::decode() id is not set!");
+            }
+
             base.Decode(stream);
         }
 

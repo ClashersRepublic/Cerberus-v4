@@ -57,6 +57,7 @@
     <Compile Include="Battle\LogicBattleLog.cs" />
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
+    <Compile Include="Command\Debug\LogicDebugCommand.cs" />
     <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicMissionProgressCommand.cs" />
     <Compile Include="Command\Home\LogicTrainUnitCommand.cs" />
@@ -163,8 +164,10 @@
     <Compile Include="Message\Google\GoogleServiceAccountBoundMessage.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountAlreadyBoundMessage.cs" />
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
+    <Compile Include="Message\Home\AvailableServerCommand.cs" />
     <Compile Include="Message\Home\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />
+    <Compile Include="Message\Home\ServerErrorMessage.cs" />
     <Compile Include="Message\Home\WaitingToGoHomeMessage.cs" />
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
     <Compile Include="Message\Home\OutOfSyncMessage.cs" />

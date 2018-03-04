@@ -7,6 +7,7 @@
     {
         public delegate void DebugEventHandler(object sender, DebugEventArgs args);
 
+        public static event DebugEventHandler HudPrintEvent;
         public static event DebugEventHandler LogEvent;
         public static event DebugEventHandler WarningEvent;
         public static event DebugEventHandler ErrorEvent;
@@ -22,6 +23,14 @@
             }
 
             return assertion;
+        }
+
+        /// <summary>
+        ///     Logs the specified message.
+        /// </summary>
+        public static void HudPrint(string log)
+        {
+            Debugger.HudPrintEvent(typeof(Debugger), new DebugEventArgs(log, null, -1));
         }
 
         /// <summary>

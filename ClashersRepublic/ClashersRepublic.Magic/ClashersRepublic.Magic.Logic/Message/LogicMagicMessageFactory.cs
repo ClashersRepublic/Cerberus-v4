@@ -179,9 +179,21 @@
                         break;
                     }
 
+                    case 24111:
+                    {
+                        message = new AvailableServerCommand();
+                        break;
+                    }
+
                     case 24112:
                     {
                         message = new WaitingToGoHomeMessage();
+                        break;
+                    }
+
+                    case 24115:
+                    {
+                        message = new ServerErrorMessage();
                         break;
                     }
                 }

@@ -1,15 +1,19 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Network.Message
 {
+    using System;
+
     using ClashersRepublic.Magic.Services.Home.Game;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Message;
 
     internal class NetHomeMessageManager : NetMessageManager
     {
@@ -35,6 +39,10 @@
                     break;
                 case 10303:
                     this.UpdateServerEndPointMessageReceived((UpdateServerEndPointMessage) message);
+                    break;
+
+                case 10400:
+                    this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
                     break;
             }
         }
@@ -160,6 +168,35 @@
                     if (message.GetServerType() != ServiceCore.ServiceNodeType)
                     {
                         session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ForwardPiranhaMessage"/> is received.
+        /// </summary>
+        internal void ForwardPiranhaMessageReceived(ForwardPiranhaMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (sessionId != null)
+            {
+                if (NetHomeSessionManager.TryGet(sessionId, out NetHomeSession session))
+                {
+                    PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+
+                    if (piranhaMessage != null)
+                    {
+                        try
+                        {
+                            piranhaMessage.Decode();
+                            session.PiranhaMessageManager.ReceiveMessage(piranhaMessage);
+                        }
+                        catch (Exception exception)
+                        {
+                            Logging.Warning(this, "NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
+                        }
                     }
                 }
             }

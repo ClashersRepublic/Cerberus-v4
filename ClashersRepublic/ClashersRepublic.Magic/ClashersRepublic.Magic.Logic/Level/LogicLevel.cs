@@ -73,6 +73,7 @@
         private bool _isWarLevel;
         private bool _isDirectLevel;
         private bool _isDirectVillage2Level;
+        private bool _invulverabilityEnabled;
 
         private string _warRequestMessage;
         private string _troopRequestMessage;
@@ -187,6 +188,22 @@
         public void SetGameListener(LogicGameListener listener)
         {
             this._gameListener = listener;
+        }
+
+        /// <summary>
+        ///     Gets if the invulnerability is enabled.
+        /// </summary>
+        public bool InvulnerabilityEnabled()
+        {
+            return this._invulverabilityEnabled;
+        }
+
+        /// <summary>
+        ///     Sets the invulnerability state.
+        /// </summary>
+        public void SetInvulnerability(bool state)
+        {
+            this._invulverabilityEnabled = state;
         }
 
         /// <summary>

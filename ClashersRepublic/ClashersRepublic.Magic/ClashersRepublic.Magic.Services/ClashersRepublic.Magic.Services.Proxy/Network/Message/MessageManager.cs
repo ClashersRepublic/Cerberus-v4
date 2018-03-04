@@ -5,13 +5,17 @@
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
+    using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal class MessageManager
     {
+        private int _lastKeepAliveTime;
+
         private NetworkClient _client;
         private NetworkMessaging _messaging;
 
@@ -31,12 +35,38 @@
         {
             int messageType = message.GetMessageType();
 
-            if (this._client.State != 6)
+            if (this._client.State != -1)
             {
-                if (messageType != 10100 && messageType != 10101 && messageType != 10108)
+                if (this._client.State != 6)
                 {
-                    return;
+                    if (messageType != 10100 && messageType != 10101 && messageType != 10108)
+                    {
+                        return;
+                    }
                 }
+                else
+                {
+                    if (message.GetServiceNodeType() != ServiceCore.ServiceNodeType)
+                    {
+                        NetProxySession session = this._client.GetSession();
+                        NetSocket socket = session.GetServiceNodeEndPoint(message.GetServiceNodeType());
+
+                        if (socket != null)
+                        {
+                            ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
+                            forwardPiranhaMessage.SetPiranhaMessage(message);
+                            NetMessageManager.SendMessage(socket, session.SessionId, session.SessionId.Length, forwardPiranhaMessage);
+                        }
+                        else
+                        {
+                            Logging.Debug(this, "MessageManager::receiveMessage pSocket->NULL");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
             }
 
             switch (message.GetMessageType())
@@ -210,6 +240,12 @@
         /// </summary>
         private void KeepAliveMessageReceived(KeepAliveMessage message)
         {
+            this._lastKeepAliveTime = LogicTimeUtil.GetTimestamp();
+
+            if (this._client.State == 6)
+            {
+                this.SendMessage(new KeepAliveServerMessage());
+            }
         }
     }
 }

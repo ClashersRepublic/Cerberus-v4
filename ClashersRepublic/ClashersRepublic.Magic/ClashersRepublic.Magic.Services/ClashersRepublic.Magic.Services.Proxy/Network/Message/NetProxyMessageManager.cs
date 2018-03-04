@@ -142,6 +142,8 @@
                         session.SetAccountId(loginOkMessage.AccountId);
                         session.Client.MessageManager.SendMessage(loginOkMessage);
                         session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.AccountId));
+
+                        session.Client.State = 6;
                     }
                 }
             }
