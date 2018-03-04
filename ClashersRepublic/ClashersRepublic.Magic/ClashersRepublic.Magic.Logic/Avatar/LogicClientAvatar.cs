@@ -1240,6 +1240,200 @@
         }
 
         /// <summary>
+        ///     Loads this instance from json.
+        /// </summary>
+        public void Load(LogicJSONObject jsonObject)
+        {
+            LogicJSONNumber avatarIdLowObject = jsonObject.GetJSONNumber("avatar_id_low");
+            LogicJSONNumber avatarIdHighObject = jsonObject.GetJSONNumber("avatar_id_high");
+
+            if (avatarIdHighObject != null && avatarIdLowObject != null)
+            {
+                this._id = new LogicLong(avatarIdHighObject.GetIntValue(), avatarIdLowObject.GetIntValue());
+            }
+
+            LogicJSONNumber homeIdLowObject = jsonObject.GetJSONNumber("home_id_low");
+            LogicJSONNumber homeIdHighObject = jsonObject.GetJSONNumber("home_id_high");
+
+            if (homeIdHighObject != null && homeIdLowObject != null)
+            {
+                this._homeId = new LogicLong(homeIdHighObject.GetIntValue(), homeIdLowObject.GetIntValue());
+            }
+
+            this._name = LogicJSONHelper.GetJSONString(jsonObject, "name");
+            this._nameSetByUser = LogicJSONHelper.GetJSONBoolean(jsonObject, "name_set");
+            this._nameChangeState = LogicJSONHelper.GetJSONNumber(jsonObject, "name_change_state");
+            this._badgeId = LogicJSONHelper.GetJSONNumber(jsonObject, "badge_id");
+            this._allianceExpLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_exp_level");
+
+            if (this._badgeId == -1)
+            {
+                this._allianceId = null;
+            }
+            else
+            {
+                LogicJSONNumber allianceIdLowObject = jsonObject.GetJSONNumber("alliance_id_high");
+                LogicJSONNumber allianceIdHighObject = jsonObject.GetJSONNumber("alliance_id_low");
+
+                int allIdHigh = -1;
+                int allIdLow = -1;
+
+                if (allianceIdHighObject != null && allianceIdLowObject != null)
+                {
+                    allIdHigh = allianceIdHighObject.GetIntValue();
+                    allIdLow = allianceIdLowObject.GetIntValue();
+                }
+
+                this._allianceId = new LogicLong(allIdHigh, allIdLow);
+                this._allianceName = LogicJSONHelper.GetJSONString(jsonObject, "alliance_name");
+            }
+
+            LogicJSONNumber leagueIdLowObject = jsonObject.GetJSONNumber("league_id_low");
+            LogicJSONNumber leagueIdHighObject = jsonObject.GetJSONNumber("league_id_high");
+
+            if (leagueIdHighObject != null && leagueIdLowObject != null)
+            {
+                this._leagueInstanceId = new LogicLong(leagueIdHighObject.GetIntValue(), leagueIdLowObject.GetIntValue());
+            }
+
+            this._allianceUnitVisitCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_unit_visit_capacity");
+            this._allianceUnitSpellVisitCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_unit_spell_visit_capacity");
+            this._expLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "xp_level");
+            this._expPoints = LogicJSONHelper.GetJSONNumber(jsonObject, "xp_points");
+            this._diamonds = LogicJSONHelper.GetJSONNumber(jsonObject, "diamonds");
+            this._freeDiamonds = LogicJSONHelper.GetJSONNumber(jsonObject, "free_diamonds");
+
+            this._leagueType = LogicJSONHelper.GetJSONNumber(jsonObject, "league_type");
+            this._legendaryScore = LogicJSONHelper.GetJSONNumber(jsonObject, "legendary_score");
+            this._legendaryScoreVillage2 = LogicJSONHelper.GetJSONNumber(jsonObject, "legendary_score_v2");
+
+            LogicJSONObject legendLeagueEntry = jsonObject.GetJSONObject("legend_league_entry");
+
+            if (legendLeagueEntry != null)
+            {
+                this._legendLeagueTournamentEntry.ReadFromJSON(legendLeagueEntry);
+            }
+
+            LogicJSONObject legendLeagueEntryV2 = jsonObject.GetJSONObject("legend_league_entry_v2");
+
+            if (legendLeagueEntryV2 != null)
+            {
+                this._legendLeagueTournamentVillage2Entry.ReadFromJSON(legendLeagueEntryV2);
+            }
+
+            this.LoadDataSlotArray(jsonObject, "units", this._unitCount);
+            this.LoadDataSlotArray(jsonObject, "spells", this._spellCount);
+            this.LoadDataSlotArray(jsonObject, "unit_upgrades", this._unitUpgrade);
+            this.LoadDataSlotArray(jsonObject, "spell_upgrades", this._spellUpgrade);
+            this.LoadDataSlotArray(jsonObject, "resources", this._resourceCount);
+            this.LoadDataSlotArray(jsonObject, "resource_caps", this._resourceCap);
+            this.LoadUnitSlotArray(jsonObject, "alliance_units", this._allianceUnitCount);
+            this.LoadDataSlotArray(jsonObject, "hero_states", this._heroState);
+            this.LoadDataSlotArray(jsonObject, "hero_health", this._heroHealth);
+            this.LoadDataSlotArray(jsonObject, "hero_upgrade", this._heroUpgrade);
+            this.LoadDataSlotArray(jsonObject, "hero_modes", this._heroMode);
+            this.LoadDataSlotArray(jsonObject, "variables", this._variables);
+            this.LoadDataSlotArray(jsonObject, "units2", this._unitCountVillage2);
+            this.LoadDataSlotArray(jsonObject, "units_new2", this._unitCountNewVillage2);
+            this.LoadDataSlotArray(jsonObject, "unit_preset1", this._unitPreset1);
+            this.LoadDataSlotArray(jsonObject, "unit_preset2", this._unitPreset2);
+            this.LoadDataSlotArray(jsonObject, "unit_preset3", this._unitPreset3);
+            this.LoadDataSlotArray(jsonObject, "previous_army", this._previousArmy);
+            this.LoadDataSlotArray(jsonObject, "event_unit_counter", this._eventUnitCounter);
+            this.LoadDataSlotArray(jsonObject, "looted_npc_gold", this._lootedNpcGold);
+            this.LoadDataSlotArray(jsonObject, "looted_npc_elixir", this._lootedNpcElixir);
+            this.LoadDataSlotArray(jsonObject, "npc_stars", this._npcStars);
+            this.LoadDataSlotArray(jsonObject, "achievement_progress", this._achievementProgress);
+
+            LogicJSONArray achievementRewardClaimedArray = jsonObject.GetJSONArray("achievement_rewards");
+
+            if (achievementRewardClaimedArray != null)
+            {
+                if (achievementRewardClaimedArray.Size() != 0)
+                {
+                    this._achievementRewardClaimed.EnsureCapacity(achievementRewardClaimedArray.Size());
+
+                    if (this._achievementRewardClaimed.Count != 0)
+                    {
+                        do
+                        {
+                            this._achievementRewardClaimed.Remove(0);
+                        } while (this._achievementRewardClaimed.Count != 0);
+                    }
+
+                    for (int i = 0; i < achievementRewardClaimedArray.Size(); i++)
+                    {
+                        LogicJSONNumber id = achievementRewardClaimedArray.GetJSONNumber(i);
+
+                        if (id != null)
+                        {
+                            LogicData data = LogicDataTables.GetDataById(id.GetIntValue());
+
+                            if (data != null)
+                            {
+                                this._achievementRewardClaimed.Add(data);
+                            }
+                        }
+                    }
+                }
+            }
+
+            LogicJSONArray missionCompletedArray = jsonObject.GetJSONArray("achievement_rewards");
+
+            if (missionCompletedArray != null)
+            {
+                if (missionCompletedArray.Size() != 0)
+                {
+                    this._missionCompleted.EnsureCapacity(missionCompletedArray.Size());
+
+                    if (this._missionCompleted.Count != 0)
+                    {
+                        do
+                        {
+                            this._missionCompleted.Remove(0);
+                        } while (this._missionCompleted.Count != 0);
+                    }
+
+                    for (int i = 0; i < missionCompletedArray.Size(); i++)
+                    {
+                        LogicJSONNumber id = missionCompletedArray.GetJSONNumber(i);
+
+                        if (id != null)
+                        {
+                            LogicData data = LogicDataTables.GetDataById(id.GetIntValue());
+
+                            if (data != null)
+                            {
+                                this._missionCompleted.Add(data);
+                            }
+                        }
+                    }
+                }
+            }
+
+            this._allianceCastleLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_lvl");
+            this._allianceCastleTotalCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_total");
+            this._allianceCastleUsedCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_used");
+            this._allianceCastleTotalSpellCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_total_sp");
+            this._allianceCastleUsedSpellCapacity = LogicJSONHelper.GetJSONNumber(jsonObject, "castle_used_sp");
+            this._townHallLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "town_hall_lvl");
+            this._townHallLevelVillage2 = LogicJSONHelper.GetJSONNumber(jsonObject, "th_v2_lvl");
+            this._score = LogicJSONHelper.GetJSONNumber(jsonObject, "score");
+            this._duelScore = LogicJSONHelper.GetJSONNumber(jsonObject, "duel_score");
+            this._warPreference = LogicJSONHelper.GetJSONNumber(jsonObject, "war_preference");
+            this._attackRating = LogicJSONHelper.GetJSONNumber(jsonObject, "attack_rating");
+            this._attackKFactor = LogicJSONHelper.GetJSONNumber(jsonObject, "atack_kfactor");
+            this._attackWinCount = LogicJSONHelper.GetJSONNumber(jsonObject, "attack_win_cnt");
+            this._attackLoseCount = LogicJSONHelper.GetJSONNumber(jsonObject, "attack_lose_cnt");
+            this._defenseWinCount = LogicJSONHelper.GetJSONNumber(jsonObject, "defense_win_cnt");
+            this._defenseLoseCount = LogicJSONHelper.GetJSONNumber(jsonObject, "defense_lose_cnt");
+            this._treasuryGoldCount = LogicJSONHelper.GetJSONNumber(jsonObject, "treasury_gold_cnt");
+            this._treasuryElixirCount = LogicJSONHelper.GetJSONNumber(jsonObject, "treasury_elixir_cnt");
+            this._treasuryDarkElixirCount = LogicJSONHelper.GetJSONNumber(jsonObject, "treasury_dark_elixir_cnt");
+            this._redPackageState = LogicJSONHelper.GetJSONNumber(jsonObject, "red_package_state");
+        }
+
+        /// <summary>
         ///     Loads this instance for replay.
         /// </summary>
         public void LoadFromReplay(LogicJSONObject jsonObject)
@@ -1389,16 +1583,126 @@
         }
 
         /// <summary>
+        ///     Saves this instance.
+        /// </summary>
+        public void Save(LogicJSONObject jsonObject)
+        {
+            jsonObject.Put("avatar_id_high", new LogicJSONNumber(this._id.GetHigherInt()));
+            jsonObject.Put("avatar_id_low", new LogicJSONNumber(this._id.GetLowerInt()));
+            jsonObject.Put("home_id_high", new LogicJSONNumber(this._homeId.GetHigherInt()));
+            jsonObject.Put("home_id_low", new LogicJSONNumber(this._homeId.GetLowerInt()));
+            jsonObject.Put("name", new LogicJSONString(this._name));
+            jsonObject.Put("name_set", new LogicJSONBoolean(this._nameSetByUser));
+            jsonObject.Put("name_change_state", new LogicJSONNumber(this._nameChangeState));
+            jsonObject.Put("alliance_name", new LogicJSONString(this._allianceName ?? string.Empty));
+            jsonObject.Put("xp_level", new LogicJSONNumber(this._expLevel));
+            jsonObject.Put("xp_points", new LogicJSONNumber(this._expPoints));
+            jsonObject.Put("diamonds", new LogicJSONNumber(this._diamonds));
+            jsonObject.Put("free_diamonds", new LogicJSONNumber(this._freeDiamonds));
+
+            if (this._allianceId != null)
+            {
+                jsonObject.Put("alliance_id_high", new LogicJSONNumber(this._allianceId.GetHigherInt()));
+                jsonObject.Put("alliance_id_low", new LogicJSONNumber(this._allianceId.GetLowerInt()));
+                jsonObject.Put("badge_id", new LogicJSONNumber(this._badgeId));
+                jsonObject.Put("alliance_exp_level", new LogicJSONNumber(this._allianceExpLevel));
+                jsonObject.Put("alliance_unit_visit_capacity", new LogicJSONNumber(this._allianceUnitVisitCapacity));
+                jsonObject.Put("alliance_unit_spell_visit_capacity", new LogicJSONNumber(this._allianceUnitSpellVisitCapacity));
+            }
+
+            if (this._leagueInstanceId != null)
+            {
+                jsonObject.Put("league_id_high", new LogicJSONNumber(this._leagueInstanceId.GetHigherInt()));
+                jsonObject.Put("league_id_low", new LogicJSONNumber(this._leagueInstanceId.GetLowerInt()));
+            }
+
+            jsonObject.Put("league_type", new LogicJSONNumber(this._leagueType));
+            jsonObject.Put("legendary_score", new LogicJSONNumber(this._legendaryScore));
+            jsonObject.Put("legendary_score_v2", new LogicJSONNumber(this._legendaryScoreVillage2));
+
+            LogicJSONObject legendLeagueTournamentEntryObject = new LogicJSONObject();
+            this._legendLeagueTournamentEntry.WriteToJSON(legendLeagueTournamentEntryObject);
+            jsonObject.Put("legend_league_entry", legendLeagueTournamentEntryObject);
+
+            LogicJSONObject legendLeagueTournamentEntryVillage2Object = new LogicJSONObject();
+            this._legendLeagueTournamentVillage2Entry.WriteToJSON(legendLeagueTournamentEntryVillage2Object);
+            jsonObject.Put("legend_league_entry_v2", legendLeagueTournamentEntryVillage2Object);
+
+            this.SaveDataSlotArray(jsonObject, "units", this._unitCount);
+            this.SaveDataSlotArray(jsonObject, "spells", this._spellCount);
+            this.SaveDataSlotArray(jsonObject, "unit_upgrades", this._unitUpgrade);
+            this.SaveDataSlotArray(jsonObject, "spell_upgrades", this._spellUpgrade);
+            this.SaveDataSlotArray(jsonObject, "resources", this._resourceCount);
+            this.SaveDataSlotArray(jsonObject, "resource_caps", this._resourceCount);
+            this.SaveUnitSlotArray(jsonObject, "alliance_units", this._allianceUnitCount);
+            this.SaveDataSlotArray(jsonObject, "hero_states", this._heroState);
+            this.SaveDataSlotArray(jsonObject, "hero_health", this._heroHealth);
+            this.SaveDataSlotArray(jsonObject, "hero_upgrade", this._heroUpgrade);
+            this.SaveDataSlotArray(jsonObject, "hero_modes", this._heroMode);
+            this.SaveDataSlotArray(jsonObject, "variables", this._variables);
+            this.SaveDataSlotArray(jsonObject, "units2", this._unitCountVillage2);
+            this.SaveDataSlotArray(jsonObject, "units_new2", this._unitCountNewVillage2);
+            this.SaveDataSlotArray(jsonObject, "unit_preset1", this._unitPreset1);
+            this.SaveDataSlotArray(jsonObject, "unit_preset2", this._unitPreset2);
+            this.SaveDataSlotArray(jsonObject, "unit_preset3", this._unitPreset3);
+            this.SaveDataSlotArray(jsonObject, "previous_army", this._previousArmy);
+            this.SaveDataSlotArray(jsonObject, "event_unit_counter", this._eventUnitCounter);
+            this.SaveDataSlotArray(jsonObject, "looted_npc_gold", this._lootedNpcGold);
+            this.SaveDataSlotArray(jsonObject, "looted_npc_elixir", this._lootedNpcElixir);
+            this.SaveDataSlotArray(jsonObject, "npc_stars", this._npcStars);
+            this.SaveDataSlotArray(jsonObject, "achievement_progress", this._achievementProgress);
+
+            LogicJSONArray achievementRewardClaimedArray = new LogicJSONArray();
+
+            for (int i = 0; i < this._achievementRewardClaimed.Count; i++)
+            {
+                achievementRewardClaimedArray.Add(new LogicJSONNumber(this._achievementRewardClaimed[i].GetGlobalID()));
+            }
+
+            jsonObject.Put("achievement_rewards", achievementRewardClaimedArray);
+
+            LogicJSONArray missionCompletedArray = new LogicJSONArray();
+
+            for (int i = 0; i < this._achievementRewardClaimed.Count; i++)
+            {
+                missionCompletedArray.Add(new LogicJSONNumber(this._missionCompleted[i].GetGlobalID()));
+            }
+
+            jsonObject.Put("missions", missionCompletedArray);
+
+            jsonObject.Put("castle_lvl", new LogicJSONNumber(this._allianceCastleLevel));
+            jsonObject.Put("castle_total", new LogicJSONNumber(this._allianceCastleTotalCapacity));
+            jsonObject.Put("castle_used", new LogicJSONNumber(this._allianceCastleUsedCapacity));
+            jsonObject.Put("castle_total_sp", new LogicJSONNumber(this._allianceCastleTotalSpellCapacity));
+            jsonObject.Put("castle_used_sp", new LogicJSONNumber(this._allianceCastleUsedSpellCapacity));
+            jsonObject.Put("town_hall_lvl", new LogicJSONNumber(this._townHallLevel));
+            jsonObject.Put("th_v2_lvl", new LogicJSONNumber(this._townHallLevelVillage2));
+            jsonObject.Put("score", new LogicJSONNumber(this._score));
+            jsonObject.Put("duel_score", new LogicJSONNumber(this._duelScore));
+            jsonObject.Put("war_preference", new LogicJSONNumber(this._warPreference));
+            jsonObject.Put("attack_rating", new LogicJSONNumber(this._attackRating));
+            jsonObject.Put("atack_kfactor", new LogicJSONNumber(this._attackKFactor));
+            jsonObject.Put("attack_win_cnt", new LogicJSONNumber(this._attackWinCount));
+            jsonObject.Put("attack_lose_cnt", new LogicJSONNumber(this._attackLoseCount));
+            jsonObject.Put("defense_win_cnt", new LogicJSONNumber(this._defenseWinCount));
+            jsonObject.Put("defense_lose_cnt", new LogicJSONNumber(this._defenseLoseCount));
+            jsonObject.Put("treasury_gold_cnt", new LogicJSONNumber(this._treasuryGoldCount));
+            jsonObject.Put("treasury_elixir_cnt", new LogicJSONNumber(this._treasuryElixirCount));
+            jsonObject.Put("treasury_dark_elixir_cnt", new LogicJSONNumber(this._treasuryDarkElixirCount));
+
+            if (this._redPackageState != 0)
+            {
+                jsonObject.Put("red_package_state", new LogicJSONNumber(this._redPackageState));
+            }
+        }
+
+        /// <summary>
         ///     Saves this instance to replay.
         /// </summary>
         public void SaveToReplay(LogicJSONObject jsonObject)
         {
-            if (this._id != null)
-            {
-                jsonObject.Put("avatar_id_high", new LogicJSONNumber(this._id.GetHigherInt()));
-                jsonObject.Put("avatar_id_low", new LogicJSONNumber(this._id.GetLowerInt()));
-            }
-
+            jsonObject.Put("avatar_id_high", new LogicJSONNumber(this._id.GetHigherInt()));
+            jsonObject.Put("avatar_id_low", new LogicJSONNumber(this._id.GetLowerInt()));
             jsonObject.Put("name", new LogicJSONString(this._name));
             jsonObject.Put("alliance_name", new LogicJSONString(this._allianceName ?? string.Empty));
             jsonObject.Put("xp_level", new LogicJSONNumber(this._expLevel));
@@ -1416,7 +1720,7 @@
             jsonObject.Put("league_type", new LogicJSONNumber(this._leagueType));
 
             this.SaveDataSlotArray(jsonObject, "units", this._unitCount);
-            this.SaveDataSlotArray(jsonObject, "spells", this._unitCount);
+            this.SaveDataSlotArray(jsonObject, "spells", this._spellCount);
             this.SaveDataSlotArray(jsonObject, "unit_upgrades", this._unitUpgrade);
             this.SaveDataSlotArray(jsonObject, "spell_upgrades", this._spellUpgrade);
             this.SaveDataSlotArray(jsonObject, "resources", this._resourceCount);

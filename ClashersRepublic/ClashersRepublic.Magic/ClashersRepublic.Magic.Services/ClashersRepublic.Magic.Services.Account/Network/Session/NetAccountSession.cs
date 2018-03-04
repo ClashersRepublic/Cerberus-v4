@@ -3,11 +3,12 @@
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
 
     internal class NetAccountSession : NetSession
     {
-        private Account _account;
+        private readonly Account _account;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetAccountSession"/> class.
@@ -23,9 +24,9 @@
         public override void SetServiceNodeId(int serviceNodeType, int serviceNodeId)
         {
             base.SetServiceNodeId(serviceNodeType, serviceNodeId);
-            
-            AskForAvatarMessage ask = new AskForAvatarMessage();
-            ask.SetAvatarId(this._account.Id);
+
+            AskForBindServerMessage ask = new AskForBindServerMessage();
+            ask.SetAccountId(this._account.Id);
             NetMessageManager.SendMessage(serviceNodeType, serviceNodeId, this.SessionId, this.SessionId.Length, ask);
         }
     }

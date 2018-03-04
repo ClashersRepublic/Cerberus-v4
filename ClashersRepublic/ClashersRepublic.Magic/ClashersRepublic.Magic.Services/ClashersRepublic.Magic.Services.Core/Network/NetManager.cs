@@ -84,6 +84,16 @@
                         }
                     }
 
+                    LogicJSONArray avatarArray = nodeObject.GetJSONArray("avatar");
+
+                    if (avatarArray != null)
+                    {
+                        for (int i = 0; i < avatarArray.Size(); i++)
+                        {
+                            NetManager.CreateSocket(avatarArray.GetJSONString(i).GetStringValue(), 3);
+                        }
+                    }
+
                     LogicJSONArray globalArray = nodeObject.GetJSONArray("global_chat");
 
                     if (globalArray != null)
@@ -94,13 +104,13 @@
                         }
                     }
 
-                    LogicJSONArray avatarArray = nodeObject.GetJSONArray("avatar");
+                    LogicJSONArray streamArray = nodeObject.GetJSONArray("stream");
 
-                    if (avatarArray != null)
+                    if (streamArray != null)
                     {
-                        for (int i = 0; i < avatarArray.Size(); i++)
+                        for (int i = 0; i < streamArray.Size(); i++)
                         {
-                            NetManager.CreateSocket(avatarArray.GetJSONString(i).GetStringValue(), 9);
+                            NetManager.CreateSocket(streamArray.GetJSONString(i).GetStringValue(), 9);
                         }
                     }
 

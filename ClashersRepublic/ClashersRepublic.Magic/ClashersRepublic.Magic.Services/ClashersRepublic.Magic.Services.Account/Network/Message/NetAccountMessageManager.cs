@@ -5,6 +5,7 @@
     
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
+    using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
@@ -95,6 +96,10 @@
         {
             if (AccountManager.TryCreateAccount(out LogicLong accountId, out Account account))
             {
+                CreateAvatarMessage createAvatarMessage = new CreateAvatarMessage();
+                createAvatarMessage.SetAccountId(accountId);
+                NetMessageManager.SendMessage(3, NetManager.GetServiceNodeId(3, accountId), createAvatarMessage);
+
                 LoginClientOkMessage createAccountOkMessage = new LoginClientOkMessage();
 
                 createAccountOkMessage.SetAccountId(accountId);

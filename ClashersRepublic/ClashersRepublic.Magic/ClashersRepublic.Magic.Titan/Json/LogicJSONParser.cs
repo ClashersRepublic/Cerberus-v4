@@ -156,6 +156,12 @@
                     break;
                 }
 
+                case '-':
+                {
+                    node = LogicJSONParser.ParseNumber(stream);
+                    break;
+                }
+
                 default:
                 {
                     if (charValue >= '0' && charValue <= '9')
@@ -466,6 +472,13 @@
             stream.SkipWhitespace();
 
             char nextChar = stream.NextChar();
+            int multiplier = 1;
+
+            if (nextChar == '-')
+            {
+                multiplier = -1;
+                nextChar = stream.Read();
+            }
 
             if (nextChar != ',')
             {
@@ -487,7 +500,7 @@
                     return null;
                 }
 
-                return new LogicJSONNumber(value);
+                return new LogicJSONNumber(value * multiplier);
             }
 
             LogicJSONParser.ParseError("Not a number");

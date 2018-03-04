@@ -40,5 +40,23 @@
         {
             return 10200;
         }
+
+        /// <summary>
+        ///     Removes the account id.
+        /// </summary>
+        public LogicLong RemoveAccountId()
+        {
+            LogicLong tmp = this._accountId;
+            this._accountId = null;
+            return tmp;
+        }
+
+        /// <summary>
+        ///     Sets the account id.
+        /// </summary>
+        public void SetAccountId(LogicLong value)
+        {
+            this._accountId = value;
+        }
     }
 }
