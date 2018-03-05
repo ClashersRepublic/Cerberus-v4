@@ -261,7 +261,7 @@
 
             int multiplier1 = multiplier;
             int multiplier2 = multiplier;
-            int cost = 0;
+            int cost;
 
             if (this._useNewSpeedUpCalculation)
             {
@@ -278,17 +278,18 @@
                 {
                     if (time >= 86400)
                     {
-                        int tmp1 = (speedUpDiamondCostPerWeek - speedUpDiamondCostPerDay) * (time - 86400);
-                        int tmp2 = multiplier2 * speedUpDiamondCostPerDay / 100 + tmp1 * multiplier2 / 51840000;
+                        int tmp = (speedUpDiamondCostPerWeek - speedUpDiamondCostPerDay) * (time - 86400);
 
-                        if (tmp2 < 0 || tmp1 / 100 > 0x7FFFFFFF / multiplier2)
+                        cost = multiplier2 * speedUpDiamondCostPerDay / 100 + tmp / 100 * multiplier2 / 518400;
+
+                        if (cost < 0 || tmp / 100 > 0x7FFFFFFF / multiplier2)
                         {
-                            cost = multiplier2 * (speedUpDiamondCostPerDay + tmp1) / 51840000;
+                            cost = multiplier2 * (speedUpDiamondCostPerDay + tmp / 518400) / 100;
                         }
                     }
                     else
                     {
-                        cost = multiplier2 * speedUpDiamondCostPerHour / 100 + (speedUpDiamondCostPerDay - speedUpDiamondCostPerHour) * (time - 3600) * multiplier2 / 8280000;
+                        cost = multiplier2 * speedUpDiamondCostPerHour / 100 + (speedUpDiamondCostPerDay - speedUpDiamondCostPerHour) * (time - 3600) / 100 * multiplier2 / 82800;
                     }
                 }
                 else
