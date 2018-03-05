@@ -106,5 +106,17 @@
         {
             return 1;
         }
+
+        /// <summary>
+        ///     Sets the alliance data.
+        /// </summary>
+        public void SetAllianceData(LogicLong allianceId, string allianceName, int allianceBadgeId, int allianceExpLevel, bool isNewAlliance)
+        {
+            this._allianceId = allianceId;
+            this._allianceName = allianceName;
+            this._allianceBadgeId = allianceBadgeId;
+            this._allianceExpLevel = allianceExpLevel;
+            this._allianceCreate = isNewAlliance;
+        }
     }
 }

@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Command.Listener;
     using ClashersRepublic.Magic.Logic.Command.Server;
+
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
 
     internal class CommandManagerListener : LogicCommandManagerListener
@@ -37,7 +38,7 @@
 
                 if (serverCommand.GetId() != -1)
                 {
-
+                    this._gameMode.RemoveServerCommand(serverCommand);
                 }
             }
         }
