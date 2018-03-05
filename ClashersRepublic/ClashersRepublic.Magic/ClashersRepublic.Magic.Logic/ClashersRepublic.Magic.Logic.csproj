@@ -129,6 +129,7 @@
     <Compile Include="GameObject\Component\LogicResourceProductionComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
+    <Compile Include="GameObject\LogicObstacle.cs" />
     <Compile Include="GameObject\LogicBuilding.cs" />
     <Compile Include="GameObject\LogicGameObject.cs" />
     <Compile Include="GameObject\LogicGameObjectFactory.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Util\HashTagCodeGenerator.cs" />
     <Compile Include="Util\LogicCompressibleString.cs" />
     <Compile Include="Util\LogicDataSlot.cs" />
+    <Compile Include="Util\LogicGamePlayUtil.cs" />
     <Compile Include="Util\LogicPathFinderOld.cs" />
     <Compile Include="Util\LogicPathFinderNew.cs" />
     <Compile Include="Util\LogicPathFinder.cs" />

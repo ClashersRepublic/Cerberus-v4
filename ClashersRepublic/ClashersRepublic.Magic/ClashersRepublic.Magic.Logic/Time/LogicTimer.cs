@@ -6,14 +6,25 @@
     public class LogicTimer
     {
         private int _remainingTime;
-        private int _EndTimestamp;
+        private int _endTimestamp;
+        private int _boostedTime;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LogicTimer"/> class.
+        /// </summary>
+        public LogicTimer()
+        {
+            this._endTimestamp = -1;
+        }
 
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public void Destruct()
         {
-            // Destruct.
+            this._remainingTime = 0;
+            this._endTimestamp = -1;
+            this._boostedTime = 0;
         }
 
         /// <summary>
@@ -21,7 +32,7 @@
         /// </summary>
         public int GetRemainingSeconds(LogicTime time)
         {
-            int remaining = this._remainingTime - time;
+            int remaining = this._remainingTime - time - this._boostedTime;
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
@@ -46,7 +57,7 @@
         /// </summary>
         public int GetRemainingMS(LogicTime time)
         {
-            int remaining = this._remainingTime - time;
+            int remaining = this._remainingTime - time - this._boostedTime;
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
@@ -83,7 +94,7 @@
 
             if (setEndTimestamp)
             {
-                this._EndTimestamp = currentTimestamp + totalSecs;
+                this._endTimestamp = currentTimestamp + totalSecs;
             }
         }
 
@@ -118,19 +129,35 @@
         }
 
         /// <summary>
-        ///     Sets the end timestamp.
-        /// </summary>
-        public void SetEndTimestamp(int endTimestamp)
-        {
-            this._EndTimestamp = endTimestamp;
-        }
-
-        /// <summary>
         ///     Gets the end timestamp time.
         /// </summary>
         public int GetEndTimestamp()
         {
-            return this._EndTimestamp;
+            return this._endTimestamp;
+        }
+
+        /// <summary>
+        ///     Sets the end timestamp.
+        /// </summary>
+        public void SetEndTimestamp(int endTimestamp)
+        {
+            this._endTimestamp = endTimestamp;
+        }
+
+        /// <summary>
+        ///     Gets the boosted time.
+        /// </summary>
+        public int GetBoostedTime()
+        {
+            return this._boostedTime;
+        }
+
+        /// <summary>
+        ///     Sets the boosted time.
+        /// </summary>
+        public void SetBoostedTime(int value)
+        {
+            this._boostedTime = value;
         }
     }
 }

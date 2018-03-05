@@ -62,6 +62,7 @@
         private int _experienceVersion;
         private int _warTutorialsSeen;
         private int _matchType;
+        private int _remainingClockTowerBoostTime;
 
         private bool _helpOpened;
         private bool _warBase;
@@ -217,6 +218,14 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets the remaining clock tower boost time.
+        /// </summary>
+        public int GetRemainingClockTowerBoostTime()
+        {
+            return this._remainingClockTowerBoostTime;
         }
 
         /// <summary>

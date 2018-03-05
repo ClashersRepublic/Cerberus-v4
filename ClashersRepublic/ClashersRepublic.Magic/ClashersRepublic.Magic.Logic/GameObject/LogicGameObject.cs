@@ -260,6 +260,21 @@
         }
 
         /// <summary>
+        ///     Gets if this <see cref="LogicGameObject"/> instance is alive.
+        /// </summary>
+        public virtual bool IsAlive()
+        {
+            LogicHitpointComponent hitpointComponent = this.GetHitpointComponent();
+
+            if (hitpointComponent != null)
+            {
+                return hitpointComponent.InternalGetHp() > 0;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicGameObject"/> instance is passable.
         /// </summary>
         public virtual bool IsPassable()
@@ -297,6 +312,22 @@
         public virtual int GetWidthInTiles()
         {
             return 1;
+        }
+
+        /// <summary>
+        ///     Gets the remaining boost time.
+        /// </summary>
+        public virtual int GetRemainingBoostTime()
+        {
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the max fast forward time.
+        /// </summary>
+        public virtual int GetMaxFastForwardTime()
+        {
+            return -1;
         }
 
         /// <summary>
