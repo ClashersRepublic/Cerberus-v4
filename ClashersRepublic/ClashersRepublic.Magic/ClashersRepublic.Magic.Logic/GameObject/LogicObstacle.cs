@@ -4,6 +4,7 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.Math;
 
     public sealed class LogicObstacle : LogicGameObject
@@ -180,14 +181,22 @@
         /// <summary>
         ///     Speeds up the clearing of the obstacle.
         /// </summary>
-        public void SpeedUpClearing()
+        public bool SpeedUpClearing()
         {
             if (this._clearTimer != null)
             {
-                LogicAvatar avatar = this._level.GetHomeOwnerAvatar();
+                LogicClientAvatar playerAvatar = (LogicClientAvatar) this._level.GetPlayerAvatar();
+                int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime()), 0, this._villageType > 0);
 
-                
+                if (playerAvatar.HashEnoughDiamonds(speedUpCost, true, this._level))
+                {
+                    playerAvatar.UseDiamonds(speedUpCost);
+                    this.ClearingFinished(false);
+                    return true;
+                }
             }
+
+            return false;
         }
     }
 }

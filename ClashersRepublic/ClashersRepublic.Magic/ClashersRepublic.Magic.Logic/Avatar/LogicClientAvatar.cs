@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.League.Entry;
+    using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Debug;
@@ -297,6 +298,24 @@
         }
 
         /// <summary>
+        ///     Gets a value indicating whether the avatar has enough diamonds.
+        /// </summary>
+        public bool HashEnoughDiamonds(int count, bool callListener, LogicLevel level)
+        {
+            if (this._diamonds >= count)
+            {
+                return true;
+            }
+
+            if (callListener)
+            {
+                level.GetGameListener().NotEnoughDiamonds();
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Gets the diamonds count.
         /// </summary>
         public int GetDiamonds()
@@ -310,6 +329,20 @@
         public void SetDiamonds(int count)
         {
             this._diamonds = count;
+        }
+
+        /// <summary>
+        ///     Uses the number of specified diamonds.
+        /// </summary>
+        public void UseDiamonds(int count)
+        {
+            int currentDiamonds = this._diamonds;
+            int newDiamonds = this._diamonds -= count;
+
+            if (currentDiamonds > newDiamonds)
+            {
+                this._freeDiamonds = newDiamonds;
+            }
         }
 
         /// <summary>
