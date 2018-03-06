@@ -250,6 +250,14 @@
         }
 
         /// <summary>
+        ///     Gets the experience level.
+        /// </summary>
+        public void SetExpLevel(int expLevel)
+        {
+            this._expLevel = expLevel;
+        }
+
+        /// <summary>
         ///     Gets the id.
         /// </summary>
         public LogicLong GetId()
@@ -367,6 +375,22 @@
         public int GetLeagueType()
         {
             return this._leagueType;
+        }
+
+        /// <summary>
+        ///     Gets the score.
+        /// </summary>
+        public int GetScore()
+        {
+            return this._score;
+        }
+
+        /// <summary>
+        ///     Sets the score.
+        /// </summary>
+        public void SetScore(int value)
+        {
+            this._score = value;
         }
 
         /// <summary>

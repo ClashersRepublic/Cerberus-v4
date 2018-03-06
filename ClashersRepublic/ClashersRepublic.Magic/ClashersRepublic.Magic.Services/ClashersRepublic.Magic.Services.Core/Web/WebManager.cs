@@ -31,6 +31,22 @@
         }
 
         /// <summary>
+        ///     Downloads the specified config file.
+        /// </summary>
+        public static string DownloadConfigFile(string path)
+        {
+            if (path.Length > 0)
+            {
+                if (path[0] != '/')
+                {
+                    path = "/" + path;
+                }
+            }
+
+            return WebManager.DownloadString(Constants.CONFIG_SERVER + path);
+        }
+
+        /// <summary>
         ///     Downloads the string to the specified url.
         /// </summary>
         public static byte[] DownloadData(string url)

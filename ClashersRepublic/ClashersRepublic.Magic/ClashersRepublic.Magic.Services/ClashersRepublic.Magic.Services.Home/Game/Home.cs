@@ -3,9 +3,11 @@
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
+
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
     using ClashersRepublic.Magic.Services.Home.Resource;
+
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     

@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Game\Avatar\Change\AvatarChangeListener.cs" />
     <Compile Include="Game\Command\CommandManagerListener.cs" />
     <Compile Include="Game\Home.cs" />
     <Compile Include="Game\HomeManager.cs" />

@@ -3,9 +3,11 @@
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Network;
-    using ClashersRepublic.Magic.Services.Home.Game;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
+
+    using ClashersRepublic.Magic.Services.Home.Game;
     using ClashersRepublic.Magic.Services.Home.Game.Message;
+
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class NetHomeSession : NetSession
@@ -43,6 +45,24 @@
             }
 
             this.Home = null;
+        }
+
+        /// <summary>
+        ///     Forwards the specified <see cref="NetMessage"/> to the service.
+        /// </summary>
+        internal void SendMessage(int serviceNodeType, NetMessage message)
+        {
+            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
+
+            if (socket != null)
+            {
+                if (message.GetEncodingLength() == 0)
+                {
+                    message.Encode();
+                }
+                
+                NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, message);
+            }
         }
 
         /// <summary>

@@ -24,7 +24,7 @@
         /// </summary>
         private static void LoadConfig()
         {
-            string json = WebManager.DownloadString("https://raw.githubusercontent.com/Mimi8298/services/master/s/home.json");
+            string json = WebManager.DownloadConfigFile("/home.json");
 
             if (json != null)
             {

@@ -1,8 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Home;
+
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class MessageManager

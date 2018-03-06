@@ -68,8 +68,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleOut.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Database\CouchbaseDatabase.cs" />
     <Compile Include="Database\IDatabase.cs" />
+    <Compile Include="Game\Avatar\Change\AvatarChangeFactory.cs" />
+    <Compile Include="Game\Avatar\Change\ExpLevelAvatarChange.cs" />
+    <Compile Include="Game\Avatar\Change\NameAvatarChange.cs" />
+    <Compile Include="Game\Avatar\Change\ScoreAvatarChange.cs" />
     <Compile Include="Libs\Colorful\ColorAlternator.cs" />
     <Compile Include="Libs\Colorful\ColorAlternatorFactory.cs" />
     <Compile Include="Libs\Colorful\ColorExtensions.cs" />
@@ -246,6 +251,7 @@
     <Compile Include="Message\Account\CreateAccountFailedMessage.cs" />
     <Compile Include="Message\Account\CreateAccountOkMessage.cs" />
     <Compile Include="Message\Account\CreateAccountMessage.cs" />
+    <Compile Include="Message\Avatar\AvatarChangeMessage.cs" />
     <Compile Include="Message\Avatar\AvatarDataMessage.cs" />
     <Compile Include="Message\Avatar\CreateHomeMessage.cs" />
     <Compile Include="Message\Avatar\AskForAvatarMessage.cs" />

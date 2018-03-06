@@ -45,6 +45,7 @@
                     case 20106: return new AccountBanRevokedMessage();
                         
                     case 20203: return new AvatarDataMessage();
+                    case 20210: return new AvatarChangeMessage();
                 }
             }
 

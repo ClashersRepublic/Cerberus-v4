@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Achievement\LogicAchievementManager.cs" />
+    <Compile Include="Avatar\Change\LogicAvatarChange.cs" />
     <Compile Include="Avatar\Change\LogicAvatarChangeListener.cs" />
     <Compile Include="Avatar\LogicAvatar.cs" />
     <Compile Include="Avatar\LogicClientAvatar.cs" />
