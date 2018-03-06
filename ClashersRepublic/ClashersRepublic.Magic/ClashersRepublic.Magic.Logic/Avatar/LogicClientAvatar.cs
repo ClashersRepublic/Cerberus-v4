@@ -393,6 +393,54 @@
         }
 
         /// <summary>
+        ///     Helper for exp gain.
+        /// </summary>
+        public void XpGainHelper(int count)
+        {
+            if (count > 0)
+            {
+                int maxExpPoints = LogicDataTables.GetExperienceLevel(this._expLevel).GetMaxExpPoints();
+
+                if (this._expLevel < LogicExperienceLevelData.GetLevelCap())
+                {
+                    int gainExpPoints = this._expPoints + count;
+
+                    if (gainExpPoints >= maxExpPoints)
+                    {
+                        if (this._expLevel + 1 == LogicExperienceLevelData.GetLevelCap())
+                        {
+                            gainExpPoints = maxExpPoints;
+                        }
+
+                        gainExpPoints -= maxExpPoints;
+
+                        this._expLevel += 1;
+                        this._listener.ExpLevelGained(this._expLevel);
+
+                        if (this._level != null)
+                        {
+                            if (this._level.GetPlayerAvatar() == this)
+                            {
+                                this._level.GetGameListener().LevelUp(this._expLevel);
+                            }
+
+                            if (this._level.GetHomeOwnerAvatar() == this)
+                            {
+                                this._level.RefreshNewShopUnlocksExp();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this._listener.ExpPointsGained(gainExpPoints);
+                    }
+
+                    this._expPoints = gainExpPoints;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public void Decode(ByteStream stream)

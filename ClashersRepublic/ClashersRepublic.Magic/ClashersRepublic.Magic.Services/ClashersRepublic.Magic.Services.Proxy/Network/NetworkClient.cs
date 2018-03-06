@@ -5,7 +5,6 @@
 
     internal class NetworkClient
     {
-        private NetworkToken _networkToken;
         private NetProxySession _session;
 
         /// <summary>
@@ -14,13 +13,18 @@
         internal int State { get; set; }
 
         /// <summary>
+        ///     Gets the <see cref="Network.NetworkToken"/> instance.
+        /// </summary>
+        internal NetworkToken NetworkToken { get; private set; }
+
+        /// <summary>
         ///     Gets the <see cref="MessageManager"/> instance.
         /// </summary>
         internal MessageManager MessageManager
         {
             get
             {
-                return this._networkToken.Messaging.MessageManager;
+                return this.NetworkToken.Messaging.MessageManager;
             }
         }
 
@@ -30,7 +34,7 @@
         internal NetworkClient(NetworkToken token)
         {
             this.State = 1;
-            this._networkToken = token;
+            this.NetworkToken = token;
         }
 
         /// <summary>
@@ -38,6 +42,8 @@
         /// </summary>
         internal void Destruct()
         {
+            this.State = -1;
+
             if (this._session != null)
             {
                 NetProxySessionManager.TryRemove(this._session.SessionName, out _);
@@ -47,7 +53,7 @@
                 this._session = null;
             }
 
-            this._networkToken = null;
+            this.NetworkToken = null;
         }
 
         /// <summary>

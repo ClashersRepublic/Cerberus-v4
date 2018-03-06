@@ -310,7 +310,7 @@
                     this._logicGameMode.UpdateOneSubTick();
                 } while (this._logicGameMode.GetLogicTime() < subTick);
             }
-
+            
             Logging.Debug(this, string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} command_count: {2}", subTick, checksum, commands?.Count ?? 0));
         }
 

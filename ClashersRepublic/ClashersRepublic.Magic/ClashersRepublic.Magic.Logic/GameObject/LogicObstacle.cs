@@ -2,14 +2,17 @@
 {
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
+    using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Util;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
 
     public sealed class LogicObstacle : LogicGameObject
     {
         private LogicTimer _clearTimer;
+        private int _lootMultiplyVersion;
         private int _fadeTime;
 
         /// <summary>
@@ -26,6 +29,22 @@
         public LogicObstacleData GetObstacleData()
         {
             return (LogicObstacleData) this._data;
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+
+            if (this._clearTimer != null)
+            {
+                this._clearTimer.Destruct();
+                this._clearTimer = null;
+            }
+
+            this._fadeTime = 0;
         }
 
         /// <summary>
@@ -76,7 +95,7 @@
             {
                 if (this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime()) > 0 && this._level.GetRemainingClockTowerBoostTime() > 0 && this.GetObstacleData().VillageType == 1)
                 {
-                    this._clearTimer.SetBoostedTime(this._clearTimer.GetBoostedTime() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
+                    this._clearTimer.SetFastForwardTime(this._clearTimer.GetFastForwardTime() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
                 }
             }
 
@@ -126,6 +145,101 @@
             }
 
             return this._fadeTime >= tmp;
+        }
+
+        /// <summary>
+        ///     Saves this instance.
+        /// </summary>
+        public override void Save(LogicJSONObject jsonObject)
+        {
+            base.Save(jsonObject);
+
+            if (this._clearTimer != null)
+            {
+                jsonObject.Put("clear_t", new LogicJSONNumber(this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime())));
+                jsonObject.Put("clear_ff", new LogicJSONNumber(this._clearTimer.GetFastForwardTime()));
+            }
+
+            if (this._lootMultiplyVersion != 1)
+            {
+                jsonObject.Put("lmv", new LogicJSONNumber(this._lootMultiplyVersion));
+            }
+        }
+
+        /// <summary>
+        ///     Loads this instance.
+        /// </summary>
+        public override void Load(LogicJSONObject jsonObject)
+        {
+            base.Load(jsonObject);
+
+            LogicJSONNumber clearTimeObject = jsonObject.GetJSONNumber("clear_t");
+
+            if (clearTimeObject != null)
+            {
+                if (this._clearTimer != null)
+                {
+                    this._clearTimer.Destruct();
+                    this._clearTimer = null;
+                }
+
+                this._clearTimer = new LogicTimer();
+                this._clearTimer.StartTimer(clearTimeObject.GetIntValue(), this._level.GetLogicTime(), false, -1);
+                this._level.GetWorkerManagerAt(this._villageType).AllocateWorker(this);
+            }
+
+            LogicJSONNumber clearFastForwardObject = jsonObject.GetJSONNumber("clear_ff");
+
+            if (clearFastForwardObject != null)
+            {
+                if (this._clearTimer != null)
+                {
+                    this._clearTimer.SetFastForwardTime(clearFastForwardObject.GetIntValue());
+                }
+            }
+
+            LogicJSONNumber lootMultiplyVersionObject = jsonObject.GetJSONNumber("loot_multiply_ver");
+
+            if (lootMultiplyVersionObject == null)
+            {
+                lootMultiplyVersionObject = jsonObject.GetJSONNumber("lmv");
+
+                if (lootMultiplyVersionObject == null)
+                {
+                    return;
+                }
+            }
+
+            this._lootMultiplyVersion = lootMultiplyVersionObject.GetIntValue();
+        }
+
+        /// <summary>
+        ///     Called when the loading of this <see cref="LogicObstacle"/> instance is finished.
+        /// </summary>
+        public override void LoadingFinished()
+        {
+            base.LoadingFinished();
+
+            if (this._listener != null)
+            {
+                this._listener.LoadedFromJSON();
+            }
+        }
+
+        /// <summary>
+        ///     Gets the checksum of this <see cref="LogicObstacle"/> instance.
+        /// </summary>
+        public override void GetChecksum(ChecksumHelper checksum)
+        {
+            base.GetChecksum(checksum);
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicGameObject"/> type.
+        /// </summary>
+        public override int GetGameObjectType()
+        {
+            return 3;
         }
 
         /// <summary>

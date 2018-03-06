@@ -16,10 +16,11 @@
             switch (data.GetDataType())
             {
                 case 0:
-                {
                     gameObject = new LogicBuilding(data, level, villageType);
                     break;
-                }
+                case 7:
+                    gameObject = new LogicObstacle(data, level, villageType);
+                    break;
 
                 default:
                 {

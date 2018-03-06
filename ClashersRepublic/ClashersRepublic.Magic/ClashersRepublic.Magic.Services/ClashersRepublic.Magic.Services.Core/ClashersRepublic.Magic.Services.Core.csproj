@@ -254,6 +254,7 @@
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />
     <Compile Include="Message\NetMessageManager.cs" />
+    <Compile Include="Message\Network\ForwardErrorPiranhaMessage.cs" />
     <Compile Include="Message\Network\ForwardPiranhaMessage.cs" />
     <Compile Include="Message\Session\ServerBoundMessage.cs" />
     <Compile Include="Message\Session\UpdateServerEndPointMessage.cs" />

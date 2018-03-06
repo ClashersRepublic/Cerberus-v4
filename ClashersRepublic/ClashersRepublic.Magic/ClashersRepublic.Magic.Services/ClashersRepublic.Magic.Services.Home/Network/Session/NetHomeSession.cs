@@ -64,5 +64,25 @@
                 NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, forwardPiranhaMessage);
             }
         }
+
+        /// <summary>
+        ///     Forwards the specified <see cref="PiranhaMessage"/> to the service.
+        /// </summary>
+        internal void SendErrorPiranhaMessage(int serviceNodeType, PiranhaMessage message)
+        {
+            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
+
+            if (socket != null)
+            {
+                if (message.GetEncodingLength() == 0)
+                {
+                    message.Encode();
+                }
+
+                ForwardErrorPiranhaMessage forwardErrorPiranhaMessage = new ForwardErrorPiranhaMessage();
+                forwardErrorPiranhaMessage.SetPiranhaMessage(message);
+                NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, forwardErrorPiranhaMessage);
+            }
+        }
     }
 }

@@ -756,6 +756,32 @@
         }
 
         /// <summary>
+        ///     Refreshes the new shop unlocks with exp.
+        /// </summary>
+        public void RefreshNewShopUnlocksExp()
+        {
+            int expLevel = this._homeOwnerAvatar.GetExpLevel();
+
+            if (this._homeOwnerAvatar.GetExpLevel() > 0)
+            {
+                LogicDataTable table = LogicDataTables.GetTable(17);
+
+                for (int i = 0; i < this._newShopDecos.Count; i++)
+                {
+                    LogicData data = table.GetItemAt(i);
+
+                    int totalShopUnlock = this.GetShopUnlockCount(data, expLevel);
+                    int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, expLevel - 1);
+
+                    if (shopUnlockCount > 0)
+                    {
+                        this._newShopDecos[i] += shopUnlockCount;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Sets the home owner avatar instance.
         /// </summary>
         public void SetHomeOwnerAvatar(LogicAvatar avatar)

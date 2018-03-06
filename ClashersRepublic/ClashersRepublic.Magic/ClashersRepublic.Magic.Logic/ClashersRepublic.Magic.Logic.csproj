@@ -125,6 +125,7 @@
     <Compile Include="Data\LogicWarData.cs" />
     <Compile Include="GameObject\Component\LogicComponent.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
+    <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
     <Compile Include="GameObject\Component\LogicHitpointComponent.cs" />
     <Compile Include="GameObject\Component\LogicResourceProductionComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />

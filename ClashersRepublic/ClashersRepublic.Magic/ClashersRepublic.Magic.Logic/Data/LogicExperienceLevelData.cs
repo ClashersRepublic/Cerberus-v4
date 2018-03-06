@@ -4,6 +4,8 @@ namespace ClashersRepublic.Magic.Logic.Data
 
     public class LogicExperienceLevelData : LogicData
     {
+        private int _expPoints;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicExperienceLevelData" /> class.
         /// </summary>
@@ -17,7 +19,23 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            // LoadingFinished.
+            this._expPoints = this.GetIntegerValue("ExpPoints", 0);
+        }
+
+        /// <summary>
+        ///     Get the number of max exp points.
+        /// </summary>
+        public int GetMaxExpPoints()
+        {
+            return this._expPoints;
+        }
+
+        /// <summary>
+        ///     Gets the level cap.
+        /// </summary>
+        public static int GetLevelCap()
+        {
+            return LogicDataTables.GetTable(10).GetItemCount();
         }
     }
 }

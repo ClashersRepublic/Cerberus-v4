@@ -1,15 +1,19 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
 
     public sealed class LogicBuilding : LogicGameObject
     {
         private int _upgLevel;
         private bool _locked;
+        private bool _gearing;
+        private bool _upgrading;
 
         private LogicTimer _constructionTimer;
 
@@ -27,6 +31,102 @@
         public LogicBuildingData GetBuildingData()
         {
             return (LogicBuildingData) this._data;
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+        }
+
+        /// <summary>
+        ///     Ticks for update this instance.
+        /// </summary>
+        public override void Tick()
+        {
+            base.Tick();
+
+            if (this._constructionTimer != null)
+            {
+                if (this._level.GetRemainingClockTowerBoostTime() > 0 && this.GetBuildingData().VillageType == 1)
+                {
+                    this._constructionTimer.SetFastForwardTime(this._constructionTimer.GetFastForwardTime() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
+                }
+
+                if (this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) <= 0)
+                {
+
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Finishes the construction of the <see cref="LogicBuilding"/>.
+        /// </summary>
+        public void FinishConstruction(bool notNeedHomeState)
+        {
+            if (this._level.GetState() == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && notNeedHomeState)
+            {
+                if (this._level.GetHomeOwnerAvatar() != null)
+                {
+                    if (this._level.GetHomeOwnerAvatar().IsClientAvatar())
+                    {
+                        LogicClientAvatar homeOwnerAvatar = (LogicClientAvatar) this._level.GetHomeOwnerAvatar();
+
+                        if (this._constructionTimer != null)
+                        {
+                            this._constructionTimer.Destruct();
+                            this._constructionTimer = null;
+                        }
+
+                        this._level.GetWorkerManagerAt(this._gearing ? 1 : this.GetBuildingData().VillageType).DeallocateWorker(this);
+                        this._locked = false;
+
+                        if (this._gearing)
+                        {
+
+                        }
+                        else
+                        {
+                            if (this._upgLevel > 0 || this._upgrading)
+                            {
+                                int newUpgLevel = this._upgLevel + 1;
+
+                                if (this._upgLevel >= this.GetBuildingData().GetUpgradeLevelCount() - 1)
+                                {
+                                    Debugger.Warning("LogicBuilding - Trying to upgrade to level that doesn't exist! - " + this.GetBuildingData().GetName());
+                                    newUpgLevel = this.GetBuildingData().GetUpgradeLevelCount() - 1;
+                                }
+
+                                int constructionTime = this.GetBuildingData().GetConstructionTime(this._upgLevel, this._level, 0);
+                                int xpGain = LogicMath.Sqrt(constructionTime);
+                                this.SetUpgradeLevel(newUpgLevel);
+
+                                homeOwnerAvatar.XpGainHelper(xpGain);
+                            }
+                            else
+                            {
+                                int constructionTime = this.GetBuildingData().GetConstructionTime(this._upgLevel, this._level, 0);
+                                int xpGain = LogicMath.Sqrt(constructionTime);
+                                this.SetUpgradeLevel(this._upgLevel);
+
+                                homeOwnerAvatar.XpGainHelper(xpGain);
+                            }
+
+                            if (this.GetComponent(10) != null)
+                            {
+                                // HERO
+                            }
+                        }
+
+                        return;
+                    }
+                }
+
+                Debugger.Warning("LogicBuilding::finishCostruction failed - Avatar is null or not client avatar");
+            }
         }
 
         /// <summary>
@@ -78,7 +178,7 @@
                 }
             }
 
-            if (this.GetComponent(5, true) != null)
+            if (this.GetComponent(5) != null)
             {
             }
         }

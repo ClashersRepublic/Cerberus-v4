@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Util
 {
     using ClashersRepublic.Magic.Logic.Data;
+    using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Math;
 
     public static class LogicGamePlayUtil

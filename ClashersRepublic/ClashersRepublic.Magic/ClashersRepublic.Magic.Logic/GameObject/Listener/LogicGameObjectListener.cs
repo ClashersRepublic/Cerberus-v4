@@ -1,5 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Listener
 {
+    using ClashersRepublic.Magic.Logic.Data;
+
     public class LogicGameObjectListener
     {
         /// <summary>
@@ -8,6 +10,62 @@
         public virtual void Destruct()
         {
             // Destruct.
+        }
+
+        /// <summary>
+        ///     Refreshes the gameobject positon from logic.
+        /// </summary>
+        public virtual void RefreshPositionFromLogic()
+        {
+            // RefreshPositionFromLogic.
+        }
+
+        /// <summary>
+        ///     Refreshes the gameobject state.
+        /// </summary>
+        public virtual void RefreshState()
+        {
+            // RefreshState.
+        }
+
+        /// <summary>
+        ///     Randomizes the starting frame.
+        /// </summary>
+        public virtual void RandomizeStartingFrame()
+        {
+            // RandomizeStartingFrame.
+        }
+
+        /// <summary>
+        ///     Called when the gameobject was damaged.
+        /// </summary>
+        public virtual void Damaged()
+        {
+            // Damaged.
+        }
+
+        /// <summary>
+        ///     Called when resources in gameobject was collected.
+        /// </summary>
+        public virtual void ResourcesCollected(LogicResourceData data, int count, bool unk)
+        {
+            // ResourcesCollected.
+        }
+
+        /// <summary>
+        ///     Called when experience was gained.
+        /// </summary>
+        public virtual void XpGained(int count)
+        {
+            // XpGained.
+        }
+
+        /// <summary>
+        ///     Called the gameobject was loaded from json..
+        /// </summary>
+        public virtual void LoadedFromJSON()
+        {
+            // XpGained.
         }
     }
 }

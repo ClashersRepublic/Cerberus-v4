@@ -171,6 +171,37 @@
         }
 
         /// <summary>
+        ///     Gets the gameobject count by data.
+        /// </summary>
+        public int GetGameObjectCountByData(LogicData data)
+        {
+            int cnt = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                if (gameObjects.Count > 0)
+                {
+                    if (gameObjects[0].GetData().GetDataType() == data.GetDataType())
+                    {
+                        for (int j = 0; j < gameObjects.Count; j++)
+                        {
+                            LogicGameObject gameObject = gameObjects[j];
+
+                            if (gameObject.GetData() == data)
+                            {
+                                ++cnt;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
         ///     Gets the component manager instance.
         /// </summary>
         public LogicComponentManager GetComponentManager()

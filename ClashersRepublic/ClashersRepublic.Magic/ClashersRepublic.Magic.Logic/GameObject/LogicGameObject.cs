@@ -142,6 +142,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicData"/> instance.
+        /// </summary>
+        public LogicData GetData()
+        {
+            return this._data;
+        }
+
+        /// <summary>
         ///     Gets the <see cref="LogicLevel" /> instance.
         /// </summary>
         public LogicLevel GetLevel()
@@ -152,19 +160,24 @@
         /// <summary>
         ///     Gets the specified component.
         /// </summary>
-        public LogicComponent GetComponent(int componentType, bool needEnabled)
+        public LogicComponent GetComponent(int componentType)
         {
             LogicComponent component = this._components[componentType];
 
-            if (component != null)
+            if (component != null && component.IsEnabled())
             {
-                if (!needEnabled || component.IsEnabled())
-                {
-                    return component;
-                }
+                return component;
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///     Gets the hitpoint component.
+        /// </summary>
+        public LogicCombatComponent GetCombatComponent()
+        {
+            return (LogicCombatComponent) this._components[1];
         }
 
         /// <summary>
@@ -356,8 +369,8 @@
             checksum.WriteValue("type", this.GetGameObjectType());
             checksum.WriteValue("globalID", this._globalId);
             checksum.WriteValue("dataGlobalID", this._data.GetGlobalID());
-            checksum.WriteValue("x", this.GetTileX());
-            checksum.WriteValue("y", this.GetTileY());
+            checksum.WriteValue("x", this.GetX());
+            checksum.WriteValue("y", this.GetY());
             checksum.WriteValue("seed", this._seed);
 
             if (this.GetHitpointComponent() != null)
@@ -430,6 +443,14 @@
                     component.Save(jsonObject);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Called when the loading of this <see cref="LogicGameObject"/> instance is finished.
+        /// </summary>
+        public virtual void LoadingFinished()
+        {
+            // LoadingFinished.
         }
     }
 }

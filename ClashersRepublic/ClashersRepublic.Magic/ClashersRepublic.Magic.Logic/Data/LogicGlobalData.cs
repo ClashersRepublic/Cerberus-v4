@@ -27,6 +27,11 @@ namespace ClashersRepublic.Magic.Logic.Data
             // LoadingFinished.
         }
 
+        public int GetNumberArraySize()
+        {
+            return this.NumberArray.Length;
+        }
+
         public int GetNumberArray(int index)
         {
             return this.NumberArray[index];

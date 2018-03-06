@@ -1,5 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Data
 {
+    using ClashersRepublic.Magic.Logic.GameObject;
+    using ClashersRepublic.Magic.Logic.Level;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicGlobals
@@ -34,6 +37,8 @@
         private bool _removeRevengeWhenBattleIsLoaded;
         private bool _completeConstructionOnlyHome;
         private bool _useNewSpeedUpCalculation;
+
+        private int[] _village2TroopHousingBuildTimeSecs;
 
         private LogicResourceData _allianceCreateResourceData;
 
@@ -73,6 +78,15 @@
             this._useNewSpeedUpCalculation = this.GetBoolValue("USE_NEW_SPEEDUP_CALCULATION");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
+
+            LogicGlobalData village2TroopHousingBuildTimeSecsData = this.GetGlobalData("TROOP_HOUSING_V2_BUILD_TIME_SECONDS");
+
+            this._village2TroopHousingBuildTimeSecs = new int[village2TroopHousingBuildTimeSecsData.GetNumberArraySize()];
+
+            for (int i = 0; i < this._village2TroopHousingBuildTimeSecs.Length; i++)
+            {
+                this._village2TroopHousingBuildTimeSecs[i] = village2TroopHousingBuildTimeSecsData.GetNumberArray(i);
+            }
         }
 
         /// <summary>
@@ -232,6 +246,27 @@
         public LogicResourceData GetAllianceCreateResourceData()
         {
             return this._allianceCreateResourceData;
+        }
+
+        /// <summary>
+        ///     Gets the troop housing village 2 build time.
+        /// </summary>
+        public int GetTroopHousingVillage2BuildTime(LogicLevel level, int ignoreBuildingCnt)
+        {
+            LogicBuildingData data = LogicDataTables.GetBuildingDataByName("Troop Housing2");
+
+            if (data != null)
+            {
+                return this._village2TroopHousingBuildTimeSecs[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data) - ignoreBuildingCnt,
+                                                               0, 
+                                                               this._village2TroopHousingBuildTimeSecs.Length - 1)];
+            }
+            else
+            {
+                Debugger.Error("Could not find Troop Housing2 data");
+            }
+
+            return 0;
         }
 
         /// <summary>

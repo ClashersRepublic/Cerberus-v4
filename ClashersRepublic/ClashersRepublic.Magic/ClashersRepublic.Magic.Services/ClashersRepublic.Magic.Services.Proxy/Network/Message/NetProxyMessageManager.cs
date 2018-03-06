@@ -23,6 +23,9 @@
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
                     break;
+                case 10401:
+                    this.ForwardErrorPiranhaMessageReceived((ForwardErrorPiranhaMessage) message);
+                    break;
 
                 case 20101:
                     this.CreateAccountOkMessageReceived((CreateAccountOkMessage) message);
@@ -167,6 +170,32 @@
                     if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                     {
                         session.Client.MessageManager.SendMessage(piranhaMessage);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when the <see cref="ForwardErrorPiranhaMessage"/> is received.
+        /// </summary>
+        internal void ForwardErrorPiranhaMessageReceived(ForwardErrorPiranhaMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (sessionId != null)
+            {
+                PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+
+                if (piranhaMessage != null)
+                {
+                    piranhaMessage.GetByteStream().SetOffset(piranhaMessage.GetByteStream().GetLength());
+
+                    if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+                    {
+                        session.Client.MessageManager.SendMessage(piranhaMessage);
+                        session.Client.MessageManager.SendMessage(new DisconnectedMessage());
+
+                        NetworkGateway.Disconnect(session.Client.NetworkToken.ReadEvent);
                     }
                 }
             }

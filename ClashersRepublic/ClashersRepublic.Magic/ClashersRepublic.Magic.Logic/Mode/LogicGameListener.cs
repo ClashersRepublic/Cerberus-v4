@@ -32,5 +32,9 @@
         public virtual void AllianceJoined()
         {
         }
+
+        public virtual void LevelUp(int expLevel)
+        {
+        }
     }
 }

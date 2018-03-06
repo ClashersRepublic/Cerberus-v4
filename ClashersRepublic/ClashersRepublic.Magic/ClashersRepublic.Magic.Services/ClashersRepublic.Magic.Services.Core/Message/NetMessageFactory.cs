@@ -30,6 +30,7 @@
                     case 10303: return new UpdateServerEndPointMessage();
 
                     case 10400: return new ForwardPiranhaMessage();
+                    case 10401: return new ForwardErrorPiranhaMessage();
                 }
             }
             else

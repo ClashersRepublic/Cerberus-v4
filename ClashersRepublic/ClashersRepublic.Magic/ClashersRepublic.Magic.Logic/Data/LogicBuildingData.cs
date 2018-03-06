@@ -1,5 +1,6 @@
 namespace ClashersRepublic.Magic.Logic.Data
 {
+    using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.CSV;
     using ClashersRepublic.Magic.Titan.Debug;
 
@@ -249,9 +250,14 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this._upgradeLevelCount;
         }
 
-        public int GetConstructionTime(int level)
+        public int GetConstructionTime(int upgLevel, LogicLevel level, int ignoreBuildingCnt)
         {
-            return this._constructionTimes[level];
+            if (this.Village2Housing < 1)
+            {
+                return this._constructionTimes[upgLevel];
+            }
+
+            return LogicDataTables.GetGlobals().GetTroopHousingVillage2BuildTime(level, ignoreBuildingCnt);
         }
 
         public bool IsTownHall()

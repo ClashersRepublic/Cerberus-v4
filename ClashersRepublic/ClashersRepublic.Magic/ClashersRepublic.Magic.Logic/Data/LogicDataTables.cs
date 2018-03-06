@@ -144,6 +144,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicBuildingData"/> instance by name.
+        /// </summary>
+        public static LogicBuildingData GetBuildingDataByName(string name)
+        {
+            return (LogicBuildingData) LogicDataTables._dataTables[0].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the data by instance.
         /// </summary>
         public static LogicData GetDataByName(string name)
@@ -160,6 +168,24 @@
                     }
                 }
             }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the experience level.
+        /// </summary>
+        public static LogicExperienceLevelData GetExperienceLevel(int level)
+        {
+            if (level > 0)
+            {
+                if (level - 1 < LogicDataTables._dataTables[10].GetItemCount())
+                {
+                    return (LogicExperienceLevelData) LogicDataTables._dataTables[10].GetItemAt(level - 1);
+                }
+            }
+
+            Debugger.Error("LogicDataTables::getExperienceLevel parameter out of bounds");
 
             return null;
         }
