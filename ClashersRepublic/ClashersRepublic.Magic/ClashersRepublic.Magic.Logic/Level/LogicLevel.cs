@@ -250,6 +250,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicAchievementManager"/> instance.
+        /// </summary>
+        public LogicAchievementManager GetAchievementManager()
+        {
+            return this._achievementManager;
+        }
+
+        /// <summary>
         ///     Gets the worker manager instance.
         /// </summary>
         public LogicWorkerManager GetWorkerManager()

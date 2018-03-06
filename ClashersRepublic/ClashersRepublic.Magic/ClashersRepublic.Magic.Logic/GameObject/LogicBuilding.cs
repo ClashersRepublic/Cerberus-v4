@@ -67,7 +67,9 @@
         /// </summary>
         public void FinishConstruction(bool notNeedHomeState)
         {
-            if (this._level.GetState() == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && notNeedHomeState)
+            int state = this._level.GetState();
+
+            if (state == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && notNeedHomeState)
             {
                 if (this._level.GetHomeOwnerAvatar() != null)
                 {
@@ -119,6 +121,23 @@
                             {
                                 // HERO
                             }
+                        }
+
+                        if (this.GetComponent(5) != null)
+                        {
+                            ((LogicResourceProductionComponent) this.GetComponent(5)).RestartTimer();
+                        }
+
+                        this._upgrading = false;
+
+                        if (this._listener != null)
+                        {
+                            this._listener.RefreshState();
+                        }
+
+                        if (state == 1)
+                        {
+                            this._level.GetAchievementManager().RefreshStatus();
                         }
 
                         return;
