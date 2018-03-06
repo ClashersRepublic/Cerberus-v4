@@ -169,15 +169,5 @@
 
             return false;
         }
-
-        /// <summary>
-        ///     Destructes this instance.
-        /// </summary>
-        ~ChecksumEncoder()
-        {
-            this._enabled = false;
-            this._checksum = 0;
-            this._snapshotChecksum = 0;
-        }
     }
 }

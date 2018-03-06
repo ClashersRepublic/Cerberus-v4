@@ -664,16 +664,5 @@
             this._length = 0;
             this._offset = 0;
         }
-
-        /// <summary>
-        ///     Deconstructor for this instance.
-        /// </summary>
-        ~ByteStream()
-        {
-            this._buffer = null;
-            this._bitIdx = 0;
-            this._length = 0;
-            this._offset = 0;
-        }
     }
 }

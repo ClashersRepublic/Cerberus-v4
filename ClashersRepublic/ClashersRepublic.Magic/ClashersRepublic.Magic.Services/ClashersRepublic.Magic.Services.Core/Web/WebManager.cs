@@ -33,7 +33,7 @@
         /// <summary>
         ///     Downloads the specified config file.
         /// </summary>
-        public static string DownloadConfigFile(string path)
+        public static string DownloadFileFromConfigServer(string path)
         {
             if (path.Length > 0)
             {
@@ -44,6 +44,22 @@
             }
 
             return WebManager.DownloadString(Constants.CONFIG_SERVER + path);
+        }
+
+        /// <summary>
+        ///     Downloads the specified config file.
+        /// </summary>
+        public static byte[] DownloadDataFromConfigServer(string path)
+        {
+            if (path.Length > 0)
+            {
+                if (path[0] != '/')
+                {
+                    path = "/" + path;
+                }
+            }
+
+            return WebManager.DownloadData(Constants.CONFIG_SERVER + path);
         }
 
         /// <summary>

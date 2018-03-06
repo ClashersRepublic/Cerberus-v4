@@ -1,8 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Resource
 {
     using ClashersRepublic.Magic.Logic.Helper;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Web;
+
     using ClashersRepublic.Magic.Titan.Json;
 
     internal static class HomeResourceManager
@@ -24,7 +26,7 @@
         /// </summary>
         private static void LoadConfig()
         {
-            string json = WebManager.DownloadConfigFile("/home.json");
+            string json = WebManager.DownloadFileFromConfigServer("/conf/home.json");
 
             if (json != null)
             {

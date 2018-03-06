@@ -1,7 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core
 {
+    using System;
     using System.IO;
+    using System.Security.Cryptography;
+    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Services.Core.Libs.Lzma.Compression.LZMA;
+    using ClashersRepublic.Magic.Services.Core.Web;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
@@ -40,8 +45,173 @@
         /// </summary>
         private static void Load()
         {
+            ResourceManager.VerifyAssets();
             ResourceManager.LoadFingeprint();
             ResourceManager.LoadResources();
+        }
+
+        /// <summary>
+        ///     Verifies the version of assets.
+        /// </summary>
+        private static void VerifyAssets()
+        {
+            string json = ResourceManager.LoadAssetFile("fingerprint.json");
+
+            if (json != null)
+            {
+                LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(json);
+                LogicJSONArray fileArray = jsonObject.GetJSONArray("files");
+                LogicJSONString shaObject = jsonObject.GetJSONString("sha");
+
+                for (int i = 0; i < fileArray.Size(); i++)
+                {
+                    LogicJSONObject fileObject = fileArray.GetJSONObject(i);
+
+                    if (fileObject != null)
+                    {
+                        string fileName = LogicJSONHelper.GetJSONString(fileObject, "file");
+
+                        if (File.Exists("Assets/" + fileName))
+                        {
+                            continue;
+                        }
+
+                        Logging.Debug(typeof(ResourceManager), "ResourceManager::verifyAssets missing file " + fileName);
+                    }
+                    else
+                    {
+                        Logging.Debug(typeof(ResourceManager), "ResourceManager::verifyAssets pFileObject->NULL");
+                    }
+
+                    ResourceManager.DownloadAssets(json);
+                }
+
+                if (shaObject != null)
+                {
+                    string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
+
+                    if (lastSha != null)
+                    {
+                        if (shaObject.GetStringValue() != lastSha)
+                        {
+                            json = WebManager.DownloadFileFromConfigServer("/assets/generated/" + lastSha + "/fingerprint.json");
+
+                            if (json != null)
+                            {
+                                ResourceManager.DownloadAssets(json);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Logging.Warning(typeof(ResourceManager), "ResourceManager::verifyAssets /assets/sha doesn't exist");
+                    }
+                }
+                else
+                {
+                    Logging.Warning(typeof(ResourceManager), "ResourceManager::verifyAssets pShaObject->NULL");
+
+                    string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
+
+                    if (lastSha != null)
+                    {
+                        json = WebManager.DownloadFileFromConfigServer("/assets/generated/" + lastSha + "/fingerprint.json");
+
+                        if (json != null)
+                        {
+                            ResourceManager.DownloadAssets(json);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
+                
+                if (lastSha != null)
+                {
+                    json = WebManager.DownloadFileFromConfigServer("/assets/generated/" + lastSha + "/fingerprint.json");
+
+                    if (json != null)
+                    {
+                        ResourceManager.DownloadAssets(json);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Downloads assets from config server.
+        /// </summary>
+        private static void DownloadAssets(string fingerprint)
+        {
+            LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(fingerprint);
+            LogicJSONArray fileArray = jsonObject.GetJSONArray("files");
+
+            string shaFingerprint = LogicJSONHelper.GetJSONString(jsonObject, "sha");
+
+            Logging.Debug(typeof(ResourceManager), "Download " + shaFingerprint + " assets...");
+
+            for(int i = 0; i < fileArray.Size(); i++)
+            {
+                LogicJSONObject fileObject = fileArray.GetJSONObject(i);
+
+                if (fileObject != null)
+                {
+                    string fileName = LogicJSONHelper.GetJSONString(fileObject, "file");
+                    string sha = LogicJSONHelper.GetJSONString(fileObject, "sha");
+
+                    byte[] data = WebManager.DownloadDataFromConfigServer(string.Format("/assets/generated/{0}/{1}", shaFingerprint, fileName));
+
+                    if (data != null)
+                    {
+                        string hash;
+
+                        using (SHA1 shaService = new SHA1CryptoServiceProvider())
+                        {
+                            hash = BitConverter.ToString(shaService.ComputeHash(data)).Replace("-", string.Empty).ToLower();
+                        }
+
+                        if (sha != hash)
+                        {
+                            Logging.Warning(typeof(ResourceManager), "ResourceManager::downloadAssets sha mismatch");
+                        }
+
+                        switch (Path.GetExtension(fileName))
+                        {
+                            case ".csv":
+                                using (MemoryStream inputStream = new MemoryStream(data))
+                                {
+                                    using (MemoryStream outputStream = new MemoryStream())
+                                    {
+                                        Decoder decompresser = new Decoder();
+
+                                        byte[] properties = new byte[5];
+                                        byte[] fileLengthBytes = new byte[4];
+
+                                        inputStream.Read(properties, 0, 5);
+                                        inputStream.Read(fileLengthBytes, 0, 4);
+
+                                        int fileLength = fileLengthBytes[0] | fileLengthBytes[1] << 8 | fileLengthBytes[2] << 16 | fileLengthBytes[3] << 24;
+
+                                        decompresser.SetDecoderProperties(properties);
+                                        decompresser.Code(inputStream, outputStream, inputStream.Length, fileLength, null);
+
+                                        data = outputStream.ToArray();
+                                    }
+                                }
+
+                                break;
+                        }
+
+                        Directory.CreateDirectory("Assets/" + fileName.Replace(Path.GetFileName(fileName), string.Empty));
+                        File.WriteAllBytes("Assets/" + fileName, data);
+                    }
+                }
+            }
+
+            File.WriteAllText("Assets/fingerprint.json", fingerprint);
+            Logging.Debug(typeof(ResourceManager), "Download completed");
         }
 
         /// <summary>
