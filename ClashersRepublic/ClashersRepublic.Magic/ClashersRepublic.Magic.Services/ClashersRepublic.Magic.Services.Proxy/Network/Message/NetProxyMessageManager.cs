@@ -66,6 +66,8 @@
                         LoginClientMessage loginClientMessage = new LoginClientMessage();
                         loginClientMessage.SetAccountId(message.RemoveAccountId());
                         loginClientMessage.SetPassToken(message.RemovePassToken());
+                        loginClientMessage.SetIPAddress(session.Client.NetworkToken.ClientIP);
+                        loginClientMessage.SetDeviceModel(session.Client.DeviceModel);
                         NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, sessionId.Length, loginClientMessage);
                     }
                 }

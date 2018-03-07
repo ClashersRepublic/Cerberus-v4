@@ -145,6 +145,7 @@
         private void LoginMessageReceived(LoginMessage message)
         {
             this._messaging.ScramblerSeed = message.ScramblerSeed;
+            this._client.DeviceModel = message.Device;
 
             if (message.ClientMajorVersion == LogicVersion.MajorVersion && message.ClientBuildVersion == LogicVersion.BuildVersion)
             {
@@ -206,6 +207,8 @@
                                     LoginClientMessage loginClientMessage = new LoginClientMessage();
                                     loginClientMessage.SetAccountId(message.AccountId);
                                     loginClientMessage.SetPassToken(message.PassToken);
+                                    loginClientMessage.SetIPAddress(this._client.NetworkToken.ClientIP);
+                                    loginClientMessage.SetDeviceModel(this._client.DeviceModel);
                                     NetMessageManager.SendMessage(socket, sessionId, sessionId.Length, loginClientMessage);
                                 }
                                 else

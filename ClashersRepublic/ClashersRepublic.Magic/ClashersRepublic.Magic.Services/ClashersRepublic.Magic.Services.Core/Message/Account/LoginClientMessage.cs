@@ -6,7 +6,8 @@
     {
         private LogicLong _accountId;
         private string _passToken;
-        private string _ip;
+        private string _ipAddress;
+        private string _deviceModel;
 
         /// <summary>
         ///     Destructs this instance.
@@ -17,7 +18,8 @@
 
             this._accountId = null;
             this._passToken = null;
-            this._ip = null;
+            this._ipAddress = null;
+            this._deviceModel = null;
         }
 
         /// <summary>
@@ -29,7 +31,8 @@
 
             this.Stream.WriteLong(this._accountId);
             this.Stream.WriteString(this._passToken);
-            this.Stream.WriteString(this._ip);
+            this.Stream.WriteString(this._ipAddress);
+            this.Stream.WriteString(this._deviceModel);
         }
 
         /// <summary>
@@ -41,7 +44,8 @@
 
             this._accountId = this.Stream.ReadLong();
             this._passToken = this.Stream.ReadString(900000);
-            this._ip = this.Stream.ReadString(900000);
+            this._ipAddress = this.Stream.ReadString(900000);
+            this._deviceModel = this.Stream.ReadString(900000);
         }
 
         /// <summary>
@@ -86,6 +90,38 @@
         public void SetPassToken(string value)
         {
             this._passToken = value;
+        }
+
+        /// <summary>
+        ///     Gets the ip address.
+        /// </summary>
+        public string GetIPAddress()
+        {
+            return this._ipAddress;
+        }
+
+        /// <summary>
+        ///     Sets the ip address.
+        /// </summary>
+        public void SetIPAddress(string value)
+        {
+            this._ipAddress = value;
+        }
+
+        /// <summary>
+        ///     Gets the device model.
+        /// </summary>
+        public string GetDeviceModel()
+        {
+            return this._deviceModel;
+        }
+
+        /// <summary>
+        ///     Sets the device model.
+        /// </summary>
+        public void SetDeviceModel(string value)
+        {
+            this._deviceModel = value;
         }
     }
 }

@@ -81,7 +81,7 @@
                 this.LastSessions.Remove(0);
             }
 
-            this.LastSessions.Add(new AccountSession(timestamp, ip));
+            this.LastSessions.Add(new AccountSession(timestamp, ip, deviceModel));
         }
 
         /// <summary>
@@ -293,10 +293,11 @@
             /// <summary>
             ///     Initializes a new instance of the <see cref="AccountSession"/> class.
             /// </summary>
-            internal AccountSession(int startTime, string ip)
+            internal AccountSession(int startTime, string ipAddress, string deviceModel)
             {
                 this.StartTime = startTime;
-                this.EndPoint = ip;
+                this.DeviceModel = deviceModel;
+                this.EndPoint = ipAddress;
             }
 
             /// <summary>
@@ -314,7 +315,7 @@
             {
                 jsonObject.Put("st", new LogicJSONNumber(this.StartTime));
                 jsonObject.Put("et", new LogicJSONNumber(this.EndTime));
-                jsonObject.Put("ep", new LogicJSONString(this.EndPoint));
+                jsonObject.Put("ip", new LogicJSONString(this.EndPoint));
                 jsonObject.Put("dm", new LogicJSONString(this.DeviceModel));
             }
 
@@ -325,7 +326,7 @@
             {
                 this.StartTime = LogicJSONHelper.GetJSONNumber(jsonObject, "st");
                 this.EndTime = LogicJSONHelper.GetJSONNumber(jsonObject, "et");
-                this.EndPoint = LogicJSONHelper.GetJSONString(jsonObject, "ep");
+                this.EndPoint = LogicJSONHelper.GetJSONString(jsonObject, "ip");
                 this.DeviceModel = LogicJSONHelper.GetJSONString(jsonObject, "dm");
             }
         }

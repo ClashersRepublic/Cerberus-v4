@@ -26,7 +26,7 @@
         /// </summary>
         private static void LoadConfig()
         {
-            string json = WebManager.DownloadFileFromConfigServer("/conf/home.json");
+            string json = WebManager.DownloadFileFromConfigServer("/core/conf/home.json");
 
             if (json != null)
             {

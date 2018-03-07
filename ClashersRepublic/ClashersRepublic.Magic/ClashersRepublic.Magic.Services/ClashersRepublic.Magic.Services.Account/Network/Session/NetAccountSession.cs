@@ -1,18 +1,37 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Network.Session
 {
+    using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
+    using ClashersRepublic.Magic.Titan.Json;
 
     internal class NetAccountSession : NetSession
     {
-        private readonly Account _account;
+        internal Account Account { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetAccountSession"/> class.
         /// </summary>
         internal NetAccountSession(Account account, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
         {
-            this._account = account;
+            this.Account = account;
+        }
+
+        /// <summary>
+        ///     Saves the account.
+        /// </summary>
+        public void SaveAccount()
+        {
+            DatabaseManager.GetDatabase(this.Account.Id.GetHigherInt()).UpdateDocument(this.Account.Id, LogicJSONParser.CreateJSONString(this.Account.Save()));
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+            this.Account = null;
         }
     }
 }

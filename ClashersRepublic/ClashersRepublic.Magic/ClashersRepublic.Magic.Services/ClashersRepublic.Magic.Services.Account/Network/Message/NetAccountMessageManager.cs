@@ -1,5 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Network.Message
 {
+    using System;
+    using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
     
@@ -10,6 +12,7 @@
     using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal class NetAccountMessageManager : NetMessageManager
     {
@@ -70,6 +73,7 @@
                             }
 
                             account.SetSession(session);
+                            account.SessionStarted(LogicTimeUtil.GetTimestamp(), message.GetIPAddress(), message.GetDeviceModel());
 
                             LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
 
@@ -176,7 +180,9 @@
             {
                 if (NetAccountSessionManager.TryRemove(sessionId, out NetAccountSession session))
                 {
-
+                    session.Account.EndSession();
+                    session.SaveAccount();
+                    session.Destruct();
                 }
             }
         }

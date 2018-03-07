@@ -68,14 +68,7 @@
         /// </summary>
         public void InsertDocument(long id, string json)
         {
-            if (id != 0)
-            {
-                this._bucket.Insert(id.ToString(), json);
-            }
-            else
-            {
-                Logging.Warning(this, "CouchbaseDatabase::insertDocument id is 0");
-            }
+            this._bucket.Insert(id.ToString(), json);
         }
 
         /// <summary>

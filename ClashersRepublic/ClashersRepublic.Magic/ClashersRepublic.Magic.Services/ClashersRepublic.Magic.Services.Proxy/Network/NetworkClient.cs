@@ -13,6 +13,11 @@
         internal int State { get; set; }
 
         /// <summary>
+        ///     Gets or Sets the device model.
+        /// </summary>
+        internal string DeviceModel { get; set; }
+
+        /// <summary>
         ///     Gets the <see cref="Network.NetworkToken"/> instance.
         /// </summary>
         internal NetworkToken NetworkToken { get; private set; }

@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network
 {
     using System;
+    using System.Net;
     using System.Net.Sockets;
 
     using ClashersRepublic.Magic.Services.Core;
@@ -39,13 +40,18 @@
         internal long ConnectionId { get; private set; }
 
         /// <summary>
+        ///     Gets the client ip.
+        /// </summary>
+        internal string ClientIP { get; private set; }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkToken"/> class.
         /// </summary>
         internal NetworkToken(Socket socket, SocketAsyncEventArgs readEvent)
         {
             this.Socket = socket;
             this.ReadEvent = readEvent;
-
+            this.ClientIP = ((IPEndPoint) socket.RemoteEndPoint).Address.ToString();
             this.Client = new NetworkClient(this);
             this.Messaging = new NetworkMessaging(this);
             this._receiveBytes = new byte[NetworkToken.InitAllocBufferSize];
@@ -62,6 +68,7 @@
                 this.Client = null;
             }
 
+            this.ClientIP = null;
             this._receiveBytes = null;
             this._receiveBytesLength = 0;
             this.ConnectionId = 0;
