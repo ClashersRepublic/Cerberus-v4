@@ -34,6 +34,54 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicHeroBaseComponent"/> instance.
+        /// </summary>
+        public LogicHeroBaseComponent GetHeroBaseComponent()
+        {
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the remaining construction time.
+        /// </summary>
+        public int GetRemainingConstructionTime()
+        {
+            return this._constructionTimer != null ? this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) : 0;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicBuilding"/> instance is in construction.
+        /// </summary>
+        public bool IsConstructing()
+        {
+            return this._constructionTimer != null;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicBuilding"/> instance is in upgrading.
+        /// </summary>
+        public bool IsUpgrading()
+        {
+            return this._constructionTimer != null && this._upgrading;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicBuilding"/> instance is locked.
+        /// </summary>
+        public bool IsLocked()
+        {
+            return this._locked;
+        }
+
+        /// <summary>
+        ///     Gets the upgrade level.
+        /// </summary>
+        public int GetUpgradeLevel()
+        {
+            return this._upgLevel;
+        }
+
+        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()
@@ -52,7 +100,7 @@
             {
                 if (this._level.GetRemainingClockTowerBoostTime() > 0 && this.GetBuildingData().VillageType == 1)
                 {
-                    this._constructionTimer.SetFastForwardTime(this._constructionTimer.GetFastForwardTime() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
+                    this._constructionTimer.SetFastForward(this._constructionTimer.GetFastForward() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
                 }
 
                 if (this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) <= 0)

@@ -127,10 +127,13 @@
     <Compile Include="GameObject\Component\LogicComponent.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
+    <Compile Include="GameObject\Component\LogicHeroBaseComponent.cs" />
     <Compile Include="GameObject\Component\LogicHitpointComponent.cs" />
     <Compile Include="GameObject\Component\LogicResourceProductionComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
+    <Compile Include="GameObject\Listener\LogicGameObjectManagerListener.cs" />
+    <Compile Include="GameObject\LogicVillageObject.cs" />
     <Compile Include="GameObject\LogicObstacle.cs" />
     <Compile Include="GameObject\LogicBuilding.cs" />
     <Compile Include="GameObject\LogicGameObject.cs" />

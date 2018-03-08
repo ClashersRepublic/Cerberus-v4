@@ -95,7 +95,7 @@
             {
                 if (this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime()) > 0 && this._level.GetRemainingClockTowerBoostTime() > 0 && this.GetObstacleData().VillageType == 1)
                 {
-                    this._clearTimer.SetFastForwardTime(this._clearTimer.GetFastForwardTime() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
+                    this._clearTimer.SetFastForward(this._clearTimer.GetFastForward() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
                 }
             }
 
@@ -157,7 +157,7 @@
             if (this._clearTimer != null)
             {
                 jsonObject.Put("clear_t", new LogicJSONNumber(this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime())));
-                jsonObject.Put("clear_ff", new LogicJSONNumber(this._clearTimer.GetFastForwardTime()));
+                jsonObject.Put("clear_ff", new LogicJSONNumber(this._clearTimer.GetFastForward()));
             }
 
             if (this._lootMultiplyVersion != 1)
@@ -194,7 +194,7 @@
             {
                 if (this._clearTimer != null)
                 {
-                    this._clearTimer.SetFastForwardTime(clearFastForwardObject.GetIntValue());
+                    this._clearTimer.SetFastForward(clearFastForwardObject.GetIntValue());
                 }
             }
 
@@ -282,6 +282,14 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicObstacle"/> instance is clearing on going.
+        /// </summary>
+        public bool IsClearingOnGoind()
+        {
+            return this._clearTimer != null;
         }
 
         /// <summary>

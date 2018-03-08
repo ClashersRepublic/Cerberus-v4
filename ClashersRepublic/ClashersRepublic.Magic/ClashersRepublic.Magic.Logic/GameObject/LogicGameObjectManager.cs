@@ -2,11 +2,13 @@
 {
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject.Component;
+    using ClashersRepublic.Magic.Logic.GameObject.Listener;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Unit;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
+    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     public sealed class LogicGameObjectManager
@@ -18,6 +20,7 @@
         private LogicTileMap _tileMap;
         private LogicUnitProduction _unitProduction;
         private LogicUnitProduction _spellProduction;
+        private LogicGameObjectManagerListener _listener;
         private readonly LogicComponentManager _componentManager;
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
 
@@ -44,10 +47,11 @@
 
             for (int i = 0; i < 9; i++)
             {
-                this._gameObjects[i] = new LogicArrayList<LogicGameObject>();
+                this._gameObjects[i] = new LogicArrayList<LogicGameObject>(128);
             }
 
             this._componentManager = new LogicComponentManager(level);
+            this._listener = new LogicGameObjectManagerListener();
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
@@ -84,7 +88,8 @@
                 this._spellProduction.Destruct();
                 this._spellProduction = null;
             }
-
+            
+            this._listener = null;
             this._level = null;
             this._tileMap = null;
             this._townHall = null;
@@ -92,6 +97,14 @@
             this._allianceCastle = null;
             this._laboratory = null;
             this._specialObstacleData = null;
+        }
+
+        /// <summary>
+        ///     Initializes this instance.
+        /// </summary>
+        public void Init(LogicLevel level, int villageType)
+        {
+            // Init.
         }
 
         /// <summary>
@@ -202,6 +215,53 @@
         }
 
         /// <summary>
+        ///     Gets the highest building level.
+        /// </summary>
+        public int GetHighestBuildingLevel(LogicBuildingData data)
+        {
+            return this.GetHighestBuildingLevel(data, true);
+        }
+
+        /// <summary>
+        ///     Gets the highest building level.
+        /// </summary>
+        public int GetHighestBuildingLevel(LogicBuildingData data, bool includeConstruction)
+        {
+            int maxLevel = -1;
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (gameObjects[i].GetData() == data)
+                {
+                    LogicBuilding building = (LogicBuilding) gameObjects[i];
+
+                    if (building.IsConstructing())
+                    {
+                        if (building.IsUpgrading())
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!building.IsLocked())
+                    {
+                        int upgLevel = building.GetUpgradeLevel();
+
+                        if (includeConstruction && building.IsConstructing())
+                        {
+                            ++upgLevel;
+                        }
+
+                        maxLevel = LogicMath.Max(maxLevel, upgLevel);
+                    }
+                }
+            }
+
+            return maxLevel;
+        }
+
+        /// <summary>
         ///     Gets the component manager instance.
         /// </summary>
         public LogicComponentManager GetComponentManager()
@@ -252,6 +312,15 @@
             }
 
             checksum.EndObject();
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="LogicGameObj"/>
+        /// </summary>
+        /// <param name="listener"></param>
+        public void SetListener(LogicGameObject listener)
+        {
+
         }
 
         /// <summary>

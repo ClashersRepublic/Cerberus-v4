@@ -37,6 +37,7 @@
         private bool _removeRevengeWhenBattleIsLoaded;
         private bool _completeConstructionOnlyHome;
         private bool _useNewSpeedUpCalculation;
+        private bool _clampBuildingTimes;
 
         private int[] _village2TroopHousingBuildTimeSecs;
 
@@ -76,6 +77,7 @@
             this._removeRevengeWhenBattleIsLoaded = this.GetBoolValue("REMOVE_REVENGE_WHEN_BATTLE_IS_LOADED");
             this._completeConstructionOnlyHome = this.GetBoolValue("COMPLETE_CONSTRUCTIONS_ONLY_HOME");
             this._useNewSpeedUpCalculation = this.GetBoolValue("USE_NEW_SPEEDUP_CALCULATION");
+            this._clampBuildingTimes = this.GetBoolValue("CLAMP_BUILDING_TIMES");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -238,6 +240,11 @@
         public bool UseNewSpeedUpCalculation()
         {
             return this._useNewSpeedUpCalculation;
+        }
+
+        public bool ClampBuildingTimes()
+        {
+            return this._clampBuildingTimes;
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Worker
 {
+    using System;
     using ClashersRepublic.Magic.Logic.GameObject;
+    using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Util;
@@ -102,10 +104,80 @@
         /// </summary>
         public void DecreaseWorkerCount()
         {
-            if (--this._workerCount <= 0)
+            if (this._workerCount-- <= 0)
             {
                 Debugger.Error("LogicWorkerManager - Total worker count below 0");
             }
+        }
+
+        /// <summary>
+        ///     Gets the shortest task.
+        /// </summary>
+        public LogicGameObject GetShortestTaskGO()
+        {
+            LogicGameObject gameObject = null;
+
+            for (int i = 0, minRemaining = -1, tmpRemaining = 0; i < this._constructions.Count; i++, tmpRemaining = 0)
+            {
+                LogicGameObject tmp = this._constructions[i];
+
+                switch (this._constructions[i].GetGameObjectType())
+                {
+                    case 0:
+                        LogicBuilding building = (LogicBuilding) tmp;
+
+                        if (building.IsConstructing())
+                        {
+                            tmpRemaining = building.GetRemainingConstructionTime();
+                        }
+                        else
+                        {
+                            LogicHeroBaseComponent heroBaseComponent = building.GetHeroBaseComponent();
+
+                            if (heroBaseComponent == null)
+                            {
+                                Debugger.Warning("LogicWorkerManager - Worker allocated to altar/herobase without hero upgrading");
+                            }
+                            else
+                            {
+                                if (heroBaseComponent.IsUpgrading())
+                                {
+                                    tmpRemaining = heroBaseComponent.GetRemainingUpgradeSeconds();
+                                }
+                                else
+                                {
+                                    Debugger.Warning("LogicWorkerManager - Worker allocated to building with remaining construction time 0");
+                                }
+                            }
+                        }
+
+                        break;
+                    case 3:
+                        LogicObstacle obstacle = (LogicObstacle)tmp;
+
+                        if (obstacle.IsClearingOnGoind())
+                        {
+                            tmpRemaining = obstacle.GetRemainingClearingTime();
+                        }
+                        else
+                        {
+                            Debugger.Warning("LogicWorkerManager - Worker allocated to obstacle with remaining clearing time 0");
+                        }
+
+                        break;
+                    case 8:
+
+                        break;
+                }
+
+                if (gameObject == null || minRemaining < tmpRemaining)
+                {
+                    gameObject = tmp;
+                    minRemaining = tmpRemaining;
+                }
+            }
+
+            return gameObject;
         }
     }
 }

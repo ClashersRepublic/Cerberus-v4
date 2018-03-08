@@ -7,7 +7,7 @@
     {
         private int _remainingTime;
         private int _endTimestamp;
-        private int _fastForwardTime;
+        private int _fastForward;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicTimer"/> class.
@@ -24,7 +24,7 @@
         {
             this._remainingTime = 0;
             this._endTimestamp = -1;
-            this._fastForwardTime = 0;
+            this._fastForward = 0;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@
         /// </summary>
         public int GetRemainingSeconds(LogicTime time)
         {
-            int remaining = this._remainingTime - time - this._fastForwardTime;
+            int remaining = this._remainingTime - time - this._fastForward;
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
@@ -57,7 +57,7 @@
         /// </summary>
         public int GetRemainingMS(LogicTime time)
         {
-            int remaining = this._remainingTime - time - this._fastForwardTime;
+            int remaining = this._remainingTime - time - this._fastForward;
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
@@ -145,19 +145,19 @@
         }
 
         /// <summary>
-        ///     Gets the fast forward time.
+        ///     Gets the fast forward value.
         /// </summary>
-        public int GetFastForwardTime()
+        public int GetFastForward()
         {
-            return this._fastForwardTime;
+            return this._fastForward;
         }
 
         /// <summary>
-        ///     Sets the fast forward time.
+        ///     Sets the fast forward value.
         /// </summary>
-        public void SetFastForwardTime(int value)
+        public void SetFastForward(int value)
         {
-            this._fastForwardTime = value;
+            this._fastForward = value;
         }
     }
 }
