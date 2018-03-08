@@ -287,7 +287,7 @@
         /// <summary>
         ///     Gets if this <see cref="LogicObstacle"/> instance is clearing on going.
         /// </summary>
-        public bool IsClearingOnGoind()
+        public bool IsClearingOnGoing()
         {
             return this._clearTimer != null;
         }

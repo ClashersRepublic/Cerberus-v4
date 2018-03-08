@@ -155,7 +155,7 @@
                     case 3:
                         LogicObstacle obstacle = (LogicObstacle)tmp;
 
-                        if (obstacle.IsClearingOnGoind())
+                        if (obstacle.IsClearingOnGoing())
                         {
                             tmpRemaining = obstacle.GetRemainingClearingTime();
                         }
