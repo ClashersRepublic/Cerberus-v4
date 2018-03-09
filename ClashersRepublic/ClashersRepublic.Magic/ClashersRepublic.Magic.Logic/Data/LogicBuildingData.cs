@@ -10,6 +10,9 @@ namespace ClashersRepublic.Magic.Logic.Data
         private LogicResourceData[] _buildResources;
         private int[] _constructionTimes;
         private int _upgradeLevelCount;
+        private bool _isClockTower;
+        private bool _isFlamer;
+        private bool _isBarrackVillage2;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicBuildingData" /> class.
@@ -29,10 +32,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string ExportNameNpc { get; protected set; }
         public string ExportNameConstruction { get; protected set; }
         public string ExportNameLocked { get; protected set; }
-        protected int[] BuildTimeD { get; set; }
-        protected int[] BuildTimeH { get; set; }
-        protected int[] BuildTimeM { get; set; }
-        protected int[] BuildTimeS { get; set; }
         protected string[] BuildResource { get; set; }
         protected int[] BuildCost { get; set; }
         protected int[] TownHallLevel { get; set; }
@@ -224,7 +223,10 @@ namespace ClashersRepublic.Magic.Logic.Data
 
             for (int i = 0; i < this._upgradeLevelCount; i++)
             {
-                this._constructionTimes[i] = 86400 * this.BuildTimeD[i] + 3600 * this.BuildTimeH[i] + 60 * this.BuildTimeM[i] + this.BuildTimeS[i];
+                this._constructionTimes[i] = 86400 * this.GetIntegerValue("BuildTimeD", i) + 
+                                             3600 * this.GetIntegerValue("BuildTimeH", i) + 
+                                             60 * this.GetIntegerValue("BuildTimeM", i) +
+                                             this.GetIntegerValue("BuildTimeS", i);
             }
 
             this._buildResources = new LogicResourceData[this._upgradeLevelCount];
@@ -243,6 +245,10 @@ namespace ClashersRepublic.Magic.Logic.Data
                     }
                 }
             }
+
+            this._isClockTower = this.GetName().Equals("Clock Tower");
+            this._isFlamer = this.GetName().Equals("Flamer");
+            this._isBarrackVillage2 = this.GetName().Equals("Barrack2");
         }
 
         public int GetUpgradeLevelCount()
@@ -280,6 +286,11 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this._buildingClass.IsWorker2();
         }
 
+        public bool IsWall()
+        {
+            return this._buildingClass.IsWall();
+        }
+
         public bool IsAllianceCastle()
         {
             return this.Bunker;
@@ -293,6 +304,21 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool IsLocked()
         {
             return this.Locked;
+        }
+
+        public bool IsClockTower()
+        {
+            return this._isClockTower;
+        }
+
+        public bool IsFlamer()
+        {
+            return this._isFlamer;
+        }
+
+        public bool IsBarrackVillage2()
+        {
+            return this._isBarrackVillage2;
         }
 
         public int GetUnitStorageCapacity(int level)

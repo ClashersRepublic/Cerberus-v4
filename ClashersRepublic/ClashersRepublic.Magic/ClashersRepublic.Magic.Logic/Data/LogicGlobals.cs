@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Data
 {
-    using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
@@ -25,6 +24,7 @@
         private int _challengeBaseSaveCooldown;
         private int _allianceCreateCost;
         private int _clockTowerBoostMultiplier;
+        private int _clockTowerBoostCooldownSecs;
 
         private bool _useNewTraining;
         private bool _moreAccurateTime;
@@ -38,6 +38,8 @@
         private bool _completeConstructionOnlyHome;
         private bool _useNewSpeedUpCalculation;
         private bool _clampBuildingTimes;
+        private bool _stopBoostPauseWhenBoostTimeZeroOnLoad;
+        private bool _fixMergeOldBarrackBoostPausing;
 
         private int[] _village2TroopHousingBuildTimeSecs;
 
@@ -66,6 +68,8 @@
             this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
             this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
+            this._clockTowerBoostCooldownSecs = 60 * this.GetIntValue("CLOCK_TOWER_BOOST_COOLDOWN_MINS");
+
             this._useNewTraining = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
@@ -78,6 +82,8 @@
             this._completeConstructionOnlyHome = this.GetBoolValue("COMPLETE_CONSTRUCTIONS_ONLY_HOME");
             this._useNewSpeedUpCalculation = this.GetBoolValue("USE_NEW_SPEEDUP_CALCULATION");
             this._clampBuildingTimes = this.GetBoolValue("CLAMP_BUILDING_TIMES");
+            this._stopBoostPauseWhenBoostTimeZeroOnLoad = this.GetBoolValue("STOP_BOOST_PAUSE_WHEN_BOOST_TIME_ZERO_ON_LOAD");
+            this._fixMergeOldBarrackBoostPausing = this.GetBoolValue("FIX_MERGE_OLD_BARRACK_BOOST_PAUSING");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -182,6 +188,14 @@
         }
 
         /// <summary>
+        ///     Gets the clock tower boost cooldown mins.
+        /// </summary>
+        public int GetClockTowerBoostCooldownSecs()
+        {
+            return this._clockTowerBoostCooldownSecs;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the time is more accurate.
         /// </summary>
         public bool MoreAccurateTime()
@@ -245,6 +259,16 @@
         public bool ClampBuildingTimes()
         {
             return this._clampBuildingTimes;
+        }
+
+        public bool StopBoostPauseWhenBoostTimeZeroOnLoad()
+        {
+            return this._stopBoostPauseWhenBoostTimeZeroOnLoad;
+        }
+
+        public bool FixMergeOldBarrackBoostPausing()
+        {
+            return this._fixMergeOldBarrackBoostPausing;
         }
 
         /// <summary>

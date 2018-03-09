@@ -6,16 +6,25 @@
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
 
     public sealed class LogicBuilding : LogicGameObject
     {
+        private int _gear;
         private int _upgLevel;
-        private bool _locked;
+        private int _wallIndex;
+        private int _wallX;
+        private bool _wallPosition;
+        private bool _isLocked;
+        private bool _isHidden;
         private bool _gearing;
         private bool _upgrading;
+        private bool _boostPaused;
 
         private LogicTimer _constructionTimer;
+        private LogicTimer _boostCooldownTimer;
+        private LogicTimer _boostTimer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicBuilding" /> class.
@@ -50,6 +59,14 @@
         }
 
         /// <summary>
+        ///     Gets the remaining boost cooldown time.
+        /// </summary>
+        public int GetRemainingBoostCooldownTime()
+        {
+            return this._boostCooldownTimer != null ? this._boostCooldownTimer.GetRemainingSeconds(this._level.GetLogicTime()) : 0;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicBuilding"/> instance is in construction.
         /// </summary>
         public bool IsConstructing()
@@ -70,15 +87,23 @@
         /// </summary>
         public bool IsLocked()
         {
-            return this._locked;
+            return this._isLocked;
         }
 
         /// <summary>
-        ///     Gets the upgrade level.
+        ///     Gets the <see cref="LogicBuilding"/> instance level.
         /// </summary>
         public int GetUpgradeLevel()
         {
             return this._upgLevel;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicBuilding"/> instance is wall.
+        /// </summary>
+        public override bool IsWall()
+        {
+            return this.GetBuildingData().IsWall();
         }
 
         /// <summary>
@@ -87,6 +112,18 @@
         public override void Destruct()
         {
             base.Destruct();
+
+            if (this._constructionTimer != null)
+            {
+                this._constructionTimer.Destruct();
+                this._constructionTimer = null;
+            }
+
+            if (this._boostTimer != null)
+            {
+                this._boostTimer.Destruct();
+                this._boostTimer = null;
+            }
         }
 
         /// <summary>
@@ -105,9 +142,314 @@
 
                 if (this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) <= 0)
                 {
-
+                    this.FinishConstruction(false);
                 }
             }
+
+            if (this._boostTimer != null)
+            {
+                if (this._boostTimer.GetRemainingSeconds(this._level.GetLogicTime()) <= 0)
+                {
+                    this._boostTimer.Destruct();
+                    this._boostTimer = null;
+
+                    if (this.GetBuildingData().IsClockTower())
+                    {
+                        this._boostCooldownTimer = new LogicTimer();
+                        this._boostCooldownTimer.StartTimer(LogicDataTables.GetGlobals().GetClockTowerBoostCooldownSecs(), this._level.GetLogicTime(), false, -1);
+
+                        if (this._level.GetGameListener() != null)
+                        {
+                            // LogicGameListener.
+                        }
+                    }
+
+                    if (this._listener != null)
+                    {
+                        this._listener.RefreshState();
+                    }
+                }
+            }
+
+            int state = this._level.GetState();
+
+            if (state != 0)
+            {
+                this.GetHitpointComponent().EnableRegeneration(state == 1);
+            }
+
+            if (this._level.IsInCombatState())
+            {
+                if (this._isHidden)
+                {
+                    this.UpdateHidden();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Saves this instance.
+        /// </summary>
+        public override void Save(LogicJSONObject jsonObject)
+        {
+            if (this._upgLevel != 0 || this._constructionTimer != null || this._upgrading)
+            {
+                jsonObject.Put("lvl", new LogicJSONNumber(this._upgLevel));
+            }
+            else
+            {
+                jsonObject.Put("lvl", new LogicJSONNumber(-1));
+            }
+
+            if (this._gearing)
+            {
+                jsonObject.Put("gearing", new LogicJSONBoolean(true));
+            }
+
+            if (this._constructionTimer != null)
+            {
+                jsonObject.Put("const_t", new LogicJSONNumber(this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime())));
+
+                if (this._constructionTimer.GetEndTimestamp() != -1)
+                {
+                    jsonObject.Put("const_t_end", new LogicJSONNumber(this._constructionTimer.GetEndTimestamp()));
+                }
+
+                if (this._constructionTimer.GetFastForward() > 0)
+                {
+                    jsonObject.Put("con_ff", new LogicJSONNumber(this._constructionTimer.GetFastForward()));
+                }
+            }
+
+            if (this._isLocked)
+            {
+                jsonObject.Put("locked", new LogicJSONBoolean(true));
+            }
+
+            if (this._boostTimer != null)
+            {
+                jsonObject.Put("boost_t", new LogicJSONNumber(this._boostTimer.GetRemainingSeconds(this._level.GetLogicTime())));
+            }
+
+            if (this._boostPaused)
+            {
+                jsonObject.Put("boost_pause", new LogicJSONBoolean(true));
+            }
+
+            if (this.GetRemainingBoostCooldownTime() > 0)
+            {
+                jsonObject.Put("bcd", new LogicJSONNumber(this.GetRemainingBoostCooldownTime()));
+            }
+
+            if (this._gear > 0)
+            {
+                jsonObject.Put("gear", new LogicJSONNumber(this._gear));
+            }
+
+            if (this.IsWall())
+            {
+                jsonObject.Put("wI", new LogicJSONNumber(this._wallIndex));
+
+                if (this._wallPosition)
+                {
+                    jsonObject.Put("wP", new LogicJSONNumber(1));
+                }
+
+                jsonObject.Put("wX", new LogicJSONNumber(this._wallX));
+            }
+
+            base.Save(jsonObject);
+        }
+
+        /// <summary>
+        ///     Loads this instance.
+        /// </summary>
+        public override void Load(LogicJSONObject jsonObject)
+        {
+            LogicJSONNumber lvlObject = jsonObject.GetJSONNumber("lvl");
+
+            if (lvlObject != null)
+            {
+                this._upgLevel = lvlObject.GetIntValue();
+                int maxUpgLevel = this.GetBuildingData().GetUpgradeLevelCount();
+
+                if (this._upgLevel >= maxUpgLevel)
+                {
+                    Debugger.Warning(string.Format("LogicBuilding::load() - Loaded upgrade level {0} is over max! (max = {1}) id {2} data id {3}", this._upgLevel, maxUpgLevel,
+                        this._globalId, this._data.GetGlobalID()));
+                    this._upgLevel = maxUpgLevel - 1;
+                }
+                else
+                {
+                    if (this._upgLevel < -1)
+                    {
+                        Debugger.Error("LogicBuilding::load() - Loaded an illegal upgrade level!");
+                    }
+                }
+            }
+            else
+            {
+                Debugger.Error("LogicBuilding::load - Upgrade level was not found!");
+                this._upgLevel = 0;
+            }
+
+            this._level.GetWorkerManagerAt(1).DeallocateWorker(this);
+            this._level.GetWorkerManagerAt(this._villageType).DeallocateWorker(this);
+
+            LogicJSONNumber gearObject = jsonObject.GetJSONNumber("gear");
+
+            if (gearObject != null)
+            {
+                this._gear = gearObject.GetIntValue();
+            }
+
+            LogicJSONBoolean lockedObject = jsonObject.GetJSONBoolean("locked");
+
+            if (lockedObject != null)
+            {
+                this._isLocked = lockedObject.IsTrue();
+            }
+
+            LogicJSONNumber constTimeObject = jsonObject.GetJSONNumber("const_t");
+
+            if (this._constructionTimer != null)
+            {
+                this._constructionTimer.Destruct();
+                this._constructionTimer = null;
+            }
+
+            if (constTimeObject != null)
+            {
+                int secs = constTimeObject.GetIntValue();
+
+                if (!LogicDataTables.GetGlobals().ClampBuildingTimes())
+                {
+                    if (this._upgLevel < this.GetBuildingData().GetUpgradeLevelCount() - 1)
+                    {
+                        secs = LogicMath.Min(secs, this.GetBuildingData().GetConstructionTime(this._upgLevel + 1, this._level, 0));
+                    }
+                }
+
+                this._constructionTimer = new LogicTimer();
+                this._constructionTimer.StartTimer(secs, this._level.GetLogicTime(), false, -1);
+
+                LogicJSONNumber constTimeEndObject = jsonObject.GetJSONNumber("const_t_end");
+
+                if (constTimeEndObject != null)
+                {
+                    this._constructionTimer.SetEndTimestamp(constTimeEndObject.GetIntValue());
+                }
+
+                LogicJSONNumber conFfObject = jsonObject.GetJSONNumber("con_ff");
+
+                if (conFfObject != null)
+                {
+                    this._constructionTimer.SetFastForward(conFfObject.GetIntValue());
+                }
+
+                if (this._gearing)
+                {
+                    this._level.GetWorkerManagerAt(1).AllocateWorker(this);
+                }
+                else
+                {
+                    this._level.GetWorkerManagerAt(this._villageType).AllocateWorker(this);
+                    this._upgrading = this._villageType != -1;
+                }
+            }
+
+            LogicJSONNumber boostTimeObject = jsonObject.GetJSONNumber("boost_t");
+
+            if (this._boostTimer != null)
+            {
+                this._boostTimer.Destruct();
+                this._boostTimer = null;
+            }
+
+            if (boostTimeObject != null)
+            {
+                this._boostTimer = new LogicTimer();
+                this._boostTimer.StartTimer(boostTimeObject.GetIntValue(), this._level.GetLogicTime(), false, -1);
+            }
+
+            LogicJSONNumber boostCooldownObject = jsonObject.GetJSONNumber("bcd");
+
+            if (boostCooldownObject != null)
+            {
+                this._boostCooldownTimer = new LogicTimer();
+                this._boostCooldownTimer.StartTimer(boostCooldownObject.GetIntValue(), this._level.GetLogicTime(), false, -1);
+            }
+
+            LogicJSONBoolean boostPauseObject = jsonObject.GetJSONBoolean("boost_pause");
+
+            if (boostPauseObject != null)
+            {
+                this._boostPaused = boostPauseObject.IsTrue();
+            }
+
+            if (this._boostTimer == null)
+            {
+                if (LogicDataTables.GetGlobals().StopBoostPauseWhenBoostTimeZeroOnLoad())
+                {
+                    this._boostPaused = false;
+                }
+            }
+
+            if (this.IsWall())
+            {
+                LogicJSONNumber wallIndexObject = jsonObject.GetJSONNumber("wI");
+
+                if (wallIndexObject != null)
+                {
+                    this._wallIndex = wallIndexObject.GetIntValue();
+                }
+
+                LogicJSONNumber wallXObject = jsonObject.GetJSONNumber("wX");
+
+                if (wallXObject != null)
+                {
+                    this._wallX = wallXObject.GetIntValue();
+                }
+
+                LogicJSONNumber wallPositionObject = jsonObject.GetJSONNumber("wP");
+
+                if (wallPositionObject != null)
+                {
+                    this._wallPosition = wallPositionObject.GetIntValue() != 0;
+                }
+            }
+
+            if (LogicDataTables.GetGlobals().FixMergeOldBarrackBoostPausing())
+            {
+                if (LogicDataTables.GetGlobals().UseNewTraining())
+                {
+                    if (this.GetBuildingData().GetUnitProduction(0) > 0)
+                    {
+                        if (this._boostTimer != null)
+                        {
+                            this._boostTimer.Destruct();
+                            this._boostTimer = null;
+
+                            if (this._boostCooldownTimer != null)
+                            {
+                                this._boostCooldownTimer.Destruct();
+                                this._boostCooldownTimer = null;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.SetUpgradeLevel(LogicMath.Clamp(this._upgLevel, 0, this.GetBuildingData().GetUpgradeLevelCount()));
+            base.Load(jsonObject);
+        }
+
+        /// <summary>
+        ///     Updates the hidden state.
+        /// </summary>
+        public void UpdateHidden()
+        {
+            // TODO: Implement LogicBuilding::updateHidden();
         }
 
         /// <summary>
@@ -132,11 +474,10 @@
                         }
 
                         this._level.GetWorkerManagerAt(this._gearing ? 1 : this.GetBuildingData().VillageType).DeallocateWorker(this);
-                        this._locked = false;
+                        this._isLocked = false;
 
                         if (this._gearing)
                         {
-
                         }
                         else
                         {
@@ -209,7 +550,7 @@
             {
                 if (buildingData.IsAllianceCastle())
                 {
-                    if (!this._locked)
+                    if (!this._isLocked)
                     {
                         this._level.GetHomeOwnerAvatar().SetAllianceCastleLevel(this._upgLevel);
                     }
@@ -230,7 +571,7 @@
                 {
                     LogicHitpointComponent hitpointComponent = this.GetHitpointComponent();
 
-                    if (this._locked)
+                    if (this._isLocked)
                     {
                         hitpointComponent.SetMaxHitpoints(0);
                         hitpointComponent.SetHitpoints(0);

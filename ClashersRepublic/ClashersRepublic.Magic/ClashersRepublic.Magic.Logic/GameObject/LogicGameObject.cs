@@ -304,6 +304,14 @@
         }
 
         /// <summary>
+        ///     Gets if this <see cref="LogicGameObject"/> instance is wall.
+        /// </summary>
+        public virtual bool IsWall()
+        {
+            return false;
+        }
+
+        /// <summary>
         ///     Gets the path finder cost.
         /// </summary>
         public virtual int GetPathFinderCost()
