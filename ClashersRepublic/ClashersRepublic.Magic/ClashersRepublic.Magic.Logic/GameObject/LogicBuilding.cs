@@ -354,7 +354,7 @@
                 else
                 {
                     this._level.GetWorkerManagerAt(this._villageType).AllocateWorker(this);
-                    this._upgrading = this._villageType != -1;
+                    this._upgrading = this._upgLevel != -1;
                 }
             }
 
