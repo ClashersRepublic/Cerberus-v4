@@ -118,6 +118,12 @@
                 this._constructionTimer.Destruct();
                 this._constructionTimer = null;
             }
+			
+			if (this._boostCooldownTimer != null)
+            {
+                this._boostCooldownTimer.Destruct();
+                this._boostCooldownTimer = null;
+            }
 
             if (this._boostTimer != null)
             {
