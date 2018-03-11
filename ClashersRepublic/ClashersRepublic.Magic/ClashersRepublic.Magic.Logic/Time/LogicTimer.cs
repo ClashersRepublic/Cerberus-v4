@@ -83,16 +83,16 @@
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
-                totalTicks = (int) (1000L * totalTicks / 16);
+                totalTicks = (int) (1000L * totalSecs / 16);
             }
             else
             {
-                totalTicks = 60 * totalTicks;
+                totalTicks = 60 * totalSecs;
             }
 
             this._remainingTime = totalTicks + time;
 
-            if (setEndTimestamp)
+            if (currentTimestamp != -1 && setEndTimestamp)
             {
                 this._endTimestamp = currentTimestamp + totalSecs;
             }
@@ -107,11 +107,11 @@
 
             if (LogicDataTables.GetGlobals().MoreAccurateTime())
             {
-                totalTicks = (int) (1000L * totalTicks / 16);
+                totalTicks = (int) (1000L * totalSecs / 16);
             }
             else
             {
-                totalTicks = 60 * totalTicks;
+                totalTicks = 60 * totalSecs;
             }
 
             this._remainingTime -= totalTicks;
