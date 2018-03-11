@@ -152,6 +152,22 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicObstacleData"/> instance by name.
+        /// </summary>
+        public static LogicObstacleData GetObstacleDataByName(string name)
+        {
+            return (LogicObstacleData) LogicDataTables._dataTables[7].GetDataByName(name);
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicHeroData"/> instance by name.
+        /// </summary>
+        public static LogicHeroData GetHeroDataByName(string name)
+        {
+            return (LogicHeroData) LogicDataTables._dataTables[27].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the data by instance.
         /// </summary>
         public static LogicData GetDataByName(string name)

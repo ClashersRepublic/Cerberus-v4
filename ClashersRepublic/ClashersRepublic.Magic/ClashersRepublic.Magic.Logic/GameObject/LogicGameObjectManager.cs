@@ -5,6 +5,7 @@
     using ClashersRepublic.Magic.Logic.GameObject.Listener;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
+    using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Unit;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
@@ -21,6 +22,8 @@
         private LogicUnitProduction _unitProduction;
         private LogicUnitProduction _spellProduction;
         private LogicGameObjectManagerListener _listener;
+        private LogicRandom _obstacleRespawnRandom;
+        private LogicRandom _tileGrassRespawnRandom;
         private readonly LogicComponentManager _componentManager;
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
 
@@ -28,10 +31,16 @@
         private LogicBuilding _townHallVillage2;
         private LogicBuilding _allianceCastle;
         private LogicBuilding _laboratory;
-
+        private LogicObstacleData _gemBoxData;
         private LogicData _specialObstacleData;
 
+        private int _fastForwardRespawnSecs;
         private int _specialObstacleDropTime;
+        private int _obstacleClearCounter;
+        private int _gemBoxDropSecs;
+        private int _gemBoxPeriodSecs;
+        private int _passedRespawnSecs;
+        private int _passedTimeGrassRespawnSecs;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicGameObjectManager" /> class.
@@ -50,8 +59,11 @@
                 this._gameObjects[i] = new LogicArrayList<LogicGameObject>(128);
             }
 
+            this._gemBoxData = LogicDataTables.GetObstacleDataByName("Bonus Gembox");
             this._componentManager = new LogicComponentManager(level);
             this._listener = new LogicGameObjectManagerListener();
+            this._obstacleRespawnRandom = new LogicRandom();
+            this._tileGrassRespawnRandom = new LogicRandom();
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
@@ -90,6 +102,9 @@
             }
             
             this._listener = null;
+            this._obstacleRespawnRandom = null;
+            this._tileGrassRespawnRandom = null;
+            this._gemBoxData = null;
             this._level = null;
             this._tileMap = null;
             this._townHall = null;
@@ -315,12 +330,11 @@
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicGameObj"/>
+        ///     Sets the <see cref="LogicGameObjectManagerListener"/> instance.
         /// </summary>
-        /// <param name="listener"></param>
-        public void SetListener(LogicGameObject listener)
+        public void SetListener(LogicGameObjectManagerListener listener)
         {
-
+            this._listener = listener;
         }
 
         /// <summary>
@@ -338,6 +352,11 @@
         {
             if (totalSecs > 0)
             {
+                Debugger.Log("LogicGameObjectManager::fastForward: " + totalSecs);
+
+                this._passedRespawnSecs += totalSecs;
+                this._passedTimeGrassRespawnSecs += totalSecs;
+
                 for (int i = 0; i < 9; i++)
                 {
                     for (int j = 0; j < this._gameObjects[i].Count; j++)
@@ -644,7 +663,94 @@
         /// </summary>
         public void Save(LogicJSONObject jsonObject)
         {
-            // Save.
+            if (this._villageType == 1)
+            {
+                jsonObject.Put("buildings2", this.SaveGameObjects(0));
+                jsonObject.Put("obstacles2", this.SaveGameObjects(3));
+                jsonObject.Put("traps2", this.SaveGameObjects(4));
+                jsonObject.Put("decos2", this.SaveGameObjects(6));
+
+                if (this._level.IsNpcVillage())
+                {
+                    if (LogicDataTables.GetGlobals().SaveVillageObjects())
+                    {
+                        jsonObject.Put("vobjs2", this.SaveGameObjects(8));
+                    }
+
+                    jsonObject.Put("v2rs", new LogicJSONNumber(LogicTime.GetTicksInSeconds(this._passedRespawnSecs) + this._fastForwardRespawnSecs));
+                    jsonObject.Put("v2rseed", new LogicJSONNumber(this._obstacleRespawnRandom.GetIteratedRandomSeed()));
+                    jsonObject.Put("v2ccounter", new LogicJSONNumber(this._obstacleClearCounter));
+                    jsonObject.Put("tgsec", new LogicJSONNumber(LogicTime.GetTicksInSeconds(this._passedTimeGrassRespawnSecs)));
+                    jsonObject.Put("tgseed", new LogicJSONNumber(this._tileGrassRespawnRandom.GetIteratedRandomSeed()));
+                }
+            }
+            else
+            {
+                jsonObject.Put("buildings", this.SaveGameObjects(0));
+                jsonObject.Put("obstacles", this.SaveGameObjects(3));
+                jsonObject.Put("traps", this.SaveGameObjects(4));
+                jsonObject.Put("decos", this.SaveGameObjects(6));
+
+                if (!this._level.IsNpcVillage())
+                {
+                    if (LogicDataTables.GetGlobals().SaveVillageObjects())
+                    {
+                        jsonObject.Put("vobjs", this.SaveGameObjects(8));
+                    }
+
+                    LogicJSONObject respawnObject = new LogicJSONObject();
+
+                    int passedRespawnTime = LogicTime.GetTicksInSeconds(this._passedRespawnSecs);
+
+                    respawnObject.Put("secondsFromLastRespawn", new LogicJSONNumber(passedRespawnTime + this._fastForwardRespawnSecs));
+                    respawnObject.Put("respawnSeed", new LogicJSONNumber(this._obstacleRespawnRandom.GetIteratedRandomSeed()));
+                    respawnObject.Put("obstacleClearCounter", new LogicJSONNumber(this._obstacleClearCounter));
+
+                    int maxGemBoxRespawnSecs = this._gemBoxData != null ? 7200 * this._gemBoxData.AppearancePeriodHours : 1209600;
+
+                    if (this._gemBoxDropSecs > maxGemBoxRespawnSecs)
+                    {
+                        this._gemBoxDropSecs = 0;
+                        this._gemBoxPeriodSecs = 0;
+                    }
+
+                    respawnObject.Put("time_to_gembox_drop", new LogicJSONNumber(this._gemBoxDropSecs - passedRespawnTime));
+                    respawnObject.Put("time_in_gembox_period", new LogicJSONNumber(this._gemBoxPeriodSecs - passedRespawnTime));
+
+                    jsonObject.Put("respawnVars", respawnObject);
+
+                    if (LogicDataTables.GetGlobals().UseNewTraining())
+                    {
+                        LogicJSONObject unitObject = new LogicJSONObject();
+                        LogicJSONObject spellObject = new LogicJSONObject();
+                        this._unitProduction.Save(unitObject);
+                        this._spellProduction.Save(spellObject);
+                        jsonObject.Put("units", unitObject);
+                        jsonObject.Put("spells", spellObject);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Saves the <see cref="LogicArrayList{T}"/> to json array.
+        /// </summary>
+        public LogicJSONArray SaveGameObjects(int gameObjectType)
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[gameObjectType];
+            LogicJSONArray jsonArray = new LogicJSONArray(gameObjects.Count);
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                LogicGameObject gameObject = gameObjects[i];
+                LogicJSONObject jsonObject = new LogicJSONObject();
+                jsonObject.Put("data", new LogicJSONNumber(gameObject.GetData().GetGlobalID()));
+                jsonObject.Put("id", new LogicJSONNumber(gameObject.GetGlobalID()));
+                gameObject.Save(jsonObject);
+                jsonArray.Add(jsonObject);
+            }
+
+            return jsonArray;
         }
     }
 }

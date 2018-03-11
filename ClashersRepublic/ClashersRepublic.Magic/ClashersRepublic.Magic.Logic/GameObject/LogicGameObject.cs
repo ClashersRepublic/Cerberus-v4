@@ -32,6 +32,7 @@
             this._data = data;
             this._level = level;
             this._villageType = villageType;
+            this._globalId = -1;
 
             this._position = new LogicVector2();
             this._listener = new LogicGameObjectListener();
@@ -431,7 +432,7 @@
                 Debugger.Error("LogicGameObject::load - x or y is NULL!");
             }
 
-            this.SetPositionXY(xNumber.GetIntValue(), yNumber.GetIntValue());
+            this.SetPositionXY(xNumber.GetIntValue() << 9, yNumber.GetIntValue() << 9);
         }
 
         /// <summary>

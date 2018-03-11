@@ -1,13 +1,25 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
+    using ClashersRepublic.Magic.Logic.Data;
+
     public sealed class LogicHeroBaseComponent : LogicComponent
     {
+        private LogicHeroData _data;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicHitpointComponent" /> class.
         /// </summary>
-        public LogicHeroBaseComponent(LogicGameObject gameObject) : base(gameObject)
+        public LogicHeroBaseComponent(LogicGameObject gameObject, LogicHeroData data) : base(gameObject)
         {
-            // LogicHeroBaseComponent.
+            this._data = data;
+        }
+
+        /// <summary>
+        ///     Gets the component type.
+        /// </summary>
+        public override int GetComponentType()
+        {
+            return 10;
         }
 
         /// <summary>

@@ -4,13 +4,15 @@
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
 
+    using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
     using ClashersRepublic.Magic.Services.Home.Resource;
 
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
-    
+    using ClashersRepublic.Magic.Titan.Util;
+
     internal class Home
     {
         /// <summary>
@@ -68,7 +70,7 @@
             this.ClientHome.SetShieldDurationSeconds(4 * 86400);
             this.ClientHome.SetGuardDurationSeconds(1 * 86400);
             this.ClientHome.SetNextMaintenanceSeconds(4 * 3600);
-            this.ClientHome.SetHomeJSON(HomeResourceManager.GetStartingHomeJSON());      
+            this.ClientHome.SetHomeJSON(HomeResourceManager.GetStartingHomeJSON());
             
             CompressibleStringHelper.Compress(this.ClientHome.GetCompressibleHomeJSON());
         }
@@ -108,6 +110,7 @@
 
             jsonObject.Put("acc_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
             jsonObject.Put("acc_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
+            jsonObject.Put("last_save", new LogicJSONNumber(this.SaveTimestamp));
             jsonObject.Put("avatar", this.ClientAvatar.Save());
             jsonObject.Put("home", this.ClientHome.Save());
 
@@ -122,6 +125,18 @@
             LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
 
             this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "acc_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "acc_lo"));
+
+            LogicJSONNumber lastSaveObject = jsonObject.GetJSONNumber("last_save");
+
+            if (lastSaveObject != null)
+            {
+                this.SaveTimestamp = lastSaveObject.GetIntValue();
+            }
+            else
+            {
+                Logging.Warning(this, "Home::load pLastSaveObject->NULL");
+                this.SaveTimestamp = LogicTimeUtil.GetTimestamp();
+            }
 
             LogicJSONObject avatarObject = jsonObject.GetJSONObject("avatar");
 

@@ -206,6 +206,7 @@
 
                 if (lootMultiplyVersionObject == null)
                 {
+                    this._lootMultiplyVersion = 1;
                     return;
                 }
             }

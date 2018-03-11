@@ -8,6 +8,8 @@ namespace ClashersRepublic.Magic.Logic.Data
     {
         private LogicBuildingClassData _buildingClass;
         private LogicResourceData[] _buildResources;
+        private LogicHeroData _heroData;
+
         private int[] _constructionTimes;
         private int _upgradeLevelCount;
         private bool _isClockTower;
@@ -129,7 +131,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool ForgesSpells { get; protected set; }
         public bool ForgesMiniSpells { get; protected set; }
         public bool IsHeroBarrack { get; protected set; }
-        public string HeroType { get; protected set; }
         public bool IncreasingDamage { get; protected set; }
         protected int[] DPSLv2 { get; set; }
         protected int[] DPSLv3 { get; set; }
@@ -246,6 +247,13 @@ namespace ClashersRepublic.Magic.Logic.Data
                 }
             }
 
+            string heroType = this.GetValue("HeroType", 0);
+
+            if (!string.IsNullOrEmpty(heroType))
+            {
+                this._heroData = LogicDataTables.GetHeroDataByName(heroType);
+            }
+
             this._isClockTower = this.GetName().Equals("Clock Tower");
             this._isFlamer = this.GetName().Equals("Flamer");
             this._isBarrackVillage2 = this.GetName().Equals("Barrack2");
@@ -334,6 +342,11 @@ namespace ClashersRepublic.Magic.Logic.Data
         public LogicResourceData GetBuildResource(int index)
         {
             return this._buildResources[index];
+        }
+
+        public LogicHeroData GetHeroData()
+        {
+            return this._heroData;
         }
 
         public string GetExportName(int index)

@@ -31,7 +31,46 @@
         /// </summary>
         public LogicBuilding(LogicData data, LogicLevel level, int villageType) : base(data, level, villageType)
         {
-            // LogicBuilding.
+            LogicBuildingData buildingData = this.GetBuildingData();
+
+            if (buildingData.GetHitpoints(0) > 0)
+            {
+                LogicHitpointComponent hitpointComponent = new LogicHitpointComponent(this, buildingData.GetHitpoints(0), 1);
+                hitpointComponent.SetMaxRegenerationTime(buildingData.GetRegenerationTime(0));
+                this.AddComponent(hitpointComponent);
+            }
+
+            if (buildingData.GetHeroData() != null)
+            {
+                LogicHeroBaseComponent heroBaseComponent = new LogicHeroBaseComponent(this, buildingData.GetHeroData());
+                this.AddComponent(heroBaseComponent);
+
+                if (buildingData.ShareHeroCombatData)
+                {
+                    // ???
+                }
+            }
+
+            if (buildingData.UpgradesUnits)
+            {
+                LogicUnitUpgradeComponent unitUpgradeComponent = new LogicUnitUpgradeComponent(this);
+                unitUpgradeComponent.SetEnabled(false);
+                this.AddComponent(unitUpgradeComponent);
+            }
+
+            if (buildingData.Village2Housing > 0)
+            {
+                LogicVillage2UnitComponent village2UnitComponent = new LogicVillage2UnitComponent(this);
+                village2UnitComponent.SetEnabled(false);
+                this.AddComponent(village2UnitComponent);
+            }
+
+            if (buildingData.GetUnitProduction(0) > 0)
+            {
+                LogicUnitProductionComponent unitProductionComponent = new LogicUnitProductionComponent(this);
+                unitProductionComponent.SetEnabled(false);
+                this.AddComponent(unitProductionComponent);
+            }
         }
 
         /// <summary>
@@ -198,7 +237,7 @@
         /// </summary>
         public override void Save(LogicJSONObject jsonObject)
         {
-            if (this._upgLevel != 0 || this._constructionTimer != null || this._upgrading)
+            if (this._upgLevel != 0 || this._constructionTimer == null || this._upgrading)
             {
                 jsonObject.Put("lvl", new LogicJSONNumber(this._upgLevel));
             }

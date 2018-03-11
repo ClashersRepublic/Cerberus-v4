@@ -4,7 +4,6 @@
 
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Command;
-    using ClashersRepublic.Magic.Logic.Command.Listener;
     using ClashersRepublic.Magic.Logic.Command.Server;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
@@ -13,9 +12,11 @@
     using ClashersRepublic.Magic.Logic.Util;
 
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Home.Game.Command;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
     using ClashersRepublic.Magic.Services.Home.Resource;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
 
     internal class GameMode
@@ -51,6 +52,21 @@
         /// </summary>
         internal void DeInit()
         {
+            if (this._logicGameMode != null)
+            {
+                if (this._logicGameMode.GetState() == 1)
+                {
+                    LogicJSONObject jsonObject = new LogicJSONObject();
+
+                    this._logicGameMode.SaveToJSON(jsonObject);
+                    this._logicGameMode.GetLevel().GetHome().SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
+
+                    CompressibleStringHelper.Compress(this._logicGameMode.GetLevel().GetHome().GetCompressibleHomeJSON());
+                    DatabaseManager.GetDatabase(this._home.Id.GetHigherInt()).UpdateDocument(this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
+
+                    Logging.Debug(this, "GameMode::deInit level saved");
+                }
+            }
         }
 
         /// <summary>

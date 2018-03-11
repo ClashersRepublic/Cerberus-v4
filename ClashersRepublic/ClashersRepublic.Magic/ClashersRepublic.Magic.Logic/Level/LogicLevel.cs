@@ -63,6 +63,8 @@
         private int _warTutorialsSeen;
         private int _matchType;
         private int _remainingClockTowerBoostTime;
+        private int _levelWidth;
+        private int _levelHeight;
 
         private bool _helpOpened;
         private bool _warBase;
@@ -86,6 +88,8 @@
         {
             this._gameMode = gameMode;
 
+            this._troopRequestMessage = string.Empty;
+            this._warRequestMessage = string.Empty;
             this._gameListener = new LogicGameListener();
             this._achievementManager = new LogicAchievementManager(this);
             this._layoutState = new LogicArrayList<int>();
@@ -100,6 +104,8 @@
                 this._gameObjectManagers[i] = new LogicGameObjectManager(this._tileMap, this, i);
             }
 
+            this._levelWidth = 25600;
+            this._levelHeight = 25600;
             this._offerManager = new LogicOfferManager();
             this._map = new LogicRect(3, 3, 47, 47);
             this._cooldownManager = new LogicCooldownManager();
@@ -226,6 +232,22 @@
         public int GetRemainingClockTowerBoostTime()
         {
             return this._remainingClockTowerBoostTime;
+        }
+
+        /// <summary>
+        ///     Gets the height of level in tiles.
+        /// </summary>
+        public int GetWidthInTiles()
+        {
+            return this._levelWidth;
+        }
+
+        /// <summary>
+        ///     Gets the height of level in tiles.
+        /// </summary>
+        public int GetHeightInTiles()
+        {
+            return this._levelHeight;
         }
 
         /// <summary>
@@ -580,34 +602,34 @@
             {
                 if (this._waveNumber > 0)
                 {
-                    LogicJSONHelper.SetJSONNumber(jsonObject, "wave_num", this._waveNumber);
+                    jsonObject.Put("wave_num", new LogicJSONNumber(this._waveNumber));
                 }
 
                 if (this._experienceVersion > 0)
                 {
-                    LogicJSONHelper.SetJSONNumber(jsonObject, "exp_ver", this._experienceVersion);
+                    jsonObject.Put("exp_ver", new LogicJSONNumber(this._experienceVersion));
                 }
 
                 if (this._androidClient)
                 {
-                    LogicJSONHelper.SetJSONBoolean(jsonObject, "android_client", this._androidClient);
+                    jsonObject.Put("android_client", new LogicJSONBoolean(true));
                 }
 
                 if (this._matchType == 3)
                 {
-                    LogicJSONHelper.SetJSONBoolean(jsonObject, "direct", true);
+                    jsonObject.Put("direct", new LogicJSONBoolean(true));
                 }
                 else if (this._matchType == 5)
                 {
-                    LogicJSONHelper.SetJSONBoolean(jsonObject, "war", true);
+                    jsonObject.Put("war", new LogicJSONBoolean(true));
                 }
                 else if (this._matchType == 8)
                 {
-                    LogicJSONHelper.SetJSONBoolean(jsonObject, "direct2", true);
+                    jsonObject.Put("direct2", new LogicJSONBoolean(true));
                 }
 
-                LogicJSONHelper.SetJSONNumber(jsonObject, "active_layout", this._activeLayout);
-                LogicJSONHelper.SetJSONNumber(jsonObject, "act_l2", this._activeLayoutVillage2);
+                jsonObject.Put("active_layout", new LogicJSONNumber(this._activeLayout));
+                jsonObject.Put("act_l2", new LogicJSONNumber(this._activeLayoutVillage2));
 
                 if (this._warBase)
                 {
@@ -620,7 +642,7 @@
                         */
                     }
 
-                    LogicJSONHelper.SetJSONNumber(jsonObject, "war_layout", this._warLayout);
+                    jsonObject.Put("war_layout", new LogicJSONNumber(this._warLayout));
                 }
 
                 LogicJSONArray layoutStateArray = new LogicJSONArray();
@@ -661,24 +683,24 @@
                 this._cooldownManager.Save(jsonObject);
                 this.SaveShopNewItems(jsonObject);
 
-                LogicJSONHelper.SetJSONNumber(jsonObject, "last_league_rank", this._lastLeagueRank);
-                LogicJSONHelper.SetJSONNumber(jsonObject, "last_alliance_level", this._lastAllianceLevel);
-                LogicJSONHelper.SetJSONNumber(jsonObject, "last_league_shuffle", this._lastLeagueShuffle);
-                LogicJSONHelper.SetJSONNumber(jsonObject, "last_season_seen", this._lastSeasonSeen);
-                LogicJSONHelper.SetJSONNumber(jsonObject, "last_news_seen", this._lastNewsSeen);
+                jsonObject.Put("last_league_rank", new LogicJSONNumber(this._lastLeagueRank));
+                jsonObject.Put("last_alliance_level", new LogicJSONNumber(this._lastAllianceLevel));
+                jsonObject.Put("last_league_shuffle", new LogicJSONNumber(this._lastLeagueShuffle));
+                jsonObject.Put("last_season_seen", new LogicJSONNumber(this._lastSeasonSeen));
+                jsonObject.Put("last_news_seen", new LogicJSONNumber(this._lastNewsSeen));
 
                 if (this._troopRequestMessage.Length > 0)
                 {
-                    LogicJSONHelper.SetJSONString(jsonObject, "troop_req_msg", this._troopRequestMessage);
+                    jsonObject.Put("troop_req_msg", new LogicJSONString(this._troopRequestMessage));
                 }
 
                 if (this._warRequestMessage.Length > 0)
                 {
-                    LogicJSONHelper.SetJSONString(jsonObject, "war_req_msg", this._warRequestMessage);
+                    jsonObject.Put("war_req_msg", new LogicJSONString(this._warRequestMessage));
                 }
 
-                LogicJSONHelper.SetJSONNumber(jsonObject, "war_tutorials_seen", this._warTutorialsSeen);
-                LogicJSONHelper.SetJSONBoolean(jsonObject, "war_base", this._warBase);
+                jsonObject.Put("war_tutorials_seen", new LogicJSONNumber(this._warTutorialsSeen));
+                jsonObject.Put("war_base", new LogicJSONBoolean(this._warBase));
 
                 LogicJSONArray armyNameArray = new LogicJSONArray();
 
@@ -905,6 +927,14 @@
         }
 
         /// <summary>
+        ///     Gets a value indicating whether the level is a npc village.
+        /// </summary>
+        public bool IsNpcVillage()
+        {
+            return this._npcVillage;
+        }
+
+        /// <summary>
         ///     Called when the loading is finished.
         /// </summary>
         public void LoadingFinished()
@@ -947,9 +977,30 @@
 
             if (this._levelJSON != null)
             {
-                this._lastLeagueRank = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_league_rank");
-                this._lastAllianceLevel = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_alliance_level");
-                this._lastLeagueShuffle = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_league_shuffle");
+                this._lastLeagueRank = 0;
+                this._lastAllianceLevel = 1;
+
+                LogicJSONNumber lastLeagueRankObject = this._levelJSON.GetJSONNumber("last_league_rank");
+
+                if (lastLeagueRankObject != null)
+                {
+                    this._lastLeagueRank = lastLeagueRankObject.GetIntValue();
+                }
+
+                LogicJSONNumber lastAllianceLevelObject = this._levelJSON.GetJSONNumber("last_alliance_level");
+
+                if (lastAllianceLevelObject != null)
+                {
+                    this._lastAllianceLevel = lastAllianceLevelObject.GetIntValue();
+                }
+
+                LogicJSONNumber lastLeagueShuffleObject = this._levelJSON.GetJSONNumber("last_league_shuffle");
+
+                if (lastLeagueShuffleObject != null)
+                {
+                    this._lastLeagueShuffle = lastLeagueShuffleObject.GetIntValue();
+                }
+                
                 this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
                 this._lastNewsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
                 this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");

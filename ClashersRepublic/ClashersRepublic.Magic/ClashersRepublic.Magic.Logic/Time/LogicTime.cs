@@ -51,7 +51,20 @@
                 return (int) (1000L * time / 16);
             }
 
-            return time / 60;
+            return time * 60;
+        }
+
+        /// <summary>
+        ///     Gets the ticks in seconds.
+        /// </summary>
+        public static int GetTicksInSeconds(int tick)
+        {
+            if (LogicDataTables.GetGlobals().MoreAccurateTime())
+            {
+                return (int) (16L * tick / 1000);
+            }
+
+            return tick / 60;
         }
 
         /// <summary>
@@ -64,7 +77,7 @@
                 return (int) (1000L * time / 64);
             }
 
-            return time / 15;
+            return time * 15;
         }
 
         /// <summary>
