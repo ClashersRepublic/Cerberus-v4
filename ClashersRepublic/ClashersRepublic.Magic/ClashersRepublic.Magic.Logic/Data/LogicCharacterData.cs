@@ -255,5 +255,10 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.SpecialAbilityAttribute3[index];
         }
+
+        public override int GetCombatItemType()
+        {
+            return 0;
+        }
     }
 }
