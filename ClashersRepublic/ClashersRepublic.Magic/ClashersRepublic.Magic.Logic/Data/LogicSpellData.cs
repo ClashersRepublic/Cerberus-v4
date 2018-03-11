@@ -247,5 +247,10 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.SpawnFirstGroupSize[index];
         }
+
+        public override int GetCombatItemType()
+        {
+            return 1;
+        }
     }
 }

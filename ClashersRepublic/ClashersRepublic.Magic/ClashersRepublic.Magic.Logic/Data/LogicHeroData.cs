@@ -2,7 +2,7 @@ namespace ClashersRepublic.Magic.Logic.Data
 {
     using ClashersRepublic.Magic.Titan.CSV;
 
-    public class LogicHeroData : LogicData
+    public class LogicHeroData : LogicCombatItemData
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicHeroData" /> class.
@@ -17,9 +17,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string SWF { get; protected set; }
         public int Speed { get; protected set; }
         protected int[] Hitpoints { get; set; }
-        protected int[] UpgradeTimeH { get; set; }
-        public string UpgradeResource { get; protected set; }
-        protected int[] UpgradeCost { get; set; }
         protected int[] RequiredTownHallLevel { get; set; }
         public int AttackRange { get; protected set; }
         public int AttackSpeed { get; protected set; }
@@ -28,8 +25,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int PreferedTargetDamageMod { get; protected set; }
         public int DamageRadius { get; protected set; }
         public string IconSWF { get; protected set; }
-        public string IconExportName { get; protected set; }
-        public string BigPicture { get; protected set; }
         public string BigPictureSWF { get; protected set; }
         public string SmallPicture { get; protected set; }
         public string SmallPictureSWF { get; protected set; }
@@ -53,12 +48,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int AbilityAttackCount { get; protected set; }
         protected string[] AnimationActivated { get; set; }
         public int MaxSearchRadiusForDefender { get; protected set; }
-        public int HousingSpace { get; protected set; }
         public string SpecialAbilityEffect { get; protected set; }
         protected int[] RegenerationTimeMinutes { get; set; }
-        public int TrainingTime { get; protected set; }
-        public string TrainingResource { get; protected set; }
-        public int TrainingCost { get; protected set; }
         public string CelebrateEffect { get; protected set; }
         public int SleepOffsetX { get; protected set; }
         public int SleepOffsetY { get; protected set; }
@@ -125,22 +116,12 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            // LoadingFinished.
+           base.LoadingFinished();         
         }
 
         public int GetHitpoints(int index)
         {
             return this.Hitpoints[index];
-        }
-
-        public int GetUpgradeTimeH(int index)
-        {
-            return this.UpgradeTimeH[index];
-        }
-
-        public int GetUpgradeCost(int index)
-        {
-            return this.UpgradeCost[index];
         }
 
         public int GetRequiredTownHallLevel(int index)
@@ -241,6 +222,11 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string GetAltModeAnimation(int index)
         {
             return this.AltModeAnimation[index];
+        }
+
+        public override int GetCombatItemType()
+        {
+            return 2;
         }
     }
 }

@@ -4,7 +4,9 @@ namespace ClashersRepublic.Magic.Logic.Data
 
     public class LogicCombatItemData : LogicData
     {
-        private LogicResourceData[] _upgradeResourceData;
+        private LogicResourceData _upgradeResourceData;
+        private LogicResourceData _trainingResourceData;
+        private int _upgradeLevelCount;
         private int[] _upgradeTime;
 
         /// <summary>
@@ -18,13 +20,11 @@ namespace ClashersRepublic.Magic.Logic.Data
         protected int[] UpgradeLevelByTH { get; set; }
         protected string[] IconExportName { get; set; }
         protected string[] BigPicture { get; set; }
-        protected int[] UpgradeTimeH { get; set; }
-        protected int[] UpgradeTimeM { get; set; }
         protected int[] UpgradeCost { get; set; }
         protected int[] TrainingTime { get; set; }
         protected int[] TrainingCost { get; set; }
         protected int[] LaboratoryLevel { get; set; }
-        protected string[] UpgradeResource { get; set; }
+        protected string UpgradeResource { get; set; }
 
         public string TrainingResource { get; protected set; }
         public int HousingSpace { get; protected set; }
@@ -38,19 +38,16 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            this._upgradeTime = new int[this.UpgradeTimeH.Length];
+            this._upgradeLevelCount = this._row.GetBiggestArraySize();
+            this._upgradeTime = new int[this._upgradeLevelCount];
 
-            for (int i = 0; i < this.UpgradeTimeH.Length; i++)
+            for (int i = 0; i < this._upgradeLevelCount; i++)
             {
-                this._upgradeTime[i] = 3600 * this.UpgradeTimeH[i] + 60 * this.UpgradeTimeM[i];
+                this._upgradeTime[i] = 3600 * this.GetIntegerValue("UpgradeTimeH", i) + 60 * this.GetIntegerValue("UpgradeTimeM", i);
             }
 
-            this._upgradeResourceData = new LogicResourceData[this.UpgradeResource.Length];
-
-            for (int i = 0; i < this.UpgradeResource.Length; i++)
-            {
-                this._upgradeResourceData[i] = LogicDataTables.GetResourceByName(this.UpgradeResource[i]);
-            }
+            this._upgradeResourceData = LogicDataTables.GetResourceByName(this.UpgradeResource);
+            this._trainingResourceData = LogicDataTables.GetResourceByName(this.TrainingResource);
         }
 
         public int GetLaboratoryLevel(int index)
@@ -63,9 +60,9 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this._upgradeTime[index];
         }
 
-        public int GetTrainingCost(int index)
+        public LogicResourceData GetUpgradeResource()
         {
-            return this.TrainingCost[index];
+            return this._upgradeResourceData;
         }
 
         public int GetUpgradeCost(int index)
@@ -73,9 +70,24 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.UpgradeCost[index];
         }
 
+        public LogicResourceData GetTrainingResource()
+        {
+            return this._trainingResourceData;
+        }
+
+        public int GetTrainingCost(int index)
+        {
+            return this.TrainingCost[index];
+        }
+
         public int GetTrainingTime(int index)
         {
             return this.TrainingTime[index];
+        }
+
+        public virtual int GetCombatItemType()
+        {
+            return -1;
         }
     }
 }
