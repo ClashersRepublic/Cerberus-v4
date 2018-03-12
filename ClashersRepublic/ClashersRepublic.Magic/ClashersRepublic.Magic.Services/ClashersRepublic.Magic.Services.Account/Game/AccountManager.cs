@@ -7,6 +7,7 @@
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
@@ -77,7 +78,7 @@
                 }
                 else
                 {
-                    Logging.Warning(typeof(AccountManager), "AccountManager::loadAccounts pDatabase->NULL");
+                    Logging.Warning("AccountManager::loadAccounts pDatabase->NULL");
                 }
             }
         }

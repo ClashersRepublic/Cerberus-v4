@@ -58,7 +58,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetMessage::setSessionId session too big (" + lenght + ")");
+                Logging.Warning("NetMessage::setSessionId session too big (" + lenght + ")");
             }
         }
 

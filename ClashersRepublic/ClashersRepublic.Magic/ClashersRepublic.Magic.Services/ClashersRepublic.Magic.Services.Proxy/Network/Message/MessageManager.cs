@@ -59,8 +59,10 @@
                         }
                         else
                         {
-                            Logging.Debug(this, "MessageManager::receiveMessage pSocket->NULL");
+                            Logging.Debug("MessageManager::receiveMessage no server for service " + message.GetServiceNodeType());
                         }
+
+                        return;
                     }
                 }
             }

@@ -39,18 +39,11 @@
         /// <summary>
         ///     Creates a new <see cref="NetAccountSession"/> instance.
         /// </summary>
-        internal static NetAccountSession TryCreate(Account account, byte[] sessionId)
+        internal static bool TryCreate(Account account, byte[] sessionId, out NetAccountSession session)
         {
             string sessionName = NetAccountSessionManager.ConvertSessionIdToSessionName(sessionId);
-
-            NetAccountSession session = new NetAccountSession(account, sessionId, sessionName);
-
-            if (NetAccountSessionManager._sessions.TryAdd(sessionName, session))
-            {
-                return session;
-            }
-
-            return null;
+            session = new NetAccountSession(account, sessionId, sessionName);
+            return NetAccountSessionManager._sessions.TryAdd(sessionName, session);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
+    using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
 
@@ -98,10 +99,9 @@
                 {
                     message.Encode();
                 }
-
-                ForwardErrorPiranhaMessage forwardErrorPiranhaMessage = new ForwardErrorPiranhaMessage();
-                forwardErrorPiranhaMessage.SetPiranhaMessage(message);
-                NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, forwardErrorPiranhaMessage);
+                
+                this.SendPiranhaMessage(serviceNodeType, message);
+                this.SendMessage(1, new UnbindServerMessage());
             }
         }
     }

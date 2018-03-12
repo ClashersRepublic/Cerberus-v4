@@ -4,6 +4,7 @@
     using System.Net;
     using System.Net.Sockets;
 
+    using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Services.Core;
 
     internal class NetworkToken
@@ -17,7 +18,7 @@
         /// <summary>
         ///     Gets the <see cref="System.Net.Sockets.Socket"/> instance.
         /// </summary>
-        internal Socket Socket { get; }
+        internal Socket Socket { get; private set; }
 
         /// <summary>
         ///     Gets the <see cref="NetworkClient"/> instance.
@@ -27,12 +28,12 @@
         /// <summary>
         ///     Gets the <see cref="NetworkMessaging"/> instance.
         /// </summary>
-        internal NetworkMessaging Messaging { get; }
+        internal NetworkMessaging Messaging { get; private set; }
 
         /// <summary>
         ///     Gets the <see cref="SocketAsyncEventArgs"/> read event.
         /// </summary>
-        internal SocketAsyncEventArgs ReadEvent { get; }
+        internal SocketAsyncEventArgs ReadEvent { get; private set; }
 
         /// <summary>
         ///     Gets the connection id.
@@ -62,16 +63,29 @@
         /// </summary>
         internal void Destruct()
         {
+            if (this.Socket != null)
+            {
+                this.Messaging.Send(new DisconnectedMessage());
+                this.Socket.Close(500);
+                this.Socket = null;
+            }
+
             if (this.Client != null)
             {
                 this.Client.Destruct();
                 this.Client = null;
             }
 
+            if (this.Messaging != null)
+            {
+                this.Messaging.Destruct();
+                this.Messaging = null;
+            }
+
+            this.ReadEvent = null;
             this.ClientIP = null;
             this._receiveBytes = null;
             this._receiveBytesLength = 0;
-            this.ConnectionId = 0;
         }
 
         /// <summary>
@@ -173,7 +187,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetworkToken::setConnectionId connectionId already setted");
+                Logging.Warning("NetworkToken::setConnectionId connectionId already setted");
             }
         }
     }

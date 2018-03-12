@@ -62,7 +62,7 @@
 
                     if (this._message == null)
                     {
-                        Logging.Warning(this, "NetPacket::decode ignoring message of unknown type " + messageType);
+                        Logging.Warning("NetPacket::decode ignoring message of unknown type " + messageType);
                     }
                     else
                     {
@@ -72,7 +72,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetPacket::decode invalid protocol version");
+                Logging.Warning("NetPacket::decode invalid protocol version");
             }
         }
 

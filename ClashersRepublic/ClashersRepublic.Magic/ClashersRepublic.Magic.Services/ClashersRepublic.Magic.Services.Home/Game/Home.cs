@@ -134,7 +134,7 @@
             }
             else
             {
-                Logging.Warning(this, "Home::load pLastSaveObject->NULL");
+                Logging.Warning("Home::load save timestamp is not set");
                 this.SaveTimestamp = LogicTimeUtil.GetTimestamp();
             }
 

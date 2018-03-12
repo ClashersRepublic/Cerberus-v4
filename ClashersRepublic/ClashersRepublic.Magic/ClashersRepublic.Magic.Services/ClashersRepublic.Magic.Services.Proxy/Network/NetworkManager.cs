@@ -69,10 +69,10 @@
                     return true;
                 }
 
-                Logging.Warning(typeof(NetworkManager), "NetworkManager::tryAdd connection id already exist");
+                Logging.Warning("NetworkManager::tryAdd connection id already exist");
             }
 
-            Logging.Warning(typeof(NetworkManager), "NetworkManager::tryAdd connection id already defined");
+            Logging.Warning("NetworkManager::tryAdd connection id already defined");
 
             return false;
         }
@@ -82,19 +82,14 @@
         /// </summary>
         internal static bool TryRemove(NetworkToken token)
         {
-            return NetworkManager._connections.TryRemove(token.ConnectionId, out _);
-        }
+            bool success = NetworkManager._connections.TryRemove(token.ConnectionId, out _);
 
-        /// <summary>
-        ///     Gets all connections.
-        /// </summary>
-        internal static NetworkToken[] Get()
-        {
-            var collection = NetworkManager._connections.Values;
-            NetworkToken[] instances = new NetworkToken[collection.Count];
-            collection.CopyTo(instances, 0);
+            if (success)
+            {
+                token.SetConnectionId(0);
+            }
 
-            return instances;
+            return success;
         }
     }
 }

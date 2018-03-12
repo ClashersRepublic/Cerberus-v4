@@ -7,8 +7,10 @@
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
+    using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class NetProxyMessageManager : NetMessageManager
@@ -20,11 +22,12 @@
         {
             switch (message.GetMessageType())
             {
+                case 10301:
+                    this.UnbindServerMessageReceived((UnbindServerMessage) message);
+                    break;
+
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
-                    break;
-                case 10401:
-                    this.ForwardErrorPiranhaMessageReceived((ForwardErrorPiranhaMessage) message);
                     break;
 
                 case 20101:
@@ -178,25 +181,20 @@
         }
 
         /// <summary>
-        ///     Called when the <see cref="ForwardErrorPiranhaMessage"/> is received.
+        ///     Called when the <see cref="UnbindServerMessage"/> is received.
         /// </summary>
-        internal void ForwardErrorPiranhaMessageReceived(ForwardErrorPiranhaMessage message)
+        internal void UnbindServerMessageReceived(UnbindServerMessage message)
         {
             byte[] sessionId = message.RemoveSessionId();
 
             if (sessionId != null)
             {
-                PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
-
-                if (piranhaMessage != null)
+                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                 {
-                    piranhaMessage.GetByteStream().SetOffset(piranhaMessage.GetByteStream().GetLength());
+                    session.UnbindServer(message.GetServiceNodeType());
 
-                    if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+                    if (message.GetServiceNodeType() != 1 && message.GetServiceNodeType() != 10)
                     {
-                        session.Client.MessageManager.SendMessage(piranhaMessage);
-                        session.Client.MessageManager.SendMessage(new DisconnectedMessage());
-
                         NetworkGateway.Disconnect(session.Client.NetworkToken.ReadEvent);
                     }
                 }

@@ -52,7 +52,7 @@
         {
             NetProxySessionManager.Initialize();
             NetworkManager.Initialize();
-            MessageHandler.Initialize();
+            NetworkMessagingManager.Initialize();
         }
     }
 }

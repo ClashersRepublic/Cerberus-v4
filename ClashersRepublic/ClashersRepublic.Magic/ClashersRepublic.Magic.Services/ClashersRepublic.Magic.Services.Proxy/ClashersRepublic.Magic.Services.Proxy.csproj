@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="Handler\CmdHandler.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
-    <Compile Include="Network\Handler\MessageHandler.cs" />
+    <Compile Include="Network\NetworkMessagingManager.cs" />
     <Compile Include="Network\Message\MessageManager.cs" />
     <Compile Include="Network\Message\NetProxyMessageManager.cs" />
     <Compile Include="Network\NetworkClient.cs" />

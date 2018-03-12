@@ -7,6 +7,9 @@
 
     internal class NetAccountSession : NetSession
     {
+        /// <summary>
+        ///     Gets the account.
+        /// </summary>
         internal Account Account { get; private set; }
 
         /// <summary>
@@ -31,6 +34,8 @@
         public override void Destruct()
         {
             base.Destruct();
+
+            this.Account.SetSession(null);
             this.Account = null;
         }
     }

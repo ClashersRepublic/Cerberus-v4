@@ -64,7 +64,7 @@
                     CompressibleStringHelper.Compress(this._logicGameMode.GetLevel().GetHome().GetCompressibleHomeJSON());
                     DatabaseManager.GetDatabase(this._home.Id.GetHigherInt()).UpdateDocument(this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
 
-                    Logging.Debug(this, "GameMode::deInit level saved");
+                    Logging.Debug("GameMode::deInit level saved");
                 }
             }
         }
@@ -104,7 +104,7 @@
                 {
                     if (compressibleHomeJSON.Get() == null)
                     {
-                        Logging.Debug(this, "GameMode::init level JSON is NULL, load default");
+                        Logging.Debug("GameMode::init level JSON is NULL, load default");
                         compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
                     }
 
@@ -171,7 +171,7 @@
                         this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave);
                         break;
                     default:
-                        Logging.Warning(this, "GameMode::setGameMode mode " + mode + " doesn't exist");
+                        Logging.Warning("GameMode::setGameMode mode " + mode + " doesn't exist");
                         break;
                 }
             }
@@ -216,7 +216,7 @@
                 }
                 else
                 {
-                    Logging.Warning(this, "GameMode::addAvailableServerCommand trying to override a server command");
+                    Logging.Warning("GameMode::addAvailableServerCommand trying to override a server command");
                 }
             }
 
@@ -254,7 +254,7 @@
                         return true;
                     }
 
-                    Logging.Debug(this, "GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
+                    Logging.Debug("GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
                 }
             }
 
@@ -276,12 +276,12 @@
                 }
                 else
                 {
-                    Logging.Warning(this, string.Format("GameMode::removeServerCommand idx is out of bands {0}/{1}", serverCommandId, this._bufferedServerCommands.Count));
+                    Logging.Warning(string.Format("GameMode::removeServerCommand idx is out of bands {0}/{1}", serverCommandId, this._bufferedServerCommands.Count));
                 }
             }
             else
             {
-                Logging.Warning(this, "GameMode::removeServerCommand id is not set");
+                Logging.Warning("GameMode::removeServerCommand id is not set");
             }
         }
 
@@ -327,7 +327,7 @@
                 } while (this._logicGameMode.GetLogicTime() < subTick);
             }
             
-            Logging.Debug(this, string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} command_count: {2}", subTick, checksum, commands?.Count ?? 0));
+            Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} command_count: {2}", subTick, checksum, commands?.Count ?? 0));
         }
 
         private enum GAME

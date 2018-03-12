@@ -5,13 +5,13 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
+    using ClashersRepublic.Magic.Services.Account.Handler;
     using ClashersRepublic.Magic.Services.Account.Network.Message;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
     using ClashersRepublic.Magic.Services.Core;
     
     internal static class ServiceAccount
-    {
-        private const int ServiceNodeType = 2;    
+    { 
         private static Timer _titleTimer;
 
         /// <summary>
@@ -19,7 +19,7 @@
         /// </summary>
         internal static void Initialize(string[] args)
         {
-            ServiceCore.Initialize(ServiceAccount.ServiceNodeType, new NetAccountMessageManager(), args);
+            ServiceCore.Initialize(2, new NetAccountMessageManager(), args);
 
             ServiceAccount.InitLogic();
             ServiceAccount.InitGame();
@@ -39,6 +39,7 @@
         internal static void Start()
         {
             AccountManager.LoadAccounts();
+            ExitHandler.Initialize();
         }
 
         /// <summary>

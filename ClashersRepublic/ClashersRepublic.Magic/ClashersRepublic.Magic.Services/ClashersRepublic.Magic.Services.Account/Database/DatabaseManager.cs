@@ -61,7 +61,7 @@
                 return DatabaseManager._databases[idx];
             }
 
-            Logging.Warning(typeof(DatabaseManager), string.Format("DatabaseManager::getDatabase idx out of bands {0}/{1}", idx, DatabaseManager._databases.Length));
+            Logging.Warning(string.Format("DatabaseManager::getDatabase idx out of bands {0}/{1}", idx, DatabaseManager._databases.Length));
 
             return null;
         }

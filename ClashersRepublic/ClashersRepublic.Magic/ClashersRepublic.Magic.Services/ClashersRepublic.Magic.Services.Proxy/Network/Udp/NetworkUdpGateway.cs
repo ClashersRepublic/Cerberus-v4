@@ -29,7 +29,7 @@
             this.Listener = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             this.Listener.Bind(new IPEndPoint(IPAddress.Any, port));
 
-            Logging.Debug(this, "Server listens on UDP port " + port);
+            Logging.Debug("Server listens on UDP port " + port);
 
             SocketAsyncEventArgs receiveEvent = new SocketAsyncEventArgs();
 
@@ -49,7 +49,7 @@
         /// </summary>
         private void ReceiveCompleted(object sender, SocketAsyncEventArgs receiveEvent)
         {
-            Logging.Debug(this, "Receives UDP packet from " + receiveEvent.RemoteEndPoint + ".");
+            Logging.Debug("Receives UDP packet from " + receiveEvent.RemoteEndPoint + ".");
 
             if (!this.Listener.ReceiveFromAsync(receiveEvent))
             {

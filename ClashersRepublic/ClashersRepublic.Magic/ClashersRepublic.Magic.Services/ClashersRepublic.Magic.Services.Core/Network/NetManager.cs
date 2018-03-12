@@ -66,7 +66,7 @@
                 return NetManager._endPoints[serviceNodeType][serviceNodeId];
             }
 
-            Logging.Warning(typeof(NetManager), "NetManager::getServiceNodeEndPoint serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+            Logging.Warning("NetManager::getServiceNodeEndPoint serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
 
             return null;
         }
@@ -87,7 +87,7 @@
             }
             else
             {
-                Logging.Warning(typeof(NetManager), "NetManager::getRandomEndPoint serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+                Logging.Warning("NetManager::getRandomEndPoint serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
             }
 
             return null;
@@ -107,7 +107,7 @@
             }
             else
             {
-                Logging.Warning(typeof(NetManager), "NetManager::getServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+                Logging.Warning("NetManager::getServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
             }
 
             return -1;
@@ -127,7 +127,7 @@
             }
             else
             {
-                Logging.Warning(typeof(NetManager), "NetManager::getServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
+                Logging.Warning("NetManager::getServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + NetManager._endPoints.Length);
             }
 
             return null;

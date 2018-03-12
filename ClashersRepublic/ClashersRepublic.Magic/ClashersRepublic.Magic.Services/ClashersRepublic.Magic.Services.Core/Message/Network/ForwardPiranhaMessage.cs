@@ -46,7 +46,7 @@
             }
             else
             {
-                Logging.Warning(this, "ForwardPiranhaMessage::decode ignoring message of unknown type " + messageType);
+                Logging.Warning("ForwardPiranhaMessage::decode ignoring message of unknown type " + messageType);
             }
         }
 

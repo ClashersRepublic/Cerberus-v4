@@ -28,9 +28,9 @@
                     case 10301: return new ServerUnboundMessage();
                     case 10302: return new ServerBoundMessage();
                     case 10303: return new UpdateServerEndPointMessage();
+                    case 10304: return new UpdateServerEndPointMessage();
 
                     case 10400: return new ForwardPiranhaMessage();
-                    case 10401: return new ForwardErrorPiranhaMessage();
                 }
             }
             else

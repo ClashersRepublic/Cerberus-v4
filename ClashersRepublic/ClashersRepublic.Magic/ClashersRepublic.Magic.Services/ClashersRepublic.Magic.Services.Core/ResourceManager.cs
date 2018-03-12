@@ -76,11 +76,11 @@
                             continue;
                         }
 
-                        Logging.Debug(typeof(ResourceManager), "ResourceManager::verifyAssets missing file " + fileName);
+                        Logging.Debug("ResourceManager::verifyAssets missing file " + fileName);
                     }
                     else
                     {
-                        Logging.Debug(typeof(ResourceManager), "ResourceManager::verifyAssets pFileObject->NULL");
+                        Logging.Debug("ResourceManager::verifyAssets pFileObject->NULL");
                     }
 
                     ResourceManager.DownloadAssets(json);
@@ -104,12 +104,12 @@
                     }
                     else
                     {
-                        Logging.Warning(typeof(ResourceManager), "ResourceManager::verifyAssets /assets/sha doesn't exist");
+                        Logging.Warning("ResourceManager::verifyAssets /assets/sha doesn't exist");
                     }
                 }
                 else
                 {
-                    Logging.Warning(typeof(ResourceManager), "ResourceManager::verifyAssets pShaObject->NULL");
+                    Logging.Warning("ResourceManager::verifyAssets pShaObject->NULL");
 
                     string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
 
@@ -150,7 +150,7 @@
 
             string shaFingerprint = LogicJSONHelper.GetJSONString(jsonObject, "sha");
 
-            Logging.Debug(typeof(ResourceManager), "Download " + shaFingerprint + " assets...");
+            Logging.Debug("Download " + shaFingerprint + " assets...");
 
             for(int i = 0; i < fileArray.Size(); i++)
             {
@@ -174,7 +174,7 @@
 
                         if (sha != hash)
                         {
-                            Logging.Warning(typeof(ResourceManager), "ResourceManager::downloadAssets sha mismatch");
+                            Logging.Warning("ResourceManager::downloadAssets sha mismatch");
                         }
 
                         switch (Path.GetExtension(fileName))
@@ -211,7 +211,7 @@
             }
 
             File.WriteAllText("Assets/fingerprint.json", fingerprint);
-            Logging.Debug(typeof(ResourceManager), "Download completed");
+            Logging.Debug("Download completed");
         }
 
         /// <summary>

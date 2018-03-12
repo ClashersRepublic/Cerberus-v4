@@ -68,17 +68,17 @@
                 {
                     if (!HomeManager.TryCreateHome(accountId, out _))
                     {
-                        Logging.Warning(typeof(NetHomeMessageManager), "NetHomeMessageManager::createHomeMessageReceived home creation failed");
+                        Logging.Warning("NetHomeMessageManager::createHomeMessageReceived home creation failed");
                     }
                 }
                 else
                 {
-                    Logging.Warning(typeof(NetHomeMessageManager), "NetHomeMessageManager::createHomeMessageReceived account id is not valid");
+                    Logging.Warning("NetHomeMessageManager::createHomeMessageReceived account id is not valid");
                 }
             }
             else
             {
-                Logging.Warning(typeof(NetHomeMessageManager), "NetHomeMessageManager::createHomeMessageReceived account id is equal at 0");
+                Logging.Warning("NetHomeMessageManager::createHomeMessageReceived account id is equal at 0");
             }
         }
 
@@ -130,7 +130,7 @@
                     }
                     else
                     {
-                        Logging.Warning(typeof(NetHomeMessageManager), "NetHomeManager::serverBoundMessageReceived pSession->NULL");
+                        Logging.Warning("NetHomeManager::serverBoundMessageReceived pSession->NULL");
                     }
                 }
             }
@@ -195,7 +195,7 @@
                         }
                         catch (Exception exception)
                         {
-                            Logging.Warning(this, "NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
+                            Logging.Warning("NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
                         }
                     }
                 }

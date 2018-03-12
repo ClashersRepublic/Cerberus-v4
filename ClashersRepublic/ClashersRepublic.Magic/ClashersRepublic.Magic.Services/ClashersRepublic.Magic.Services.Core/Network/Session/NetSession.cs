@@ -68,7 +68,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetSession::setServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
+                Logging.Warning("NetSession::setServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
             }
 
             return null;
@@ -97,7 +97,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetSession::setServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
+                Logging.Warning("NetSession::setServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
             }
         }
     }

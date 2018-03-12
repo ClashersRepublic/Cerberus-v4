@@ -110,5 +110,13 @@
         {
             return NetProxySessionManager._sessions.TryRemove(sessionName, out session);
         }
+
+        /// <summary>
+        ///     Tries to remove the <see cref="NetProxySession"/> instance associed with the specified id.
+        /// </summary>
+        internal static bool TryRemove(byte[] sessionId, out NetProxySession session)
+        {
+            return NetProxySessionManager._sessions.TryRemove(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out session);
+        }
     }
 }

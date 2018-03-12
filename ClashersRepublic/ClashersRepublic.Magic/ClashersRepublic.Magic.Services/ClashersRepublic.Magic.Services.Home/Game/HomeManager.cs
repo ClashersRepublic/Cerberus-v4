@@ -64,7 +64,7 @@
                 }
                 else
                 {
-                    Logging.Warning(typeof(HomeManager), "HomeManager::loadHomes pDatabase->NULL");
+                    Logging.Warning("HomeManager::loadHomes pDatabase->NULL");
                 }
             }
         }

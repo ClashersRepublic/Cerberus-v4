@@ -71,6 +71,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Database\CouchbaseDatabase.cs" />
     <Compile Include="Database\IDatabase.cs" />
+    <Compile Include="Exception\AssertionException.cs" />
     <Compile Include="Game\Avatar\Change\AvatarChangeFactory.cs" />
     <Compile Include="Game\Avatar\Change\ExpLevelAvatarChange.cs" />
     <Compile Include="Game\Avatar\Change\NameAvatarChange.cs" />
@@ -275,8 +276,8 @@
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />
     <Compile Include="Message\NetMessageManager.cs" />
-    <Compile Include="Message\Network\ForwardErrorPiranhaMessage.cs" />
     <Compile Include="Message\Network\ForwardPiranhaMessage.cs" />
+    <Compile Include="Message\Session\UnbindServerMessage.cs" />
     <Compile Include="Message\Session\ServerBoundMessage.cs" />
     <Compile Include="Message\Session\UpdateServerEndPointMessage.cs" />
     <Compile Include="Message\Session\ServerUnboundMessage.cs" />

@@ -73,7 +73,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetProxySession::bindServer serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
+                Logging.Warning("NetProxySession::bindServer serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
             }
         }
 
@@ -109,7 +109,7 @@
             }
             else
             {
-                Logging.Warning(this, "NetProxySession::unbindServer serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
+                Logging.Warning("NetProxySession::unbindServer serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
             }
         }
 

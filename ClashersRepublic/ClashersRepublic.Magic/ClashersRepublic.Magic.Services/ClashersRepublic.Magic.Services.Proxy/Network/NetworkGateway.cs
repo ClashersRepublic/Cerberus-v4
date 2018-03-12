@@ -5,6 +5,7 @@
     using System.Net.Sockets;
      
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
 
     internal class NetworkGateway
     {
@@ -20,7 +21,7 @@
             this._listener.Bind(new IPEndPoint(IPAddress.Any, port));
             this._listener.Listen(500);
 
-            Logging.Debug(this, "NetworkGateway::ctor server listens on tcp port " + port);
+            Logging.Debug("NetworkGateway::ctor server listens on tcp port " + port);
 
             SocketAsyncEventArgs acceptEvent = new SocketAsyncEventArgs();
             acceptEvent.Completed += this.OnAcceptCompleted;
@@ -54,10 +55,6 @@
             {
                 NetworkGateway.ProcessAccept(asyncEvent);
             }
-            else
-            {
-                Logging.Warning(typeof(NetworkGateway), asyncEvent.SocketError + ", SocketError != Success at OnAcceptCompleted(Sender, AsyncEvent).");
-            }
 
             this.StartAccept(asyncEvent);
         }
@@ -68,7 +65,7 @@
         /// <param name="asyncEvent">The <see cref="SocketAsyncEventArgs" /> instance containing the event data.</param>
         private static void ProcessAccept(SocketAsyncEventArgs asyncEvent)
         {
-            Logging.Debug(typeof(NetworkGateway), "Connection from " + ((IPEndPoint) asyncEvent.AcceptSocket.RemoteEndPoint).Address + ".");
+            Logging.Debug("Connection from " + ((IPEndPoint) asyncEvent.AcceptSocket.RemoteEndPoint).Address + ".");
 
             if (asyncEvent.AcceptSocket.Connected)
             {
@@ -82,11 +79,14 @@
 
                 if (NetworkManager.TryAdd(token))
                 {
-                    readEvent.UserToken = token;
-
-                    if (!socket.ReceiveAsync(readEvent))
+                    if (NetworkMessagingManager.TryAdd(token.Messaging))
                     {
-                        NetworkGateway.ProcessReceive(readEvent);
+                        readEvent.UserToken = token;
+
+                        if (!socket.ReceiveAsync(readEvent))
+                        {
+                            NetworkGateway.ProcessReceive(readEvent);
+                        }
                     }
                 }
             }
@@ -192,7 +192,7 @@
                 }
                 catch (Exception)
                 {
-                    Logging.Error(typeof(NetworkGateway), "NetworkGateway::send socket->send");
+                    Logging.Error("NetworkGateway::send socket->send");
                 }
             }
         }

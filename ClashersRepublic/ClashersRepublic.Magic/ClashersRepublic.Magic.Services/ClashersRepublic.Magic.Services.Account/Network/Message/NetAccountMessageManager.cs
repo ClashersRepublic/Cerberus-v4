@@ -4,7 +4,7 @@
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
-    
+    using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
@@ -63,29 +63,45 @@
                 {
                     if (account.PassToken.Equals(message.RemovePassToken()))
                     {
-                        NetAccountSession session = NetAccountSessionManager.TryCreate(account, message.GetSessionId());
-
-                        if (session != null)
+                        if (!account.IsBanned())
                         {
-                            if (account.Session != null)
+                            if (NetAccountSessionManager.TryCreate(account, message.GetSessionId(), out NetAccountSession session))
                             {
-                                // Abort
+                                if (account.Session != null)
+                                {
+                                    if (NetAccountSessionManager.TryRemove(account.Session.SessionName, out NetAccountSession oldSession))
+                                    {
+                                        NetSocket proxy = oldSession.GetServiceNodeEndPoint(1);
+                                        Logging.DoAssert(this, proxy != null, "NetAccountMessageManager::loginClientMessageReceived pProxy->NULL");
+                                        NetMessageManager.SendMessage(proxy, oldSession.SessionId, oldSession.SessionId.Length, new UnbindServerMessage());
+
+                                        oldSession.Account.EndSession();
+                                        oldSession.SaveAccount();
+                                        oldSession.Destruct();
+                                    }
+                                }
+
+                                account.SetSession(session);
+                                account.SessionStarted(LogicTimeUtil.GetTimestamp(), message.GetIPAddress(), message.GetDeviceModel());
+
+                                LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
+
+                                loginClientOkMessage.SetAccountId(account.Id);
+                                loginClientOkMessage.SetHomeId(account.Id);
+                                loginClientOkMessage.SetPassToken(account.PassToken);
+                                loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
+
+                                NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
                             }
-
-                            account.SetSession(session);
-                            account.SessionStarted(LogicTimeUtil.GetTimestamp(), message.GetIPAddress(), message.GetDeviceModel());
-
-                            LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
-
-                            loginClientOkMessage.SetAccountId(account.Id);
-                            loginClientOkMessage.SetHomeId(account.Id);
-                            loginClientOkMessage.SetPassToken(account.PassToken);
-                            loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
-
-                            NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
-                            
-                            return;
                         }
+                        else
+                        {
+                            LoginClientFailedMessage banMessage = new LoginClientFailedMessage();
+                            banMessage.SetErrorCode(2);
+                            NetAccountMessageManager.SendResponseMessage(message, banMessage);
+                        }
+
+                        return;
                     }
                 }
             }
@@ -96,7 +112,7 @@
         }
 
         /// <summary>
-        ///     Called when the <see cref="CreateAccountMessageReceived"/> is received.
+        ///     Called when the <see cref="CreateAccountMessage"/> is received.
         /// </summary>
         internal void CreateAccountMessageReceived(CreateAccountMessage message)
         {
@@ -133,7 +149,7 @@
             {
                 if (AccountManager.TryGetAccount(accountId, out Account account))
                 {
-                    if (account.CurrentBan == null)
+                    if (!account.IsBanned())
                     {
                         if (message.GetEndTime() >= -1)
                         {
@@ -158,12 +174,9 @@
             {
                 if (AccountManager.TryGetAccount(accountId, out Account account))
                 {
-                    if (account.CurrentBan != null)
+                    if (account.RevokeBan())
                     {
-                        if (account.RevokeBan())
-                        {
-                            NetAccountMessageManager.SendResponseMessage(message, new AccountBanRevokedMessage());
-                        }
+                        NetAccountMessageManager.SendResponseMessage(message, new AccountBanRevokedMessage());
                     }
                 }
             }

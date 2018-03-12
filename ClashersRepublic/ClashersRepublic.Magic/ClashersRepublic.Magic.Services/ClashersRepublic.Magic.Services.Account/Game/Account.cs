@@ -112,7 +112,7 @@
         {
             if (this.CurrentBan != null)
             {
-                Logging.Warning(this, "Account::createBan ban already in progress");
+                Logging.Warning("Account::createBan ban already in progress");
             }
             else
             {
@@ -120,6 +120,28 @@
                 this.TotalBan += 1;
 
                 return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="Account"/> instance is banned.
+        /// </summary>
+        internal bool IsBanned()
+        {
+            if (this.CurrentBan != null)
+            {
+                if (this.CurrentBan.EndBanTime != -1)
+                {
+                    if (LogicTimeUtil.GetTimestamp() > this.CurrentBan.EndBanTime)
+                    {
+                        this.CurrentBan = null;
+                        return false;
+                    }
+
+                    return true;
+                }
             }
 
             return false;

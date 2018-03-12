@@ -31,5 +31,13 @@
         {
             return 0;
         }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            // Destruct.
+        }
     }
 }

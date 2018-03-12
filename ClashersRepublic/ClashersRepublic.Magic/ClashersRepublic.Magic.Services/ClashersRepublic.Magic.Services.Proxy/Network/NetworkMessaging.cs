@@ -7,6 +7,7 @@
     using ClashersRepublic.Magic.Logic.Message.Security;
 
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
 
     using ClashersRepublic.Magic.Titan;
@@ -15,6 +16,8 @@
 
     internal class NetworkMessaging
     {
+        private bool _destructed;
+
         private NetworkToken _networkToken;
         private StreamEncrypter _sendEncrypter;
         private StreamEncrypter _receiveEncrypter;
@@ -36,6 +39,11 @@
         ///     Gets or Sets the scrambler seed.
         /// </summary>
         internal int ScramblerSeed { get; set; }
+
+        /// <summary>
+        ///     Gets of Sets the messaging id.
+        /// </summary>
+        internal int MessagingId { get; set; }
         
         private int _pepperState;
 
@@ -58,6 +66,43 @@
         /// </summary>
         internal void Destruct()
         {
+            this._destructed = true;
+
+            if (this.MessagingId > -1)
+            {
+                NetworkMessagingManager.TryRemove(this);
+            }
+
+            if (this._sendEncrypter != null)
+            {
+                this._sendEncrypter.Destruct();
+                this._sendEncrypter = null;
+            }
+
+            if (this._receiveEncrypter != null)
+            {
+                this._receiveEncrypter.Destruct();
+                this._receiveEncrypter = null;
+            }
+
+            if (this._sendMessageQueue != null)
+            {
+                while (this._sendMessageQueue.TryDequeue(out _))
+                {
+                }
+
+                this._sendMessageQueue = null;
+            }
+
+            if (this._receiveMessageQueue != null)
+            {
+                while (this._receiveMessageQueue.TryDequeue(out _))
+                {
+                }
+
+                this._receiveMessageQueue = null;
+            }
+
             this._networkToken = null;
             this._sendEncrypter = null;
             this._receiveEncrypter = null;
@@ -156,16 +201,16 @@
                         }
                         catch (Exception exception)
                         {
-                            Logging.Warning(this, "NetworkMessaging::receive exception while the decode of message type " + messageType + ", trace: " + exception);
+                            Logging.Warning("NetworkMessaging::receive exception while the decode of message type " + messageType + ", trace: " + exception);
                         }
                         finally
                         {
-                            Logging.Debug(this, "NetworkMessaging::receive message " + message.GetType().Name + " received");
+                            Logging.Debug("NetworkMessaging::receive message " + message.GetType().Name + " received");
                         }
                     }
                     else
                     {
-                        Logging.Warning(this, "NetworkMessaging::receive ignoring message of unknown type " + messageType);
+                        Logging.Warning("NetworkMessaging::receive ignoring message of unknown type " + messageType);
                     }
 
                     return messageLength + 7;
@@ -296,7 +341,7 @@
 
                 if (encryptionResult != 0)
                 {
-                    Logging.Error(this, "NetworkMessaging::onWakeup encryption failure, code: " + encryptionResult);
+                    Logging.Error("NetworkMessaging::onWakeup encryption failure, code: " + encryptionResult);
                 }
 
                 messageByteArray = encryptedByteArray;
@@ -308,7 +353,7 @@
             this.WriteHeader(message, packet, encodingLength);
             this._networkToken.SendData(packet, encodingLength + 7);
             
-            Logging.Debug(this, "NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
+            Logging.Debug("NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>
@@ -329,7 +374,7 @@
 
             if (length > 0xFFFFFF)
             {
-                Logging.Error(this, "NetworkMessaging::writeHeader trying to send too big message, type " + messageType);
+                Logging.Error("NetworkMessaging::writeHeader trying to send too big message, type " + messageType);
             }
         }
 
@@ -339,6 +384,14 @@
         internal bool NextMessage(out PiranhaMessage message)
         {
             return this._receiveMessageQueue.TryDequeue(out message);
+        }
+
+        /// <summary>
+        ///     Gets if this instance is destructed.
+        /// </summary>
+        internal bool IsDestructed()
+        {
+            return this._destructed;
         }
     }
 }

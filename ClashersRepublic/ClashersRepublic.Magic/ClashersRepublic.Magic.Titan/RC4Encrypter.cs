@@ -16,6 +16,18 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+
+            this._key = null;
+            this._x = 0;
+            this._y = 0;
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         public void InitState(string baseKey, string nonce)
@@ -82,16 +94,6 @@
             }
 
             return 0;
-        }
-
-        /// <summary>
-        ///     Destructes this instance.
-        /// </summary>
-        ~RC4Encrypter()
-        {
-            this._x = 0;
-            this._y = 0;
-            this._key = null;
         }
     }
 }
