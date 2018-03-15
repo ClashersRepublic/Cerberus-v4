@@ -214,6 +214,7 @@
         internal void RemoveBlocking(int blockSize)
         {
             this._receivedOffset -= blockSize;
+            Array.Copy(this._receivedBytes, blockSize, this._receivedBytes, 0, this._receivedOffset);
         }
     }
 }

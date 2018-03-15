@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.Message
 {
+    using System;
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message.Account;
 
@@ -9,6 +10,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
+    using ClashersRepublic.Magic.Services.Proxy.Network.ServerSocket;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Message;
@@ -22,7 +24,7 @@
         {
             switch (message.GetMessageType())
             {
-                case 10301:
+                case 10304:
                     this.UnbindServerMessageReceived((UnbindServerMessage) message);
                     break;
 
@@ -50,7 +52,7 @@
         /// </summary>
         internal static void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
         {
-            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), requestMessage.GetSessionIdLength(), responseMessage);
+            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
 
         /// <summary>
@@ -67,12 +69,18 @@
                     if (session.Client.State == 1)
                     {
                         LoginClientMessage loginClientMessage = new LoginClientMessage();
+
                         loginClientMessage.SetAccountId(message.RemoveAccountId());
                         loginClientMessage.SetPassToken(message.RemovePassToken());
-                        loginClientMessage.SetIPAddress(session.Client.NetworkToken.ClientIP);
+                        loginClientMessage.SetIPAddress(session.Client.GetAddress());
                         loginClientMessage.SetDeviceModel(session.Client.DeviceModel);
-                        NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, sessionId.Length, loginClientMessage);
+
+                        NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, loginClientMessage);
                     }
+                }
+                else
+                {
+                    Console.WriteLine("ERROR");
                 }
             }
         }
@@ -90,7 +98,7 @@
                 {
                     if (session.Client.State != 6 && session.Client.State != -1)
                     {
-                        session.Client.MessageManager.SendLoginFailedMessage(1, "Internal server error");
+                        session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
                     }
                 }
             }
@@ -109,7 +117,7 @@
                 {
                     if (session.Client.State != 6 && session.Client.State != -1)
                     {
-                        session.Client.MessageManager.SendLoginFailedMessage(1, "Internal server error");
+                        session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
                     }
                 }
             }
@@ -148,7 +156,7 @@
                         loginOkMessage.ChronosContentUrlList = ResourceManager.ChronosContentUrlList;
 
                         session.SetAccountId(loginOkMessage.AccountId);
-                        session.Client.MessageManager.SendMessage(loginOkMessage);
+                        session.Client.Messaging.MessageManager.SendMessage(loginOkMessage);
                         session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.AccountId));
 
                         session.Client.State = 6;
@@ -174,7 +182,7 @@
 
                     if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                     {
-                        session.Client.MessageManager.SendMessage(piranhaMessage);
+                        session.Client.Messaging.MessageManager.SendMessage(piranhaMessage);
                     }
                 }
             }
@@ -191,11 +199,11 @@
             {
                 if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                 {
-                    session.UnbindServer(message.GetServiceNodeType());
+                    session.UnbindServer(message.GetServiceNodeType(), false);
 
-                    if (message.GetServiceNodeType() != 1 && message.GetServiceNodeType() != 10)
+                    if (message.GetServiceNodeType() == 2 || message.GetServiceNodeType() == 10)
                     {
-                        NetworkGateway.Disconnect(session.Client.NetworkToken.ReadEvent);
+                        NetworkTcpServerGateway.Disconnect(session.Client.Messaging.Connection);
                     }
                 }
             }

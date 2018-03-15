@@ -1,23 +1,18 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Home;
-
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
-    using ClashersRepublic.Magic.Services.Home.Network.Session;
-
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class MessageManager
     {
-        private NetHomeSession _session;
         private GameMode _gameMode;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MessageManager"/> class.
         /// </summary>
-        internal MessageManager(NetHomeSession session, GameMode gameMode)
+        internal MessageManager(GameMode gameMode)
         {
-            this._session = session;
             this._gameMode = gameMode;
         }
 
@@ -26,7 +21,6 @@
         /// </summary>
         internal void Destruct()
         {
-            this._session = null;
             this._gameMode = null;
         }
 

@@ -1,7 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Network.Message
 {
-    using System;
-    using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
     using ClashersRepublic.Magic.Services.Core;
@@ -39,6 +37,10 @@
                 case 10301:
                     this.ServerUnboundMessageReceived((ServerUnboundMessage) message);
                     break;
+
+                default:
+                    Logging.Warning("NetAccountMessageManager::receiveMessage no case for message type " + message.GetType().Name);
+                    break;
             }
         }
 
@@ -47,7 +49,7 @@
         /// </summary>
         internal static void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
         {
-            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), requestMessage.GetSessionIdLength(), responseMessage);
+            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
 
         /// <summary>
@@ -73,7 +75,7 @@
                                     {
                                         NetSocket proxy = oldSession.GetServiceNodeEndPoint(1);
                                         Logging.DoAssert(this, proxy != null, "NetAccountMessageManager::loginClientMessageReceived pProxy->NULL");
-                                        NetMessageManager.SendMessage(proxy, oldSession.SessionId, oldSession.SessionId.Length, new UnbindServerMessage());
+                                        NetMessageManager.SendMessage(proxy, oldSession.SessionId, new UnbindServerMessage());
 
                                         oldSession.Account.EndSession();
                                         oldSession.SaveAccount();
@@ -82,6 +84,7 @@
                                 }
 
                                 account.SetSession(session);
+                                session.SetServiceNodeId(1, message.GetServiceNodeId());
                                 account.SessionStarted(LogicTimeUtil.GetTimestamp(), message.GetIPAddress(), message.GetDeviceModel());
 
                                 LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
@@ -120,9 +123,9 @@
             {
                 CreateHomeMessage createHomeMessage = new CreateHomeMessage();
                 createHomeMessage.SetAccountId(accountId);
-                NetMessageManager.SendMessage(10, NetManager.GetDocumentOwnerId(10, accountId), createHomeMessage);
+                NetMessageManager.SendMessage(10, NetManager.GetDocumentOwnerId(10, accountId), message.GetSessionId(), createHomeMessage);
 
-                LoginClientOkMessage createAccountOkMessage = new LoginClientOkMessage();
+                CreateAccountOkMessage createAccountOkMessage = new CreateAccountOkMessage();
 
                 createAccountOkMessage.SetAccountId(accountId);
                 createAccountOkMessage.SetHomeId(accountId);

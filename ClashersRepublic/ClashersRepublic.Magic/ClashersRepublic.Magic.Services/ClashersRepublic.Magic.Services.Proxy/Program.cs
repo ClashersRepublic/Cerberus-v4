@@ -3,7 +3,7 @@
     using System;
     using System.Drawing;
     using System.Reflection;
-    using System.Timers;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Proxy.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network;
@@ -39,7 +39,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Connections: " + NetworkManager.Connections;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Connections: " + NetworkMessagingManager.TotalMessagings;
         }
     }
 }

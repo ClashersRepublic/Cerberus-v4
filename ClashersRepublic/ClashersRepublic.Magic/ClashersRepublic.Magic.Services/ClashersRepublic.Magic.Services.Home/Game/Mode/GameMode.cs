@@ -62,7 +62,7 @@
                     this._logicGameMode.GetLevel().GetHome().SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
 
                     CompressibleStringHelper.Compress(this._logicGameMode.GetLevel().GetHome().GetCompressibleHomeJSON());
-                    DatabaseManager.GetDatabase(this._home.Id.GetHigherInt()).UpdateDocument(this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
+                    DatabaseManager.Update(this._home);
 
                     Logging.Debug("GameMode::deInit level saved");
                 }
@@ -116,7 +116,7 @@
 
                 CompressibleStringHelper.Compress(compressibleCalendarJSON);
                 CompressibleStringHelper.Compress(compressibleGlobalJSON);
-
+                
                 OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
 
                 ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);

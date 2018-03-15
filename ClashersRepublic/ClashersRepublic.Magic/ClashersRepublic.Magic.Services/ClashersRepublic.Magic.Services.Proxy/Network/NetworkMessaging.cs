@@ -7,7 +7,6 @@
     using ClashersRepublic.Magic.Logic.Message.Security;
 
     using ClashersRepublic.Magic.Services.Core;
-    using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
 
     using ClashersRepublic.Magic.Titan;
@@ -17,8 +16,9 @@
     internal class NetworkMessaging
     {
         private bool _destructed;
+        private bool _scrambled;
+        private int _pepperState;
 
-        private NetworkToken _networkToken;
         private StreamEncrypter _sendEncrypter;
         private StreamEncrypter _receiveEncrypter;
         private LogicMessageFactory _messageFactory;
@@ -26,9 +26,14 @@
         private ConcurrentQueue<PiranhaMessage> _receiveMessageQueue;
 
         /// <summary>
+        ///     Gets the <see cref="NetworkConnection"/> instance.
+        /// </summary>
+        internal NetworkConnection Connection { get; }
+
+        /// <summary>
         ///     Gets the <see cref="NetworkClient"/> instance.
         /// </summary>
-        internal NetworkClient Client { get; }
+        internal NetworkClient Client { get; private set; }
 
         /// <summary>
         ///     Gets the <see cref="Message.MessageManager"/> instance.
@@ -43,18 +48,17 @@
         /// <summary>
         ///     Gets of Sets the messaging id.
         /// </summary>
-        internal int MessagingId { get; set; }
-        
-        private int _pepperState;
+        internal long MessagingId { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkMessaging"/> class.
         /// </summary>
-        internal NetworkMessaging(NetworkToken token)
+        internal NetworkMessaging(NetworkConnection connection)
         {
-            this._networkToken = token;
-            this.Client = token.Client;
-
+            this._pepperState = -1;
+            this.MessagingId = -1;
+            this.Connection = connection;
+            this.Client = new NetworkClient(this);
             this.MessageManager = new MessageManager(this);
             this._sendMessageQueue = new ConcurrentQueue<PiranhaMessage>();
             this._receiveMessageQueue = new ConcurrentQueue<PiranhaMessage>();
@@ -67,45 +71,21 @@
         internal void Destruct()
         {
             this._destructed = true;
-
-            if (this.MessagingId > -1)
+            
+            if (this.Client != null)
             {
-                NetworkMessagingManager.TryRemove(this);
+                this.Client.Destruct();
+                this.Client = null;
             }
 
-            if (this._sendEncrypter != null)
+            while (this._sendMessageQueue.TryDequeue(out _))
             {
-                this._sendEncrypter.Destruct();
-                this._sendEncrypter = null;
             }
 
-            if (this._receiveEncrypter != null)
+            while (this._receiveMessageQueue.TryDequeue(out _))
             {
-                this._receiveEncrypter.Destruct();
-                this._receiveEncrypter = null;
             }
 
-            if (this._sendMessageQueue != null)
-            {
-                while (this._sendMessageQueue.TryDequeue(out _))
-                {
-                }
-
-                this._sendMessageQueue = null;
-            }
-
-            if (this._receiveMessageQueue != null)
-            {
-                while (this._receiveMessageQueue.TryDequeue(out _))
-                {
-                }
-
-                this._receiveMessageQueue = null;
-            }
-
-            this._networkToken = null;
-            this._sendEncrypter = null;
-            this._receiveEncrypter = null;
             this._messageFactory = null;
         }
 
@@ -129,7 +109,7 @@
         /// <summary>
         ///     Receives the received data.
         /// </summary>
-        internal int Receive(byte[] buffer, int length)
+        internal int OnReceive(byte[] buffer, int length)
         {
             if (length >= 7)
             {
@@ -148,7 +128,7 @@
 
                     if (this._receiveEncrypter == null)
                     {
-                        if (this._pepperState == 0)
+                        if (this._pepperState == -1)
                         {
                             if (messageType == 10101)
                             {
@@ -220,7 +200,7 @@
                     if (messageLength >= 0x3F0000)
                     {
                         return -1;
-                    } 
+                    }
                 }
             }
 
@@ -242,7 +222,7 @@
         {
             if (message.IsServerToClientMessage())
             {
-                if (this._networkToken.IsConnected())
+                if (this.Connection.IsConnected())
                 {
                     this._sendMessageQueue.Enqueue(message);
                 }
@@ -260,10 +240,10 @@
             {
                 int rnd = ServiceProxy.Random.Rand();
 
-                nonce[i] = (byte)(rnd);
-                nonce[i + 1] = (byte)(rnd >> 8);
-                nonce[i + 2] = (byte)(rnd >> 16);
-                nonce[i + 3] = (byte)(rnd >> 24);
+                nonce[i] = (byte) (rnd);
+                nonce[i + 1] = (byte) (rnd >> 8);
+                nonce[i + 2] = (byte) (rnd >> 16);
+                nonce[i + 3] = (byte) (rnd >> 24);
             }
 
             return nonce;
@@ -281,12 +261,12 @@
 
             for (int i = 0; i < 100; i++)
             {
-                byte100 = (byte)scrambler.NextInt();
+                byte100 = (byte) scrambler.NextInt();
             }
 
             for (int i = 0; i < nonce.Length; i++)
             {
-                scrambledNonce += (char)(nonce[i] ^ (byte)(scrambler.NextInt() & byte100));
+                scrambledNonce += (char) (nonce[i] ^ (byte) (scrambler.NextInt() & byte100));
             }
 
             this.InitEncrypters(scrambledNonce);
@@ -314,13 +294,13 @@
             }
 
             int encodingLength = message.GetEncodingLength();
-            byte[] messageByteArray = message.GetByteStream().GetByteArray();
+            byte[] messageByteArray = message.GetMessageBytes();
 
             if (this._sendEncrypter != null)
             {
-                if (message.GetMessageType() == 20104)
+                if (!this._scrambled && this._pepperState == -1)
                 {
-                    if (this._pepperState == 0)
+                    if (message.GetMessageType() == 20104)
                     {
                         byte[] nonce = this.GenerateNonce();
 
@@ -351,8 +331,8 @@
             byte[] packet = new byte[encodingLength + 7];
             Array.Copy(messageByteArray, 0, packet, 7, encodingLength);
             this.WriteHeader(message, packet, encodingLength);
-            this._networkToken.SendData(packet, encodingLength + 7);
-            
+            this.Connection.SendData(packet, encodingLength + 7);
+
             Logging.Debug("NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 

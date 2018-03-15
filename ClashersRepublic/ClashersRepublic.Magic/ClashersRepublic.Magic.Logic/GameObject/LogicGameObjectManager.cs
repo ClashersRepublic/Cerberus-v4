@@ -590,7 +590,7 @@
                 }
             }
 
-            this._tileMap.EnableRoomIndices(true);
+            this._tileMap.EnableRoomIndices(false); // TRUE !!!!
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network
 {
-    using ClashersRepublic.Magic.Services.Proxy.Network.Message;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
     internal class NetworkClient
@@ -18,28 +17,17 @@
         internal string DeviceModel { get; set; }
 
         /// <summary>
-        ///     Gets the <see cref="Network.NetworkToken"/> instance.
+        ///     Gets the <see cref="NetworkMessaging"/> instance.
         /// </summary>
-        internal NetworkToken NetworkToken { get; private set; }
-
-        /// <summary>
-        ///     Gets the <see cref="MessageManager"/> instance.
-        /// </summary>
-        internal MessageManager MessageManager
-        {
-            get
-            {
-                return this.NetworkToken.Messaging.MessageManager;
-            }
-        }
+        internal NetworkMessaging Messaging { get; private set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetworkClient"/> class.
         /// </summary>
-        internal NetworkClient(NetworkToken token)
+        internal NetworkClient(NetworkMessaging messaging)
         {
             this.State = 1;
-            this.NetworkToken = token;
+            this.Messaging = messaging;
         }
 
         /// <summary>
@@ -58,7 +46,15 @@
                 this._session = null;
             }
 
-            this.NetworkToken = null;
+            this.Messaging = null;
+        }
+
+        /// <summary>
+        ///     Gets the client address.
+        /// </summary>
+        internal string GetAddress()
+        {
+            return this.Messaging.Connection.GetAddress();
         }
 
         /// <summary>

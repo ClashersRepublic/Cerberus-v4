@@ -47,17 +47,19 @@
   <ItemGroup>
     <Compile Include="Handler\CmdHandler.cs" />
     <Compile Include="Handler\ExitHandler.cs" />
-    <Compile Include="Network\NetworkMessagingManager.cs" />
     <Compile Include="Network\Message\MessageManager.cs" />
     <Compile Include="Network\Message\NetProxyMessageManager.cs" />
+    <Compile Include="Network\NetworkBuffer.cs" />
     <Compile Include="Network\NetworkClient.cs" />
-    <Compile Include="Network\NetworkGateway.cs" />
-    <Compile Include="Network\NetworkManager.cs" />
+    <Compile Include="Network\NetworkConnection.cs" />
     <Compile Include="Network\NetworkMessaging.cs" />
-    <Compile Include="Network\NetworkToken.cs" />
+    <Compile Include="Network\NetworkMessagingManager.cs" />
+    <Compile Include="Network\ServerSocket\NetworkTcpServerSocket.cs" />
+    <Compile Include="Network\NetworkManager.cs" />
     <Compile Include="Network\Session\NetProxySession.cs" />
     <Compile Include="Network\Session\NetProxySessionManager.cs" />
-    <Compile Include="Network\Udp\NetworkUdpGateway.cs" />
+    <Compile Include="Network\ServerSocket\NetworkServerSocket.cs" />
+    <Compile Include="Network\ServerSocket\NetworkUdpServerSocket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProxy.cs" />

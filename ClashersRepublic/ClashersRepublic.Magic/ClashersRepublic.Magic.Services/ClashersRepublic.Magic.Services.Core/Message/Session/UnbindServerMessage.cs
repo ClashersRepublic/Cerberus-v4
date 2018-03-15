@@ -1,7 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Session
 {
-    using ClashersRepublic.Magic.Logic.Avatar;
-
     public class UnbindServerMessage : NetMessage
     {
         /// <summary>

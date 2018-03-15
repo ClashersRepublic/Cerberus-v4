@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message
 {
+    using System;
     using ClashersRepublic.Magic.Services.Core.Network;
 
     public class NetMessageManager
@@ -23,9 +24,9 @@
         /// <summary>
         ///     Sends the <see cref="NetMessage"/> to the specified <see cref="NetSocket"/>.
         /// </summary>
-        public static void SendMessage(int serviceNodeType, int serviceNodeId, byte[] sessionId, int sessionIdLength, NetMessage message)
+        public static void SendMessage(int serviceNodeType, int serviceNodeId, byte[] sessionId, NetMessage message)
         {
-            NetMessaging.Send(serviceNodeType, serviceNodeId, message, sessionId, sessionIdLength);
+            NetMessaging.Send(serviceNodeType, serviceNodeId, message, sessionId);
         }
 
         /// <summary>
@@ -39,9 +40,14 @@
         /// <summary>
         ///     Sends the <see cref="NetMessage"/> to the specified <see cref="NetSocket"/>.
         /// </summary>
-        public static void SendMessage(NetSocket socket, byte[] sessionId, int sessionIdLength, NetMessage message)
+        public static void SendMessage(NetSocket socket, byte[] sessionId, NetMessage message)
         {
-            NetMessaging.Send(socket, message, sessionId, sessionIdLength);
+            if (sessionId == null)
+            {
+                throw new ArgumentNullException("sessionId");
+            }
+
+            NetMessaging.Send(socket, message, sessionId);
         }
     }
 }

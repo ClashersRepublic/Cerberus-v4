@@ -2,12 +2,15 @@
 {
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message.Account;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Message.Security;
     using ClashersRepublic.Magic.Titan.Util;
@@ -26,6 +29,15 @@
         {
             this._client = messaging.Client;
             this._messaging = messaging;
+            this._lastKeepAliveTime = LogicTimeUtil.GetTimestamp();
+        }
+
+        /// <summary>
+        ///     Gets if the client is alive.
+        /// </summary>
+        internal bool IsAlive()
+        {
+            return LogicTimeUtil.GetTimestamp() - this._lastKeepAliveTime <= 30;
         }
 
         /// <summary>
@@ -55,7 +67,7 @@
                         {
                             ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
                             forwardPiranhaMessage.SetPiranhaMessage(message);
-                            NetMessageManager.SendMessage(socket, session.SessionId, session.SessionId.Length, forwardPiranhaMessage);
+                            NetMessageManager.SendMessage(socket, session.SessionId, forwardPiranhaMessage);
                         }
                         else
                         {
@@ -171,7 +183,7 @@
                                     session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
                                     session.SetServiceNodeId(2, socket.Id);
 
-                                    NetMessageManager.SendMessage(socket, sessionId, sessionId.Length, new CreateAccountMessage());
+                                    NetMessageManager.SendMessage(socket, sessionId, new CreateAccountMessage());
                                 }
                                 else
                                 {
@@ -209,9 +221,9 @@
                                     LoginClientMessage loginClientMessage = new LoginClientMessage();
                                     loginClientMessage.SetAccountId(message.AccountId);
                                     loginClientMessage.SetPassToken(message.PassToken);
-                                    loginClientMessage.SetIPAddress(this._client.NetworkToken.ClientIP);
+                                    loginClientMessage.SetIPAddress(this._client.GetAddress());
                                     loginClientMessage.SetDeviceModel(this._client.DeviceModel);
-                                    NetMessageManager.SendMessage(socket, sessionId, sessionId.Length, loginClientMessage);
+                                    NetMessageManager.SendMessage(socket, sessionId, loginClientMessage);
                                 }
                                 else
                                 {

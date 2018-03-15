@@ -97,9 +97,7 @@
         public byte ReadByte()
         {
             this._bitIdx = 0;
-            this._offset += 1;
-
-            return this._buffer[this._offset - 1];
+            return this._buffer[this._offset++];
         }
 
         /// <summary>
@@ -108,9 +106,9 @@
         public short ReadShort()
         {
             this._bitIdx = 0;
-            this._offset += 2;
 
-            return (short) (this._buffer[this._offset - 1] | (this._buffer[this._offset - 2] << 8));
+            return (short) (this._buffer[this._offset++] << 8 |
+                            this._buffer[this._offset++]);
         }
 
         /// <summary>
@@ -119,9 +117,11 @@
         public int ReadInt()
         {
             this._bitIdx = 0;
-            this._offset += 4;
 
-            return this._buffer[this._offset - 1] | (this._buffer[this._offset - 2] << 8) | (this._buffer[this._offset - 3] << 16) | (this._buffer[this._offset - 4] << 24);
+            return this._buffer[this._offset++] << 24 |
+                   this._buffer[this._offset++] << 16 |
+                   this._buffer[this._offset++] << 8 |
+                   this._buffer[this._offset++];
         }
 
         /// <summary>
@@ -130,8 +130,8 @@
         public int ReadVInt()
         {
             this._bitIdx = 0;
-            byte byteValue = this._buffer[this._offset++];
             int value = 0;
+            byte byteValue = this._buffer[this._offset++];
 
             if ((byteValue & 0x40) != 0)
             {
@@ -217,9 +217,10 @@
         public int ReadBytesLength()
         {
             this._bitIdx = 0;
-            this._offset += 4;
-
-            return this._buffer[this._offset - 1] | (this._buffer[this._offset - 2] << 8) | (this._buffer[this._offset - 3] << 16) | (this._buffer[this._offset - 4] << 24);
+            return this._buffer[this._offset++] << 24 |
+                   this._buffer[this._offset++] << 16 |
+                   this._buffer[this._offset++] << 8 |
+                   this._buffer[this._offset++];
         }
 
         /// <summary>
@@ -334,13 +335,11 @@
         public override void WriteByte(byte value)
         {
             base.WriteByte(value);
-
             this.EnsureCapacity(1);
 
             this._bitIdx = 0;
-            this._offset += 1;
 
-            this._buffer[this._offset - 1] = value;
+            this._buffer[this._offset++] = value;
         }
 
         /// <summary>
@@ -349,14 +348,12 @@
         public override void WriteShort(short value)
         {
             base.WriteShort(value);
-
             this.EnsureCapacity(2);
 
             this._bitIdx = 0;
-            this._offset += 2;
 
-            this._buffer[this._offset - 1] = (byte) value;
-            this._buffer[this._offset - 2] = (byte) (value >> 8);
+            this._buffer[this._offset++] = (byte)(value >> 8);
+            this._buffer[this._offset++] = (byte) value;
         }
 
         /// <summary>
@@ -365,16 +362,14 @@
         public override void WriteInt(int value)
         {
             base.WriteInt(value);
-
             this.EnsureCapacity(4);
 
             this._bitIdx = 0;
-            this._offset += 4;
 
-            this._buffer[this._offset - 1] = (byte) value;
-            this._buffer[this._offset - 2] = (byte) (value >> 8);
-            this._buffer[this._offset - 3] = (byte) (value >> 16);
-            this._buffer[this._offset - 4] = (byte) (value >> 24);
+            this._buffer[this._offset++] = (byte)(value >> 24);
+            this._buffer[this._offset++] = (byte)(value >> 16);
+            this._buffer[this._offset++] = (byte)(value >> 8);
+            this._buffer[this._offset++] = (byte) value;
         }
 
         /// <summary>
@@ -383,7 +378,6 @@
         public override void WriteVInt(int value)
         {
             base.WriteVInt(value);
-
             this.EnsureCapacity(5);
 
             this._bitIdx = 0;
@@ -398,45 +392,37 @@
                         {
                             if (value >= 0x8000000)
                             {
-                                this._offset += 5;
-
-                                this._buffer[this._offset - 5] = (byte) ((value & 0x3F) | 0x80);
-                                this._buffer[this._offset - 4] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                                this._buffer[this._offset - 3] = (byte) (((value >> 13) & 0x7F) | 0x80);
-                                this._buffer[this._offset - 2] = (byte) (((value >> 20) & 0x7F) | 0x80);
-                                this._buffer[this._offset - 1] = (byte) ((value >> 27) & 0xF);
-
-                                return;
+                                this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 13) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 20) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) ((value >> 27) & 0xF);
                             }
-
-                            this._offset += 4;
-
-                            this._buffer[this._offset - 4] = (byte) ((value & 0x3F) | 0x80);
-                            this._buffer[this._offset - 3] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                            this._buffer[this._offset - 2] = (byte) (((value >> 13) & 0x7F) | 0x80);
-                            this._buffer[this._offset - 1] = (byte) ((value >> 20) & 0x7F);
-
-                            return;
+                            else
+                            {
+                                this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 13) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) ((value >> 20) & 0x7F);
+                            }
                         }
-
-                        this._offset += 3;
-
-                        this._buffer[this._offset - 3] = (byte) ((value & 0x3F) | 0x80);
-                        this._buffer[this._offset - 2] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                        this._buffer[this._offset - 1] = (byte) ((value >> 13) & 0x7F);
-
-                        return;
+                        else
+                        {
+                            this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x80);
+                            this._buffer[this._offset++] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                            this._buffer[this._offset++] = (byte) ((value >> 13) & 0x7F);
+                        }
                     }
-
-                    this._offset += 2;
-
-                    this._buffer[this._offset - 2] = (byte) ((value & 0x3F) | 0x80);
-                    this._buffer[this._offset - 1] = (byte) ((value >> 6) & 0x7F);
-
-                    return;
+                    else
+                    {
+                        this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x80);
+                        this._buffer[this._offset++] = (byte) ((value >> 6) & 0x7F);
+                    }
                 }
-
-                this._buffer[this._offset++] = (byte) (value & 0x3F);
+                else
+                {
+                    this._buffer[this._offset++] = (byte) (value & 0x3F);
+                }
             }
             else
             {
@@ -448,45 +434,37 @@
                         {
                             if (value <= -0x8000000)
                             {
-                                this._offset += 5;
-
-                                this._buffer[this._offset - 5] = (byte) ((value & 0x3F) | 0xC0);
-                                this._buffer[this._offset - 4] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                                this._buffer[this._offset - 3] = (byte) (((value >> 13) & 0x7F) | 0x80);
-                                this._buffer[this._offset - 2] = (byte) (((value >> 20) & 0x7F) | 0x80);
-                                this._buffer[this._offset - 1] = (byte) ((value >> 27) & 0xF);
-
-                                return;
+                                this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0xC0);
+                                this._buffer[this._offset++] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 13) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 20) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) ((value >> 27) & 0xF);
                             }
-
-                            this._offset += 4;
-
-                            this._buffer[this._offset - 4] = (byte) ((value & 0x3F) | 0xC0);
-                            this._buffer[this._offset - 3] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                            this._buffer[this._offset - 2] = (byte) (((value >> 13) & 0x7F) | 0x80);
-                            this._buffer[this._offset - 1] = (byte) ((value >> 20) & 0x7F);
-
-                            return;
+                            else
+                            {
+                                this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0xC0);
+                                this._buffer[this._offset++] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) (((value >> 13) & 0x7F) | 0x80);
+                                this._buffer[this._offset++] = (byte) ((value >> 20) & 0x7F);
+                            }
                         }
-
-                        this._offset += 3;
-
-                        this._buffer[this._offset - 3] = (byte) ((value & 0x3F) | 0xC0);
-                        this._buffer[this._offset - 2] = (byte) (((value >> 6) & 0x7F) | 0x80);
-                        this._buffer[this._offset - 1] = (byte) ((value >> 13) & 0x7F);
-
-                        return;
+                        else
+                        {
+                            this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0xC0);
+                            this._buffer[this._offset++] = (byte) (((value >> 6) & 0x7F) | 0x80);
+                            this._buffer[this._offset++] = (byte) ((value >> 13) & 0x7F);
+                        }
                     }
-
-                    this._offset += 2;
-
-                    this._buffer[this._offset - 2] = (byte) ((value & 0x3F) | 0xC0);
-                    this._buffer[this._offset - 1] = (byte) ((value >> 6) & 0x7F);
-
-                    return;
+                    else
+                    {
+                        this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0xC0);
+                        this._buffer[this._offset++] = (byte) ((value >> 6) & 0x7F);
+                    }
                 }
-
-                this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x40);
+                else
+                {
+                    this._buffer[this._offset++] = (byte) ((value & 0x3F) | 0x40);
+                }
             }
         }
 
@@ -495,15 +473,13 @@
         /// </summary>
         public void WriteIntToByteArray(int value)
         {
-            this._bitIdx = 0;
-            this._offset += 4;
-
             this.EnsureCapacity(4);
+            this._bitIdx = 0;
 
-            this._buffer[this._offset - 1] = (byte) value;
-            this._buffer[this._offset - 2] = (byte) (value >> 8);
-            this._buffer[this._offset - 3] = (byte) (value >> 16);
-            this._buffer[this._offset - 4] = (byte) (value >> 24);
+            this._buffer[this._offset++] = (byte)(value >> 24);
+            this._buffer[this._offset++] = (byte)(value >> 16);
+            this._buffer[this._offset++] = (byte)(value >> 8);
+            this._buffer[this._offset++] = (byte)value;
         }
 
         /// <summary>
@@ -659,7 +635,7 @@
         /// </summary>
         public void Destruct()
         {
-            this._buffer = new byte[0];
+            this._buffer = null;
             this._bitIdx = 0;
             this._length = 0;
             this._offset = 0;

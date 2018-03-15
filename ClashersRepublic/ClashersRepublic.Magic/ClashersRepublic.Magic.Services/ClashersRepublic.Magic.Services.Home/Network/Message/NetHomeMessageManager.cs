@@ -52,7 +52,7 @@
         /// </summary>
         internal static void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
         {
-            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), requestMessage.GetSessionIdLength(), responseMessage);
+            NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
 
         /// <summary>

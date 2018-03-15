@@ -11,9 +11,9 @@
         private Client _client;
 
         private DateTime _keepAliveSendTime;
-        private DateTime _keepAliveServerReceivedTime;
+        private bool _waitKeepAliveServer;
 
-        private bool _pingTest;
+        internal static double ServerPing;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MessageManager"/> class.
@@ -65,14 +65,7 @@
         /// </summary>
         internal void KeepAliveServerReceived(KeepAliveServerMessage message)
         {
-            this._keepAliveServerReceivedTime = DateTime.UtcNow;
-
-            if (this._pingTest)
-            {
-                Console.WriteLine("PING: " + this._keepAliveServerReceivedTime.Subtract(this._keepAliveSendTime).TotalMilliseconds);
-            }
-
-            this._pingTest = false;
+            MessageManager.ServerPing = DateTime.UtcNow.Subtract(this._keepAliveSendTime).TotalMilliseconds;
         }
 
         /// <summary>
@@ -80,16 +73,12 @@
         /// </summary>
         internal void SendKeepAliveMessage()
         {
-            this._keepAliveSendTime = DateTime.UtcNow;
-            this._client.SendMessage(new KeepAliveMessage());
-        }
+            if (this._waitKeepAliveServer)
+            {
+                return;
+            }
 
-        /// <summary>
-        ///     Creates a ping test.
-        /// </summary>
-        internal void Ping()
-        {
-            this._pingTest = true;
+            this._waitKeepAliveServer = true;
             this._keepAliveSendTime = DateTime.UtcNow;
             this._client.SendMessage(new KeepAliveMessage());
         }

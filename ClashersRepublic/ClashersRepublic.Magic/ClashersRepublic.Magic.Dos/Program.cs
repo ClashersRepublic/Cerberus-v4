@@ -6,6 +6,7 @@
     using System.Threading;
     using ClashersRepublic.Magic.Dos.Bot;
     using ClashersRepublic.Magic.Dos.Debug;
+    using ClashersRepublic.Magic.Dos.Network;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Message.Account;
 
@@ -88,17 +89,7 @@
 
                             case "ping":
                             {
-                                Client client = ClientManager.Get();
-
-                                if (client != null)
-                                {
-                                    client.MessageManager.Ping();
-                                }
-                                else
-                                {
-                                    Console.WriteLine("No client is connected to the server");
-                                }
-
+                                Console.WriteLine("Ping: " + MessageManager.ServerPing);
                                 break;
                             }
                         }

@@ -1,11 +1,11 @@
-﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.Udp
+﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.ServerSocket
 {
     using System.Net;
     using System.Net.Sockets;
 
     using ClashersRepublic.Magic.Services.Core;
 
-    internal class NetworkUdpGateway
+    internal class NetworkUdpServerSocket
     {
         private const int BufferSize = 2048;
 
@@ -20,9 +20,9 @@
         internal Socket Listener { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetworkUdpGateway"/> class.
+        ///     Initializes a new instance of the <see cref="NetworkUdpServerSocket"/> class.
         /// </summary>
-        internal NetworkUdpGateway(int port)
+        internal NetworkUdpServerSocket(int port)
         {
             this.Port = port;
 
@@ -36,7 +36,7 @@
             receiveEvent.RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
             receiveEvent.Completed += this.ReceiveCompleted;
             receiveEvent.UserToken = this.Listener;
-            receiveEvent.SetBuffer(new byte[NetworkUdpGateway.BufferSize], 0, NetworkUdpGateway.BufferSize);
+            receiveEvent.SetBuffer(new byte[NetworkUdpServerSocket.BufferSize], 0, NetworkUdpServerSocket.BufferSize);
 
             if (!this.Listener.ReceiveFromAsync(receiveEvent))
             {
@@ -72,13 +72,13 @@
         {
             SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
 
-            sendEvent.Completed += NetworkUdpGateway.SendCompleted;
+            sendEvent.Completed += NetworkUdpServerSocket.SendCompleted;
             sendEvent.RemoteEndPoint = endPoint;
             sendEvent.SetBuffer(buffer, 0, length);
 
             if (!NetworkManager.UdpGateway.Listener.SendToAsync(sendEvent))
             {
-                NetworkUdpGateway.SendCompleted(null, sendEvent);
+                NetworkUdpServerSocket.SendCompleted(null, sendEvent);
             }
         }
     }

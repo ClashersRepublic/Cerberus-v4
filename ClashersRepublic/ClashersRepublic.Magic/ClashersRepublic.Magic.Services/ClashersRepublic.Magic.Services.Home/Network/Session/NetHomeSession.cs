@@ -29,7 +29,7 @@
         internal NetHomeSession(Home home, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
         {
             this.Home = home;
-            this.PiranhaMessageManager = new MessageManager(this, home.GameMode);
+            this.PiranhaMessageManager = new MessageManager(home.GameMode);
         }
 
         /// <summary>
@@ -49,24 +49,6 @@
         }
 
         /// <summary>
-        ///     Forwards the specified <see cref="NetMessage"/> to the service.
-        /// </summary>
-        internal void SendMessage(int serviceNodeType, NetMessage message)
-        {
-            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
-
-            if (socket != null)
-            {
-                if (message.GetEncodingLength() == 0)
-                {
-                    message.Encode();
-                }
-                
-                NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, message);
-            }
-        }
-
-        /// <summary>
         ///     Forwards the specified <see cref="PiranhaMessage"/> to the service.
         /// </summary>
         internal void SendPiranhaMessage(int serviceNodeType, PiranhaMessage message)
@@ -82,7 +64,7 @@
 
                 ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
                 forwardPiranhaMessage.SetPiranhaMessage(message);
-                NetMessageManager.SendMessage(socket, this.SessionId, this.SessionId.Length, forwardPiranhaMessage);
+                NetMessageManager.SendMessage(socket, this.SessionId, forwardPiranhaMessage);
             }
         }
 

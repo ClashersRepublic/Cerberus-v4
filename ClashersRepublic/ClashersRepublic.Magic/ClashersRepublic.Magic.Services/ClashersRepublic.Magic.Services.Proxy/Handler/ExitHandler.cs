@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using ClashersRepublic.Magic.Services.Proxy.Network;
 
     internal class ExitHandler
     {
@@ -34,6 +35,7 @@
         /// </summary>
         internal static void OnQuit()
         {
+            NetworkMessagingManager.Destruct();
             Environment.Exit(0);
         }
 

@@ -4,6 +4,7 @@
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Math;
 
     internal class NetProxySession : NetSession
@@ -37,26 +38,39 @@
         /// <summary>
         ///     Binds the specified server.
         /// </summary>
-        internal void BindServer(int serviceNodeType, int serviceNodeId)
+        internal void BindServer(int serviceNodeType, int serviceNodeId, bool sendBound = true, bool sendUnbound = true, bool updateBoundServers = true)
         {
             if (serviceNodeType > -1 && serviceNodeType < this._serviceNodeSockets.Length)
             {
                 if (serviceNodeId > -1)
                 {
+                    if (this._serviceNodeSockets[serviceNodeType] != null)
+                    {
+                        if (sendUnbound)
+                        {
+                            NetMessageManager.SendMessage(this._serviceNodeSockets[serviceNodeType], this.SessionId, new ServerUnboundMessage());
+                        }
+
+                        this._serviceNodeSockets[serviceNodeType] = null;
+                    }
+
                     base.SetServiceNodeId(serviceNodeType, serviceNodeId);
 
-                    int[] serverIDs = this.ServiceNodeIDs;
-
-                    ServerBoundMessage message = new ServerBoundMessage();
-
-                    message.SetAccountId(this.AccountId);
-                    message.SetEndPoints(serverIDs);
-
-                    NetMessageManager.SendMessage(serviceNodeType, serviceNodeId, this.SessionId, this.SessionId.Length, message);
-
-                    for (int i = 0; i < this._serviceNodeSockets.Length; i++)
+                    if (sendBound)
                     {
-                        if (i != serviceNodeType && i != ServiceCore.ServiceNodeType && i != 2)
+                        int[] serverIDs = this.ServiceNodeIDs;
+
+                        ServerBoundMessage message = new ServerBoundMessage();
+
+                        message.SetAccountId(this.AccountId);
+                        message.SetEndPoints(serverIDs);
+
+                        NetMessageManager.SendMessage(serviceNodeType, serviceNodeId, this.SessionId, message);
+                    }
+
+                    if (updateBoundServers)
+                    {
+                        for (int i = 3; i < this._serviceNodeSockets.Length; i++)
                         {
                             if (this._serviceNodeSockets[i] != null)
                             {
@@ -65,7 +79,7 @@
                                 updateMessage.SetServerType(serviceNodeType);
                                 updateMessage.SetServerId(serviceNodeId);
 
-                                NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, this.SessionId.Length, updateMessage);
+                                NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, updateMessage);
                             }
                         }
                     }
@@ -80,32 +94,37 @@
         /// <summary>
         ///     Unbinds the specified service node.
         /// </summary>
-        internal void UnbindServer(int serviceNodeType)
+        internal void UnbindServer(int serviceNodeType, bool sendUnbound = true, bool updateBoundServer = true)
         {
             if (serviceNodeType > -1 && serviceNodeType < this._serviceNodeSockets.Length)
             {
                 if (this._serviceNodeSockets[serviceNodeType] != null)
                 {
-                    NetMessageManager.SendMessage(this._serviceNodeSockets[serviceNodeType], this.SessionId, this.SessionId.Length, new ServerUnboundMessage());
-                }
+                    this._serviceNodeSockets[serviceNodeType] = null;
 
-                for (int i = 0; i < this._serviceNodeSockets.Length; i++)
-                {
-                    if (i != serviceNodeType && i != ServiceCore.ServiceNodeType && i != 2)
+                    if (updateBoundServer)
                     {
-                        if (this._serviceNodeSockets[i] != null)
+                        for (int i = 3; i < this._serviceNodeSockets.Length; i++)
                         {
-                            UpdateServerEndPointMessage updateMessage = new UpdateServerEndPointMessage();
+                            if (this._serviceNodeSockets[i] != null)
+                            {
+                                UpdateServerEndPointMessage updateMessage = new UpdateServerEndPointMessage();
 
-                            updateMessage.SetServerType(serviceNodeType);
-                            updateMessage.SetServerId(-1);
+                                updateMessage.SetServerType(serviceNodeType);
+                                updateMessage.SetServerId(-1);
 
-                            NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, this.SessionId.Length, updateMessage);
+                                NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, updateMessage);
+                            }
                         }
                     }
-                }
 
-                base.SetServiceNodeId(serviceNodeType, -1);
+                    base.SetServiceNodeId(serviceNodeType, -1);
+
+                    if (sendUnbound)
+                    {
+                        NetMessageManager.SendMessage(this._serviceNodeSockets[serviceNodeType], this.SessionId, new ServerUnboundMessage());
+                    }
+                }
             }
             else
             {
@@ -122,7 +141,7 @@
             {
                 if (this._serviceNodeSockets[i] != null)
                 {
-                    NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, this.SessionId.Length, new ServerUnboundMessage());
+                    NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, new ServerUnboundMessage());
                 }
             }
         }

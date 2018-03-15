@@ -5,7 +5,6 @@
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Proxy.Network;
-    using ClashersRepublic.Magic.Services.Proxy.Network.Handler;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 

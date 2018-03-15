@@ -2,12 +2,11 @@
 {
     using System.Threading.Tasks;
     using System.Collections.Concurrent;
-    using ClashersRepublic.Magic.Logic.Avatar;
+
     using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
-
-    using ClashersRepublic.Magic.Titan.Json;
+    
     using ClashersRepublic.Magic.Titan.Math;
 
     internal static class HomeManager
@@ -98,23 +97,13 @@
         /// </summary>
         internal static bool TryCreateHome(LogicLong homeId, out Home home)
         {
-            IDatabase database = DatabaseManager.GetDatabase(homeId.GetHigherInt());
-
-            if (database != null)
+            home = new Home(homeId);
+            
+            if (HomeManager.TryAdd(home))
             {
-                home = new Home(homeId);
-
-                bool success = HomeManager.TryAdd(home);
-
-                if (success)
-                {
-                    database.InsertDocument(homeId, LogicJSONParser.CreateJSONString(home.Save()));
-                }
-
-                return success;
+                DatabaseManager.Insert(home);
+                return true;
             }
-
-            home = null;
 
             return false;
         }

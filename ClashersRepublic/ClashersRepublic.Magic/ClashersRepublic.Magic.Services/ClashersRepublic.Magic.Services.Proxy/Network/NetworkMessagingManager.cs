@@ -1,50 +1,101 @@
-﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.Handler
+﻿namespace ClashersRepublic.Magic.Services.Proxy.Network
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Threading;
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Proxy.Network.ServerSocket;
     using ClashersRepublic.Magic.Titan.Message;
 
     internal static class NetworkMessagingManager
     {
-        private static Thread _sendThread;
-        private static Thread _receiveThread;
-        private static NetworkMessaging[] _messagings;
+        private static long _messagingCounter;
 
-        private static int _messagingOffset;
+        private static ConcurrentDictionary<long, NetworkMessaging> _messagings;
+        private static Thread _messagingThread;
+        private static Thread _receiveThread;
+        private static Thread _sendThread;
+
+        /// <summary>
+        ///     Gets the total messagings.
+        /// </summary>
+        internal static int TotalMessagings
+        {
+            get
+            {
+                return NetworkMessagingManager._messagings.Count;
+            }
+        }
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            NetworkMessagingManager._sendThread = new Thread(NetworkMessagingManager.SendTask);
-            NetworkMessagingManager._receiveThread = new Thread(NetworkMessagingManager.ReceiveTask);
-            NetworkMessagingManager._messagings = new NetworkMessaging[ushort.MaxValue];
+            NetworkMessagingManager._messagings = new ConcurrentDictionary<long, NetworkMessaging>();
+            NetworkMessagingManager._sendThread = new Thread(NetworkMessagingManager.SendLoop);
+            NetworkMessagingManager._receiveThread = new Thread(NetworkMessagingManager.ReceiveLoop);
+            NetworkMessagingManager._messagingThread = new Thread(NetworkMessagingManager.MessagingLoop);
 
             NetworkMessagingManager._sendThread.Start();
             NetworkMessagingManager._receiveThread.Start();
+            NetworkMessagingManager._messagingThread.Start();
+        }
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        internal static void Destruct()
+        {
+            foreach (NetworkMessaging messaging in NetworkMessagingManager._messagings.Values)
+            {
+                if (!messaging.IsDestructed())
+                {
+                    NetworkTcpServerGateway.Disconnect(messaging.Connection);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Task for the messaging thread.
+        /// </summary>
+        private static void MessagingLoop()
+        {
+            while (true)
+            {
+                foreach (NetworkMessaging messaging in NetworkMessagingManager._messagings.Values)
+                {
+                    if (!messaging.MessageManager.IsAlive())
+                    {
+                        if (!messaging.IsDestructed())
+                        {
+                            NetworkTcpServerGateway.Disconnect(messaging.Connection);
+                        }
+                    }
+                }
+
+                Thread.Sleep(2000);
+            }
         }
 
         /// <summary>
         ///     Task for the receive thread.
         /// </summary>
-        private static void ReceiveTask()
+        private static void ReceiveLoop()
         {
             while (true)
             {
-                for (int i = 0; i < NetworkMessagingManager._messagingOffset; i++)
+                foreach (NetworkMessaging messaging in NetworkMessagingManager._messagings.Values)
                 {
-                    NetworkMessaging messaging = NetworkMessagingManager._messagings[i];
-
-                    if (messaging != null)
+                    while (messaging.NextMessage(out PiranhaMessage message))
                     {
-                        if (!messaging.IsDestructed())
+                        try
                         {
-                            while (messaging.NextMessage(out PiranhaMessage message))
-                            {
-                                messaging.MessageManager.ReceiveMessage(message);
-                            }
+                            messaging.MessageManager.ReceiveMessage(message);
+                        }
+                        catch (Exception exception)
+                        {
+                            Logging.Error("NetworkMessagingManager::receiveLoop exception while the process of message " + message.GetMessageType() + ", trace: " + exception);
                         }
                     }
                 }
@@ -56,21 +107,13 @@
         /// <summary>
         ///     Task for the send thread.
         /// </summary>
-        private static void SendTask()
+        private static void SendLoop()
         {
             while (true)
             {
-                for (int i = 0; i < NetworkMessagingManager._messagingOffset; i++)
+                foreach (NetworkMessaging messaging in NetworkMessagingManager._messagings.Values)
                 {
-                    NetworkMessaging messaging = NetworkMessagingManager._messagings[i];
-
-                    if (messaging != null)
-                    {
-                        if (!messaging.IsDestructed())
-                        {
-                            messaging.OnWakeup();
-                        }
-                    }
+                    messaging.OnWakeup();
                 }
 
                 Thread.Sleep(1);
@@ -78,30 +121,11 @@
         }
 
         /// <summary>
-        ///     Adds the specified <see cref="NetworkMessaging"/> instance.
+        ///     Tries to add the specified <see cref="NetworkMessaging"/> instance.
         /// </summary>
         internal static bool TryAdd(NetworkMessaging messaging)
         {
-            if (messaging.MessagingId > -1)
-            {
-                int available = Array.IndexOf(NetworkMessagingManager._messagings, null);
-
-                if (available != -1)
-                {
-                    NetworkMessagingManager._messagings[messaging.MessagingId = available] = messaging;
-
-                    if (available >= NetworkMessagingManager._messagingOffset)
-                    {
-                        NetworkMessagingManager._messagingOffset = available + 1;
-                    }
-
-                    return true;
-                }
-
-                Logging.Error("NetworkMessagingManager::tryAdd messagings is FULL");
-            }
-
-            return false;
+            return NetworkMessagingManager._messagings.TryAdd(messaging.MessagingId = ++NetworkMessagingManager._messagingCounter, messaging);
         }
 
         /// <summary>
@@ -109,15 +133,9 @@
         /// </summary>
         internal static bool TryRemove(NetworkMessaging messaging)
         {
-            bool success = messaging.MessagingId > -1;
-
-            if (success)
-            {
-                NetworkMessagingManager._messagings[messaging.MessagingId] = null;
-                messaging.MessagingId = -1;
-            }
-
-            return success;
+            long id = messaging.MessagingId;
+            messaging.MessagingId = -1;
+            return NetworkMessagingManager._messagings.TryRemove(id, out _);
         }
     }
 }

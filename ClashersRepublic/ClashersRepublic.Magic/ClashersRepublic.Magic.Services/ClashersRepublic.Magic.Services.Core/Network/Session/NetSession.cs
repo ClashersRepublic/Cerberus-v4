@@ -1,5 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network.Session
 {
+    using ClashersRepublic.Magic.Services.Core.Message;
+
     public class NetSession
     {
         protected readonly NetSocket[] _serviceNodeSockets;
@@ -17,7 +19,7 @@
         /// <summary>
         ///     Gets the id of all servers.
         /// </summary>
-        public int[] ServiceNodeIDs
+        protected int[] ServiceNodeIDs
         {
             get
             {
@@ -98,6 +100,28 @@
             else
             {
                 Logging.Warning("NetSession::setServiceNodeId serviceNodeType out of bands " + serviceNodeType + "/" + this._serviceNodeSockets.Length);
+            }
+        }
+
+        /// <summary>
+        ///     Sends the specified <see cref="NetMessage"/> to the service.
+        /// </summary>
+        public void SendMessage(int serviceNodeType, NetMessage message)
+        {
+            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
+
+            if (socket != null)
+            {
+                if (message.GetEncodingLength() == 0)
+                {
+                    message.Encode();
+                }
+
+                NetMessageManager.SendMessage(socket, this.SessionId, message);
+            }
+            else
+            {
+                Logging.Warning("NetSession::sendMessage server is not set, nodeType: " + serviceNodeType);
             }
         }
     }

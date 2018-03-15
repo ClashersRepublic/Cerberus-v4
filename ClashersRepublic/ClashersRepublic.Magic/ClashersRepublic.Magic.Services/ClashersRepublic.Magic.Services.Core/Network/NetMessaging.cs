@@ -33,20 +33,20 @@
         /// <summary>
         ///     Sends the specified message.
         /// </summary>
-        internal static void Send(int serviceNodeType, int serviceNodeId, NetMessage message, byte[] sessionId = null, int sessionIdLength = 0)
+        internal static void Send(int serviceNodeType, int serviceNodeId, NetMessage message, byte[] sessionId = null)
         {
             NetSocket destinationSocket = NetManager.GetServiceNodeEndPoint(serviceNodeType, serviceNodeId);
 
             if (destinationSocket != null)
             {
-                NetMessaging.Send(destinationSocket, message, sessionId, sessionIdLength);
+                NetMessaging.Send(destinationSocket, message, sessionId);
             }
         }
         
         /// <summary>
         ///     Sends the specified message.
         /// </summary>
-        internal static void Send(NetSocket destinationSocket, NetMessage message, byte[] sessionId = null, int sessionIdLength = 0)
+        internal static void Send(NetSocket destinationSocket, NetMessage message, byte[] sessionId = null)
         {
             if (destinationSocket == null)
             {
@@ -55,7 +55,7 @@
 
             message.SetServiceNodeType(ServiceCore.ServiceNodeType);
             message.SetServiceNodeId(ServiceCore.ServiceNodeId);
-            message.SetSessionId(sessionId, sessionIdLength);
+            message.SetSessionId(sessionId, sessionId?.Length ?? 0);
             message.Encode();
 
             NetMessaging._messageHandler.Send(destinationSocket, new NetPacket(message));
