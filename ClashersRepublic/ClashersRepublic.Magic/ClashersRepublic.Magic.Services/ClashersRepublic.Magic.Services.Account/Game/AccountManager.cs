@@ -157,7 +157,7 @@
                 {
                     accountId = new LogicLong(highId, AccountManager._accountCounters[highId] += NetManager.GetServerCount(ServiceCore.ServiceNodeType));
                     account = new Account(accountId, AccountManager.GeneratePassToken());
-
+                    
                     bool success = AccountManager.TryAdd(account);
 
                     if (success)

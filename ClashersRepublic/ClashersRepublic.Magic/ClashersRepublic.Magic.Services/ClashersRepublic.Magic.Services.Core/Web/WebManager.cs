@@ -43,7 +43,7 @@
                 }
             }
 
-            return WebManager.DownloadString(Constants.CONFIG_SERVER + path);
+            return WebManager.DownloadString(Constants.CONFIG_SERVER + "/" + ServiceCore.ServiceEnvironment + path);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@
                 }
             }
 
-            return WebManager.DownloadData(Constants.CONFIG_SERVER + path);
+            return WebManager.DownloadData(Constants.CONFIG_SERVER + "/" + ServiceCore.ServiceEnvironment + path);
         }
 
         /// <summary>

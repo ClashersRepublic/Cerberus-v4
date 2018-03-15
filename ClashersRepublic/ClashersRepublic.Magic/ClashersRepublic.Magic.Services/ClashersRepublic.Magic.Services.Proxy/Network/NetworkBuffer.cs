@@ -34,7 +34,7 @@
         /// <summary>
         ///     Gets if we can write on the buffer.
         /// </summary>
-        internal bool CanBeWrite(byte[] buffer, int length)
+        internal bool CanWrite(byte[] buffer, int length)
         {
             return NetworkBuffer.MaxCapacity >= this._capacity + length;
         }

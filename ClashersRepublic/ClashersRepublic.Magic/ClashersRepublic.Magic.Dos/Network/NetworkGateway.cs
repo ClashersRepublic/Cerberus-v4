@@ -216,5 +216,13 @@
             this._receivedOffset -= blockSize;
             Array.Copy(this._receivedBytes, blockSize, this._receivedBytes, 0, this._receivedOffset);
         }
+
+        /// <summary>
+        ///     Disconnects the connection.
+        /// </summary>
+        internal void Disconnect()
+        {
+            this._socket.Close();
+        }
     }
 }

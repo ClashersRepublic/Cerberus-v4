@@ -42,13 +42,5 @@
                 }
             }
         }
-
-        /// <summary>
-        ///     Called when the specified <see cref="LogicCommand"/> has not been executed correctly.
-        /// </summary>
-        public override void CommandExecuteFailed(LogicCommand command, string log)
-        {
-            // CommandExecuteFailed.
-        }
     }
 }

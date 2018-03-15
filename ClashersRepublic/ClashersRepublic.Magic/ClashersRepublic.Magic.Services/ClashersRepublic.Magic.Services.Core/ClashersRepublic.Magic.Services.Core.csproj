@@ -307,6 +307,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="env.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="resources.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

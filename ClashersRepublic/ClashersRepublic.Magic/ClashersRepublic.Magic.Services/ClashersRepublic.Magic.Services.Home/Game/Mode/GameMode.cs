@@ -9,6 +9,7 @@
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Mode;
+    using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Util;
 
     using ClashersRepublic.Magic.Services.Core;
@@ -21,6 +22,8 @@
 
     internal class GameMode
     {
+        private int _currentTimestamp;
+
         private Home _home;
         private LogicGameMode _logicGameMode;
         private LogicArrayList<LogicServerCommand> _bufferedServerCommands;
@@ -59,13 +62,17 @@
                     LogicJSONObject jsonObject = new LogicJSONObject();
 
                     this._logicGameMode.SaveToJSON(jsonObject);
-                    this._logicGameMode.GetLevel().GetHome().SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
+                    this._home.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
+                    this._home.ClientAvatar.SetLevel(null);
 
-                    CompressibleStringHelper.Compress(this._logicGameMode.GetLevel().GetHome().GetCompressibleHomeJSON());
+                    CompressibleStringHelper.Compress(this._home.ClientHome.GetCompressibleHomeJSON());
                     DatabaseManager.Update(this._home);
 
                     Logging.Debug("GameMode::deInit level saved");
                 }
+
+                this._logicGameMode.Destruct();
+                this._logicGameMode = null;
             }
         }
 
@@ -164,6 +171,7 @@
 
                 this._logicGameMode = new LogicGameMode();
                 this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
+                this._currentTimestamp = currentTimestamp;
 
                 switch (mode)
                 {
@@ -299,35 +307,51 @@
         /// </summary>
         internal void ClientTurnReceived(int subTick, int checksum, LogicArrayList<LogicCommand> commands)
         {
-            if (commands != null)
+            if (subTick > -1)
             {
-                LogicCommandManager commandManager = this.GetCommandManager();
+                int currentTimestamp = LogicTimeUtil.GetTimestamp();
+                int calculateTimestamp = this._currentTimestamp + LogicTime.GetTicksInSeconds(subTick);
 
-                for (int i = 0; i < commands.Count; i++)
+                if (currentTimestamp >= calculateTimestamp)
                 {
-                    LogicCommand command = commands[i];
+                    int serverTick = this._logicGameMode.GetLogicTime();
 
-                    if (command.IsServerCommand())
+                    if (subTick > serverTick)
                     {
-                        if (!this.IsBufferedServerCommand((LogicServerCommand) command))
+                        if (commands != null)
                         {
-                            continue;
-                        }
-                    }
+                            if (commands.Count != 0)
+                            {
+                                LogicCommandManager commandManager = this.GetCommandManager();
 
-                    commandManager.AddCommand(command);
+                                for (int i = 0; i < commands.Count; i++)
+                                {
+                                    commandManager.AddCommand(commands[i]);
+                                }
+                            }
+                        }
+
+                        do
+                        {
+                            this._logicGameMode.UpdateOneSubTick();
+                        } while (++serverTick != subTick);
+
+                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
+                    }
+                    else
+                    {
+                        Logging.Warning("GameMode::clientTurnReceived client turn ignored");
+                    }
+                }
+                else
+                {
+                    Logging.Warning("GameMode::clientTurnReceived subTick is too high! (" + subTick + ")");
                 }
             }
-
-            if (this._logicGameMode.GetLogicTime() < subTick)
+            else
             {
-                do
-                {
-                    this._logicGameMode.UpdateOneSubTick();
-                } while (this._logicGameMode.GetLogicTime() < subTick);
+                Logging.Warning("GameMode::clientTurnReceived subTick is negative");
             }
-            
-            Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} command_count: {2}", subTick, checksum, commands?.Count ?? 0));
         }
 
         private enum GAME

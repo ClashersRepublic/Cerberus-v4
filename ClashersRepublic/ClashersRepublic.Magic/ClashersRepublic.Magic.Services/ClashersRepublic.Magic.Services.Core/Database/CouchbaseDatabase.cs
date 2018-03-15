@@ -1,7 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Database
 {
-    using ClashersRepublic.Magic.Services.Core;
-
     using Couchbase;
     using Couchbase.Configuration.Client;
     using Couchbase.Core;
@@ -43,7 +41,8 @@
         /// </summary>
         public int GetHigherId()
         {
-            IQueryResult<dynamic> result = this._bucket.Query<dynamic>(new QueryRequest().Statement("SELECT MAX(acc_lo) FROM `" + this._bucketName + "` WHERE acc_hi == " + this._databaseId));
+            IQueryResult<dynamic> result =
+                this._bucket.Query<dynamic>(new QueryRequest().Statement(string.Format("SELECT MAX(id_lo) FROM `{0}` USE INDEX (id_idx) WHERE id_hi == 0", this._bucketName)));
 
             if (result.Success)
             {
@@ -62,7 +61,7 @@
 
             return 0;
         }
-        
+
         /// <summary>
         ///     Inserts the specified document.
         /// </summary>

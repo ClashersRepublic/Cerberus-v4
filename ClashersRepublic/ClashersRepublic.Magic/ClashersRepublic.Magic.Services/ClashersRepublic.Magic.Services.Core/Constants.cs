@@ -2,6 +2,6 @@
 {
     public class Constants
     {
-        public const string CONFIG_SERVER = "http://127.0.0.1/internal";
+        public const string CONFIG_SERVER = "http://176.159.83.126";
     }
 }

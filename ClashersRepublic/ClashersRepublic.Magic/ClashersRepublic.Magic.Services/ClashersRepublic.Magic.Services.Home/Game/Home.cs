@@ -108,8 +108,8 @@
         {
             LogicJSONObject jsonObject = new LogicJSONObject();
 
-            jsonObject.Put("acc_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
-            jsonObject.Put("acc_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
+            jsonObject.Put("id_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
+            jsonObject.Put("id_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
             jsonObject.Put("last_save", new LogicJSONNumber(this.SaveTimestamp));
             jsonObject.Put("avatar", this.ClientAvatar.Save());
             jsonObject.Put("home", this.ClientHome.Save());
@@ -124,7 +124,7 @@
         {
             LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
 
-            this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "acc_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "acc_lo"));
+            this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "id_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "id_lo"));
 
             LogicJSONNumber lastSaveObject = jsonObject.GetJSONNumber("last_save");
 

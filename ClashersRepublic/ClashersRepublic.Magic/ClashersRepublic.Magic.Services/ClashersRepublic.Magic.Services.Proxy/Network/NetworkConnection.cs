@@ -72,7 +72,7 @@
         {
             int rcv = this.ReadEvent.BytesTransferred;
 
-            if (this._buffer.CanBeWrite(this.ReadEvent.Buffer, rcv))
+            if (this._buffer.CanWrite(this.ReadEvent.Buffer, rcv))
             {
                 this._buffer.Write(this.ReadEvent.Buffer, rcv);
                 return true;

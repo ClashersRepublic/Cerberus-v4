@@ -78,10 +78,6 @@
                         NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, loginClientMessage);
                     }
                 }
-                else
-                {
-                    Console.WriteLine("ERROR");
-                }
             }
         }
 

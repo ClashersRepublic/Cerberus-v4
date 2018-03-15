@@ -6,7 +6,7 @@
     using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
-    
+    using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Titan.Math;
 
     internal static class HomeManager
@@ -49,15 +49,18 @@
                     
                     Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 3 }, id =>
                     {
-                        string json = database.GetDocument(new LogicLong(highId, id));
-
-                        if (json != null)
+                        if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, id) == ServiceCore.ServiceNodeId)
                         {
-                            Home home = new Home();
-                            home.Load(json);
-                            HomeManager.TryAdd(home);
+                            string json = database.GetDocument(new LogicLong(highId, id));
 
-                            HomeManager._homeCounters[highId] = id;
+                            if (json != null)
+                            {
+                                Home home = new Home();
+                                home.Load(json);
+                                HomeManager.TryAdd(home);
+
+                                HomeManager._homeCounters[highId] = LogicMath.Max(id, HomeManager._homeCounters[highId]);
+                            }
                         }
                     });
                 }

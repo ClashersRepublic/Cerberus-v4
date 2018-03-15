@@ -25,13 +25,5 @@
         {
             // CommandExecuted.
         }
-
-        /// <summary>
-        ///     Called when the specified <see cref="LogicCommand"/> has not been executed correctly.
-        /// </summary>
-        public virtual void CommandExecuteFailed(LogicCommand command, string log)
-        {
-            // CommandExecuteFailed.
-        }
     }
 }

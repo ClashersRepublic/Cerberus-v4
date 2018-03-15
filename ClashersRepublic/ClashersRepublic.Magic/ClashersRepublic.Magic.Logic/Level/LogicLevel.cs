@@ -1232,6 +1232,7 @@
                 }
             }
 
+            this._levelJSON = null;
             this._gameMode = null;
             this._clientHome = null;
             this._homeOwnerAvatar = null;

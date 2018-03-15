@@ -45,6 +45,14 @@
         }
 
         /// <summary>
+        ///     Disconnects the client.
+        /// </summary>
+        internal void Disconnect()
+        {
+            this._networkGateway.Disconnect();
+        }
+
+        /// <summary>
         ///     Connects the client to specified host.
         /// </summary>
         internal void ConnectTo(string host, int port)
@@ -66,7 +74,7 @@
         /// </summary>
         internal void ConnectToPrivateServer()
         {
-            this.ConnectTo("176.159.83.126", 9339);
+            this.ConnectTo("163.172.251.148", 9339);
         }
 
         /// <summary>
@@ -132,10 +140,8 @@
 
                         try
                         {
-                            /*
-                            message.Decode();
+                            // message.Decode();
                             this.MessageManager.ReceiveMessage(message);
-                            */
                         }
                         catch (Exception exception)
                         {

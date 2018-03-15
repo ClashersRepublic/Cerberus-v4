@@ -181,6 +181,7 @@
     <Compile Include="Message\Home\OutOfSyncMessage.cs" />
     <Compile Include="Message\LogicMagicMessageFactory.cs" />
     <Compile Include="Message\LogicMessagingConstants.cs" />
+    <Compile Include="Mission\LogicMission.cs" />
     <Compile Include="Mode\LogicGameListener.cs" />
     <Compile Include="Mode\LogicGameMode.cs" />
     <Compile Include="Offer\LogicOfferManager.cs" />

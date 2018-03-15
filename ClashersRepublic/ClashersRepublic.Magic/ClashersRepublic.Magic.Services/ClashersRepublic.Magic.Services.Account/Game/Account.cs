@@ -177,8 +177,8 @@
         {
             LogicJSONObject jsonObject = new LogicJSONObject();
 
-            jsonObject.Put("acc_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
-            jsonObject.Put("acc_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
+            jsonObject.Put("id_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
+            jsonObject.Put("id_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
             jsonObject.Put("pass_t", new LogicJSONString(this.PassToken));
             jsonObject.Put("pt_secs", new LogicJSONNumber(this.PlayTimeSecs));
             jsonObject.Put("acc_cr", new LogicJSONString(this.AccountCreatedDate));
@@ -212,7 +212,7 @@
         {
             LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
 
-            this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "acc_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "acc_lo"));
+            this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "id_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "id_lo"));
             this.PassToken = LogicJSONHelper.GetJSONString(jsonObject, "pass_t");
             this.PlayTimeSecs = LogicJSONHelper.GetJSONNumber(jsonObject, "pt_secs");
             this.AccountCreatedDate = LogicJSONHelper.GetJSONString(jsonObject, "acc_cr");

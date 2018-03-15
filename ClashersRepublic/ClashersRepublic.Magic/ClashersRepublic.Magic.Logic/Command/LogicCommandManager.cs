@@ -169,19 +169,10 @@
 
                     if (command.GetExecuteSubTick() < subTick)
                     {
-                        string message = "Execute command failed! Command should have been executed already." +
-                                         " (type=" + command.GetCommandType() +
-                                         " server_tick=" + subTick +
-                                         " command_tick=" + command.GetExecuteSubTick() + ")";
-
-                        Debugger.Error(message);
-
-                        if (this._listener != null)
-                        {
-                            this._listener.CommandExecuteFailed(command, message);
-                        }
-
-                        break;
+                        Debugger.Error("Execute command failed! Command should have been executed already." +
+                                       " (type=" + command.GetCommandType() +
+                                       " server_tick=" + subTick +
+                                       " command_tick=" + command.GetExecuteSubTick() + ")");
                     }
 
                     if (command.GetExecuteSubTick() == subTick)
@@ -199,9 +190,9 @@
                         }
                         else
                         {
-                            this._listener.CommandExecuteFailed(command, "Execute command failed! Command not allowed in current state." +
-                                                                         " (type=" + command.GetCommandType() +
-                                                                         " current_state=" + this._level.GetState() + ")");
+                            Debugger.Error("Execute command failed! Command not allowed in current state." +
+                                           " (type=" + command.GetCommandType() +
+                                           " current_state=" + this._level.GetState() + ")");
                         }
                     }
                 }

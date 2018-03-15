@@ -1,8 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
-    using ClashersRepublic.Magic.Logic.Helper;
-    using ClashersRepublic.Magic.Services.Core.Web;
-    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -81,7 +78,7 @@
                 if (NetManager._endPoints[serviceNodeType].Count != 0)
                 {
                     NetSocket socket = NetManager._endPoints[serviceNodeType][NetManager._scrambler[serviceNodeType]];
-                    NetManager._scrambler[serviceNodeType] = NetManager._scrambler[serviceNodeType] % NetManager._endPoints[serviceNodeType].Count;
+                    NetManager._scrambler[serviceNodeType] = (NetManager._scrambler[serviceNodeType] + 1) % NetManager._endPoints[serviceNodeType].Count;
                     return socket;
                 }
             }

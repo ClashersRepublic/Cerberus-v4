@@ -6,14 +6,14 @@
     using System.Threading;
     using ClashersRepublic.Magic.Dos.Bot;
     using ClashersRepublic.Magic.Dos.Debug;
-    using ClashersRepublic.Magic.Dos.Network;
+
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.Message.Account;
 
     internal class Program
     {
         private const int Width = 120;
         private const int Height = 30;
+        private static Client _latency;
 
         private static void Main(string[] args)
         {
@@ -60,9 +60,9 @@
                                 break;
                             }
 
-                            case "dos":
+                            case "load100":
                             {
-                                for (int j = 0; j < 14000; j++)
+                                for (int i = 0; i < 100; i++)
                                 {
                                     ClientManager.Create();
                                 }
@@ -70,9 +70,19 @@
                                 break;
                             }
 
-                            case "load":
+                            case "load1000":
                             {
                                 for (int i = 0; i < 1000; i++)
+                                {
+                                    ClientManager.Create();
+                                }
+
+                                break;
+                            }
+
+                            case "load5000":
+                            {
+                                for (int i = 0; i < 5000; i++)
                                 {
                                     ClientManager.Create();
                                 }
@@ -87,9 +97,58 @@
                                 break;
                             }
 
+                            case "hard":
+                            {
+                                for (int i = 0; i < 20; i++)
+                                {
+                                    ClientManager.DisconnectAll();
+
+                                    for (int j = 0; j < 1000; j++)
+                                    {
+                                        ClientManager.Create();
+                                    }
+
+                                    Thread.Sleep(2000);
+                                }
+
+                                break;
+                            }
+
+                            case "simulation":
+                            {
+                                for (int i = 0; i < 50; i++)
+                                {
+                                    for (int j = 0; j < 200; j++)
+                                    {
+                                        ClientManager.Create();
+                                    }
+
+                                    Thread.Sleep(1000);
+                                }
+                                break;
+                            }
+
                             case "ping":
                             {
-                                Console.WriteLine("Ping: " + MessageManager.ServerPing);
+                                int cnt = 0;
+                                int ping = 0;
+
+                                ClientManager.ForEeach(client =>
+                                {
+                                    int tmp = client.MessageManager.GetPing();
+
+                                    if (tmp != -1)
+                                    {
+                                        cnt += 1;
+                                        ping += tmp;
+                                    }
+                                });
+
+                                if (cnt > 0)
+                                {
+                                    Console.WriteLine("Latency: " + ping / cnt);
+                                }
+
                                 break;
                             }
                         }

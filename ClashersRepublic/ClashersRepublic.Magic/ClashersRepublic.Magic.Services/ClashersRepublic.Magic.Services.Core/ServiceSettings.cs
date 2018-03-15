@@ -7,7 +7,6 @@
     public static class ServiceSettings
     {
         private static string _serviceVersion;
-        private static string _serviceEnvironment;
         private static string[][] _serviceIPs;
 
         private static string _databaseUser;
@@ -47,14 +46,7 @@
                 {
                     ServiceSettings._serviceVersion = versionObject.GetStringValue();
                 }
-
-                LogicJSONString environmentObject = jsonObject.GetJSONString("environment");
-
-                if (environmentObject != null)
-                {
-                    ServiceSettings._serviceEnvironment = environmentObject.GetStringValue();
-                }
-
+                
                 LogicJSONObject nodeObject = jsonObject.GetJSONObject("nodes");
 
                 if (nodeObject != null)

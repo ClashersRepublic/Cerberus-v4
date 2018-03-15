@@ -3,7 +3,7 @@
     using System;
     using System.IO;
     using System.Security.Cryptography;
-    using System.Threading.Tasks;
+
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Services.Core.Libs.Lzma.Compression.LZMA;
     using ClashersRepublic.Magic.Services.Core.Web;

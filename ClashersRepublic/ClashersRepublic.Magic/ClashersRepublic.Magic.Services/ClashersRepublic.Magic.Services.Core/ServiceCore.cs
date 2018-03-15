@@ -1,8 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core
 {
+    using System.IO;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Web;
+    using ClashersRepublic.Magic.Titan.Json;
 
     public static class ServiceCore
     {
@@ -18,6 +20,11 @@
         ///     Gets the service node id.
         /// </summary>
         public static int ServiceNodeId { get; private set; }
+
+        /// <summary>
+        ///     Gets the service environment.
+        /// </summary>
+        public static string ServiceEnvironment { get; private set; }
 
         /// <summary>
         ///     Initializes this instance.
@@ -37,11 +44,26 @@
                 ServiceCore.ServiceNodeId = int.Parse(args[0]);
             }
 
+            ServiceCore.LoadConfig();
             WebManager.Initialize();
 
             ServiceCore.InitConfig();
             ServiceCore.InitLogic();
             ServiceCore.InitNet(messageManager);
+        }
+
+        /// <summary>
+        ///     Loads the config file.
+        /// </summary>
+        private static void LoadConfig()
+        {
+            LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(File.ReadAllText("env.json"));
+            LogicJSONString envObject = jsonObject.GetJSONString("env");
+
+            if (envObject != null)
+            {
+                ServiceCore.ServiceEnvironment = envObject.GetStringValue();
+            }
         }
 
         /// <summary>
