@@ -661,6 +661,14 @@
         }
 
         /// <summary>
+        ///     Gets the unit upgrade level.
+        /// </summary>
+        public int GetUnitUpgradeLevel(LogicCombatItemData data)
+        {
+
+        }
+
+        /// <summary>
         ///     Gets the npc stars.
         /// </summary>
         public int GetNpcStars(LogicNpcData data)

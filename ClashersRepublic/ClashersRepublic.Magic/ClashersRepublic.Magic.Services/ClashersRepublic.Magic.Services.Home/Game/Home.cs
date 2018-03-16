@@ -106,6 +106,8 @@
         /// </summary>
         internal LogicJSONObject Save()
         {
+            this.SaveTimestamp = LogicTimeUtil.GetTimestamp();
+
             LogicJSONObject jsonObject = new LogicJSONObject();
 
             jsonObject.Put("id_hi", new LogicJSONNumber(this.Id.GetHigherInt()));

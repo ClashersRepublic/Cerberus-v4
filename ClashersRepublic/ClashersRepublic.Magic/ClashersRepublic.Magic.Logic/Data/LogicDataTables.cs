@@ -225,6 +225,22 @@
         }
 
         /// <summary>
+        ///     Gets the npc data by name.
+        /// </summary>
+        public static LogicNpcData GetNpcByName(string name)
+        {
+            return (LogicNpcData) LogicDataTables._dataTables[16].GetDataByName(name);
+        }
+
+        /// <summary>
+        ///     Gets the mission data by name.
+        /// </summary>
+        public static LogicMissionData GetMissionByName(string name)
+        {
+            return (LogicMissionData) LogicDataTables._dataTables[20].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the resource data by name.
         /// </summary>
         public static LogicResourceData GetResourceByName(string name)

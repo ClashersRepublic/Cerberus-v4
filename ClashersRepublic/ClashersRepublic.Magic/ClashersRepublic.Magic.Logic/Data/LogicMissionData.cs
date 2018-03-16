@@ -1,144 +1,168 @@
 namespace ClashersRepublic.Magic.Logic.Data
 {
     using ClashersRepublic.Magic.Titan.CSV;
+    using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicMissionData : LogicData
     {
+        private int _actionType;
+        private int _buildBuildingCount;
+        private int _buildBuildingLevel;
+        private int _trainTroopCount;
+        private int _villagers;
+        private int _rewardResourceCount;
+        private int _customData;
+        private int _rewardXP;
+        private int _rewardCharacterCount;
+        private int _delay ;
+
+        private bool _openAchievements;
+        private bool _showMap;
+        private bool _changeName;
+        private bool _switchSides;
+        private bool _showWarBase;
+        private bool _openInfo;
+        private bool _showDonate;
+        private bool _warStates;
+        private bool _forceCamera;
+
+        private LogicNpcData _defendNpcData;
+        private LogicNpcData _attackNpcData;
+        private LogicBuildingData _buildBuildingData;
+        private LogicResourceData _rewardCharacterData;
+        private LogicResourceData _rewardResourceData;
+        private LogicArrayList<LogicMissionData> _missionDependencies;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicMissionData" /> class.
         /// </summary>
         public LogicMissionData(CSVRow row, LogicDataTable table) : base(row, table)
         {
-            // LogicMissionData.
+            this._actionType = -1;
         }
-
-        public string Dependencies { get; protected set; }
-        public int MissionCategory { get; protected set; }
-        public int VillageType { get; protected set; }
-        public bool FirstStep { get; protected set; }
-        public bool WarStates { get; protected set; }
-        public bool Deprecated { get; protected set; }
-        public bool OpenInfo { get; protected set; }
-        public bool ShowWarBase { get; protected set; }
-        public bool ShowDonate { get; protected set; }
-        public bool SwitchSides { get; protected set; }
-        public bool OpenAchievements { get; protected set; }
-        public string Action { get; protected set; }
-        public string Character { get; protected set; }
-        public string FixVillageObject { get; protected set; }
-        public string BuildBuilding { get; protected set; }
-        public int BuildBuildingLevel { get; protected set; }
-        public int BuildBuildingCount { get; protected set; }
-        public string DefendNPC { get; protected set; }
-        public string AttackNPC { get; protected set; }
-        public bool AttackPlayer { get; protected set; }
-        public bool ChangeName { get; protected set; }
-        protected int[] Delay { get; set; }
-        public int TrainTroops { get; protected set; }
-        public bool ShowMap { get; protected set; }
-        protected string[] TutorialText { get; set; }
-        protected int[] TutorialStep { get; set; }
-        protected bool[] Darken { get; set; }
-        protected string[] TutorialTextBox { get; set; }
-        protected string[] TutorialCharacter { get; set; }
-        protected string[] CharacterSWF { get; set; }
-        public bool LoopAnim { get; protected set; }
-        protected bool[] SwitchAnim { get; set; }
-        protected string[] SpeechBubble { get; set; }
-        protected bool[] RightAlignTextBox { get; set; }
-        protected string[] ButtonText { get; set; }
-        protected string[] TutorialMusic { get; set; }
-        public string TutorialMusicAlt { get; protected set; }
-        protected string[] TutorialSound { get; set; }
-        public string RewardResource { get; protected set; }
-        public int RewardResourceCount { get; protected set; }
-        public int RewardXP { get; protected set; }
-        public string RewardTroop { get; protected set; }
-        public int RewardTroopCount { get; protected set; }
-        public int CustomData { get; protected set; }
-        public bool ShowGooglePlusSignin { get; protected set; }
-        public bool HideGooglePlusSignin { get; protected set; }
-        protected bool[] ShowInstructor { get; set; }
-        public int Villagers { get; protected set; }
-        public bool ForceCamera { get; protected set; }
-        public bool TapGameObject { get; protected set; }
 
         /// <summary>
         ///     Called when all instances has been loaded for initialized members in instance.
         /// </summary>
         public override void LoadingFinished()
         {
-            // LoadingFinished.
-        }
+            for (int i = 0; i < this.GetArraySize("Dependencies"); i++)
+            {
+                LogicMissionData dependency = LogicDataTables.GetMissionByName(this.GetValue("Dependencies", i));
 
-        public int GetDelay(int index)
-        {
-            return this.Delay[index];
-        }
+                if (dependency != null)
+                {
+                    this._missionDependencies.Add(dependency);
+                }
+            }
 
-        public string GetTutorialText(int index)
-        {
-            return this.TutorialText[index];
-        }
+            this._buildBuildingData = LogicDataTables.GetBuildingDataByName(this.GetValue("BuildBuilding", 0));
 
-        public int GetTutorialStep(int index)
-        {
-            return this.TutorialStep[index];
-        }
+            if (this._buildBuildingData != null)
+            {
+                this._buildBuildingCount = this.GetIntegerValue("BuildBuildingCount", 0);
+                this._buildBuildingLevel = this.GetIntegerValue("BuildBuildingLevel", 0) - 1;
 
-        public bool GetDarken(int index)
-        {
-            return this.Darken[index];
-        }
+                if (this._buildBuildingLevel != 0)
+                {
+                    this._actionType = 5;
+                }
 
-        public string GetTutorialTextBox(int index)
-        {
-            return this.TutorialTextBox[index];
-        }
+                if (this._buildBuildingCount < 0)
+                {
+                    Debugger.Error("missions.csv: BuildBuildingCount is invalid!");
+                }
+            }
+            else
+            {
+                if (this._actionType == -1)
+                {
+                    this._openAchievements = this.GetBooleanValue("OpenAchievements", 0);
 
-        public string GetTutorialCharacter(int index)
-        {
-            return this.TutorialCharacter[index];
-        }
+                    if (this._openAchievements)
+                    {
+                        this._actionType = 7;
+                    }
+                    else
+                    {
+                        this._defendNpcData = LogicDataTables.GetNpcByName(this.GetValue("DefendNPC", 0));
 
-        public string GetCharacterSWF(int index)
-        {
-            return this.CharacterSWF[index];
-        }
+                        if (this._defendNpcData != null)
+                        {
+                            this._actionType = 1;
+                        }
+                        else
+                        {
+                            this._attackNpcData = LogicDataTables.GetNpcByName(this.GetValue("AttackNPC", 0));
 
-        public bool GetSwitchAnim(int index)
-        {
-            return this.SwitchAnim[index];
-        }
+                            if (this._attackNpcData != null)
+                            {
+                                this._actionType = 2;
+                                this._showMap = this.GetBooleanValue("ShowMap", 0);
+                            }
+                            else
+                            {
+                                this._changeName = this.GetBooleanValue("ChangeName", 0);
 
-        public string GetSpeechBubble(int index)
-        {
-            return this.SpeechBubble[index];
-        }
+                                if (this._changeName)
+                                {
+                                    this._actionType = 6;
+                                }
+                                else
+                                {
+                                    this._trainTroopCount = this.GetIntegerValue("TrainTroops", 0);
 
-        public bool GetRightAlignTextBox(int index)
-        {
-            return this.RightAlignTextBox[index];
-        }
+                                    if (this._trainTroopCount > 0)
+                                    {
+                                        this._actionType = 4;
+                                    }
+                                    else
+                                    {
+                                        this._switchSides = this.GetBooleanValue("SwitchSides", 0);
 
-        public string GetButtonText(int index)
-        {
-            return this.ButtonText[index];
-        }
+                                        if (this._switchSides)
+                                        {
+                                            this._actionType = 8;
+                                        }
+                                        else
+                                        {
+                                            this._showWarBase = this.GetBooleanValue("ShowWarBase", 0);
 
-        public string GetTutorialMusic(int index)
-        {
-            return this.TutorialMusic[index];
-        }
+                                            if (this._showWarBase)
+                                            {
+                                                this._actionType = 9;
+                                            }
+                                            else
+                                            {
+                                                this._openInfo = this.GetBooleanValue("OpenInfo", 0);
 
-        public string GetTutorialSound(int index)
-        {
-            return this.TutorialSound[index];
-        }
+                                                if (this._openInfo)
+                                                {
+                                                    this._actionType = 11;
+                                                }
+                                                else
+                                                {
+                                                    this._showDonate = this.GetBooleanValue("ShowDonate", 0);
 
-        public bool GetShowInstructor(int index)
-        {
-            return this.ShowInstructor[index];
+                                                    if (this._showDonate)
+                                                    {
+                                                        this._actionType = 10;
+                                                    }
+                                                    else
+                                                    {
+                                                        this._showWarBase = this.GetBooleanValue("WarStates", 0);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
