@@ -29,7 +29,7 @@
             this.Listener = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             this.Listener.Bind(new IPEndPoint(IPAddress.Any, port));
 
-            Logging.Debug("Server listens on UDP port " + port);
+            Logging.Debug("NetworkUdpServerGateway::ctor server listens on udp port " + port);
 
             SocketAsyncEventArgs receiveEvent = new SocketAsyncEventArgs();
 
