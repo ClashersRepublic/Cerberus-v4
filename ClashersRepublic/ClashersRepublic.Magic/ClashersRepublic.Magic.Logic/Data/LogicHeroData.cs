@@ -2,7 +2,7 @@ namespace ClashersRepublic.Magic.Logic.Data
 {
     using ClashersRepublic.Magic.Titan.CSV;
 
-    public class LogicHeroData : LogicCombatItemData
+    public class LogicHeroData : LogicCharacterData
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicHeroData" /> class.
@@ -12,43 +12,18 @@ namespace ClashersRepublic.Magic.Logic.Data
             // LogicHeroData.
         }
 
-        public string TID { get; protected set; }
-        public string InfoTID { get; protected set; }
-        public string SWF { get; protected set; }
-        public int Speed { get; protected set; }
-        protected int[] Hitpoints { get; set; }
         protected int[] RequiredTownHallLevel { get; set; }
-        public int AttackRange { get; protected set; }
-        public int AttackSpeed { get; protected set; }
         public int CoolDownOverride { get; protected set; }
-        protected int[] DPS { get; set; }
-        public int PreferedTargetDamageMod { get; protected set; }
-        public int DamageRadius { get; protected set; }
-        public string IconSWF { get; protected set; }
-        public string BigPictureSWF { get; protected set; }
         public string SmallPicture { get; protected set; }
         public string SmallPictureSWF { get; protected set; }
-        protected string[] Projectile { get; set; }
         protected string[] RageProjectile { get; set; }
-        public string PreferedTargetBuilding { get; protected set; }
-        public string DeployEffect { get; protected set; }
-        public string AttackEffect { get; protected set; }
         public string AttackEffectAlt { get; protected set; }
-        public string HitEffect { get; protected set; }
         public string HitEffectActive { get; protected set; }
-        public bool IsFlying { get; protected set; }
-        public bool AirTargets { get; protected set; }
-        public bool GroundTargets { get; protected set; }
-        public bool IsJumper { get; protected set; }
-        public int AttackCount { get; protected set; }
-        public string DieEffect { get; protected set; }
-        protected string[] Animation { get; set; }
         public int ActivationTime { get; protected set; }
         public int ActiveDuration { get; protected set; }
         public int AbilityAttackCount { get; protected set; }
         protected string[] AnimationActivated { get; set; }
         public int MaxSearchRadiusForDefender { get; protected set; }
-        public string SpecialAbilityEffect { get; protected set; }
         protected int[] RegenerationTimeMinutes { get; set; }
         public string CelebrateEffect { get; protected set; }
         public int SleepOffsetX { get; protected set; }
@@ -76,7 +51,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string AbilityIcon { get; protected set; }
         public string AbilityBigPictureExportName { get; protected set; }
         public int AbilityDelay { get; protected set; }
-        protected int[] StrengthWeight { get; set; }
         protected int[] StrengthWeight2 { get; set; }
         public int AlertRadius { get; protected set; }
         public int Scale { get; protected set; }
@@ -93,7 +67,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool HasAltMode { get; protected set; }
         public bool AltModeFlying { get; protected set; }
         protected string[] AltModeAnimation { get; set; }
-        public string PreferedTargetBuildingClass { get; protected set; }
         public bool NoAttackOverWalls { get; protected set; }
         public bool TargetGroups { get; protected set; }
         public bool FightWithGroups { get; protected set; }
@@ -103,12 +76,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool SmoothJump { get; protected set; }
         public int WakeUpSpeed { get; protected set; }
         public int WakeUpSpace { get; protected set; }
-        public int FriendlyGroupWeight { get; protected set; }
-        public int EnemyGroupWeight { get; protected set; }
-        public string AttackEffectShared { get; protected set; }
-        public int TargetedEffectOffset { get; protected set; }
-        public bool TriggersTraps { get; protected set; }
-        public int VillageType { get; protected set; }
         public bool NoDefence { get; protected set; }
 
         /// <summary>
@@ -119,36 +86,16 @@ namespace ClashersRepublic.Magic.Logic.Data
            base.LoadingFinished();         
         }
 
-        public int GetHitpoints(int index)
-        {
-            return this.Hitpoints[index];
-        }
-
         public int GetRequiredTownHallLevel(int index)
         {
             return this.RequiredTownHallLevel[index];
-        }
-
-        public int GetDPS(int index)
-        {
-            return this.DPS[index];
-        }
-
-        public string GetProjectile(int index)
-        {
-            return this.Projectile[index];
         }
 
         public string GetRageProjectile(int index)
         {
             return this.RageProjectile[index];
         }
-
-        public string GetAnimation(int index)
-        {
-            return this.Animation[index];
-        }
-
+        
         public string GetAnimationActivated(int index)
         {
             return this.AnimationActivated[index];
@@ -193,12 +140,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.AbilityHealthIncrease[index];
         }
-
-        public int GetStrengthWeight(int index)
-        {
-            return this.StrengthWeight[index];
-        }
-
+        
         public int GetStrengthWeight2(int index)
         {
             return this.StrengthWeight2[index];
