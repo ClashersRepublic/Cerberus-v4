@@ -5,6 +5,7 @@
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Logic.Helper;
 
     public sealed class LogicResourceProductionComponent : LogicComponent
     {
@@ -25,13 +26,21 @@
         }
 
         /// <summary>
+        ///     Gets the component type of this instance.
+        /// </summary>
+        public override int GetComponentType()
+        {
+            return 5;
+        }
+
+        /// <summary>
         ///     Restarts the timer.
         /// </summary>
         public void RestartTimer()
         {
             int totalTime = 0;
 
-            if (this._productionPer100Hour != 0)
+            if (this._productionPer100Hour >= 1)
             {
                 totalTime = (int) (360000L * this._maxResources / this._productionPer100Hour);
             }
@@ -153,6 +162,19 @@
         public override void FastForwardTime(int time)
         {
             int remainingSeconds = this._resourceTimer.GetRemainingSeconds(this._parent.GetLevel().GetLogicTime());
+        }
+
+        /// <summary>
+        ///     Gets the checksum of this instance.
+        /// </summary>
+        public override void GetChecksum(ChecksumHelper checksum)
+        {
+            checksum.StartObject("LogicResourceProductionComponent");
+            checksum.WriteValue("resourceTimer", this._resourceTimer.GetRemainingSeconds(this._parent.GetLevel().GetLogicTime()));
+            checksum.WriteValue("m_availableLoot", this._availableLoot);
+            checksum.WriteValue("m_maxResources", this._maxResources);
+            checksum.WriteValue("m_productionPer100Hour", this._productionPer100Hour);
+            checksum.EndObject();
         }
     }
 }

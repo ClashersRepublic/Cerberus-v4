@@ -209,6 +209,7 @@
             {
                 this._time = 0;
                 this._state = 1;
+                this._currentTimestamp = currentTimestamp;
                 this._level.SetHome(home, true);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);

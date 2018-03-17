@@ -780,7 +780,7 @@
                 jsonObject.Put("traps2", this.SaveGameObjects(4));
                 jsonObject.Put("decos2", this.SaveGameObjects(6));
 
-                if (this._level.IsNpcVillage())
+                if (!this._level.IsNpcVillage())
                 {
                     if (LogicDataTables.GetGlobals().SaveVillageObjects())
                     {

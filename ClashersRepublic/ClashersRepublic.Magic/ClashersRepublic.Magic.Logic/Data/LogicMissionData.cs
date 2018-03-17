@@ -50,6 +50,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         public LogicMissionData(CSVRow row, LogicDataTable table) : base(row, table)
         {
             this._missionType = -1;
+            this._missionDependencies = new LogicArrayList<LogicMissionData>();
         }
 
         /// <summary>
