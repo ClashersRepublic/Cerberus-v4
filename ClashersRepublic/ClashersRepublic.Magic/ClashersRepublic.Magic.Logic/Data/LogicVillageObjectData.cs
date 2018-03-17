@@ -81,5 +81,10 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this._upgradeLevelCount;
         }
+
+        public override int GetVillageType()
+        {
+            return this.VillageType;
+        }
     }
 }

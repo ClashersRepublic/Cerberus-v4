@@ -28,7 +28,6 @@
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
 
         private LogicBuilding _townHall;
-        private LogicBuilding _townHallVillage2;
         private LogicBuilding _allianceCastle;
         private LogicBuilding _laboratory;
         private LogicObstacleData _gemBoxData;
@@ -59,7 +58,7 @@
                 this._gameObjects[i] = new LogicArrayList<LogicGameObject>(128);
             }
 
-            this._gemBoxData = LogicDataTables.GetObstacleDataByName("Bonus Gembox");
+            this._gemBoxData = LogicDataTables.GetObstacleByName("Bonus Gembox");
             this._componentManager = new LogicComponentManager(level);
             this._listener = new LogicGameObjectManagerListener();
             this._obstacleRespawnRandom = new LogicRandom();
@@ -108,7 +107,6 @@
             this._level = null;
             this._tileMap = null;
             this._townHall = null;
-            this._townHallVillage2 = null;
             this._allianceCastle = null;
             this._laboratory = null;
             this._specialObstacleData = null;
@@ -127,14 +125,37 @@
         /// </summary>
         public void AddGameObject(LogicGameObject gameObject)
         {
-            if (gameObject.GetGameObjectType() > 8)
+            int globalId = gameObject.GetGlobalID();
+            int gameObjectType = gameObject.GetGameObjectType();
+
+            if (gameObject.GetData().GetVillageType() != this._villageType)
             {
-                Debugger.Error("LogicGameObjectManager::generateGameObjectGlobalID(). Index is out of bounds.");
+                Debugger.Error(string.Format("Invalid item in level for villageType {0} DataId: {1}", this._villageType, gameObject.GetData().GetGlobalID()));
             }
 
-            if (gameObject.GetGlobalID() == -1)
+            if (globalId == -1)
             {
                 gameObject.SetGlobalID(this.GenerateGameObjectGlobalID(gameObject));
+            }
+            else
+            {
+                int table = GlobalID.GetClassID(globalId);
+                int idx = GlobalID.GetInstanceID(globalId);
+
+                if (table - 500 != gameObjectType)
+                {
+                    Debugger.Error(string.Format("LogicGameObjectManager::addGameObject with global ID {0}, doesn't have right index", globalId));
+                }
+
+                if (this.GetGameObjectByID(globalId) != null)
+                {
+                    Debugger.Error(string.Format("LogicGameObjectManager::addGameObject with global ID {0}, global ID already taken", globalId));
+                }
+
+                if (this._gameObjectIds[gameObjectType] <= idx)
+                {
+                    this._gameObjectIds[gameObjectType] = idx + 1;
+                }
             }
 
             if (gameObject.GetGameObjectType() == 0)
@@ -147,14 +168,9 @@
                     this._level.GetWorkerManagerAt(this._villageType).IncreaseWorkerCount();
                 }
 
-                if (buildingData.IsTownHall())
+                if (buildingData.IsTownHall() || buildingData.IsTownHall2())
                 {
                     this._townHall = building;
-                }
-
-                if (buildingData.IsTownHall2())
-                {
-                    this._townHallVillage2 = building;
                 }
 
                 if (buildingData.IsLaboratory())
@@ -178,6 +194,14 @@
             }
 
             return GlobalID.CreateGlobalID(gameObject.GetGameObjectType() + 500, this._gameObjectIds[gameObject.GetGameObjectType()]++);
+        }
+
+        /// <summary>
+        ///     Gets the specified gameobject list.
+        /// </summary>
+        public LogicArrayList<LogicGameObject> GetGameObjects(int index)
+        {
+            return this._gameObjects[index];
         }
 
         /// <summary>
@@ -242,8 +266,8 @@
         /// </summary>
         public int GetHighestBuildingLevel(LogicBuildingData data, bool includeConstruction)
         {
-            int maxLevel = -1;
             LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
+            int maxLevel = -1;
 
             for (int i = 0; i < gameObjects.Count; i++)
             {

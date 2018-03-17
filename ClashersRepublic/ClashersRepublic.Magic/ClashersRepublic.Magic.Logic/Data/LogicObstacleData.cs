@@ -62,5 +62,13 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             // LoadingFinished.
         }
+
+        /// <summary>
+        ///     Gets the village type.
+        /// </summary>
+        public override int GetVillageType()
+        {
+            return this.VillageType;
+        }
     }
 }

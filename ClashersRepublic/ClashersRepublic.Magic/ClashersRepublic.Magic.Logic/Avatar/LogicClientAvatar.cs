@@ -290,6 +290,14 @@
         }
 
         /// <summary>
+        ///     Gets if the name has been set by user.
+        /// </summary>
+        public bool GetNameSetByUser()
+        {
+            return this._nameSetByUser;
+        }
+
+        /// <summary>
         ///     Gets the name.
         /// </summary>
         public string GetName()

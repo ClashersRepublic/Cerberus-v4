@@ -146,15 +146,23 @@
         /// <summary>
         ///     Gets the <see cref="LogicBuildingData"/> instance by name.
         /// </summary>
-        public static LogicBuildingData GetBuildingDataByName(string name)
+        public static LogicBuildingData GetBuildingByName(string name)
         {
             return (LogicBuildingData) LogicDataTables._dataTables[0].GetDataByName(name);
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicVillageObjectData"/> instance by name.
+        /// </summary>
+        public static LogicVillageObjectData GetVillageObjectByName(string name)
+        {
+            return (LogicVillageObjectData) LogicDataTables._dataTables[38].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the <see cref="LogicObstacleData"/> instance by name.
         /// </summary>
-        public static LogicObstacleData GetObstacleDataByName(string name)
+        public static LogicObstacleData GetObstacleByName(string name)
         {
             return (LogicObstacleData) LogicDataTables._dataTables[7].GetDataByName(name);
         }
@@ -162,9 +170,25 @@
         /// <summary>
         ///     Gets the <see cref="LogicHeroData"/> instance by name.
         /// </summary>
-        public static LogicHeroData GetHeroDataByName(string name)
+        public static LogicHeroData GetHeroByName(string name)
         {
             return (LogicHeroData) LogicDataTables._dataTables[27].GetDataByName(name);
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicHeroData"/> instance by name.
+        /// </summary>
+        public static LogicCharacterData GetCharacterByName(string name)
+        {
+            return (LogicCharacterData) LogicDataTables._dataTables[3].GetDataByName(name);
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicHeroData"/> instance by name.
+        /// </summary>
+        public static LogicSpellData GetSpellByName(string name)
+        {
+            return (LogicSpellData) LogicDataTables._dataTables[25].GetDataByName(name);
         }
 
         /// <summary>

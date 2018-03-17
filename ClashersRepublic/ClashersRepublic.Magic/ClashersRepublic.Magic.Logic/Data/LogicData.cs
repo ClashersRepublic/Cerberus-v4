@@ -196,5 +196,13 @@
                 }
             }
         }
+
+        /// <summary>
+        ///     Gets the village type
+        /// </summary>
+        public virtual int GetVillageType()
+        {
+            return 0;
+        }
     }
 }

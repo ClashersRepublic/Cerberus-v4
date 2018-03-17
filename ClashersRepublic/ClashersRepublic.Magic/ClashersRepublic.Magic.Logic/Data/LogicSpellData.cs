@@ -252,5 +252,10 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return 1;
         }
+
+        public override int GetVillageType()
+        {
+            return this.VillageType;
+        }
     }
 }

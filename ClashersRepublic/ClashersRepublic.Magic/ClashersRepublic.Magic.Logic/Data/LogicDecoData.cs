@@ -70,11 +70,16 @@ namespace ClashersRepublic.Magic.Logic.Data
         }
 
         /// <summary>
-        ///     Gets the required exp level.
+        ///     Gets the sell price.
         /// </summary>
         public int GetSellPrice()
         {
             return this.BuildCost / 10;
+        }
+
+        public override int GetVillageType()
+        {
+            return this.VillageType;
         }
     }
 }

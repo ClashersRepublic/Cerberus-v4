@@ -251,7 +251,7 @@ namespace ClashersRepublic.Magic.Logic.Data
 
             if (!string.IsNullOrEmpty(heroType))
             {
-                this._heroData = LogicDataTables.GetHeroDataByName(heroType);
+                this._heroData = LogicDataTables.GetHeroByName(heroType);
             }
 
             this._isClockTower = this.GetName().Equals("Clock Tower");
@@ -667,6 +667,11 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetGearUpTime(int index)
         {
             return this.GearUpTime[index];
+        }
+
+        public override int GetVillageType()
+        {
+            return this.VillageType;
         }
     }
 }

@@ -330,14 +330,14 @@
         /// <summary>
         ///     Gets the player avatar instance.
         /// </summary>
-        public LogicAvatar GetPlayerAvatar()
+        public LogicClientAvatar GetPlayerAvatar()
         {
             if (this.GetState() == 1 || this.GetState() == 3)
             {
-                return this._homeOwnerAvatar;
+                return (LogicClientAvatar) this._homeOwnerAvatar;
             }
 
-            return this._visitorAvatar;
+            return (LogicClientAvatar) this._visitorAvatar;
         }
 
         /// <summary>

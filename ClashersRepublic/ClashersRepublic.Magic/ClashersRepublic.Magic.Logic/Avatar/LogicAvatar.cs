@@ -611,6 +611,21 @@
         }
 
         /// <summary>
+        ///     Gets the units total capacity.
+        /// </summary>
+        public int GetUnitsTotalCapacity()
+        {
+            int cnt = 0;
+
+            for (int i = 0; i < this._unitCount.Count; i++)
+            {
+                cnt += ((LogicCombatItemData) this._unitCount[i].GetData()).HousingSpace * this._unitCount[i].GetCount();
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
         ///     Gets the unit count.
         /// </summary>
         public int GetUnitCount(LogicCombatItemData data)
@@ -665,7 +680,150 @@
         /// </summary>
         public int GetUnitUpgradeLevel(LogicCombatItemData data)
         {
+            if (data.GetCombatItemType() == 0)
+            {
+                int index = -1;
 
+                for (int i = 0; i < this._unitUpgrade.Count; i++)
+                {
+                    if (this._unitUpgrade[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    return this._unitUpgrade[index].GetCount();
+                }
+            }
+            else
+            {
+                if (data.GetCombatItemType() == 1)
+                {
+                    int index = -1;
+
+                    for (int i = 0; i < this._spellUpgrade.Count; i++)
+                    {
+                        if (this._spellUpgrade[i].GetData() == data)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
+                    {
+                        return this._spellUpgrade[index].GetCount();
+                    }
+                }
+                else
+                {
+                    int index = -1;
+
+                    for (int i = 0; i < this._heroUpgrade.Count; i++)
+                    {
+                        if (this._heroUpgrade[i].GetData() == data)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
+                    {
+                        return this._heroUpgrade[index].GetCount();
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Sets the unit upgrade level.
+        /// </summary>
+        public void SetUnitUpgradeLevel(LogicCombatItemData data, int count)
+        {
+            int combatItemType = data.GetCombatItemType();
+            int upgradeCount = data.GetUpgradeLevelCount();
+
+            if (upgradeCount <= count)
+            {
+                Debugger.Warning("LogicAvatar::setUnitUpgradeLevel - Level is out of bounds!");
+                count = upgradeCount - 1;
+            }
+
+            if (combatItemType > 0)
+            {
+                if (combatItemType == 2)
+                {
+                    int index = -1;
+
+                    for (int i = 0; i < this._heroUpgrade.Count; i++)
+                    {
+                        if (this._heroUpgrade[i].GetData() == data)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
+                    {
+                        this._heroUpgrade[index].SetCount(count);
+                    }
+                    else
+                    {
+                        this._heroUpgrade.Add(new LogicDataSlot(data, count));
+                    }
+                }
+                else
+                {
+                    int index = -1;
+
+                    for (int i = 0; i < this._spellUpgrade.Count; i++)
+                    {
+                        if (this._spellUpgrade[i].GetData() == data)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
+                    {
+                        this._spellUpgrade[index].SetCount(count);
+                    }
+                    else
+                    {
+                        this._spellUpgrade.Add(new LogicDataSlot(data, count));
+                    }
+                }
+            }
+            else
+            {
+                int index = -1;
+
+                for (int i = 0; i < this._unitUpgrade.Count; i++)
+                {
+                    if (this._unitUpgrade[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    this._unitUpgrade[index].SetCount(count);
+                }
+                else
+                {
+                    this._unitUpgrade.Add(new LogicDataSlot(data, count));
+                }
+            }
         }
 
         /// <summary>

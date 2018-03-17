@@ -291,7 +291,7 @@
         /// </summary>
         public int GetTroopHousingVillage2BuildTime(LogicLevel level, int ignoreBuildingCnt)
         {
-            LogicBuildingData data = LogicDataTables.GetBuildingDataByName("Troop Housing2");
+            LogicBuildingData data = LogicDataTables.GetBuildingByName("Troop Housing2");
 
             if (data != null)
             {

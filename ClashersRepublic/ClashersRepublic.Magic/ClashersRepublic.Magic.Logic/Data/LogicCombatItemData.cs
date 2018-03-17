@@ -50,6 +50,11 @@ namespace ClashersRepublic.Magic.Logic.Data
             this._trainingResourceData = LogicDataTables.GetResourceByName(this.TrainingResource);
         }
 
+        public int GetUpgradeLevelCount()
+        {
+            return this._upgradeLevelCount;
+        }
+
         public int GetLaboratoryLevel(int index)
         {
             return this.LaboratoryLevel[index];
