@@ -191,11 +191,22 @@
             if (!playerAvatar.IsMissionCompleted(this._data))
             {
                 playerAvatar.SetMissionCompleted(this._data, true);
+                playerAvatar.GetChangeListener().CommodityCountChanged(0, this._data.GetRewardResourceData(), 1);
+
                 this.AddRewardUnits();
 
-                if (this._data.GetMissionType() == 4)
-                {
+                LogicResourceData rewardResourceData = this._data.GetRewardResourceData();
 
+                if (rewardResourceData != null)
+                {
+                    playerAvatar.AddMisisonResourceReward(rewardResourceData, this._data.GetRewardResourceCount());
+                }
+
+                int rewardXp = this._data.GetRewardXp();
+
+                if (rewardXp > 0)
+                {
+                    playerAvatar.XpGainHelper(rewardXp);
                 }
             }
         }

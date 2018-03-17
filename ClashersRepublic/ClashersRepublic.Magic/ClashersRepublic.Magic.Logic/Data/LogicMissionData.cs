@@ -14,7 +14,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         private int _villagers;
         private int _rewardResourceCount;
         private int _customData;
-        private int _rewardXP;
+        private int _rewardXp;
         private int _rewardCharacterCount;
         private int _villageType;
         private int _delay;
@@ -256,12 +256,12 @@ namespace ClashersRepublic.Magic.Logic.Data
             }
 
             this._customData = this.GetIntegerValue("CustomData", 0);
-            this._rewardXP = this.GetIntegerValue("RewardXP", 0);
+            this._rewardXp = this.GetIntegerValue("RewardXP", 0);
 
-            if (this._rewardXP < 0)
+            if (this._rewardXp < 0)
             {
                 Debugger.Warning("missions.csv: RewardXP is negative!");
-                this._rewardXP = 0;
+                this._rewardXp = 0;
             }
 
             this._rewardCharacterData = LogicDataTables.GetCharacterByName(this.GetValue("RewardTroop", 0));
@@ -331,6 +331,30 @@ namespace ClashersRepublic.Magic.Logic.Data
         public LogicBuildingData GetBuildBuildingData()
         {
             return this._buildBuildingData;
+        }
+
+        /// <summary>
+        ///     Gets the reward resource data.
+        /// </summary>
+        public LogicResourceData GetRewardResourceData()
+        {
+            return this._rewardResourceData;
+        }
+
+        /// <summary>
+        ///     Gets the reward resource count.
+        /// </summary>
+        public int GetRewardResourceCount()
+        {
+            return this._rewardResourceCount;
+        }
+
+        /// <summary>
+        ///     Gets the reward xp.
+        /// </summary>
+        public int GetRewardXp()
+        {
+            return this._rewardXp;
         }
 
         /// <summary>

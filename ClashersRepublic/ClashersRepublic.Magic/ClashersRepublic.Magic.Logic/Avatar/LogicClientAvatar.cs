@@ -473,6 +473,21 @@
         }
 
         /// <summary>
+        ///     Adds the mission resource reward.
+        /// </summary>
+        public void AddMisisonResourceReward(LogicResourceData resourceData, int count)
+        {
+            if (resourceData != null)
+            {
+                if (count > 0)
+                {
+                    this.SetResourceCount(resourceData, this.GetResourceCount(resourceData) + count);
+                    this._listener.CommodityCountChanged(0, resourceData, count);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public void Decode(ByteStream stream)

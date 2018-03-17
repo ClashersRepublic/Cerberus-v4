@@ -135,6 +135,7 @@
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectManagerListener.cs" />
+    <Compile Include="GameObject\LogicGameObjectFilter.cs" />
     <Compile Include="GameObject\LogicVillageObject.cs" />
     <Compile Include="GameObject\LogicObstacle.cs" />
     <Compile Include="GameObject\LogicBuilding.cs" />
