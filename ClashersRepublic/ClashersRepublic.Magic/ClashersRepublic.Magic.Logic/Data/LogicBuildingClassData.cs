@@ -7,7 +7,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         private bool _townHall2Class;
         private bool _townHallClass;
         private bool _wallClass;
-        private bool _worker2Class;
         private bool _workerClass;
 
         /// <summary>
@@ -32,7 +31,7 @@ namespace ClashersRepublic.Magic.Logic.Data
 
             if (!this._workerClass)
             {
-                this._worker2Class = string.Equals("Worker2", this.GetName());
+                this._workerClass = string.Equals("Worker2", this.GetName());
             }
 
             this._townHallClass = string.Equals("Town Hall", this.GetName());
@@ -43,11 +42,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool IsWorker()
         {
             return this._workerClass;
-        }
-
-        public bool IsWorker2()
-        {
-            return this._worker2Class;
         }
 
         public bool IsTownHall()

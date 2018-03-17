@@ -7,7 +7,8 @@ namespace ClashersRepublic.Magic.Logic.Data
     public class LogicBuildingData : LogicData
     {
         private LogicBuildingClassData _buildingClass;
-        private LogicResourceData[] _buildResources;
+        private LogicResourceData _buildResource;
+        private LogicResourceData _produceResource;
         private LogicHeroData _heroData;
 
         private int[] _constructionTimes;
@@ -34,7 +35,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string ExportNameNpc { get; protected set; }
         public string ExportNameConstruction { get; protected set; }
         public string ExportNameLocked { get; protected set; }
-        protected string[] BuildResource { get; set; }
+        protected string BuildResource { get; set; }
         protected int[] BuildCost { get; set; }
         protected int[] TownHallLevel { get; set; }
         protected int[] TownHallLevel2 { get; set; }
@@ -65,7 +66,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         protected int[] ResourceIconLimit { get; set; }
         protected int[] UnitProduction { get; set; }
         public bool UpgradesUnits { get; protected set; }
-        protected int[] ProducesUnitsOfType { get; set; }
+        public int ProducesUnitsOfType { get; set; }
         protected int[] BoostCost { get; set; }
         public bool FreeBoost { get; protected set; }
         protected int[] Hitpoints { get; set; }
@@ -224,28 +225,15 @@ namespace ClashersRepublic.Magic.Logic.Data
 
             for (int i = 0; i < this._upgradeLevelCount; i++)
             {
-                this._constructionTimes[i] = 86400 * this.GetIntegerValue("BuildTimeD", i) + 
-                                             3600 * this.GetIntegerValue("BuildTimeH", i) + 
+                this._constructionTimes[i] = 86400 * this.GetIntegerValue("BuildTimeD", i) +
+                                             3600 * this.GetIntegerValue("BuildTimeH", i) +
                                              60 * this.GetIntegerValue("BuildTimeM", i) +
                                              this.GetIntegerValue("BuildTimeS", i);
             }
 
-            this._buildResources = new LogicResourceData[this._upgradeLevelCount];
 
-            for (int i = 0; i < this._upgradeLevelCount; i++)
-            {
-                if (!string.IsNullOrEmpty(this.BuildResource[i]))
-                {
-                    this._buildResources[i] = LogicDataTables.GetResourceByName(this.BuildResource[i]);
-                }
-                else
-                {
-                    if (i > 0)
-                    {
-                        this._buildResources[i] = this._buildResources[i - 1];
-                    }
-                }
-            }
+            this._buildResource = LogicDataTables.GetResourceByName(this.BuildResource);
+            this._produceResource = LogicDataTables.GetResourceByName(this.ProducesResource);
 
             string heroType = this.GetValue("HeroType", 0);
 
@@ -287,11 +275,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool IsWorkerBuilding()
         {
             return this._buildingClass.IsWorker();
-        }
-
-        public bool IsWorker2Building()
-        {
-            return this._buildingClass.IsWorker2();
         }
 
         public bool IsWall()
@@ -339,9 +322,14 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.HousingSpaceAlt[level];
         }
 
-        public LogicResourceData GetBuildResource(int index)
+        public LogicResourceData GetBuildResource()
         {
-            return this._buildResources[index];
+            return this._buildResource;
+        }
+
+        public LogicResourceData GetProduceResource()
+        {
+            return this._produceResource;
         }
 
         public LogicHeroData GetHeroData()
@@ -464,9 +452,9 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.UnitProduction[index];
         }
 
-        public int GetProducesUnitsOfType(int index)
+        public int GetProducesUnitsOfType()
         {
-            return this.ProducesUnitsOfType[index];
+            return this.ProducesUnitsOfType;
         }
 
         public int GetBoostCost(int index)

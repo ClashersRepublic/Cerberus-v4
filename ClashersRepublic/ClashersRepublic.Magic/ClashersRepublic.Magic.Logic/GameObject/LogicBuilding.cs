@@ -8,6 +8,7 @@
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Logic.Helper;
 
     public sealed class LogicBuilding : LogicGameObject
     {
@@ -70,6 +71,13 @@
                 LogicUnitProductionComponent unitProductionComponent = new LogicUnitProductionComponent(this);
                 unitProductionComponent.SetEnabled(false);
                 this.AddComponent(unitProductionComponent);
+            }
+
+            if (buildingData.GetProduceResource() != null)
+            {
+                LogicResourceProductionComponent resourceProductionComponent = new LogicResourceProductionComponent(this, buildingData.GetProduceResource());
+                resourceProductionComponent.SetEnabled(false);
+                this.AddComponent(resourceProductionComponent);
             }
         }
 
@@ -610,8 +618,16 @@
                 }
             }
 
-            if (this._upgLevel != 0 || this._constructionTimer == null)
+            if (this._upgLevel != 0 || this.IsUpgrading() || this._constructionTimer == null)
             {
+                bool enable = this._constructionTimer == null;
+
+                this.EnableComponent(1, enable);
+                this.EnableComponent(3, enable);
+                this.EnableComponent(5, enable);
+                this.EnableComponent(9, enable);
+                this.EnableComponent(15, enable);
+
                 if (this.GetHitpointComponent() != null)
                 {
                     LogicHitpointComponent hitpointComponent = this.GetHitpointComponent();
@@ -629,11 +645,35 @@
                         hitpointComponent.SetMaxRegenerationTime(buildingData.GetRegenerationTime(this._upgLevel));
                     }
                 }
+                
+                if (this.GetComponent(5) != null)
+                {
+                    LogicResourceProductionComponent resourceProductionComponent = (LogicResourceProductionComponent) this.GetComponent(5);
+                    resourceProductionComponent.SetProduction(buildingData.GetResourcePer100Hours(this._upgLevel), buildingData.GetResourceMax(this._upgLevel));
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the checksum of this instance.
+        /// </summary>
+        public override void GetChecksum(ChecksumHelper checksum)
+        {
+            checksum.StartObject("LogicBuilding");
+
+            base.GetChecksum(checksum);
+
+            if (this.GetComponent(6) != null)
+            {
+                this.GetComponent(6).GetChecksum(checksum);
             }
 
             if (this.GetComponent(5) != null)
             {
+                this.GetComponent(5).GetChecksum(checksum);
             }
+
+            checksum.EndObject();
         }
     }
 }

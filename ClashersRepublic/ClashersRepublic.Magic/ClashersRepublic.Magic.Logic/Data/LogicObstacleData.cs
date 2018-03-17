@@ -70,5 +70,10 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.VillageType;
         }
+
+        public bool IsLootCart()
+        {
+            return this.LootDefensePercentage > 0;
+        }
     }
 }

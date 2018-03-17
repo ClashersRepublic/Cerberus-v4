@@ -95,15 +95,15 @@
         }
 
         /// <summary>
-        ///     Enables the specified component.
+        ///     Enable the specified component.
         /// </summary>
-        public void EnableComponent(int componentType, bool state)
+        public void EnableComponent(int componentType, bool enable)
         {
             LogicComponent component = this._components[componentType];
 
             if (component != null)
             {
-                component.SetEnabled(state);
+                component.SetEnabled(enable);
             }
         }
 
