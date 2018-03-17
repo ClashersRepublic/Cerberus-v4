@@ -289,11 +289,6 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this._buildingClass.IsWorker();
         }
 
-        public bool IsWorker2Building()
-        {
-            return this._buildingClass.IsWorker2();
-        }
-
         public bool IsWall()
         {
             return this._buildingClass.IsWall();

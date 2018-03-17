@@ -163,14 +163,14 @@
                 LogicBuilding building = (LogicBuilding) gameObject;
                 LogicBuildingData buildingData = building.GetBuildingData();
 
-                if (buildingData.IsWorkerBuilding() || buildingData.IsWorker2Building())
-                {
-                    this._level.GetWorkerManagerAt(this._villageType).IncreaseWorkerCount();
-                }
-
                 if (buildingData.IsTownHall() || buildingData.IsTownHall2())
                 {
                     this._townHall = building;
+                }
+
+                if (buildingData.IsWorkerBuilding() || buildingData.IsTownHall2())
+                {
+                    this._level.GetWorkerManagerAt(this._villageType).IncreaseWorkerCount();
                 }
 
                 if (buildingData.IsLaboratory())
@@ -188,7 +188,7 @@
         /// </summary>
         public int GenerateGameObjectGlobalID(LogicGameObject gameObject)
         {
-            if (gameObject.GetGameObjectType() > 8)
+            if (gameObject.GetGameObjectType() >= 9)
             {
                 Debugger.Error("LogicGameObjectManager::generateGameObjectGlobalID(). Index is out of bounds.");
             }
