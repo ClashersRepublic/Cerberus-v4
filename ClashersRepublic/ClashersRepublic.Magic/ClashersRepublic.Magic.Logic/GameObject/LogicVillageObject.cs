@@ -11,6 +11,7 @@
     public sealed class LogicVillageObject : LogicGameObject
     {
         private LogicTimer _constructionTimer;
+
         private bool _isLocked;
         private bool _isUpgrading;
         private int _upgLevel;
@@ -226,6 +227,14 @@
         public override int GetGameObjectType()
         {
             return 8;
+        }
+
+        /// <summary>
+        ///     Gets the upgrade level.
+        /// </summary>
+        public int GetUpgradeLevel()
+        {
+            return this._upgLevel;
         }
     }
 }

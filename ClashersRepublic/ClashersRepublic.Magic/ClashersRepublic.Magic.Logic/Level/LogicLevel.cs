@@ -259,6 +259,14 @@
         }
 
         /// <summary>
+        ///     Gets the village type.
+        /// </summary>
+        public int GetVillageType()
+        {
+            return this._villageType;
+        }
+
+        /// <summary>
         ///     Gets the logic time.
         /// </summary>
         public LogicTime GetLogicTime()

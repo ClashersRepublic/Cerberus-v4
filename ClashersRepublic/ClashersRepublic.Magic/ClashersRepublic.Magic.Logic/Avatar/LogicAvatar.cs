@@ -1003,7 +1003,7 @@
         /// <summary>
         ///     Completes the specified mission.
         /// </summary>
-        public void SetMissionCompleted(LogicMissionData data)
+        public void SetMissionCompleted(LogicMissionData data, bool state)
         {
             int index = -1;
 
@@ -1016,9 +1016,19 @@
                 }
             }
 
-            if (index == -1)
+            if (state)
             {
-                this._missionCompleted.Add(data);
+                if (index == -1)
+                {
+                    this._missionCompleted.Add(data);
+                }
+            }
+            else
+            {
+                if (index != -1)
+                {
+                    this._missionCompleted.Remove(index);
+                }
             }
         }
 

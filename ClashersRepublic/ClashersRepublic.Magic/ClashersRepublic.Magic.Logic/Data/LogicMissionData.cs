@@ -309,6 +309,22 @@ namespace ClashersRepublic.Magic.Logic.Data
         }
 
         /// <summary>
+        ///     Gets the character data.
+        /// </summary>
+        public LogicCharacterData GetCharacterData()
+        {
+            return this._characterData;
+        }
+
+        /// <summary>
+        ///     Gets the fix village object data.
+        /// </summary>
+        public LogicVillageObjectData GetFixVillageObjectData()
+        {
+            return this._fixVillageObjectData;
+        }
+
+        /// <summary>
         ///     Gets the build building data.
         /// </summary>
         public LogicBuildingData GetBuildBuildingData()

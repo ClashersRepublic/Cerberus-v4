@@ -95,6 +95,19 @@
         }
 
         /// <summary>
+        ///     Enables the specified component.
+        /// </summary>
+        public void EnableComponent(int componentType, bool state)
+        {
+            LogicComponent component = this._components[componentType];
+
+            if (component != null)
+            {
+                component.SetEnabled(state);
+            }
+        }
+
+        /// <summary>
         ///     Gets the x position.
         /// </summary>
         public int GetX()
