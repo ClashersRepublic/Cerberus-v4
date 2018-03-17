@@ -27,9 +27,15 @@
         private readonly LogicComponentManager _componentManager;
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
 
-        private LogicBuilding _townHall;
         private LogicBuilding _allianceCastle;
+        private LogicBuilding _clockTower;
+        private LogicBuilding _townHall;
         private LogicBuilding _laboratory;
+        //private LogicAlliancePortal _alliancePortal;
+        private LogicObstacle _lootCart;
+        private LogicVillageObject _shipyard;
+        private LogicVillageObject _rowBoat;
+        private LogicVillageObject _clanGate;
         private LogicObstacleData _gemBoxData;
         private LogicData _specialObstacleData;
 
@@ -103,12 +109,17 @@
             this._listener = null;
             this._obstacleRespawnRandom = null;
             this._tileGrassRespawnRandom = null;
-            this._gemBoxData = null;
             this._level = null;
             this._tileMap = null;
-            this._townHall = null;
             this._allianceCastle = null;
+            this._clockTower = null;
+            this._townHall = null;
             this._laboratory = null;
+            this._lootCart = null;
+            this._shipyard = null;
+            this._rowBoat = null;
+            this._clanGate = null;
+            this._gemBoxData = null;
             this._specialObstacleData = null;
         }
 
@@ -158,10 +169,37 @@
                 }
             }
 
-            if (gameObject.GetGameObjectType() == 0)
+            if (gameObjectType == 0)
             {
                 LogicBuilding building = (LogicBuilding) gameObject;
                 LogicBuildingData buildingData = building.GetBuildingData();
+
+                if (buildingData.IsAllianceCastle())
+                {
+                    this._allianceCastle = building;
+                }
+
+                if (buildingData.GetUnitProduction(0) >= 1)
+                {
+                    if (!buildingData.ForgesSpells)
+                    {
+                        if (buildingData.GetProducesUnitsOfType() == 1)
+                        {
+                            /*v32 = *(_DWORD*)(v3 + 200)
+                            sub_238DCC(v32, (int)&v52);*/
+                        }
+                        else if (buildingData.GetProducesUnitsOfType() == 2)
+                        {
+                            /*v32 = *(_DWORD*)(v3 + 204);
+                            sub_238DCC(v32, (int)&v52);*/
+                        }
+                    }
+                }
+
+                if (buildingData.IsClockTower())
+                {
+                    this._clockTower = building;
+                }
 
                 if (buildingData.IsTownHall() || buildingData.IsTownHall2())
                 {
@@ -176,6 +214,54 @@
                 if (buildingData.IsLaboratory())
                 {
                     this._laboratory = building;
+                }
+
+                if (buildingData.GetUnitProduction(0) >= 1)
+                {
+                    //++*(_DWORD*)(v3 + 292);
+                }
+
+                if (buildingData.ForgesSpells)
+                {
+                    int unitsOfType = buildingData.GetProducesUnitsOfType();
+                    /*v49 = v3 + 192;
+                    if (unitsOfType == 1)
+                        v49 = v3 + 188;
+                    *(_DWORD*)v49 = v52;*/
+                }
+            }
+            else if (gameObjectType == 3)
+            {
+                LogicObstacle obstacleObject = (LogicObstacle)gameObject;
+                LogicObstacleData obstacleObjectData = obstacleObject.GetObstacleData();
+
+                if (obstacleObjectData.IsLootCart())
+                {
+                    this._lootCart = obstacleObject;
+                }
+            }
+            else if (gameObjectType == 5)
+            {
+                //this._alliancePortal = (LogicAlliancePortal)gameObject;
+            }
+            else if (gameObjectType == 8)
+            {
+                LogicVillageObject villageObject = (LogicVillageObject)gameObject;
+                LogicVillageObjectData villageObjectData = villageObject.GetVillageObjectData();
+
+                if (villageObjectData.IsShipyard())
+                {
+                    this._shipyard = villageObject;
+                }
+
+                if (villageObjectData.IsRowBoat())
+                {
+                    this._rowBoat = villageObject;
+                }
+
+                if (villageObjectData.IsClanGate())
+                {
+                    this._clanGate = villageObject;
                 }
             }
 

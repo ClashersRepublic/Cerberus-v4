@@ -6,6 +6,10 @@ namespace ClashersRepublic.Magic.Logic.Data
     {
         private int _upgradeLevelCount;
         private int[] _buildTime;
+        private bool _shipyard;
+        private bool _rowBoat;
+        private bool _clanGate;
+
         private LogicResourceData _buildResourceData;
 
         /// <summary>
@@ -43,6 +47,22 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
+            this._shipyard = string.Equals("Shipyard", this.GetName());
+
+            if (!this._shipyard)
+            {
+                this._shipyard = string.Equals("Shipyard2", this.GetName());
+            }
+
+            this._rowBoat = string.Equals("Rowboat", this.GetName());
+
+            if (!this._rowBoat)
+            {
+                this._rowBoat = string.Equals("Rowboat2", this.GetName());
+            }
+
+            this._clanGate = string.Equals("ClanGate", this.GetName());
+
             this._upgradeLevelCount = this._row.GetBiggestArraySize();
             this._buildTime = new int[this._row.GetBiggestArraySize()];
 
@@ -55,6 +75,21 @@ namespace ClashersRepublic.Magic.Logic.Data
             }
 
             this._buildResourceData = LogicDataTables.GetResourceByName(this.GetValue("BuildResource", 0));
+        }
+
+        public bool IsShipyard()
+        {
+            return this._shipyard;
+        }
+
+        public bool IsRowBoat()
+        {
+            return this._rowBoat;
+        }
+
+        public bool IsClanGate()
+        {
+            return this._clanGate;
         }
 
         public string GetSWF(int index)

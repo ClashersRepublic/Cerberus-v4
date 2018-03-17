@@ -65,7 +65,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         protected int[] ResourceIconLimit { get; set; }
         protected int[] UnitProduction { get; set; }
         public bool UpgradesUnits { get; protected set; }
-        protected int[] ProducesUnitsOfType { get; set; }
+        public int ProducesUnitsOfType { get; set; }
         protected int[] BoostCost { get; set; }
         public bool FreeBoost { get; protected set; }
         protected int[] Hitpoints { get; set; }
@@ -459,9 +459,9 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.UnitProduction[index];
         }
 
-        public int GetProducesUnitsOfType(int index)
+        public int GetProducesUnitsOfType()
         {
-            return this.ProducesUnitsOfType[index];
+            return this.ProducesUnitsOfType;
         }
 
         public int GetBoostCost(int index)
