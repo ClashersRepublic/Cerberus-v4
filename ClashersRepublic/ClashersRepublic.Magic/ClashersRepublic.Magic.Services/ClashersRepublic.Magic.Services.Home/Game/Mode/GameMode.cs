@@ -169,6 +169,8 @@
                     CompressibleStringHelper.Uncompress(compressibleGlobalJSON);
                 }
 
+                Console.WriteLine(compressibleHomeJSON.Get());
+
                 this._logicGameMode = new LogicGameMode();
                 this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
                 this._currentTimestamp = currentTimestamp;

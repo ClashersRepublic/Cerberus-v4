@@ -17,11 +17,19 @@
         {
         }
 
+        public virtual void NotEnoughWorkers(LogicCommand command, int villageType)
+        {
+        }
+
         public virtual void NotEnoughResources(LogicResourceData data, int count, LogicCommand command, bool unk)
         {
         }
 
         public virtual void NotEnoughDiamonds()
+        {
+        }
+
+        public virtual void BuildingCapReached(LogicBuildingData data)
         {
         }
 

@@ -47,7 +47,7 @@
                     ServiceSettings._serviceVersion = versionObject.GetStringValue();
                 }
                 
-                LogicJSONObject nodeObject = jsonObject.GetJSONObject("nodes");
+                LogicJSONObject nodeObject = jsonObject.GetJSONObject("node");
 
                 if (nodeObject != null)
                 {

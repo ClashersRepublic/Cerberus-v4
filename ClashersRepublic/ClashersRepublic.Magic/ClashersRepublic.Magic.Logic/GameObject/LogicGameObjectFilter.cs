@@ -19,7 +19,6 @@
         /// </summary>
         public virtual void TestGameObject(LogicGameObject gameObject)
         {
-            if(this._ignoreGameObjects == null || )
         }
 
         /// <summary>

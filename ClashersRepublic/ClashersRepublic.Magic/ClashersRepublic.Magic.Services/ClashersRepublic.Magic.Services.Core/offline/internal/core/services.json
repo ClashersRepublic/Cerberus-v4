@@ -1,0 +1,13 @@
+﻿{
+  "version": "9.256",
+  "node": {
+    "proxy": [ "127.0.0.1" ],
+    "account": [ "127.0.0.1" ],
+    "home": [ "127.0.0.1" ]
+  },
+  "database": {
+    "urls": [ "127.0.0.1" ],
+    "user": "MagicServer",
+    "pass": "50xejrem5lhxcd6940lqmdfim2fcaqxboysx25ou6xcw0jy5kqlpqsmygj2820gd"
+  } 
+}

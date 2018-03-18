@@ -56,7 +56,6 @@
         public override void Destruct()
         {
             base.Destruct();
-
             this._missionData = null;
         }
     }

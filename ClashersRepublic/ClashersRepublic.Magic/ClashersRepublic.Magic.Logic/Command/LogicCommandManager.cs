@@ -181,6 +181,13 @@
                         {
                             int result = command.Execute(this._level);
 
+#if DEBUG
+                            if (result != 0)
+                            {
+                                Debugger.Warning("Execute command failed, code: " + result);
+                            }
+#endif
+
                             if (this._listener != null)
                             {
                                 this._listener.CommandExecuted(command);

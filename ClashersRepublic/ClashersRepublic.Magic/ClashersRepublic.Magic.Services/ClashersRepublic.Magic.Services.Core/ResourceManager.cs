@@ -2,8 +2,9 @@
 {
     using System;
     using System.IO;
+    using System.Net;
     using System.Security.Cryptography;
-
+    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Services.Core.Libs.Lzma.Compression.LZMA;
     using ClashersRepublic.Magic.Services.Core.Web;
@@ -88,13 +89,13 @@
 
                 if (shaObject != null)
                 {
-                    string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
+                    string lastSha = WebManager.DownloadFileFromConfigServer("/sha");
 
                     if (lastSha != null)
                     {
                         if (shaObject.GetStringValue() != lastSha)
                         {
-                            json = WebManager.DownloadFileFromConfigServer("/assets/generated/" + lastSha + "/fingerprint.json");
+                            json = WebManager.DownloadString(Constants.CONFIG_SERVER + "/assets/" + lastSha + "/fingerprint.json");
 
                             if (json != null)
                             {
@@ -104,18 +105,18 @@
                     }
                     else
                     {
-                        Logging.Warning("ResourceManager::verifyAssets /assets/sha doesn't exist");
+                        Logging.Warning("ResourceManager::verifyAssets /sha doesn't exist");
                     }
                 }
                 else
                 {
                     Logging.Warning("ResourceManager::verifyAssets pShaObject->NULL");
 
-                    string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
+                    string lastSha = WebManager.DownloadFileFromConfigServer("/sha");
 
                     if (lastSha != null)
                     {
-                        json = WebManager.DownloadFileFromConfigServer("/assets/generated/" + lastSha + "/fingerprint.json");
+                        json = WebManager.DownloadString(Constants.CONFIG_SERVER + "/assets/" + lastSha + "/fingerprint.json");
 
                         if (json != null)
                         {
@@ -126,11 +127,11 @@
             }
             else
             {
-                string lastSha = WebManager.DownloadFileFromConfigServer("/assets/sha");
+                string lastSha = WebManager.DownloadFileFromConfigServer("/sha");
                 
                 if (lastSha != null)
                 {
-                    json = WebManager.DownloadFileFromConfigServer("/assets/generated/" + lastSha + "/fingerprint.json");
+                    json = WebManager.DownloadString(Constants.CONFIG_SERVER + "/assets/" + lastSha + "/fingerprint.json");
 
                     if (json != null)
                     {
@@ -152,7 +153,7 @@
 
             Logging.Debug("Download " + shaFingerprint + " assets...");
 
-            for(int i = 0; i < fileArray.Size(); i++)
+            Parallel.For(0, fileArray.Size(), new ParallelOptions{ MaxDegreeOfParallelism = 4 }, i =>
             {
                 LogicJSONObject fileObject = fileArray.GetJSONObject(i);
 
@@ -161,7 +162,14 @@
                     string fileName = LogicJSONHelper.GetJSONString(fileObject, "file");
                     string sha = LogicJSONHelper.GetJSONString(fileObject, "sha");
 
-                    byte[] data = WebManager.DownloadDataFromConfigServer(string.Format("/assets/generated/{0}/{1}", shaFingerprint, fileName));
+                    Logging.Debug("Download file " + fileName);
+
+                    byte[] data;
+
+                    using (WebClient client = new WebClient())
+                    {
+                        data = client.DownloadData(string.Format("{0}/assets/{1}/{2}", Constants.CONFIG_SERVER, shaFingerprint, fileName));
+                    }
 
                     if (data != null)
                     {
@@ -208,7 +216,7 @@
                         File.WriteAllBytes("Assets/" + fileName, data);
                     }
                 }
-            }
+            });
 
             File.WriteAllText("Assets/fingerprint.json", fingerprint);
             Logging.Debug("Download completed");

@@ -311,7 +311,7 @@
                 LogicClientAvatar playerAvatar = (LogicClientAvatar) this._level.GetPlayerAvatar();
                 int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime()), 0, this._villageType > 0);
 
-                if (playerAvatar.HashEnoughDiamonds(speedUpCost, true, this._level))
+                if (playerAvatar.HasEnoughDiamonds(speedUpCost, true, this._level))
                 {
                     playerAvatar.UseDiamonds(speedUpCost);
                     this.ClearingFinished(false);

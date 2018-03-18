@@ -498,6 +498,45 @@
         }
 
         /// <summary>
+        ///     Creates a fast forward of time.
+        /// </summary>
+        public override void FastForwardTime(int time)
+        {
+            if (this._constructionTimer != null)
+            {
+                if (this._constructionTimer.GetEndTimestamp() == -1)
+                {
+                    int remaining = this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime());
+
+                    if (remaining > time)
+                    {
+                        if (this._constructionTimer.GetEndTimestamp() == -1)
+                        {
+                            this._constructionTimer.StartTimer(remaining, this._level.GetLogicTime(), true, this._level.GetLogicTime().GetTimestamp() + remaining - time);
+                        }
+                    }
+                    else
+                    {
+                        if (LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
+                        {
+                            this._constructionTimer.StartTimer(0, this._level.GetLogicTime(), false, -1);
+                        }
+                        else
+                        {
+                            this.FinishConstruction(true);
+                        }
+                    }
+                }
+                else
+                {
+
+                }
+
+                base.FastForwardTime(time);
+            }
+        }
+
+        /// <summary>
         ///     Updates the hidden state.
         /// </summary>
         public void UpdateHidden()
@@ -506,13 +545,43 @@
         }
 
         /// <summary>
+        ///     Starts the construction of the <see cref="LogicBuilding"/>.
+        /// </summary>
+        public void StartConstructing(bool ignoreState)
+        {
+            if (this._constructionTimer != null)
+            {
+                this._constructionTimer.Destruct();
+                this._constructionTimer = null;
+            }
+
+            int constructionTime = this.GetBuildingData().GetConstructionTime(this._upgLevel, this._level, 1);
+
+            if (constructionTime <= 0)
+            {
+                this.FinishConstruction(ignoreState);
+            }
+            else
+            {
+                this._constructionTimer = new LogicTimer();
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetLogicTime().GetTimestamp());
+                this._level.GetWorkerManagerAt(this.GetBuildingData().GetVillageType()).AllocateWorker(this);
+            }
+
+            if (this._villageType == 1 && this._isLocked)
+            {
+                // this._level.GetGameListener.???
+            }
+        }
+
+        /// <summary>
         ///     Finishes the construction of the <see cref="LogicBuilding"/>.
         /// </summary>
-        public void FinishConstruction(bool notNeedHomeState)
+        public void FinishConstruction(bool ignoreState)
         {
             int state = this._level.GetState();
 
-            if (state == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && notNeedHomeState)
+            if (state == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && ignoreState)
             {
                 if (this._level.GetHomeOwnerAvatar() != null)
                 {

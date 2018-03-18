@@ -1,0 +1,7 @@
+﻿{
+  "res": {
+    "starting_home": "/level/starting_home.json",
+    "calendar": "/calendar.json",
+    "globals": "/globals.json"  
+  }  
+}

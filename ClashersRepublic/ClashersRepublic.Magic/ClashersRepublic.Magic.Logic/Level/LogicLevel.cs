@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Achievement;
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Battle;
+    using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Cooldown;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
@@ -940,6 +941,75 @@
         public bool IsNpcVillage()
         {
             return this._npcVillage;
+        }
+
+        /// <summary>
+        ///     Gets if the cap of specified building is reached.
+        /// </summary>
+        public bool IsBuildingCapReached(LogicBuildingData data, bool updateListener)
+        {
+            int townHallLevel = 0;
+
+            if (this._gameObjectManagers[this._villageType].GetTownHall() != null)
+            {
+                townHallLevel = this._gameObjectManagers[this._villageType].GetTownHall().GetUpgradeLevel();
+            }
+            
+            bool reached = this._gameObjectManagers[this._villageType].GetGameObjectCountByData(data) >= LogicDataTables.GetTownHallLevel(townHallLevel).GetUnlockedBuildingCount(data);
+
+            if (!reached && updateListener)
+            {
+                // TODO: Implement this.
+            }
+
+            return reached;
+        }
+
+        /// <summary>
+        ///     Gets if the specified place is valid for building.
+        /// </summary>
+        public bool IsValidPlaceForBuilding(int x, int y, int width, int height, LogicGameObject gameObject)
+        {
+            if (this._map.InInside(x, y))
+            {
+                if (this._map.InInside(x + width, y + height))
+                {
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            if (!this._tileMap.GetTile(x + i, y + j).IsBuildable(gameObject))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether a free worker is available.
+        /// </summary>
+        public bool HasFreeWorkers(LogicCommand command, int villageType)
+        {
+            if (villageType == -1)
+            {
+                villageType = this._villageType;
+            }
+
+            bool hasFreeWorker = this._workerManagers[villageType].GetFreeWorkers() > 0;
+
+            if (!hasFreeWorker)
+            {
+                this._gameListener.NotEnoughWorkers(command, villageType);
+            }
+
+            return hasFreeWorker;
         }
 
         /// <summary>

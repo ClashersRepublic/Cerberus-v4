@@ -395,6 +395,14 @@
         }
 
         /// <summary>
+        ///     Gets the town hall building.
+        /// </summary>
+        public LogicBuilding GetTownHall()
+        {
+            return this._townHall;
+        }
+
+        /// <summary>
         ///     Gets the checksum for this instance.
         /// </summary>
         public void GetChecksum(ChecksumHelper checksum, int mode)

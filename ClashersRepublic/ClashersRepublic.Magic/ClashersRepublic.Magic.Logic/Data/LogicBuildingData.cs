@@ -247,6 +247,14 @@ namespace ClashersRepublic.Magic.Logic.Data
             this._isBarrackVillage2 = this.GetName().Equals("Barrack2");
         }
 
+        /// <summary>
+        ///     Gets the building class.
+        /// </summary>
+        public LogicBuildingClassData GetBuildingClass()
+        {
+            return this._buildingClass;
+        }
+
         public int GetUpgradeLevelCount()
         {
             return this._upgradeLevelCount;

@@ -41,6 +41,7 @@
         private bool _stopBoostPauseWhenBoostTimeZeroOnLoad;
         private bool _fixMergeOldBarrackBoostPausing;
         private bool _saveVillageObjects;
+        private bool _workerForZeroBuildingTime;
 
         private int[] _village2TroopHousingBuildTimeSecs;
 
@@ -86,6 +87,7 @@
             this._stopBoostPauseWhenBoostTimeZeroOnLoad = this.GetBoolValue("STOP_BOOST_PAUSE_WHEN_BOOST_TIME_ZERO_ON_LOAD");
             this._fixMergeOldBarrackBoostPausing = this.GetBoolValue("FIX_MERGE_OLD_BARRACK_BOOST_PAUSING");
             this._saveVillageObjects = this.GetBoolValue("SAVE_VILLAGE_OBJECTS");
+            this._workerForZeroBuildingTime = this.GetBoolValue("WORKER_FOR_ZERO_BUILD_TIME");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -276,6 +278,11 @@
         public bool SaveVillageObjects()
         {
             return this._saveVillageObjects;
+        }
+
+        public bool WorkerForZeroBuilTime()
+        {
+            return this._workerForZeroBuildingTime;
         }
 
         /// <summary>

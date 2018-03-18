@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Avatar
 {
+    using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.League.Entry;
@@ -149,6 +150,14 @@
             defaultAvatar.SetResourceCount(LogicDataTables.GetElixir2Data(), globalsInstance.GetStartingElixir2());
 
             return defaultAvatar;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this avatar is a client avatar instance.
+        /// </summary>
+        public override bool IsClientAvatar()
+        {
+            return true;
         }
 
         /// <summary>
@@ -316,19 +325,34 @@
         /// <summary>
         ///     Gets a value indicating whether the avatar has enough diamonds.
         /// </summary>
-        public bool HashEnoughDiamonds(int count, bool callListener, LogicLevel level)
+        public bool HasEnoughDiamonds(int count, bool callListener, LogicLevel level)
         {
-            if (this._diamonds >= count)
-            {
-                return true;
-            }
+            bool enough = this._diamonds >= count;
 
-            if (callListener)
+            if (!enough)
             {
                 level.GetGameListener().NotEnoughDiamonds();
             }
 
-            return false;
+            return enough;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether the avatar has enough resources.
+        /// </summary>
+        public bool HasEnoughResources(LogicResourceData data, int count, bool callListener, LogicCommand command, bool unk)
+        {
+            bool enough = this.GetResourceCount(data) >= count;
+
+            if (!enough)
+            {
+                if (this._level != null)
+                {
+                    this._level.GetGameListener().NotEnoughResources(data, count, command, unk);
+                }
+            }
+
+            return enough;
         }
 
         /// <summary>

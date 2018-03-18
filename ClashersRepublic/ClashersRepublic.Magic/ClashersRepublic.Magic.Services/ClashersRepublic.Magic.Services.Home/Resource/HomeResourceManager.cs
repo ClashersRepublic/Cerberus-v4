@@ -32,18 +32,13 @@
             {
                 LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
 
-                LogicJSONObject logicObject = jsonObject.GetJSONObject("logic");
+                LogicJSONObject resObject = jsonObject.GetJSONObject("res");
 
-                if (logicObject != null)
+                if (resObject != null)
                 {
-                    LogicJSONObject pathObject = logicObject.GetJSONObject("paths");
-
-                    if (pathObject != null)
-                    {
-                        HomeResourceManager._startingHomeJSON = ResourceManager.LoadAssetFile(LogicJSONHelper.GetJSONString(pathObject, "starting_home"));
-                        HomeResourceManager._calendarJSON = ResourceManager.LoadAssetFile(LogicJSONHelper.GetJSONString(pathObject, "calendar"));
-                        HomeResourceManager._globalJSON = ResourceManager.LoadAssetFile(LogicJSONHelper.GetJSONString(pathObject, "globals"));
-                    }
+                    HomeResourceManager._startingHomeJSON = ResourceManager.LoadAssetFile(LogicJSONHelper.GetJSONString(resObject, "starting_home"));
+                    HomeResourceManager._calendarJSON = ResourceManager.LoadAssetFile(LogicJSONHelper.GetJSONString(resObject, "calendar"));
+                    HomeResourceManager._globalJSON = ResourceManager.LoadAssetFile(LogicJSONHelper.GetJSONString(resObject, "globals"));
                 }
             }
         }
