@@ -63,7 +63,6 @@
         private int _experienceVersion;
         private int _warTutorialsSeen;
         private int _matchType;
-        private int _remainingClockTowerBoostTime;
         private int _levelWidth;
         private int _levelHeight;
 
@@ -232,7 +231,14 @@
         /// </summary>
         public int GetRemainingClockTowerBoostTime()
         {
-            return this._remainingClockTowerBoostTime;
+            LogicBuilding ClockTower = this.GetGameObjectManagerAt(1).GetClockTower();
+
+            if (ClockTower != null && !ClockTower.IsConstructing())
+            {
+                //Something should be here
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -949,7 +955,7 @@
         public bool IsBuildingCapReached(LogicBuildingData data, bool updateListener)
         {
             int townHallLevel = 0;
-
+                
             if (this._gameObjectManagers[this._villageType].GetTownHall() != null)
             {
                 townHallLevel = this._gameObjectManagers[this._villageType].GetTownHall().GetUpgradeLevel();

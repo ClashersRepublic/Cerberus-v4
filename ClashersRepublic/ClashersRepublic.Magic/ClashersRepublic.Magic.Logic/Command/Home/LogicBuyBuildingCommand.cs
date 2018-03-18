@@ -93,8 +93,7 @@
 
                             if (playerAvatar.HasEnoughResources(buildResourceData, buildResourceCost, true, this, false))
                             {
-                                if (this._buildingData.IsWorkerBuilding() ||
-                                    this._buildingData.GetConstructionTime(0, level, 0) <= 0 && !LogicDataTables.GetGlobals().WorkerForZeroBuilTime() || level.HasFreeWorkers(this, -1))
+                                if (this._buildingData.IsWorkerBuilding() || this._buildingData.GetConstructionTime(0, level, 0) <= 0 && !LogicDataTables.GetGlobals().WorkerForZeroBuilTime() || level.HasFreeWorkers(this, -1))
                                 {
                                     if (buildResourceData.PremiumCurrency)
                                     {

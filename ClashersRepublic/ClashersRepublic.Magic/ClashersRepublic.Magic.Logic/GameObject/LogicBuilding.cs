@@ -510,30 +510,74 @@
 
                     if (remaining > time)
                     {
-                        if (this._constructionTimer.GetEndTimestamp() == -1)
-                        {
-                            this._constructionTimer.StartTimer(remaining, this._level.GetLogicTime(), true, this._level.GetLogicTime().GetTimestamp() + remaining - time);
-                        }
-                    }
-                    else
-                    {
-                        if (LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
-                        {
-                            this._constructionTimer.StartTimer(0, this._level.GetLogicTime(), false, -1);
-                        }
-                        else
-                        {
-                            this.FinishConstruction(true);
-                        }
-                    }
-                }
-                else
-                {
+                        base.FastForwardTime(time);
+                        this._constructionTimer.StartTimer(remaining - time, this._level.GetLogicTime(), false, -1);
 
+                        /*v8 = sub_2447DE(*(_DWORD*)(v2 + 8));
+                        result = sub_2447CA(*(_DWORD*)(v2 + 8));
+                        if (v8 >= 1 && !result)
+                        {
+                            result = (*(int(**)(void))(**(_DWORD**)(v2 + 16) + 60))();
+                            if (result == 1)
+                            {
+                                v10 = LogicMath::min(FastForwardTime, v8);
+                                v11 = v10 * (*(_DWORD*)(LogicDataTables::GetGlobals() + 460) - 1);
+                                result = LogicTimer::setFastForward(*(_DWORD*)(v2 + 140), *(_DWORD*)(*(_DWORD*)(v2 + 140) + 8) + 60 * v11);
+                            }
+                        }
+                        */
+                        return;
+                    }
+
+                    if (LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
+                    {
+                        base.FastForwardTime(time);
+                        this._constructionTimer.StartTimer(0, this._level.GetLogicTime(), false, -1);
+                        return;
+                    }
+
+                    base.FastForwardTime(remaining);
+                    this.FinishConstruction(true); //LogicBuilding::finishConstruction(v2, 1, 1);
+
+                    base.FastForwardTime(time - remaining);
+                    return;
+                }
+
+                //sub_24FF00(v4, v5)
+
+                if (this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
+                {
+                    if (LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
+                    {
+                        base.FastForwardTime(time);
+                        this._constructionTimer.StartTimer(0, this._level.GetLogicTime(), false, -1);
+                        return;
+                    }
+
+                    this.FinishConstruction(true); //LogicBuilding::finishConstruction(v2, 1, 1);
+                    base.FastForwardTime(time);
+                    return;
                 }
 
                 base.FastForwardTime(time);
+
+               /* v8 = sub_2447DE(*(_DWORD*) (v2 + 8));
+                result = sub_2447CA(*(_DWORD*) (v2 + 8));
+                if (v8 >= 1 && !result)
+                {
+                    result = (*(int(**)(void ))(**(_DWORD**) (v2 + 16) + 60))();
+                    if (result == 1)
+                    {
+                        v10 = LogicMath::min(FastForwardTime, v8);
+                        v11 = v10 * (*(_DWORD*) (LogicDataTables::GetGlobals() + 460) - 1);
+                        result = LogicTimer::setFastForward(*(_DWORD*) (v2 + 140), *(_DWORD*) (*(_DWORD*) (v2 + 140) + 8) + 60 * v11);
+                    }
+                }
+                */
+                return;
             }
+
+            base.FastForwardTime(time);
         }
 
         /// <summary>

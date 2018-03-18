@@ -34,10 +34,10 @@
         public override void Decode()
         {
             base.Decode();
-            
-            this._currentTimestamp = this.Stream.ReadInt();
-            this.Stream.ReadInt();
+
             this._secondsSinceLastSave = this.Stream.ReadInt();
+            this.Stream.ReadInt();
+            this._currentTimestamp = this.Stream.ReadInt();
 
             this._logicClientHome = new LogicClientHome();
             this._logicClientHome.Decode(this.Stream);
@@ -70,9 +70,9 @@
         {
             base.Encode();
 
-            this.Stream.WriteInt(this._currentTimestamp);
-            this.Stream.WriteInt(-1);
             this.Stream.WriteInt(this._secondsSinceLastSave);
+            this.Stream.WriteInt(-1);
+            this.Stream.WriteInt(this._currentTimestamp);
 
             this._logicClientHome.Encode(this.Stream);
             this._logicClientAvatar.Encode(this.Stream);

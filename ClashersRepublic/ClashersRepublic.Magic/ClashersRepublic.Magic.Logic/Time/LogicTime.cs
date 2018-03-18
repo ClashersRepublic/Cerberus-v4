@@ -26,7 +26,7 @@
         /// </summary>
         public bool IsFullTick()
         {
-            return ((this._tick + 1) & 3) == 0;
+            return this._tick << 30 == 0;
         }
 
         /// <summary>
