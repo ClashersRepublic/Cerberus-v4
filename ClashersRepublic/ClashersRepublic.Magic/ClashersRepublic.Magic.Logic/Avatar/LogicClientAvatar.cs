@@ -1553,7 +1553,7 @@
                 }
             }
 
-            LogicJSONArray missionCompletedArray = jsonObject.GetJSONArray("achievement_rewards");
+            LogicJSONArray missionCompletedArray = jsonObject.GetJSONArray("missions");
 
             if (missionCompletedArray != null)
             {
@@ -1857,7 +1857,7 @@
 
             LogicJSONArray missionCompletedArray = new LogicJSONArray();
 
-            for (int i = 0; i < this._achievementRewardClaimed.Count; i++)
+            for (int i = 0; i < this._missionCompleted.Count; i++)
             {
                 missionCompletedArray.Add(new LogicJSONNumber(this._missionCompleted[i].GetGlobalID()));
             }
