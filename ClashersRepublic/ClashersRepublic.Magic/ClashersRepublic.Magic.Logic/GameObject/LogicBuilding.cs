@@ -558,8 +558,6 @@
                     {
                         goto finishConstruction;
                     }
-
-                    Debugger.Log("Remaining: " + this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()));
                 }
 
                 int maxClockTowerFastForward = this._level.GetUpdatedClockTowerBoostTime();
@@ -634,8 +632,6 @@
         /// </summary>
         public void FinishConstruction(bool ignoreState)
         {
-            Debugger.Log("FinishConstruction");
-
             int state = this._level.GetState();
 
             if (state == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && ignoreState)
