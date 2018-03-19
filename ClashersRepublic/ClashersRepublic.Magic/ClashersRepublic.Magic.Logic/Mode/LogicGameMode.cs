@@ -37,6 +37,7 @@
             this._shieldTimer = new LogicTimer();
             this._guardTimer = new LogicTimer();
             this._maintenanceTimer = new LogicTimer();
+            this._currentTimestamp = -1;
         }
 
         /// <summary>
