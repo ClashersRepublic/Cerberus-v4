@@ -1827,7 +1827,7 @@
             this.SaveDataSlotArray(jsonObject, "unit_upgrades", this._unitUpgrade);
             this.SaveDataSlotArray(jsonObject, "spell_upgrades", this._spellUpgrade);
             this.SaveDataSlotArray(jsonObject, "resources", this._resourceCount);
-            this.SaveDataSlotArray(jsonObject, "resource_caps", this._resourceCount);
+            this.SaveDataSlotArray(jsonObject, "resource_caps", this._resourceCap);
             this.SaveUnitSlotArray(jsonObject, "alliance_units", this._allianceUnitCount);
             this.SaveDataSlotArray(jsonObject, "hero_states", this._heroState);
             this.SaveDataSlotArray(jsonObject, "hero_health", this._heroHealth);
