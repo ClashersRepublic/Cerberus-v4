@@ -155,10 +155,7 @@
                         }
                     }
 
-                    if (passedTime < -86400 * clamp)
-                    {
-                        this._remainingTime += LogicDataTables.GetGlobals().MoreAccurateTime() ? (int) (1000L * passedTime / 16) : 60 * passedTime;
-                    }
+                    this._remainingTime = level.GetLogicTime() + (LogicDataTables.GetGlobals().MoreAccurateTime() ? (int) (1000L * passedTime / 16) : 60 * passedTime);
                 }
             }
         }

@@ -102,7 +102,12 @@
         /// </summary>
         public int GetRemainingConstructionTime()
         {
-            return this._constructionTimer != null ? this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) : 0;
+            if (this._constructionTimer != null)
+            {
+                return this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime());
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -110,7 +115,25 @@
         /// </summary>
         public int GetRemainingBoostCooldownTime()
         {
-            return this._boostCooldownTimer != null ? this._boostCooldownTimer.GetRemainingSeconds(this._level.GetLogicTime()) : 0;
+            if (this._boostCooldownTimer != null)
+            {
+                return this._boostCooldownTimer.GetRemainingSeconds(this._level.GetLogicTime());
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the remaining boost time.
+        /// </summary>
+        public override int GetRemainingBoostTime()
+        {
+            if (this._boostTimer != null)
+            {
+                return this._boostTimer.GetRemainingSeconds(this._level.GetLogicTime());
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -135,6 +158,14 @@
         public bool IsLocked()
         {
             return this._isLocked;
+        }
+
+        /// <summary>
+        ///     Gets if the boost of this <see cref="LogicBuilding"/> instance is paused.
+        /// </summary>
+        public bool IsBoostPaused()
+        {
+            return this._boostPaused;
         }
 
         /// <summary>
@@ -529,6 +560,16 @@
                     }
                 }
 
+                int maxClockTowerFastForward = this._level.GetUpdatedClockTowerBoostTime();
+
+                if (maxClockTowerFastForward > 0 && !this._level.IsClockTowerBoostPaused())
+                {
+                    if (this._data.GetVillageType() == this._villageType)
+                    {
+                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() + 60 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() * LogicMath.Min(secs, maxClockTowerFastForward) - 1);
+                    }
+                }
+
                 return;
 
                 finishConstruction:
@@ -575,7 +616,7 @@
             else
             {
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime() + constructionTime);
 
                 this._level.GetWorkerManagerAt(this.GetBuildingData().GetVillageType()).AllocateWorker(this);
             }

@@ -64,6 +64,7 @@
         private int _experienceVersion;
         private int _warTutorialsSeen;
         private int _matchType;
+        private int _remainingClockTowerBoostTime;
         private int _levelWidth;
         private int _levelHeight;
 
@@ -241,11 +242,19 @@
         /// </summary>
         public int GetRemainingClockTowerBoostTime()
         {
-            LogicBuilding ClockTower = this.GetGameObjectManagerAt(1).GetClockTower();
+            return this._remainingClockTowerBoostTime;
+        }
 
-            if (ClockTower != null && !ClockTower.IsConstructing())
+        /// <summary>
+        ///     Gets the updated clock tower boost time.
+        /// </summary>
+        public int GetUpdatedClockTowerBoostTime()
+        {
+            LogicBuilding clockTower = this._gameObjectManagers[1].GetClockTower();
+
+            if (clockTower != null && !clockTower.IsConstructing())
             {
-                //Something should be here
+                return clockTower.GetRemainingBoostTime();
             }
 
             return 0;
@@ -935,6 +944,21 @@
             }
 
             // TODO: Implement LogicLevel::battleStarted();
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether the clock tower boost is paused.
+        /// </summary>
+        public bool IsClockTowerBoostPaused()
+        {
+            LogicBuilding clockTower = this._gameObjectManagers[1].GetClockTower();
+
+            if (clockTower != null)
+            {
+                return clockTower.IsBoostPaused();
+            }
+
+            return false;
         }
 
         /// <summary>
