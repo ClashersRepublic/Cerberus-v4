@@ -84,7 +84,7 @@
             this._workerCostFourthBuildCost = this.GetIntValue("WORKER_COST_4TH");
             this._workerCostFifthBuildCost = this.GetIntValue("WORKER_COST_5TH");
 
-            this._useNewTraining = this.GetBoolValue("USE_NEW_PATH_FINDER");
+            this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
             this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
@@ -239,7 +239,7 @@
                 case 2: return this._workerCostThirdBuildCost;
                 case 3: return this._workerCostThirdBuildCost;
                 case 4: return this._workerCostFifthBuildCost;
-                default: return 0;
+                default: return this._workerCostFifthBuildCost;
             }
         }
 
@@ -343,7 +343,7 @@
         }
 
         /// <summary>
-        ///     Gets the troop housing build clost village 2.
+        ///     Gets the troop housing build cost village 2.
         /// </summary>
         public int GetTroopHousingBuildCostVillage2(LogicLevel level)
         {
@@ -353,7 +353,7 @@
             {
                 return this._village2TroopHousingBuildCost[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data),
                                                                0,
-                                                               this._village2TroopHousingBuildTimeSecs.Length - 1)];
+                                                               this._village2TroopHousingBuildCost.Length - 1)];
             }
             else
             {
