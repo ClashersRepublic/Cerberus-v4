@@ -10,6 +10,7 @@
     using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
+    using ClashersRepublic.Magic.Logic.Mission;
     using ClashersRepublic.Magic.Logic.Mode;
     using ClashersRepublic.Magic.Logic.Offer;
     using ClashersRepublic.Magic.Logic.Time;
@@ -35,6 +36,7 @@
         private LogicOfferManager _offerManager;
         private LogicAchievementManager _achievementManager;
         private LogicCooldownManager _cooldownManager;
+        private LogicMissionManager _missionManager;
         private LogicBattleLog _battleLog;
         private LogicGameListener _gameListener;
         private LogicJSONObject _levelJSON;
@@ -81,7 +83,7 @@
         private bool _invulverabilityEnabled;
 
         private string _warRequestMessage;
-        private string _troopRequestMessage;
+        private string _troopRequestMessage { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicLevel" /> class.
@@ -113,6 +115,7 @@
             this._map = new LogicRect(3, 3, 47, 47);
             this._cooldownManager = new LogicCooldownManager();
             this._battleLog = new LogicBattleLog(this);
+            this._missionManager = new LogicMissionManager(this);
             this._layoutState = new LogicArrayList<int>(8);
             this._layoutCooldown = new LogicArrayList<int>(8);
             this._layoutStateVillage2 = new LogicArrayList<int>(8);
@@ -1117,7 +1120,7 @@
                 this._gameObjectManagers[i].LoadingFinished();
             }
 
-            // TODO: LogicMissionManager::refreshOpenMissions();
+            this._missionManager.RefreshOpenMissions();
             this.LoadShopNewItems();
 
             if (this._levelJSON != null)
@@ -1149,8 +1152,21 @@
                 this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
                 this._lastNewsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
                 this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");
-                this._troopRequestMessage = LogicJSONHelper.GetJSONString(this._levelJSON, "troop_req_msg");
-                this._warRequestMessage = LogicJSONHelper.GetJSONString(this._levelJSON, "war_req_msg");
+
+                LogicJSONString troopRequestObject = this._levelJSON.GetJSONString("troop_req_msg");
+
+                if (troopRequestObject != null)
+                {
+                    this._troopRequestMessage = troopRequestObject.GetStringValue();
+                }
+
+                LogicJSONString warRequestObject = this._levelJSON.GetJSONString("war_req_msg");
+
+                if (warRequestObject != null)
+                {
+                    this._warRequestMessage = warRequestObject.GetStringValue();
+                }
+
                 this._warTutorialsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "war_tutorials_seen");
 
                 LogicJSONArray armyNameArray = this._levelJSON.GetJSONArray("army_names");
@@ -1203,7 +1219,7 @@
                 this.BattleStarted();
             }
 
-            if (state == 1)
+            if (state <= 1)
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -1215,7 +1231,7 @@
                 this._gameObjectManagers[this._villageType].Tick();
             }
 
-            // TODO: LogicMissionManager::tick();
+            this._missionManager.Tick();
             this._achievementManager.Tick();
             this._offerManager.Tick();
         }
@@ -1268,6 +1284,12 @@
             {
                 this._cooldownManager.Destruct();
                 this._cooldownManager = null;
+            }
+
+            if (this._missionManager != null)
+            {
+                this._missionManager.Destruct();
+                this._missionManager = null;
             }
 
             if (this._battleLog != null)

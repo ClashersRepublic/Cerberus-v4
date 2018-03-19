@@ -352,8 +352,8 @@
             if (data != null)
             {
                 return this._village2TroopHousingBuildCost[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data),
-                                                               0,
-                                                               this._village2TroopHousingBuildTimeSecs.Length - 1)];
+                                                           0,
+                                                           this._village2TroopHousingBuildTimeSecs.Length - 1)];
             }
             else
             {

@@ -352,7 +352,7 @@ namespace ClashersRepublic.Magic.Logic.Data
 
         public int GetBuildCost(int index, LogicLevel level)
         {
-            if (this.Village2Housing < 0)
+            if (this.Village2Housing <= 0)
             {
                 if (this._buildingClass.IsWorker())
                 {
@@ -362,7 +362,7 @@ namespace ClashersRepublic.Magic.Logic.Data
                 return this.BuildCost[index];
             }
 
-            return LogicDataTables.GetGlobals().GetTroopHousingBuildCostVillage2(level, 0);
+            return LogicDataTables.GetGlobals().GetTroopHousingBuildCostVillage2(level);
         }
 
         public int GetRequiredTownHallLevel(int index)

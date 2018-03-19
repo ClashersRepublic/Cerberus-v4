@@ -221,6 +221,7 @@
                 this._level.SetHome(home, true);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
+                this._level.LoadingFinished();
 
                 this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._level.GetLogicTime(), false, -1);
                 this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._level.GetLogicTime(), false, -1);

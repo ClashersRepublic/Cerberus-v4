@@ -13,19 +13,12 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicMissionManager"/> class.
         /// </summary>
-        public LogicMissionManager()
-        {
-            // LogicMissionManager.
-        }
-
-        /// <summary>
-        ///     Initializes the instance.
-        /// </summary>
-        public void Init(LogicLevel level)
+        public LogicMissionManager(LogicLevel level)
         {
             this._level = level;
+            this._openMissions = new LogicArrayList<LogicMission>();
         }
-
+        
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
@@ -53,6 +46,8 @@
         /// </summary>
         public void Tick()
         {
+            bool refresh = false;
+
             for (int i = 0; i < this._openMissions.Count; i++)
             {
                 LogicMission mission = this._openMissions[i];
@@ -65,6 +60,7 @@
                     {
                         mission.Destruct();
                         this._openMissions.Remove(i--);
+                        refresh = true;
                     }
                     else
                     {
@@ -73,7 +69,7 @@
                 }
             }
 
-            if (this._openMissions.Count > 0)
+            if (refresh)
             {
                 this.RefreshOpenMissions();
             }
@@ -93,7 +89,26 @@
                 {
                     LogicMissionData missionData = (LogicMissionData) missionTable.GetItemAt(i);
 
-                    if(missionData.Is)
+                    if (missionData.IsOpenForAvatar(playerAvatar))
+                    {
+                        int index = -1;
+
+                        for (int j = 0; j < this._openMissions.Count; j++)
+                        {
+                            if (this._openMissions[j].GetMissionData() == missionData)
+                            {
+                                index = j;
+                                break;
+                            }
+                        }
+
+                        if (index == -1)
+                        {
+                            LogicMission mission = new LogicMission(missionData, this._level);
+                            mission.RefreshProgress();
+                            this._openMissions.Add(mission);
+                        }
+                    }
                 }
             }
         }

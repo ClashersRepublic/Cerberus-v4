@@ -305,7 +305,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// <summary>
         ///     Gets if this mission is open for the specified <see cref="LogicClientAvatar"/> instance.
         /// </summary>
-        public void IsOpenForAvatar(LogicClientAvatar avatar)
+        public bool IsOpenForAvatar(LogicClientAvatar avatar)
         {
             if (!avatar.IsMissionCompleted(this))
             {
@@ -313,10 +313,25 @@ namespace ClashersRepublic.Magic.Logic.Data
                 {
                     if (this._missionCategory - 1 > 1)
                     {
-
+                        return false;
                     }
                 }
+
+                if (!this._deprecated)
+                {
+                    for (int i = 0; i < this._missionDependencies.Count; i++)
+                    {
+                        if (!avatar.IsMissionCompleted(this._missionDependencies[i]))
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -389,6 +404,14 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetBuildBuildingLevel()
         {
             return this._buildBuildingLevel;
+        }
+
+        /// <summary>
+        ///     Gets the build building count.
+        /// </summary>
+        public int GetBuildBuildingCount()
+        {
+            return this._buildBuildingCount;
         }
 
         /// <summary>

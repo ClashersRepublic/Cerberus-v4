@@ -37,7 +37,7 @@
                     break;
                 case 0:
                 case 5:
-                    this._requireProgress = data.GetBuildBuildingLevel();
+                    this._requireProgress = data.GetBuildBuildingCount();
                     break;
                 case 4:
                     this._requireProgress = data.GetTrainTroopCount();
@@ -70,6 +70,14 @@
         public int GetMissionType()
         {
             return this._data.GetMissionType();
+        }
+
+        /// <summary>
+        ///     Gets the mission data.
+        /// </summary>
+        public LogicMissionData GetMissionData()
+        {
+            return this._data;
         }
 
         /// <summary>
@@ -190,6 +198,8 @@
         /// </summary>
         public void Finished()
         {
+            Debugger.Log("Mission " + this._data.GetName() + " finished");
+
             LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
 
             if (!playerAvatar.IsMissionCompleted(this._data))
@@ -244,7 +254,7 @@
                 {
                     if (this._level.GetState() == 1)
                     {
-                        if (this._progress == 0)
+                        if (this._progress == 1)
                         {
                             this.Finished();
                         }
@@ -305,7 +315,6 @@
         /// </summary>
         public void AddRewardUnits()
         {
-
         }
     }
 }
