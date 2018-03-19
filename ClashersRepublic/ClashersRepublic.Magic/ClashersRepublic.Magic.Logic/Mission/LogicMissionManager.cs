@@ -112,5 +112,21 @@
                 }
             }
         }
+
+        /// <summary>
+        ///     Gets the mission by data.
+        /// </summary>
+        public LogicMission GetMissionByData(LogicMissionData data)
+        {
+            for (int i = 0; i < this._openMissions.Count; i++)
+            {
+                if (this._openMissions[i].GetMissionData() == data)
+                {
+                    return this._openMissions[i];
+                }
+            }
+
+            return null;
+        }
     }
 }

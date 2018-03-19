@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Mission
 {
     using ClashersRepublic.Magic.Logic.Avatar;
-    using ClashersRepublic.Magic.Logic.Battle;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Level;
@@ -194,16 +193,43 @@
         }
 
         /// <summary>
+        ///     Called when the change of state is confirmed.
+        /// </summary>
+        public void StateChangeConfirmed()
+        {
+            switch (this._data.GetMissionType())
+            {
+                case 1:
+                    if (this._progress == 0)
+                    {
+                        this._level.GetGameMode().StartDefendState(LogicNpcAvatar.GetNpcAvatar(this._data.GetDefendNpcData()));
+                        this._progress = 1;
+                    }
+
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 20:
+                case 21:
+                    this._progress = 1;
+                    break;
+            }
+        }
+
+        /// <summary>
         ///     Called when the mission is finished.
         /// </summary>
         public void Finished()
         {
-            Debugger.Log("Mission " + this._data.GetName() + " finished");
-
             LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
 
             if (!playerAvatar.IsMissionCompleted(this._data))
             {
+                Debugger.Log("Mission " + this._data.GetName() + " finished");
+
                 playerAvatar.SetMissionCompleted(this._data, true);
                 playerAvatar.GetChangeListener().CommodityCountChanged(0, this._data.GetRewardResourceData(), 1);
 
@@ -315,6 +341,17 @@
         /// </summary>
         public void AddRewardUnits()
         {
+            LogicCharacterData characterData = this._data.GetCharacterData();
+
+            if (characterData != null)
+            {
+                int characterCount = this._data.GetRewardCharacterCount();
+
+                if (characterCount > 0)
+                {
+                    LogicComponentF
+                }
+            }
         }
     }
 }

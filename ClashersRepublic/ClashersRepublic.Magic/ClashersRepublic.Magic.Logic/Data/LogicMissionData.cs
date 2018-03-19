@@ -383,11 +383,35 @@ namespace ClashersRepublic.Magic.Logic.Data
         }
 
         /// <summary>
+        ///     Gets the attack npc data.
+        /// </summary>
+        public LogicNpcData GetAttackNpcData()
+        {
+            return this._attackNpcData;
+        }
+
+        /// <summary>
+        ///     Gets the defend npc data.
+        /// </summary>
+        public LogicNpcData GetDefendNpcData()
+        {
+            return this._defendNpcData;
+        }
+
+        /// <summary>
         ///     Gets the reward resource count.
         /// </summary>
         public int GetRewardResourceCount()
         {
             return this._rewardResourceCount;
+        }
+
+        /// <summary>
+        ///     Gets the reward character count.
+        /// </summary>
+        public int GetRewardCharacterCount()
+        {
+            return this._rewardCharacterCount;
         }
 
         /// <summary>

@@ -237,9 +237,9 @@
             {
                 case 1: return this._workerCostSecondBuildCost;
                 case 2: return this._workerCostThirdBuildCost;
-                case 3: return this._workerCostThirdBuildCost;
+                case 3: return this._workerCostFourthBuildCost;
                 case 4: return this._workerCostFifthBuildCost;
-                default: return 0;
+                default: return this._workerCostFifthBuildCost;
             }
         }
 
@@ -353,7 +353,7 @@
             {
                 return this._village2TroopHousingBuildCost[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data),
                                                            0,
-                                                           this._village2TroopHousingBuildTimeSecs.Length - 1)];
+                                                           this._village2TroopHousingBuildCost.Length - 1)];
             }
             else
             {

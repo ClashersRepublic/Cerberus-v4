@@ -1,22 +1,24 @@
 namespace ClashersRepublic.Magic.Logic.Data
 {
+    using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.CSV;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicNpcData : LogicData
     {
+        private readonly LogicArrayList<LogicDataSlot> _unitCount;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicNpcData" /> class.
         /// </summary>
         public LogicNpcData(CSVRow row, LogicDataTable table) : base(row, table)
         {
-            // LogicNpcData.
+            this._unitCount = new LogicArrayList<LogicDataSlot>();
         }
 
         public string MapInstanceName { get; protected set; }
         protected string[] MapDependencies { get; set; }
-        public string TID { get; protected set; }
         public int ExpLevel { get; protected set; }
-        public string UnitType { get; protected set; }
         public int UnitCount { get; protected set; }
         public string LevelFile { get; protected set; }
         public int Gold { get; protected set; }
@@ -31,8 +33,39 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void LoadingFinished()
         {
-            // LoadingFinished.
+            int unitCountSize = this.GetArraySize("UnitType");
+
+            if (unitCountSize > 0)
+            {
+                this._unitCount.EnsureCapacity(unitCountSize);
+
+                for (int i = 0; i < unitCountSize; i++)
+                {
+                    int count = this.GetIntegerValue("UnitCount", i);
+
+                    if (count > 0)
+                    {
+                        this._unitCount.Add(new LogicDataSlot(LogicDataTables.GetCharacterByName(this.GetValue("UnitType", i)), count));
+                    }
+                }
+            }
         }
+
+        /// <summary>
+        ///     Gets the cloned units.
+        /// </summary>
+        public LogicArrayList<LogicDataSlot> GetClonedUnits()
+        {
+            LogicArrayList<LogicDataSlot> units = new LogicArrayList<LogicDataSlot>();
+
+            for (int i = 0; i < this._unitCount.Count; i++)
+            {
+                units.Add(this._unitCount[i].Clone());
+            }
+
+            return units;
+        }
+
 
         public string GetMapDependencies(int index)
         {

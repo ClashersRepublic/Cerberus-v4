@@ -4,6 +4,8 @@
 
     public class LogicGameObjectFilter
     {
+        private int _team;
+        private bool _enemyOnly;
         private LogicArrayList<LogicGameObject> _ignoreGameObjects;
 
         /// <summary>
@@ -27,6 +29,38 @@
         public virtual bool IsComponentFilter()
         {
             return false;
+        }
+
+        /// <summary>
+        ///     Passes enemy only.
+        /// </summary>
+        public void PassEnemyOnly(LogicGameObject gameObject)
+        {
+            if (gameObject.GetHitpointComponent() != null)
+            {
+                this._team = gameObject.GetHitpointComponent().GetTeam();
+                this._enemyOnly = true;
+            }
+            else
+            {
+                this._team = -1;
+            }
+        }
+
+        /// <summary>
+        ///     Passes friendly only.
+        /// </summary>
+        public void PassFriendlyOnly(LogicGameObject gameObject)
+        {
+            if (gameObject.GetHitpointComponent() != null)
+            {
+                this._team = gameObject.GetHitpointComponent().GetTeam();
+                this._enemyOnly = false;
+            }
+            else
+            {
+                this._team = -1;
+            }
         }
     }
 }

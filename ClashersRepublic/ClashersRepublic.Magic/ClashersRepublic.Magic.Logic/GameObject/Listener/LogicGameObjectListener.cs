@@ -67,5 +67,13 @@
         {
             // XpGained.
         }
+
+        /// <summary>
+        ///     Called when the map is unlocked.
+        /// </summary>
+        public virtual void MapUnlocked()
+        {
+            // MapUnlocked.
+        }
     }
 }

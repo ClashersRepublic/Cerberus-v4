@@ -29,7 +29,10 @@
         private LogicAvatar _homeOwnerAvatar;
         private LogicAvatar _visitorAvatar;
         private LogicTileMap _tileMap;
-        private LogicRect _map;
+        private LogicNpcAttack _npcAttack;
+        private LogicRect _playArea;
+        private LogicLeagueData _leagueData;
+        private LogicLeagueData _visitorLeagueData;
 
         private readonly LogicGameObjectManager[] _gameObjectManagers;
         private readonly LogicWorkerManager[] _workerManagers;
@@ -69,6 +72,8 @@
         private int _remainingClockTowerBoostTime;
         private int _levelWidth;
         private int _levelHeight;
+        private int _aliveBuildingCount;
+        private int _destructibleBuildingCount;
 
         private bool _helpOpened;
         private bool _warBase;
@@ -83,7 +88,7 @@
         private bool _invulverabilityEnabled;
 
         private string _warRequestMessage;
-        private string _troopRequestMessage { get; set; }
+        private string _troopRequestMessage;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicLevel" /> class.
@@ -112,7 +117,7 @@
             this._levelWidth = 25600;
             this._levelHeight = 25600;
             this._offerManager = new LogicOfferManager();
-            this._map = new LogicRect(3, 3, 47, 47);
+            this._playArea = new LogicRect(3, 3, 47, 47);
             this._cooldownManager = new LogicCooldownManager();
             this._battleLog = new LogicBattleLog(this);
             this._missionManager = new LogicMissionManager(this);
@@ -249,6 +254,110 @@
         }
 
         /// <summary>
+        ///     Gets the number of buildings.
+        /// </summary>
+        public int GetBuildingCount(bool includeDestructed, bool includeLocked)
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[this._villageType].GetGameObjects(0);
+            int cnt = 0;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                LogicBuilding building = (LogicBuilding) gameObjects[i];
+                LogicBuildingData buildingData = building.GetBuildingData();
+                LogicHitpointComponent hitpointComponent = building.GetHitpointComponent();
+
+                if (includeLocked || !building.IsLocked())
+                {
+                    if (hitpointComponent != null)
+                    {
+                        if (!buildingData.IsWall())
+                        {
+                            if (includeDestructed)
+                            {
+                                ++cnt;
+                            }
+                            else
+                            {
+                                if (building.GetHitpointComponent().InternalGetHp() > 0)
+                                {
+                                    ++cnt;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (building.IsConstructing())
+                    {
+                        if (hitpointComponent != null)
+                        {
+                            if (!buildingData.IsWall())
+                            {
+                                if (includeDestructed)
+                                {
+                                    ++cnt;
+                                }
+                                else
+                                {
+                                    if (building.GetHitpointComponent().InternalGetHp() > 0)
+                                    {
+                                        ++cnt;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
+        ///     Called when the defense state is ended.
+        /// </summary>
+        public void DefenseStateEnded()
+        {
+            if (this._npcAttack != null)
+            {
+                this._npcAttack.Destruct();
+                this._npcAttack = null;
+            }
+
+            this.SetVisitorAvatar(null);
+        }
+
+        /// <summary>
+        ///     Called when the defense state is started.
+        /// </summary>
+        public void DefenseStateStarted(LogicAvatar avatar)
+        {
+            this.SetVisitorAvatar(avatar);
+
+            if (this._npcAttack != null)
+            {
+                this._npcAttack.Destruct();
+                this._npcAttack = null;
+            }
+
+            this._npcAttack = new LogicNpcAttack(this);
+            this._aliveBuildingCount = this.GetBuildingCount(true, false);
+            this._destructibleBuildingCount = this.GetBuildingCount(true, false);
+
+            if (this._battleLog != null)
+            {
+                this._battleLog.Destruct();
+                this._battleLog = null;
+            }
+
+            this._battleLog = new LogicBattleLog(this);
+            this._battleLog.CalculateAvailableResources(this, this._matchType);
+            this.SetOwnerInformationToBattleLog();
+        }
+
+        /// <summary>
         ///     Gets the updated clock tower boost time.
         /// </summary>
         public int GetUpdatedClockTowerBoostTime()
@@ -291,7 +400,7 @@
         /// </summary>
         public int GetWidthInTiles()
         {
-            return this._levelWidth;
+            return this._tileMap.GetSizeX();
         }
 
         /// <summary>
@@ -299,7 +408,7 @@
         /// </summary>
         public int GetHeightInTiles()
         {
-            return this._levelHeight;
+            return this._tileMap.GetSizeY();
         }
 
         /// <summary>
@@ -335,11 +444,27 @@
         }
 
         /// <summary>
+        ///     Gets the play area.
+        /// </summary>
+        public LogicRect GetPlayArea()
+        {
+            return this._playArea;
+        }
+
+        /// <summary>
         ///     Gets the <see cref="LogicAchievementManager"/> instance.
         /// </summary>
         public LogicAchievementManager GetAchievementManager()
         {
             return this._achievementManager;
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicMissionManager"/> instance.
+        /// </summary>
+        public LogicMissionManager GetMissionManager()
+        {
+            return this._missionManager;
         }
 
         /// <summary>
@@ -893,6 +1018,64 @@
         }
 
         /// <summary>
+        ///     Sets the visitor avatar.
+        /// </summary>
+        public void SetVisitorAvatar(LogicAvatar avatar)
+        {
+            if (this._visitorAvatar != avatar)
+            {
+                if (this._visitorAvatar != null)
+                {
+                    this._visitorAvatar.Destruct();
+                    this._visitorAvatar = null;
+                }
+            }
+
+            this._visitorAvatar = avatar;
+
+            if (avatar != null)
+            {
+                avatar.SetLevel(this);
+
+                if (this._battleLog != null)
+                {
+                    if (avatar.IsClientAvatar())
+                    {
+                        LogicClientAvatar tmp = (LogicClientAvatar) this._visitorAvatar;
+
+                        this._visitorLeagueData = tmp.GetLeagueTypeData();
+                        this._battleLog.SetAttackerStars(tmp.GetStarBonusCounter());
+                        this._battleLog.SetAttackerHomeId(tmp.GetCurrentHomeId());
+                        this._battleLog.SetAttackerName(tmp.GetName());
+
+                        if (avatar.IsInAlliance())
+                        {
+                            this._battleLog.SetAttackerAllianceId(tmp.GetAllianceId());
+                            this._battleLog.SetAttackerAllianceBadge(tmp.GetAllianceBadge());
+
+                            if (tmp.GetAllianceName() != null)
+                            {
+                                this._battleLog.SetAttackerAllianceName(tmp.GetAllianceName());
+                            }
+                        }
+                        else
+                        {
+                            this._battleLog.SetAttackerAllianceBadge(-1);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the owner info to battle log.
+        /// </summary>
+        public void SetOwnerInformationToBattleLog()
+        {
+
+        }
+
+        /// <summary>
         ///     Adds the unplaced object.
         /// </summary>
         public void AddUnplacedObject(LogicDataSlot obj)
@@ -1040,9 +1223,9 @@
         /// </summary>
         public bool IsValidPlaceForBuilding(int x, int y, int width, int height, LogicGameObject gameObject)
         {
-            if (this._map.InInside(x, y))
+            if (this._playArea.InInside(x, y))
             {
-                if (this._map.InInside(x + width, y + height))
+                if (this._playArea.InInside(x + width, y + height))
                 {
                     for (int i = 0; i < width; i++)
                     {
@@ -1234,6 +1417,11 @@
             this._missionManager.Tick();
             this._achievementManager.Tick();
             this._offerManager.Tick();
+
+            if (this._npcAttack != null)
+            {
+                this._npcAttack.Tick();
+            }
         }
 
         /// <summary>
@@ -1247,10 +1435,10 @@
                 this._tileMap = null;
             }
 
-            if (this._map != null)
+            if (this._playArea != null)
             {
-                this._map.Destruct();
-                this._map = null;
+                this._playArea.Destruct();
+                this._playArea = null;
             }
 
             for (int i = 0; i < 2; i++)

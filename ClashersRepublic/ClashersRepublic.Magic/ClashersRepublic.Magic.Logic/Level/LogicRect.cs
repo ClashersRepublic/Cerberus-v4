@@ -27,6 +27,22 @@
         }
 
         /// <summary>
+        ///     Gets the start x.
+        /// </summary>
+        public int GetStartX()
+        {
+            return this._startX;
+        }
+
+        /// <summary>
+        ///     Gets the start y.
+        /// </summary>
+        public int GetStartY()
+        {
+            return this._startX;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the specified position is in inside of rectangle.
         /// </summary>
         public bool InInside(int x, int y)

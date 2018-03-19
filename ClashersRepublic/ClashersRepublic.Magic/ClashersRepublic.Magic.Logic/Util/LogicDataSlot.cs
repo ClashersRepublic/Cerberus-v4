@@ -20,6 +20,14 @@
         }
 
         /// <summary>
+        ///     Clones this instance.
+        /// </summary>
+        public LogicDataSlot Clone()
+        {
+            return new LogicDataSlot(this._data, this._count);
+        }
+
+        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public void Destruct()

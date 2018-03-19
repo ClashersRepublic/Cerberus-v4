@@ -15,7 +15,7 @@
     public sealed class LogicClientAvatar : LogicAvatar
     {
         private LogicLong _id;
-        private LogicLong _homeId;
+        private LogicLong _currentHomeId;
         private LogicLong _allianceId;
         private LogicLong _leagueInstanceId;
 
@@ -90,7 +90,7 @@
             }
 
             this._id = null;
-            this._homeId = null;
+            this._currentHomeId = null;
             this._leagueInstanceId = null;
             this._allianceId = null;
             this._allianceName = null;
@@ -108,7 +108,7 @@
             this._name = string.Empty;
 
             this._id = new LogicLong();
-            this._homeId = new LogicLong();
+            this._currentHomeId = new LogicLong();
         }
 
         /// <summary>
@@ -283,19 +283,19 @@
         }
 
         /// <summary>
-        ///     Gets the home id.
+        ///     Gets the current home id.
         /// </summary>
-        public LogicLong GetHomeId()
+        public LogicLong GetCurrentHomeId()
         {
-            return this._homeId;
+            return this._currentHomeId;
         }
 
         /// <summary>
-        ///     Sets the home id.
+        ///     Sets the current home id.
         /// </summary>
-        public void SetHomeId(LogicLong id)
+        public void SetCurrentHomeId(LogicLong id)
         {
-            this._homeId = id;
+            this._currentHomeId = id;
         }
 
         /// <summary>
@@ -449,6 +449,79 @@
         }
 
         /// <summary>
+        ///     Gets the variable value.
+        /// </summary>
+        public int GetVariable(LogicVariableData data)
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._variables.Count; i++)
+            {
+                if (this._variables[i].GetData() == data)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                return this._variables[index].GetCount();
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Sets the variable.
+        /// </summary>
+        public void SetVariable(LogicVariableData data, int count)
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._variables.Count; i++)
+            {
+                if (this._variables[i].GetData() == data)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                this._variables[index].SetCount(count);
+            }
+            else
+            {
+                this._variables.Add(new LogicDataSlot(data, count));
+            }
+        }
+
+        /// <summary>
+        ///     Gets the variable by name.
+        /// </summary>
+        public int GetVariableByName(string name)
+        {
+            LogicVariableData data = LogicDataTables.GetVariableByName(name);
+
+            if (data == null)
+            {
+                Debugger.Error("getVariableByName() Invalid Name " + name);
+            }
+
+            return this.GetVariable(data);
+        }
+
+        /// <summary>
+        ///     Gets the star bonus counter.
+        /// </summary>
+        public int GetStarBonusCounter()
+        {
+            return this.GetVariableByName("StarBonusCounter");
+        }
+
+        /// <summary>
         ///     Helper for exp gain.
         /// </summary>
         public void XpGainHelper(int count)
@@ -517,7 +590,7 @@
         public void Decode(ByteStream stream)
         {
             this._id = stream.ReadLong();
-            this._homeId = stream.ReadLong();
+            this._currentHomeId = stream.ReadLong();
 
             if (stream.ReadBoolean())
             {
@@ -1108,7 +1181,7 @@
         public void Encode(ChecksumEncoder encoder)
         {
             encoder.WriteLong(this._id);
-            encoder.WriteLong(this._homeId);
+            encoder.WriteLong(this._currentHomeId);
 
             if (this._allianceId != null)
             {
@@ -1403,7 +1476,7 @@
 
             if (homeIdHighObject != null && homeIdLowObject != null)
             {
-                this._homeId = new LogicLong(homeIdHighObject.GetIntValue(), homeIdLowObject.GetIntValue());
+                this._currentHomeId = new LogicLong(homeIdHighObject.GetIntValue(), homeIdLowObject.GetIntValue());
             }
 
             LogicJSONString nameObject = jsonObject.GetJSONString("name");
@@ -1783,8 +1856,8 @@
 
             jsonObject.Put("avatar_id_high", new LogicJSONNumber(this._id.GetHigherInt()));
             jsonObject.Put("avatar_id_low", new LogicJSONNumber(this._id.GetLowerInt()));
-            jsonObject.Put("home_id_high", new LogicJSONNumber(this._homeId.GetHigherInt()));
-            jsonObject.Put("home_id_low", new LogicJSONNumber(this._homeId.GetLowerInt()));
+            jsonObject.Put("home_id_high", new LogicJSONNumber(this._currentHomeId.GetHigherInt()));
+            jsonObject.Put("home_id_low", new LogicJSONNumber(this._currentHomeId.GetLowerInt()));
             jsonObject.Put("name", new LogicJSONString(this._name));
             jsonObject.Put("name_set", new LogicJSONBoolean(this._nameSetByUser));
             jsonObject.Put("name_change_state", new LogicJSONNumber(this._nameChangeState));

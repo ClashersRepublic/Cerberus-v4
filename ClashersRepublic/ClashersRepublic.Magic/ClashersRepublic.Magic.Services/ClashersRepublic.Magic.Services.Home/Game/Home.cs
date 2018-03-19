@@ -64,7 +64,7 @@
             this.Id = id;
             this.ClientAvatar = LogicClientAvatar.GetDefaultAvatar();
             this.ClientAvatar.SetId(id);
-            this.ClientAvatar.SetHomeId(id);
+            this.ClientAvatar.SetCurrentHomeId(id);
             this.ClientHome = new LogicClientHome();
             this.ClientHome.SetHomeId(id);
             this.ClientHome.SetShieldDurationSeconds(4 * 86400);

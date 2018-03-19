@@ -7,6 +7,7 @@
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
 
     public class LogicGameMode
@@ -207,6 +208,39 @@
             }
 
             time.IncreaseTick();
+        }
+
+        /// <summary>
+        ///     Starts the defend state.
+        /// </summary>
+        public void StartDefendState(LogicAvatar avatar)
+        {
+            if (this._state == 1)
+            {
+                this._state = 3;
+                this._battleOver = false;
+                this._level.DefenseStateStarted(avatar);
+            }
+            else
+            {
+                Debugger.Error("startDefendState called from invalid state");
+            }
+        }
+
+        /// <summary>
+        ///     Ends the defend state.
+        /// </summary>
+        public void EndDefendState()
+        {
+            if (this._state == 3)
+            {
+                this._state = 1;
+                this._level.DefenseStateEnded();
+            }
+            else
+            {
+                Debugger.Error("endDefendState called from invalid state");
+            }
         }
 
         /// <summary>

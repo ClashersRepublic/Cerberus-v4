@@ -282,5 +282,13 @@
 
             this.RefreshSubTiles();
         }
+
+        /// <summary>
+        ///     Gets the passable flag.
+        /// </summary>
+        public byte GetPassableFlag()
+        {
+            return (byte) ((this._passableFlag >> 4) & 1);
+        }
     }
 }

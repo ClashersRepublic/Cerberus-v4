@@ -185,6 +185,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicVariableData"/> instance by name.
+        /// </summary>
+        public static LogicVariableData GetVariableByName(string name)
+        {
+            return (LogicVariableData) LogicDataTables._dataTables[36].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the <see cref="LogicObstacleData"/> instance by name.
         /// </summary>
         public static LogicObstacleData GetObstacleByName(string name)
@@ -316,7 +324,7 @@
         /// <summary>
         ///     Gets the building class data by name.
         /// </summary>
-        public static LogicBuildingClassData GetBuildingClassData(string name)
+        public static LogicBuildingClassData GetBuildingClassByName(string name)
         {
             return (LogicBuildingClassData) LogicDataTables._dataTables[6].GetDataByName(name);
         }

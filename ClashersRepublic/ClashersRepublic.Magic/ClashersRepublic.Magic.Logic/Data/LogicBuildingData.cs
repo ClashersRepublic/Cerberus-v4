@@ -214,7 +214,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         public override void LoadingFinished()
         {
             this._upgradeLevelCount = this._row.GetBiggestArraySize();
-            this._buildingClass = LogicDataTables.GetBuildingClassData(this.BuildingClass);
+            this._buildingClass = LogicDataTables.GetBuildingClassByName(this.BuildingClass);
 
             if (this._buildingClass == null)
             {

@@ -172,6 +172,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicGameObject"/> lister.
+        /// </summary>
+        public LogicGameObjectListener GetListener()
+        {
+            return this._listener;
+        }
+
+        /// <summary>
         ///     Gets the specified component.
         /// </summary>
         public LogicComponent GetComponent(int componentType)
