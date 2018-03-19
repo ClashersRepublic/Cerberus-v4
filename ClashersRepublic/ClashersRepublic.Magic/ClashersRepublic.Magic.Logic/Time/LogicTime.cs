@@ -28,23 +28,7 @@
         {
             return ((this._tick + 1) & 3) == 0;
         }
-
-        /// <summary>
-        ///     Gets the timestamp.
-        /// </summary>
-        public int GetTimestamp()
-        {
-            return this._startTimestamp + LogicTime.GetTicksInSeconds(this._tick);
-        }
-
-        /// <summary>
-        ///     Sets the current timestamp.
-        /// </summary>
-        public void SetTimestamp(int time)
-        {
-            this._startTimestamp = time;
-        }
-
+        
         /// <summary>
         ///     Gets the milliseconds in ticks.
         /// </summary>

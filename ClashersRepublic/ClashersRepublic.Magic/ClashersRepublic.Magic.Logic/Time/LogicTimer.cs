@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Time
 {
     using ClashersRepublic.Magic.Logic.Data;
+    using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicTimer
@@ -125,6 +126,40 @@
             if (tick > 0)
             {
                 this._remainingTime -= tick;
+            }
+        }
+
+        /// <summary>
+        ///     Adjusts the end subtick of timer.
+        /// </summary>
+        public void AdjustEndSubtick(LogicLevel level)
+        {
+            if(this._endTimestamp != -1)
+            {
+                int currentTime = LogicDataTables.GetGlobals().AdjustEndSubtickUseCurrentTime() ? level.GetGameMode().GetCurrentTime() : level.GetGameMode().GetCurrentTimestamp();
+
+                if (currentTime != -1)
+                {
+                    int passedTime = this._endTimestamp - currentTime;
+                    int clamp = LogicDataTables.GetGlobals().GetClampLongTimeStampsToDays();
+
+                    if (clamp * 86400 > 0)
+                    {
+                        if (passedTime > 86400 * clamp)
+                        {
+                            passedTime = 86400 * clamp;
+                        }
+                        else if (passedTime < -86400 * clamp)
+                        {
+                            passedTime = -86400 * clamp;
+                        }
+                    }
+
+                    if (passedTime < -86400 * clamp)
+                    {
+                        this._remainingTime += LogicDataTables.GetGlobals().MoreAccurateTime() ? (int) (1000L * passedTime / 16) : 60 * passedTime;
+                    }
+                }
             }
         }
 

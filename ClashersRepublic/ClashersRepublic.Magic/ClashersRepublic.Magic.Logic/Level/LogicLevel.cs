@@ -22,6 +22,7 @@
 
     public class LogicLevel
     {
+        private LogicTime _time;
         private LogicGameMode _gameMode;
         private LogicClientHome _clientHome;
         private LogicAvatar _homeOwnerAvatar;
@@ -91,6 +92,7 @@
 
             this._troopRequestMessage = string.Empty;
             this._warRequestMessage = string.Empty;
+            this._time = new LogicTime();
             this._gameListener = new LogicGameListener();
             this._achievementManager = new LogicAchievementManager(this);
             this._layoutState = new LogicArrayList<int>();
@@ -183,6 +185,14 @@
         }
 
         /// <summary>
+        ///     Gets the game mode.
+        /// </summary>
+        public LogicGameMode GetGameMode()
+        {
+            return this._gameMode;
+        }
+
+        /// <summary>
         ///     Gets the game listener.
         /// </summary>
         public LogicGameListener GetGameListener()
@@ -272,12 +282,7 @@
         /// </summary>
         public LogicTime GetLogicTime()
         {
-            if (this._gameMode != null)
-            {
-                return this._gameMode.GetLogicTime();
-            }
-
-            return null;
+            return this._time;
         }
 
         /// <summary>

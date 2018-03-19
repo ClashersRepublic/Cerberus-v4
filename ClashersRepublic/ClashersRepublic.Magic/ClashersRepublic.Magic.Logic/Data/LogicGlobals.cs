@@ -25,6 +25,7 @@
         private int _allianceCreateCost;
         private int _clockTowerBoostMultiplier;
         private int _clockTowerBoostCooldownSecs;
+        private int _clampLongTimeStampsToDays;
 
         private bool _useNewTraining;
         private bool _moreAccurateTime;
@@ -42,6 +43,7 @@
         private bool _fixMergeOldBarrackBoostPausing;
         private bool _saveVillageObjects;
         private bool _workerForZeroBuildingTime;
+        private bool _adjustEndSubtickUseCurrentTime;
 
         private int[] _village2TroopHousingBuildTimeSecs;
 
@@ -71,6 +73,7 @@
             this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._clockTowerBoostCooldownSecs = 60 * this.GetIntValue("CLOCK_TOWER_BOOST_COOLDOWN_MINS");
+            this._clampLongTimeStampsToDays = this.GetIntValue("CLAMP_LONG_TIME_STAMPS_TO_DAYS");
 
             this._useNewTraining = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
@@ -88,6 +91,7 @@
             this._fixMergeOldBarrackBoostPausing = this.GetBoolValue("FIX_MERGE_OLD_BARRACK_BOOST_PAUSING");
             this._saveVillageObjects = this.GetBoolValue("SAVE_VILLAGE_OBJECTS");
             this._workerForZeroBuildingTime = this.GetBoolValue("WORKER_FOR_ZERO_BUILD_TIME");
+            this._adjustEndSubtickUseCurrentTime = this.GetBoolValue("ADJUST_END_SUBTICK_USE_CURRENT_TIME");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -199,6 +203,11 @@
             return this._clockTowerBoostCooldownSecs;
         }
 
+        public int GetClampLongTimeStampsToDays()
+        {
+            return this._clampLongTimeStampsToDays;
+        }
+
         /// <summary>
         ///     Gets a value indicating whether the time is more accurate.
         /// </summary>
@@ -283,6 +292,11 @@
         public bool WorkerForZeroBuilTime()
         {
             return this._workerForZeroBuildingTime;
+        }
+
+        public bool AdjustEndSubtickUseCurrentTime()
+        {
+            return this._adjustEndSubtickUseCurrentTime;
         }
 
         /// <summary>

@@ -500,39 +500,50 @@
         /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
-        public override void FastForwardTime(int time)
+        public override void FastForwardTime(int secs)
         {
             if (this._constructionTimer != null)
             {
                 if (this._constructionTimer.GetEndTimestamp() == -1)
                 {
-                    int remaining = this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime());
+                    int remainingTime = this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime());
 
-                    if (remaining > time)
+                    if (remainingTime > secs)
                     {
-                        if (this._constructionTimer.GetEndTimestamp() == -1)
-                        {
-                            this._constructionTimer.StartTimer(remaining, this._level.GetLogicTime(), true, this._level.GetLogicTime().GetTimestamp() + remaining - time);
-                        }
+                        base.FastForwardTime(secs);
+                        this._constructionTimer.StartTimer(remainingTime - secs, this._level.GetLogicTime(), false, -1);
                     }
                     else
                     {
-                        if (LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
-                        {
-                            this._constructionTimer.StartTimer(0, this._level.GetLogicTime(), false, -1);
-                        }
-                        else
-                        {
-                            this.FinishConstruction(true);
-                        }
+                        secs -= remainingTime;
+                        goto finishConstruction;
                     }
                 }
                 else
                 {
+                    this._constructionTimer.AdjustEndSubtick(this._level);
 
+                    if (this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
+                    {
+                        goto finishConstruction;
+                    }
                 }
 
-                base.FastForwardTime(time);
+                return;
+
+                finishConstruction:
+
+                if (LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
+                {
+                    base.FastForwardTime(secs);
+                    this._constructionTimer.StartTimer(0, this._level.GetLogicTime(), false, -1);
+                }
+                else
+                {
+                    base.FastForwardTime(0);
+                    this.FinishConstruction(true);
+                    base.FastForwardTime(secs);
+                }
             }
         }
 
@@ -564,7 +575,8 @@
             else
             {
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetLogicTime().GetTimestamp());
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
+
                 this._level.GetWorkerManagerAt(this.GetBuildingData().GetVillageType()).AllocateWorker(this);
             }
 

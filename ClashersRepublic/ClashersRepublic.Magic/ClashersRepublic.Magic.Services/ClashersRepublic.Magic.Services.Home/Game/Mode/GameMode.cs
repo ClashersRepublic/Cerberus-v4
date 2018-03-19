@@ -316,7 +316,7 @@
 
                 if (currentTimestamp >= calculateTimestamp)
                 {
-                    int serverTick = this._logicGameMode.GetLogicTime();
+                    int serverTick = this._logicGameMode.GetLevel().GetLogicTime();
 
                     if (subTick > serverTick)
                     {

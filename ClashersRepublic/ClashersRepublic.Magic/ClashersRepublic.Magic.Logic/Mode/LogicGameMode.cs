@@ -16,7 +16,6 @@
         private int _state;
         private int _currentTimestamp;
 
-        private LogicTime _time;
         private LogicTimer _battleTimer;
         private LogicLevel _level;
         private LogicCommandManager _commandManager;
@@ -25,14 +24,13 @@
 
         private LogicTimer _shieldTimer;
         private LogicTimer _guardTimer;
-        private readonly LogicTimer _maintenanceTimer;
+        private LogicTimer _maintenanceTimer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicGameMode" /> class.
         /// </summary>
         public LogicGameMode()
         {
-            this._time = new LogicTime();
             this._level = new LogicLevel(this);
             this._commandManager = new LogicCommandManager(this._level);
             this._calendar = new LogicCalendar();
@@ -64,10 +62,10 @@
                 this._calendar = null;
             }
 
+            this._maintenanceTimer = null;
             this._battleTimer = null;
             this._shieldTimer = null;
             this._guardTimer = null;
-            this._time = null;
         }
 
         /// <summary>
@@ -79,7 +77,7 @@
 
             checksum.StartObject("LogicGameMode");
 
-            checksum.WriteValue("subTick", this._time);
+            checksum.WriteValue("subTick", this._level.GetLogicTime());
             checksum.WriteValue("m_currentTimestamp", this._currentTimestamp);
 
             if (this._level.GetHomeOwnerAvatar() != null)
@@ -128,11 +126,19 @@
         }
 
         /// <summary>
-        ///     Gets the logic time.
+        ///     Gets the current time.
         /// </summary>
-        public LogicTime GetLogicTime()
+        public int GetCurrentTime()
         {
-            return this._time;
+            return (int) (16L * this._level.GetLogicTime() / 1000 + this._currentTimestamp);
+        }
+
+        /// <summary>
+        ///     Gets the current timestamp.
+        /// </summary>
+        public int GetCurrentTimestamp()
+        {
+            return this._currentTimestamp;
         }
 
         /// <summary>
@@ -155,7 +161,7 @@
         /// </summary>
         public int GetShieldRemainingSeconds()
         {
-            return this._shieldTimer.GetRemainingSeconds(this._time);
+            return this._shieldTimer.GetRemainingSeconds(this._level.GetLogicTime());
         }
 
         /// <summary>
@@ -171,6 +177,8 @@
         /// </summary>
         public void UpdateOneSubTick()
         {
+            LogicTime time = this._level.GetLogicTime();
+
             if (this._state != 2 || !this._battleOver)
             {
                 this._commandManager.SubTick();
@@ -181,7 +189,7 @@
                 //     this._replay.SubTick();
                 // }
 
-                if (this._time.IsFullTick())
+                if (time.IsFullTick())
                 {
                     this._level.Tick();
                 }
@@ -190,14 +198,14 @@
             if (this._state == 2 || this._state == 3 || this._state == 5)
             {
                 if (this._battleTimer != null &&
-                    this._battleTimer.GetRemainingSeconds(this._time) == 0 ||
+                    this._battleTimer.GetRemainingSeconds(time) == 0 ||
                     this._level.GetBattleEndPending())
                 {
                     this.SetBattleOver();
                 }
             }
 
-            this._time.IncreaseTick();
+            time.IncreaseTick();
         }
 
         /// <summary>
@@ -207,17 +215,15 @@
         {
             if (home != null)
             {
-                this._time = 0;
                 this._state = 1;
                 this._currentTimestamp = currentTimestamp;
-                this._time.SetTimestamp(currentTimestamp);
                 this._level.SetHome(home, true);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
 
-                this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._time, false, -1);
-                this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._time, false, -1);
-                this._maintenanceTimer.StartTimer(home.GetNextMaintenanceSeconds(), this._time, false, -1);
+                this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._level.GetLogicTime(), false, -1);
+                this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._level.GetLogicTime(), false, -1);
+                this._maintenanceTimer.StartTimer(home.GetNextMaintenanceSeconds(), this._level.GetLogicTime(), false, -1);
             }
         }
     }
