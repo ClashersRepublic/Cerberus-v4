@@ -870,5 +870,10 @@
 
             return jsonArray;
         }
+
+        public LogicBuilding GetClockTower()
+        {
+            return _clockTower;
+        }
     }
 }
