@@ -1,5 +1,6 @@
 namespace ClashersRepublic.Magic.Logic.Data
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Titan.CSV;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Util;
@@ -302,11 +303,36 @@ namespace ClashersRepublic.Magic.Logic.Data
         }
 
         /// <summary>
+        ///     Gets if this mission is open for the specified <see cref="LogicClientAvatar"/> instance.
+        /// </summary>
+        public void IsOpenForAvatar(LogicClientAvatar avatar)
+        {
+            if (!avatar.IsMissionCompleted(this))
+            {
+                if (avatar.GetExpLevel() >= 10)
+                {
+                    if (this._missionCategory - 1 > 1)
+                    {
+
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Gets the mission type.
         /// </summary>
         public int GetMissionType()
         {
             return this._missionType;
+        }
+
+        /// <summary>
+        ///     Gets the custom data.
+        /// </summary>
+        public int GetCustomData()
+        {
+            return this._customData;
         }
 
         /// <summary>

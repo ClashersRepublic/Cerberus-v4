@@ -345,13 +345,13 @@
         /// <summary>
         ///     Gets the troop housing build clost village 2.
         /// </summary>
-        public int GetTroopHousingBuildCostVillage2(LogicLevel level, int ignoreBuildingCnt)
+        public int GetTroopHousingBuildCostVillage2(LogicLevel level)
         {
             LogicBuildingData data = LogicDataTables.GetBuildingByName("Troop Housing2");
 
             if (data != null)
             {
-                return this._village2TroopHousingBuildTimeSecs[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data) - ignoreBuildingCnt,
+                return this._village2TroopHousingBuildCost[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data),
                                                                0,
                                                                this._village2TroopHousingBuildTimeSecs.Length - 1)];
             }

@@ -5,6 +5,7 @@
     public class LogicBattleLog
     {
         private LogicLevel _level;
+        private bool _battleEnded;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicBattleLog" /> class.
@@ -28,6 +29,14 @@
         public bool GetBattleStarted()
         {
             return false;
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this battle is ended.
+        /// </summary>
+        public bool GetBattleEnded()
+        {
+            return this._battleEnded;
         }
     }
 }

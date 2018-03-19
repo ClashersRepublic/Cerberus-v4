@@ -316,6 +316,14 @@
         }
 
         /// <summary>
+        ///     Gets the battle log.
+        /// </summary>
+        public LogicBattleLog GetBattleLog()
+        {
+            return this._battleLog;
+        }
+
+        /// <summary>
         ///     Gets the logic time.
         /// </summary>
         public LogicTime GetLogicTime()

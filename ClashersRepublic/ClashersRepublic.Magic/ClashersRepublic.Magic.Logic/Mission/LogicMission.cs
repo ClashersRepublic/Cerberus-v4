@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Mission
 {
     using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Battle;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Level;
@@ -40,6 +41,9 @@
                     break;
                 case 4:
                     this._requireProgress = data.GetTrainTroopCount();
+                    break;
+                case 18:
+                    this._requireProgress = 2;
                     break;
             }
 
@@ -209,6 +213,91 @@
                     playerAvatar.XpGainHelper(rewardXp);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Ticks this instance.
+        /// </summary>
+        public void Tick()
+        {
+            int missionType = this._data.GetMissionType();
+
+            if (missionType <= 17)
+            {
+                if (missionType != 1)
+                {
+                    if (missionType == 2)
+                    {
+                        LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+                        if (homeOwnerAvatar.IsNpcAvatar())
+                        {
+                            if (this._level.GetState() == 2)
+                            {
+                                this.Finished();
+                                this._level.GetGameListener().ShowTroopPlacementTutorial(this._data.GetCustomData());
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (this._level.GetState() == 1)
+                    {
+                        if (this._progress == 0)
+                        {
+                            this.Finished();
+                        }
+                    }
+                }
+            }
+            else if (missionType == 19)
+            {
+                if (this._level.GetState() == 1)
+                {
+                    this._progress = 1;
+                }
+            }
+            else if (missionType == 18)
+            {
+                if (this._progress == 0)
+                {
+                    LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+                    if (homeOwnerAvatar.IsNpcAvatar())
+                    {
+                        if (this._level.GetState() == 2)
+                        {
+                            this._progress = 1;
+                            this._level.GetGameListener().ShowTroopPlacementTutorial(this._data.GetCustomData());
+                        }
+                    }
+                }
+                else if (this._progress == 1)
+                {
+                    LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+                    if (homeOwnerAvatar.IsNpcAvatar())
+                    {
+                        if (this._level.GetState() == 2)
+                        {
+                            if (this._level.GetBattleLog().GetBattleEnded())
+                            {
+                                this._progress = 2;
+                                this.Finished();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether this mission is finished.
+        /// </summary>
+        public bool IsFinished()
+        {
+            return this._progress >= this._requireProgress;
         }
 
         /// <summary>

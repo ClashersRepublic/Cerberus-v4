@@ -44,5 +44,9 @@
         public virtual void LevelUp(int expLevel)
         {
         }
+
+        public virtual void ShowTroopPlacementTutorial(int data)
+        {
+        }
     }
 }
