@@ -10,16 +10,26 @@
         private static LogicGlobals _globals;
         private static LogicClientGlobals _clientGlobals;
 
+        private static LogicCombatItemData _skeletonData;
+        private static LogicCombatItemData _ballonSkeletonData;
+
         private static LogicResourceData _diamondsData;
         private static LogicResourceData _goldData;
         private static LogicResourceData _elixirData;
         private static LogicResourceData _darkElixirData;
         private static LogicResourceData _gold2Data;
         private static LogicResourceData _elixir2Data;
+        private static LogicResourceData _warGoldData;
+        private static LogicResourceData _warElixirData;
+        private static LogicResourceData _warDarkElixirData;
 
         private static LogicBuildingData _townHallData;
         private static LogicBuildingData _townHallVillage2Data;
         private static LogicBuildingData _allianceCastleData;
+        private static LogicBuildingData _darkTowerData;
+        private static LogicBuildingData _ancientArtilleryData;
+        private static LogicBuildingData _workerData;
+        private static LogicBuildingData _laboratoryVillage2Data;
 
         /// <summary>
         ///     Initializes this instance.
@@ -84,13 +94,6 @@
                 }
             }
 
-            LogicDataTables._diamondsData = LogicDataTables.GetResourceByName("Diamonds");
-            LogicDataTables._goldData = LogicDataTables.GetResourceByName("Gold");
-            LogicDataTables._elixirData = LogicDataTables.GetResourceByName("Elixir");
-            LogicDataTables._darkElixirData = LogicDataTables.GetResourceByName("DarkElixir");
-            LogicDataTables._gold2Data = LogicDataTables.GetResourceByName("Gold2");
-            LogicDataTables._elixir2Data = LogicDataTables.GetResourceByName("Elixir2");
-
             LogicDataTable buildingDataTable = LogicDataTables._dataTables[0];
 
             for (int i = 0; i < buildingDataTable.GetItemCount(); i++)
@@ -102,11 +105,33 @@
                     LogicDataTables._allianceCastleData = buildingData;
                 }
 
-                if (buildingData.IsTownHall())
+                if (buildingData.IsTownHall() && LogicDataTables._townHallData == null)
                 {
                     LogicDataTables._townHallData = buildingData;
                 }
+
+                if (buildingData.IsTownHallVillage2() && LogicDataTables._townHallVillage2Data == null)
+                {
+                    LogicDataTables._townHallVillage2Data = buildingData;
+                }
             }
+
+            LogicDataTables._darkTowerData = LogicDataTables.GetBuildingByName("Dark Tower");
+            LogicDataTables._ancientArtilleryData = LogicDataTables.GetBuildingByName("Ancient Artillery");
+            LogicDataTables._ancientArtilleryData = LogicDataTables.GetBuildingByName("Ancient Artillery");
+            LogicDataTables._workerData = LogicDataTables.GetBuildingByName("Worker Building");
+            LogicDataTables._laboratoryVillage2Data = LogicDataTables.GetBuildingByName("Laboratory2");
+            LogicDataTables._diamondsData = LogicDataTables.GetResourceByName("Diamonds");
+            LogicDataTables._goldData = LogicDataTables.GetResourceByName("Gold");
+            LogicDataTables._elixirData = LogicDataTables.GetResourceByName("Elixir");
+            LogicDataTables._darkElixirData = LogicDataTables.GetResourceByName("DarkElixir");
+            LogicDataTables._gold2Data = LogicDataTables.GetResourceByName("Gold2");
+            LogicDataTables._elixir2Data = LogicDataTables.GetResourceByName("Elixir2");
+            LogicDataTables._warGoldData = LogicDataTables.GetResourceByName("WarGold");
+            LogicDataTables._warElixirData = LogicDataTables.GetResourceByName("WarElixir");
+            LogicDataTables._warDarkElixirData = LogicDataTables.GetResourceByName("WarDarkElixir");
+            LogicDataTables._skeletonData = LogicDataTables.GetCharacterByName("Skeleton");
+            LogicDataTables._ballonSkeletonData = LogicDataTables.GetCharacterByName("Balloon Skeleton");
 
             LogicDataTables._globals.CreateReferences();
             LogicDataTables._clientGlobals.CreateReferences();
@@ -321,6 +346,14 @@
         }
 
         /// <summary>
+        ///     Gets the worker data.
+        /// </summary>
+        public static LogicBuildingData GetWorkerData()
+        {
+            return LogicDataTables._workerData;
+        }
+
+        /// <summary>
         ///     Gets the diamonds data instance.
         /// </summary>
         public static LogicResourceData GetDiamondsData()
@@ -366,6 +399,30 @@
         public static LogicResourceData GetElixir2Data()
         {
             return LogicDataTables._elixir2Data;
+        }
+
+        /// <summary>
+        ///     Gets the war gold data.
+        /// </summary>
+        public static LogicResourceData GetWarGoldData()
+        {
+            return LogicDataTables._warGoldData;
+        }
+
+        /// <summary>
+        ///     Gets the war elixir data.
+        /// </summary>
+        public static LogicResourceData GetWarElixirData()
+        {
+            return LogicDataTables._warElixirData;
+        }
+
+        /// <summary>
+        ///     Gets the war dark elixir data.
+        /// </summary>
+        public static LogicResourceData GetWarDarkElixirData()
+        {
+            return LogicDataTables._warDarkElixirData;
         }
 
         /// <summary>

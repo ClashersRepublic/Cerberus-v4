@@ -734,7 +734,7 @@
                 {
                     this._level.GetHomeOwnerAvatar().SetTownHallLevel(this._upgLevel);
                 }
-                else if (buildingData.IsTownHall2())
+                else if (buildingData.IsTownHallVillage2())
                 {
                     this._level.GetHomeOwnerAvatar().SetTownHallVillage2Level(this._upgLevel);
                 }

@@ -369,7 +369,12 @@
                         int resourceCount = this.GetResourceCount((LogicResourceData) data);
                         int newResourceCount = LogicMath.Max(resourceCount + count, 0);
 
-                        if (newResourceCount > 0)
+                        if (count < 0)
+                        {
+                            this.SetResourceCount((LogicResourceData) data, newResourceCount);
+                            this._listener.CommodityCountChanged(0, data, count);
+                        }
+                        else
                         {
                             int resourceCap = this.GetResourceCap((LogicResourceData) data);
 
@@ -382,15 +387,10 @@
 
                                 if (newResourceCount > resourceCount)
                                 {
-                                    this.SetResourceCount((LogicResourceData) data, count);
+                                    this.SetResourceCount((LogicResourceData) data, newResourceCount);
                                     this._listener.CommodityCountChanged(0, data, count);
                                 }
                             }
-                        }
-                        else
-                        {
-                            this.SetResourceCount((LogicResourceData) data, count);
-                            this._listener.CommodityCountChanged(0, data, count);
                         }
                     }
                     else if (commodityType == 1)

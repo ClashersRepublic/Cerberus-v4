@@ -89,7 +89,7 @@
                         {
                             LogicClientAvatar playerAvatar = level.GetPlayerAvatar();
                             LogicResourceData buildResourceData = this._buildingData.GetBuildResource();
-                            int buildResourceCost = this._buildingData.GetBuildCost(0);
+                            int buildResourceCost = this._buildingData.GetBuildCost(0, level);
 
                             if (playerAvatar.HasEnoughResources(buildResourceData, buildResourceCost, true, this, false))
                             {

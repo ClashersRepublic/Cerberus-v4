@@ -201,12 +201,12 @@
                     this._clockTower = building;
                 }
 
-                if (buildingData.IsTownHall() || buildingData.IsTownHall2())
+                if (buildingData.IsTownHall() || buildingData.IsTownHallVillage2())
                 {
                     this._townHall = building;
                 }
 
-                if (buildingData.IsWorkerBuilding() || buildingData.IsTownHall2())
+                if (buildingData.IsWorkerBuilding() || buildingData.IsTownHallVillage2())
                 {
                     this._level.GetWorkerManagerAt(this._villageType).IncreaseWorkerCount();
                 }

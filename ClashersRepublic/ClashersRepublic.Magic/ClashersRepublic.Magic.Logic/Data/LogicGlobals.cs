@@ -26,6 +26,10 @@
         private int _clockTowerBoostMultiplier;
         private int _clockTowerBoostCooldownSecs;
         private int _clampLongTimeStampsToDays;
+        private int _workerCostSecondBuildCost;
+        private int _workerCostThirdBuildCost;
+        private int _workerCostFourthBuildCost;
+        private int _workerCostFifthBuildCost;
 
         private bool _useNewTraining;
         private bool _moreAccurateTime;
@@ -44,7 +48,8 @@
         private bool _saveVillageObjects;
         private bool _workerForZeroBuildingTime;
         private bool _adjustEndSubtickUseCurrentTime;
-
+        
+        private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
 
         private LogicResourceData _allianceCreateResourceData;
@@ -74,6 +79,10 @@
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._clockTowerBoostCooldownSecs = 60 * this.GetIntValue("CLOCK_TOWER_BOOST_COOLDOWN_MINS");
             this._clampLongTimeStampsToDays = this.GetIntValue("CLAMP_LONG_TIME_STAMPS_TO_DAYS");
+            this._workerCostSecondBuildCost = this.GetIntValue("WORKER_COST_2ND");
+            this._workerCostThirdBuildCost = this.GetIntValue("WORKER_COST_3RD");
+            this._workerCostFourthBuildCost = this.GetIntValue("WORKER_COST_4TH");
+            this._workerCostFifthBuildCost = this.GetIntValue("WORKER_COST_5TH");
 
             this._useNewTraining = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
@@ -94,6 +103,15 @@
             this._adjustEndSubtickUseCurrentTime = this.GetBoolValue("ADJUST_END_SUBTICK_USE_CURRENT_TIME");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
+
+            LogicGlobalData village2TroopHousingBuildCostData = this.GetGlobalData("TROOP_HOUSING_V2_COST");
+
+            this._village2TroopHousingBuildCost = new int[village2TroopHousingBuildCostData.GetNumberArraySize()];
+
+            for (int i = 0; i < this._village2TroopHousingBuildCost.Length; i++)
+            {
+                this._village2TroopHousingBuildCost[i] = village2TroopHousingBuildCostData.GetNumberArray(i);
+            }
 
             LogicGlobalData village2TroopHousingBuildTimeSecsData = this.GetGlobalData("TROOP_HOUSING_V2_BUILD_TIME_SECONDS");
 
@@ -209,6 +227,23 @@
         }
 
         /// <summary>
+        ///     Gets the worker cost.
+        /// </summary>
+        public int GetWorkerCost(LogicLevel level)
+        {
+            int totalWorkers = level.GetWorkerManagerAt(level.GetVillageType()).GetTotalWorkers() + level.GetUnplacedObjectCount(LogicDataTables.GetWorkerData());
+
+            switch (totalWorkers)
+            {
+                case 1: return this._workerCostSecondBuildCost;
+                case 2: return this._workerCostThirdBuildCost;
+                case 3: return this._workerCostThirdBuildCost;
+                case 4: return this._workerCostFifthBuildCost;
+                default: return 0;
+            }
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the time is more accurate.
         /// </summary>
         public bool MoreAccurateTime()
@@ -308,9 +343,30 @@
         }
 
         /// <summary>
-        ///     Gets the troop housing village 2 build time.
+        ///     Gets the troop housing build clost village 2.
         /// </summary>
-        public int GetTroopHousingVillage2BuildTime(LogicLevel level, int ignoreBuildingCnt)
+        public int GetTroopHousingBuildCostVillage2(LogicLevel level, int ignoreBuildingCnt)
+        {
+            LogicBuildingData data = LogicDataTables.GetBuildingByName("Troop Housing2");
+
+            if (data != null)
+            {
+                return this._village2TroopHousingBuildTimeSecs[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data) - ignoreBuildingCnt,
+                                                               0,
+                                                               this._village2TroopHousingBuildTimeSecs.Length - 1)];
+            }
+            else
+            {
+                Debugger.Error("Could not find Troop Housing2 data");
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the troop housing build time village 2.
+        /// </summary>
+        public int GetTroopHousingBuildTimeVillage2(LogicLevel level, int ignoreBuildingCnt)
         {
             LogicBuildingData data = LogicDataTables.GetBuildingByName("Troop Housing2");
 

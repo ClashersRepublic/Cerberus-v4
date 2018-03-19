@@ -267,7 +267,7 @@ namespace ClashersRepublic.Magic.Logic.Data
                 return this._constructionTimes[upgLevel];
             }
 
-            return LogicDataTables.GetGlobals().GetTroopHousingVillage2BuildTime(level, ignoreBuildingCnt);
+            return LogicDataTables.GetGlobals().GetTroopHousingBuildTimeVillage2(level, ignoreBuildingCnt);
         }
 
         public bool IsTownHall()
@@ -275,7 +275,7 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this._buildingClass.IsTownHall();
         }
 
-        public bool IsTownHall2()
+        public bool IsTownHallVillage2()
         {
             return this._buildingClass.IsTownHall2();
         }
@@ -350,9 +350,19 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.ExportName[index];
         }
 
-        public int GetBuildCost(int index)
+        public int GetBuildCost(int index, LogicLevel level)
         {
-            return this.BuildCost[index];
+            if (this.Village2Housing < 0)
+            {
+                if (this._buildingClass.IsWorker())
+                {
+                    return LogicDataTables.GetGlobals().GetWorkerCost(level);
+                }
+
+                return this.BuildCost[index];
+            }
+
+            return LogicDataTables.GetGlobals().GetTroopHousingBuildCostVillage2(level, 0);
         }
 
         public int GetRequiredTownHallLevel(int index)

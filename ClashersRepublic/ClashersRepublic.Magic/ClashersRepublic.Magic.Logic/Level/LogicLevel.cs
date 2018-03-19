@@ -261,6 +261,29 @@
         }
 
         /// <summary>
+        ///     Gets the number of unplaced object.
+        /// </summary>
+        public int GetUnplacedObjectCount(LogicData data)
+        {
+            if (this._unplacedObjects != null)
+            {
+                int cnt = 0;
+
+                for (int i = 0; i < this._unplacedObjects.Count; i++)
+                {
+                    if (this._unplacedObjects[i].GetData() == data)
+                    {
+                        ++cnt;
+                    }    
+                }
+
+                return cnt;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         ///     Gets the height of level in tiles.
         /// </summary>
         public int GetWidthInTiles()
@@ -870,7 +893,7 @@
 
             this._unplacedObjects.Add(obj);
         }
-        
+
         /// <summary>
         ///     Gets the shop unlock count for specified data.
         /// </summary>
@@ -984,13 +1007,14 @@
         public bool IsBuildingCapReached(LogicBuildingData data, bool updateListener)
         {
             int townHallLevel = 0;
-                
+
             if (this._gameObjectManagers[this._villageType].GetTownHall() != null)
             {
                 townHallLevel = this._gameObjectManagers[this._villageType].GetTownHall().GetUpgradeLevel();
             }
-            
-            bool reached = this._gameObjectManagers[this._villageType].GetGameObjectCountByData(data) >= LogicDataTables.GetTownHallLevel(townHallLevel).GetUnlockedBuildingCount(data);
+
+            bool reached = this._gameObjectManagers[this._villageType].GetGameObjectCountByData(data) >=
+                           LogicDataTables.GetTownHallLevel(townHallLevel).GetUnlockedBuildingCount(data);
 
             if (!reached && updateListener)
             {
@@ -1113,7 +1137,7 @@
                 {
                     this._lastLeagueShuffle = lastLeagueShuffleObject.GetIntValue();
                 }
-                
+
                 this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
                 this._lastNewsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
                 this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");
