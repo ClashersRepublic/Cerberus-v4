@@ -26,6 +26,7 @@
         private static LogicBuildingData _townHallData;
         private static LogicBuildingData _townHallVillage2Data;
         private static LogicBuildingData _allianceCastleData;
+        private static LogicBuildingData _bowData;
         private static LogicBuildingData _darkTowerData;
         private static LogicBuildingData _ancientArtilleryData;
         private static LogicBuildingData _workerData;
@@ -116,8 +117,8 @@
                 }
             }
 
+            LogicDataTables._bowData = LogicDataTables.GetBuildingByName("Bow");
             LogicDataTables._darkTowerData = LogicDataTables.GetBuildingByName("Dark Tower");
-            LogicDataTables._ancientArtilleryData = LogicDataTables.GetBuildingByName("Ancient Artillery");
             LogicDataTables._ancientArtilleryData = LogicDataTables.GetBuildingByName("Ancient Artillery");
             LogicDataTables._workerData = LogicDataTables.GetBuildingByName("Worker Building");
             LogicDataTables._laboratoryVillage2Data = LogicDataTables.GetBuildingByName("Laboratory2");
