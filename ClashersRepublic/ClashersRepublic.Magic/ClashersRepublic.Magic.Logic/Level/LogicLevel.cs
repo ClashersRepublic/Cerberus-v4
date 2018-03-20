@@ -502,7 +502,15 @@
         /// <summary>
         ///     Gets the component manager instance.
         /// </summary>
-        public LogicComponentManager GetComponentManager(int villageType)
+        public LogicComponentManager GetComponentManager()
+        {
+            return this._gameObjectManagers[this._villageType].GetComponentManager();
+        }
+
+        /// <summary>
+        ///     Gets the component manager instance at specified index.
+        /// </summary>
+        public LogicComponentManager GetComponentManagerAt(int villageType)
         {
             return this._gameObjectManagers[villageType].GetComponentManager();
         }

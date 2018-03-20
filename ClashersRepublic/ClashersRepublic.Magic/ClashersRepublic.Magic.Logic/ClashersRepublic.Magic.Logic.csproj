@@ -130,6 +130,7 @@
     <Compile Include="GameObject\Component\LogicComponentFilter.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
+    <Compile Include="GameObject\Component\LogicUnitStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicVillage2UnitComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitUpgradeComponent.cs" />
     <Compile Include="GameObject\Component\LogicHeroBaseComponent.cs" />

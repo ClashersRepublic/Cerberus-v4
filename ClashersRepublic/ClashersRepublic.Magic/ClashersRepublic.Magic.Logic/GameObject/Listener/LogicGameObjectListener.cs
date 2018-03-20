@@ -75,5 +75,13 @@
         {
             // MapUnlocked.
         }
+
+        /// <summary>
+        ///     Called when a extra character is added.
+        /// </summary>
+        public virtual void ExtraCharacterAdded(LogicCharacterData character, LogicBuilding baseBuilding)
+        {
+            // ExtraCharacterAdded.
+        }
     }
 }

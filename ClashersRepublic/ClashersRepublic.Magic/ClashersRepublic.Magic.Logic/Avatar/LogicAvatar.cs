@@ -400,6 +400,14 @@
 
                     break;
                 }
+
+                case 3:
+                    if (commodityType == 0)
+                    {
+                        this.SetUnitCount((LogicCombatItemData)data, LogicMath.Max(this.GetUnitCount((LogicCombatItemData)data) + count, 0));
+                    }
+
+                    break;
             }
         }
 

@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
+    using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Util;
@@ -349,7 +350,39 @@
 
                 if (characterCount > 0)
                 {
-                    LogicComponentF
+                    LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
+                    LogicComponentFilter filter = new LogicComponentFilter();
+
+                    for (int i = 0; i < characterCount; i++)
+                    {
+                        filter.RemoveAllIgnoreObjects();
+
+                        while (true)
+                        {
+                            LogicUnitStorageComponent component = (LogicUnitStorageComponent) this._level.GetComponentManagerAt(this._level.GetVillageType()).GetClosestComponent(0, 0, filter);
+
+                            if (component != null)
+                            {
+                                if (component.CanAddUnit(characterData))
+                                {
+                                    playerAvatar.CommodityCountChangeHelper(0, characterData, 1);
+                                    component.AddUnit(characterData);
+
+                                    if (this._level.GetState() == 1 || this._level.GetState() == 3)
+                                    {
+                                        if (component.GetParentListener() != null)
+                                        {
+                                            component.GetParentListener().ExtraCharacterAdded(characterData, null);
+                                        }
+                                    }
+
+                                    break;
+                                }
+
+                                filter.AddIgnoreObject(component.GetParent());
+                            }
+                        }
+                    }
                 }
             }
         }

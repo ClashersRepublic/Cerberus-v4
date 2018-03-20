@@ -89,6 +89,95 @@
         }
 
         /// <summary>
+        ///     Gets the closest component.
+        /// </summary>
+        public LogicComponent GetClosestComponent(int x, int y, LogicComponentFilter filter)
+        {
+            LogicArrayList<LogicComponent> components = this._components[filter.GetComponentType()];
+            LogicComponent minDistanceComponent = null;
+
+            if (components.Count > 0)
+            {
+                int idx = 0;
+                int minDistance = 0;
+
+                do
+                {
+                    LogicComponent component = components[idx];
+
+                    if (filter.TestComponent(component))
+                    {
+                        int distance = component.GetParent().GetPosition().GetDistanceSquaredTo(x, y);
+
+                        if (distance < minDistance || minDistanceComponent == null)
+                        {
+                            minDistance = distance;
+                            minDistanceComponent = component;
+                        }
+                    }
+                } while (++idx != components.Count);
+            }
+
+            return minDistanceComponent;
+        }
+
+        /// <summary>
+        ///     Gets the total used housing.
+        /// </summary>
+        public int GetTotalUsedHousing(int unitType)
+        {
+            LogicArrayList<LogicComponent> components = this._components[0];
+
+            if (components.Count > 0)
+            {
+                int housing = 0;
+                int idx = 0;
+
+                do
+                {
+                    LogicUnitStorageComponent unitStorageComponent = (LogicUnitStorageComponent) components[idx];
+
+                    if (unitStorageComponent.GetStorageType() == unitType)
+                    {
+                        housing += unitStorageComponent.GetUsedCapacity();
+                    } 
+                } while (++idx != components.Count);
+
+                return housing;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the total used housing.
+        /// </summary>
+        public int GetTotalMaxHousing(int unitType)
+        {
+            LogicArrayList<LogicComponent> components = this._components[0];
+
+            if (components.Count > 0)
+            {
+                int housing = 0;
+                int idx = 0;
+
+                do
+                {
+                    LogicUnitStorageComponent unitStorageComponent = (LogicUnitStorageComponent)components[idx];
+
+                    if (unitStorageComponent.GetStorageType() == unitType)
+                    {
+                        housing += unitStorageComponent.GetMaxCapacity();
+                    }
+                } while (++idx != components.Count);
+
+                return housing;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         ///     Ticks for update this instance.
         /// </summary>
         public void Tick()

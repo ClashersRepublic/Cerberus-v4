@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
+    using ClashersRepublic.Magic.Logic.GameObject.Listener;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.Json;
 
@@ -19,9 +20,9 @@
         /// <summary>
         ///     Destructs this instance.
         /// </summary>
-        public void Destruct()
+        public virtual void Destruct()
         {
-            this._parent.GetLevel().GetComponentManager(this._parent.GetVillageType()).RemoveComponent(this);
+            this._parent.GetLevel().GetComponentManagerAt(this._parent.GetVillageType()).RemoveComponent(this);
 
             this._enabled = false;
             this._parent = null;
@@ -33,6 +34,14 @@
         public LogicGameObject GetParent()
         {
             return this._parent;
+        }
+
+        /// <summary>
+        ///     Gets the parent listener of this component.
+        /// </summary>
+        public LogicGameObjectListener GetParentListener()
+        {
+            return this._parent.GetListener();
         }
 
         /// <summary>

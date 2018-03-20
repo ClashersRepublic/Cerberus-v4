@@ -169,6 +169,21 @@
         }
 
         /// <summary>
+        ///     Gets a data reference by id.
+        /// </summary>
+        public static LogicData GetDataById(int globalId, int dataType)
+        {
+            LogicData data = LogicDataTables.GetDataById(globalId);
+
+            if (data == null || data.GetDataType() != dataType)
+            {
+                return null;
+            }
+
+            return data;
+        }
+
+        /// <summary>
         ///     Gets the <see cref="LogicBuildingData"/> instance by name.
         /// </summary>
         public static LogicBuildingData GetBuildingByName(string name)

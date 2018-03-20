@@ -85,7 +85,7 @@
 
             if (this._components[componentType] == null)
             {
-                this._level.GetComponentManager(this._villageType).AddComponent(component);
+                this._level.GetComponentManagerAt(this._villageType).AddComponent(component);
                 this._components[componentType] = component;
             }
             else
@@ -236,6 +236,14 @@
         public void SetInitialPosition(int x, int y)
         {
             this._position.Set(x, y);
+        }
+
+        /// <summary>
+        ///     Gets the gameobject position.
+        /// </summary>
+        public LogicVector2 GetPosition()
+        {
+            return this._position;
         }
 
         /// <summary>

@@ -119,9 +119,9 @@
         }
 
         /// <summary>
-        ///     Returns the distance between this vector and specified vector.
+        ///     Returns the distance between this vector and specified position.
         /// </summary>
-        public int GetDistanceSquaredHelper(int x, int y)
+        public int GetDistanceSquaredTo(int x, int y)
         {
             int distance = 0x7FFFFFFF;
 
