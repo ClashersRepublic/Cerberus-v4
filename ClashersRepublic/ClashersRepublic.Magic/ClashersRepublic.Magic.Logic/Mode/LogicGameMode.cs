@@ -3,12 +3,14 @@
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Calendar;
     using ClashersRepublic.Magic.Logic.Command;
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
+    using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicGameMode
     {
@@ -252,6 +254,14 @@
             {
                 this._state = 1;
                 this._currentTimestamp = currentTimestamp;
+                this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
+
+                if (this._battleTimer != null)
+                {
+                    this._battleTimer.Destruct();
+                    this._battleTimer = null;
+                }
+
                 this._level.SetHome(home, true);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
@@ -261,6 +271,57 @@
                 this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._level.GetLogicTime(), false, -1);
                 this._maintenanceTimer.StartTimer(home.GetNextMaintenanceSeconds(), this._level.GetLogicTime(), false, -1);
             }
+        }
+
+        /// <summary>
+        ///     Loads the npc attack state.
+        /// </summary>
+        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
+        {
+            if (this._state == 1)
+            {
+                Debugger.Error("loadAttackState called from invalid state");
+            }
+            else
+            {
+                this._state = 2;
+                this._currentTimestamp = currentTimestamp;
+                this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
+
+                if (this._battleTimer != null)
+                {
+                    this._battleTimer.Destruct();
+                    this._battleTimer = null;
+                }
+
+                if (homeOwnerAvatar.IsNpcAvatar())
+                {
+                    LogicNpcAvatar npcAvatar = (LogicNpcAvatar) homeOwnerAvatar;
+                    LogicNpcData npcData = npcAvatar.GetNpcData();
+
+                    homeOwnerAvatar.SetResourceCount(LogicDataTables.GetGoldData(), LogicMath.Max(npcData.Gold - visitorAvatar.GetLootedNpcGold(npcData), 0));
+                    homeOwnerAvatar.SetResourceCount(LogicDataTables.GetElixirData(), LogicMath.Max(npcData.Elixir - visitorAvatar.GetLootedNpcElixir(npcData), 0));
+
+                    this._level.SetMatchType(2, 0);
+                    this._level.SetHome(home, false);
+                    this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
+                    this._level.SetVisitorAvatar(visitorAvatar);
+                    this._level.FastForwardTime(secondsSinceLastSave);
+                    this._level.LoadingFinished();
+                }
+                else
+                {
+                    Debugger.Error("loadNpcAttackState called and home owner is not npc avatar");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Loads the npc duel state.
+        /// </summary>
+        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
+        {
+
         }
     }
 }

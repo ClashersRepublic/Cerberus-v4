@@ -640,7 +640,7 @@
         {
             int index = -1;
 
-            for (int i = 0; i < this._resourceCount.Count; i++)
+            for (int i = 0; i < this._unitCount.Count; i++)
             {
                 if (this._unitCount[i].GetData() == data)
                 {
@@ -664,7 +664,7 @@
         {
             int index = -1;
 
-            for (int i = 0; i < this._resourceCount.Count; i++)
+            for (int i = 0; i < this._unitCount.Count; i++)
             {
                 if (this._unitCount[i].GetData() == data)
                 {

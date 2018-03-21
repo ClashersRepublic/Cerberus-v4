@@ -59,6 +59,7 @@
     <Compile Include="Battle\LogicBattleLog.cs" />
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
+    <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
     <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitStorageComponent.cs" />
+    <Compile Include="GameObject\Component\LogicBunkerComponent.cs" />
     <Compile Include="GameObject\Component\LogicVillage2UnitComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitUpgradeComponent.cs" />
     <Compile Include="GameObject\Component\LogicHeroBaseComponent.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="Message\Google\GoogleServiceAccountBoundMessage.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountAlreadyBoundMessage.cs" />
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
+    <Compile Include="Message\Home\NpcDataMessage.cs" />
     <Compile Include="Message\Home\AvailableServerCommand.cs" />
     <Compile Include="Message\Home\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />

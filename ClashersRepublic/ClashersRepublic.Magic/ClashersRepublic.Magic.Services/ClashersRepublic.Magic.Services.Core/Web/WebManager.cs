@@ -26,6 +26,7 @@
             }
             catch (Exception)
             {
+
                 return null;
             }
         }

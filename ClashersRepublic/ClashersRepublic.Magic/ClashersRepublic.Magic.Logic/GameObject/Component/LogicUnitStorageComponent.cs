@@ -8,7 +8,7 @@
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
-    public sealed class LogicUnitStorageComponent : LogicComponent
+    public class LogicUnitStorageComponent : LogicComponent
     {
         private int _storageType;
         private int _maxCapacity;
@@ -136,14 +136,14 @@
                 {
                     LogicComponentManager componentManager = this._parent.GetLevel().GetComponentManager();
 
-                    int totalMaxUsedHousing = componentManager.GetTotalUsedHousing(this._storageType);
+                    int totalUsedHousing = componentManager.GetTotalUsedHousing(this._storageType);
                     int totalMaxHousing = componentManager.GetTotalMaxHousing(this._storageType);
 
                     if (data.GetCombatItemType() == this._storageType)
                     {
                         if (this.GetUsedCapacity() < this._maxCapacity)
                         {
-                            return totalMaxHousing >= totalMaxUsedHousing + this.GetUsedCapacity();
+                            return totalMaxHousing >= totalUsedHousing;
                         }
                     }
                 }
@@ -364,7 +364,7 @@
 
                 if (slot.GetData() != null && slot.GetCount() > 0)
                 {
-                    if (slot.GetCount() != -1)
+                    if (slot.GetLevel() != -1)
                     {
                         Debugger.Error("Invalid unit level.");
                     }

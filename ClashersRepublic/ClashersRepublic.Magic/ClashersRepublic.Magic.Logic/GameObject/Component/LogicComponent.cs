@@ -15,6 +15,7 @@
         public LogicComponent(LogicGameObject gameObject)
         {
             this._parent = gameObject;
+            this._enabled = true;
         }
 
         /// <summary>

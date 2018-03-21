@@ -359,6 +359,14 @@ namespace ClashersRepublic.Magic.Logic.Data
         }
 
         /// <summary>
+        ///     Gets the character data.
+        /// </summary>
+        public LogicCharacterData GetRewardCharacterData()
+        {
+            return this._rewardCharacterData;
+        }
+
+        /// <summary>
         ///     Gets the fix village object data.
         /// </summary>
         public LogicVillageObjectData GetFixVillageObjectData()

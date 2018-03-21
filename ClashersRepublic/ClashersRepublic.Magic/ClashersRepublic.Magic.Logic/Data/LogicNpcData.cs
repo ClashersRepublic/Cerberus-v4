@@ -1,11 +1,13 @@
 namespace ClashersRepublic.Magic.Logic.Data
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.CSV;
     using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicNpcData : LogicData
     {
+        private readonly LogicArrayList<LogicNpcData> _dependencies;
         private readonly LogicArrayList<LogicDataSlot> _unitCount;
 
         /// <summary>
@@ -13,11 +15,11 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public LogicNpcData(CSVRow row, LogicDataTable table) : base(row, table)
         {
+            this._dependencies = new LogicArrayList<LogicNpcData>();
             this._unitCount = new LogicArrayList<LogicDataSlot>();
         }
 
         public string MapInstanceName { get; protected set; }
-        protected string[] MapDependencies { get; set; }
         public int ExpLevel { get; protected set; }
         public int UnitCount { get; protected set; }
         public string LevelFile { get; protected set; }
@@ -49,6 +51,18 @@ namespace ClashersRepublic.Magic.Logic.Data
                     }
                 }
             }
+
+            int mapDependencySize = this.GetArraySize("MapDependencies");
+
+            for (int i = 0; i < mapDependencySize; i++)
+            {
+                LogicNpcData data = LogicDataTables.GetNpcByName(this.GetValue("MapDependencies", i));
+
+                if (data != null)
+                {
+                    this._dependencies.Add(data);
+                }
+            }
         }
 
         /// <summary>
@@ -66,10 +80,32 @@ namespace ClashersRepublic.Magic.Logic.Data
             return units;
         }
 
-
-        public string GetMapDependencies(int index)
+        
+        /// <summary>
+        ///     Gets if this <see cref="LogicNpcData"/> is unlocked on the map of specified avatar.
+        /// </summary>
+        public bool IsUnlockedInMap(LogicClientAvatar avatar)
         {
-            return this.MapDependencies[index];
+            if (!this.AlwaysUnlocked)
+            {
+                if (!string.IsNullOrEmpty(this.MapInstanceName))
+                {
+                    if (this._dependencies != null)
+                    {
+                        for (int i = 0; i < this._dependencies.Count; i++)
+                        {
+                            if (avatar.GetNpcStars(this._dependencies[i]) > 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

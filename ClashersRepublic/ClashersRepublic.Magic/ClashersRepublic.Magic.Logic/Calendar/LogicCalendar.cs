@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Calendar
 {
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicCalendar
@@ -52,6 +54,42 @@
             checksum.EndArray();
             checksum.WriteValue("m_activeTimestamp", this._activeTimestamp);
             checksum.EndObject();
+        }
+
+        /// <summary>
+        ///     Laods the calendar.
+        /// </summary>
+        public void Load(string json, int activeTimestamp)
+        {
+            Debugger.DoAssert(json != null, "Event json NULL");
+
+            if (json.Length > 0)
+            {
+                LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
+
+                if (jsonObject != null)
+                {
+                    LogicJSONArray eventArray = jsonObject.GetJSONArray("events");
+
+                    for (int i = 0; i < eventArray.Size(); i++)
+                    {
+                        LogicJSONObject calendarObject = eventArray.GetJSONObject(i);
+
+                        if (calendarObject != null)
+                        {
+
+                        }
+                        else
+                        {
+                            Debugger.Error("Events json malformed!");
+                        }
+                    }
+                }
+                else
+                {
+                    Debugger.Error("Events json malformed!");
+                }
+            }
         }
     }
 }

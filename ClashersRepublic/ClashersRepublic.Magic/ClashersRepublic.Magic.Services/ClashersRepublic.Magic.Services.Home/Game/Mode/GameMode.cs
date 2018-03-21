@@ -1,17 +1,16 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game.Mode
 {
     using System;
-
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Command.Server;
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Home;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Mode;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Util;
-
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Home.Game.Command;
@@ -57,22 +56,36 @@
         {
             if (this._logicGameMode != null)
             {
-                if (this._logicGameMode.GetState() == 1)
+                this.Save();
+                this._logicGameMode.Destruct();
+                this._logicGameMode = null;
+            }
+        }
+
+        /// <summary>
+        ///     Saves the <see cref="LogicClientHome"/> and <see cref="LogicClientAvatar"/> instances.
+        /// </summary>
+        internal void Save()
+        {
+            if (this._logicGameMode != null)
+            {
+                Logging.Debug("GameMode::save game saved");
+
+                if (this._logicGameMode.GetState() == 1 || this._logicGameMode.GetState() == 3)
                 {
                     LogicJSONObject jsonObject = new LogicJSONObject();
 
                     this._logicGameMode.SaveToJSON(jsonObject);
                     this._home.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
-                    this._home.ClientAvatar.SetLevel(null);
 
                     CompressibleStringHelper.Compress(this._home.ClientHome.GetCompressibleHomeJSON());
-                    DatabaseManager.Update(this._home);
-
-                    Logging.Debug("GameMode::deInit level saved");
                 }
 
-                this._logicGameMode.Destruct();
-                this._logicGameMode = null;
+                DatabaseManager.Update(this._home);
+            }
+            else
+            {
+                Logging.Debug("GameMode::save called when m_logicGameMode is NULL");
             }
         }
 
@@ -92,60 +105,101 @@
             }
             else
             {
-                LogicClientAvatar homeOwnerAvatar = this._home.ClientAvatar;
-                LogicClientHome clientHome = this._home.ClientHome;
-
-                int currentTimestamp = LogicTimeUtil.GetTimestamp();
-                int secondsSinceLastSave = currentTimestamp - this._home.SaveTimestamp;
-
-                if (secondsSinceLastSave < 0)
-                {
-                    secondsSinceLastSave = 0;
-                }
-                
-                LogicCompressibleString compressibleHomeJSON = clientHome.GetCompressibleHomeJSON();
-                LogicCompressibleString compressibleCalendarJSON = clientHome.GetCompressibleCalendarJSON();
-                LogicCompressibleString compressibleGlobalJSON = clientHome.GetCompressibleGlobalJSON();
-
-                if (!compressibleHomeJSON.IsCompressed())
-                {
-                    if (compressibleHomeJSON.Get() == null)
-                    {
-                        Logging.Debug("GameMode::init level JSON is NULL, load default");
-                        compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
-                    }
-
-                    CompressibleStringHelper.Compress(compressibleHomeJSON);
-                }
-                
-                compressibleCalendarJSON.Set("{}");
-                compressibleGlobalJSON.Set("{}");
-
-                CompressibleStringHelper.Compress(compressibleCalendarJSON);
-                CompressibleStringHelper.Compress(compressibleGlobalJSON);
-                
-                OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
-
-                ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
-                ownHomeDataMessage.SetSecondsSinceLastSave(secondsSinceLastSave);
-                ownHomeDataMessage.SetLogicClientAvatar(homeOwnerAvatar);
-                ownHomeDataMessage.SetLogicClientHome(clientHome);
-                ownHomeDataMessage.Encode();
-
-                this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, GAME.HOME_STATE);
-                this.Session.SendPiranhaMessage(1, ownHomeDataMessage);
+                this.SetHomeState();
             }
+        }
+
+        /// <summary>
+        ///     Sets the home state.
+        /// </summary>
+        private void SetHomeState()
+        {
+            LogicClientAvatar homeOwnerAvatar = this._home.ClientAvatar;
+            LogicClientHome clientHome = this._home.ClientHome;
+
+            int currentTimestamp = LogicTimeUtil.GetTimestamp();
+            int secondsSinceLastSave = currentTimestamp - this._home.SaveTimestamp;
+
+            if (secondsSinceLastSave < 0)
+            {
+                secondsSinceLastSave = 0;
+            }
+
+            LogicCompressibleString compressibleHomeJSON = clientHome.GetCompressibleHomeJSON();
+            LogicCompressibleString compressibleCalendarJSON = clientHome.GetCompressibleCalendarJSON();
+            LogicCompressibleString compressibleGlobalJSON = clientHome.GetCompressibleGlobalJSON();
+
+            if (!compressibleHomeJSON.IsCompressed())
+            {
+                if (compressibleHomeJSON.Get() == null)
+                {
+                    Logging.Debug("GameMode::init level JSON is NULL, load default");
+                    compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
+                }
+
+                CompressibleStringHelper.Compress(compressibleHomeJSON);
+            }
+
+            compressibleCalendarJSON.Set("{}");
+            compressibleGlobalJSON.Set("{}");
+
+            CompressibleStringHelper.Compress(compressibleCalendarJSON);
+            CompressibleStringHelper.Compress(compressibleGlobalJSON);
+
+            OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
+
+            ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
+            ownHomeDataMessage.SetSecondsSinceLastSave(secondsSinceLastSave);
+            ownHomeDataMessage.SetLogicClientAvatar(homeOwnerAvatar);
+            ownHomeDataMessage.SetLogicClientHome(clientHome);
+            ownHomeDataMessage.Encode();
+
+            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, 0, GAME.HOME_STATE);
+            this.Session.SendPiranhaMessage(1, ownHomeDataMessage);
+        }
+
+        /// <summary>
+        ///     Sets the npc attack state.
+        /// </summary>
+        private void SetNpcAttackState(LogicNpcData data)
+        {
+            LogicClientAvatar visitorAvatar = this._home.ClientAvatar;
+            LogicNpcAvatar homeOwnerAvatar = LogicNpcAvatar.GetNpcAvatar(data);
+            LogicClientHome clientHome = new LogicClientHome();
+
+            int currentTimestamp = LogicTimeUtil.GetTimestamp();
+
+            LogicCompressibleString compressibleHomeJSON = clientHome.GetCompressibleHomeJSON();
+            LogicCompressibleString compressibleCalendarJSON = clientHome.GetCompressibleCalendarJSON();
+            LogicCompressibleString compressibleGlobalJSON = clientHome.GetCompressibleGlobalJSON();
+            
+            compressibleHomeJSON.Set(HomeResourceManager.GetNpcLevelByData(data));
+            compressibleCalendarJSON.Set("{}");
+            compressibleGlobalJSON.Set("{}");
+
+            CompressibleStringHelper.Compress(compressibleHomeJSON);
+            CompressibleStringHelper.Compress(compressibleCalendarJSON);
+            CompressibleStringHelper.Compress(compressibleGlobalJSON);
+
+            NpcDataMessage npcDataMessage = new NpcDataMessage();
+
+            npcDataMessage.SetCurrentTimestamp(currentTimestamp);
+            npcDataMessage.SetLogicNpcAvatar(homeOwnerAvatar);
+            npcDataMessage.SetLogicClientHome(clientHome);
+            npcDataMessage.SetLogicClientAvatar(visitorAvatar);
+
+            this.SetGameMode(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, 0, 0, GAME.ATTACK_STATE);
+            this.Session.SendPiranhaMessage(1, npcDataMessage);
         }
 
         /// <summary>
         ///     Sets the gamemode.
         /// </summary>
-        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, GAME mode)
+        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int state, GAME mode)
         {
             if (this._logicGameMode != null)
             {
-                this._logicGameMode.Destruct();
-                this._logicGameMode = null;
+                this.DeInit();
             }
 
             if (clientHome != null)
@@ -169,8 +223,6 @@
                     CompressibleStringHelper.Uncompress(compressibleGlobalJSON);
                 }
 
-                Console.WriteLine(compressibleHomeJSON.Get());
-
                 this._logicGameMode = new LogicGameMode();
                 this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
                 this._currentTimestamp = currentTimestamp;
@@ -179,6 +231,20 @@
                 {
                     case GAME.HOME_STATE:
                         this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave);
+                        break;
+                    case GAME.ATTACK_STATE:
+                        if (homeOwnerAvatar.IsNpcAvatar())
+                        {
+                            switch (state)
+                            {
+                                case 0:
+                                    if (state == 8) this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
+                                    else this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
+
+                                    break;
+                            }
+                        }
+
                         break;
                     default:
                         Logging.Warning("GameMode::setGameMode mode " + mode + " doesn't exist");
@@ -358,7 +424,8 @@
 
         private enum GAME
         {
-            HOME_STATE = 1
+            HOME_STATE = 1,
+            ATTACK_STATE = 2
         }
     }
 }

@@ -33,6 +33,7 @@
         private LogicRect _playArea;
         private LogicLeagueData _leagueData;
         private LogicLeagueData _visitorLeagueData;
+        private LogicLong _revengeId;
 
         private readonly LogicGameObjectManager[] _gameObjectManagers;
         private readonly LogicWorkerManager[] _workerManagers;
@@ -243,6 +244,30 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets the match type.
+        /// </summary>
+        public int GetMatchType()
+        {
+            return this._matchType;
+        }
+
+        /// <summary>
+        ///     Sets the match type.
+        /// </summary>
+        public void SetMatchType(int matchType, LogicLong revengeId)
+        {
+            this._matchType = matchType;
+            this._revengeId = revengeId;
+
+            if (matchType == 2)
+            {
+                this._npcVillage = true;
+                this._levelWidth = 22528;
+                this._levelHeight = 22528;
+            }
         }
 
         /// <summary>
@@ -1600,6 +1625,7 @@
             this._clientHome = null;
             this._homeOwnerAvatar = null;
             this._visitorAvatar = null;
+            this._revengeId = null;
         }
     }
 }

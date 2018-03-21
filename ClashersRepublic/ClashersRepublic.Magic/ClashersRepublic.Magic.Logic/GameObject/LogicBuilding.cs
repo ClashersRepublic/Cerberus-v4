@@ -73,6 +73,18 @@
                 this.AddComponent(unitProductionComponent);
             }
 
+            if(buildingData.GetUnitStorageCapacity(0) > 0)
+            {
+                if (buildingData.IsAllianceCastle())
+                {
+                    this.AddComponent(new LogicBunkerComponent(this, 0));
+                }
+                else
+                {
+                    this.AddComponent(new LogicUnitStorageComponent(this, 0));
+                }
+            }
+
             if (buildingData.GetProduceResource() != null)
             {
                 LogicResourceProductionComponent resourceProductionComponent = new LogicResourceProductionComponent(this, buildingData.GetProduceResource());
@@ -749,6 +761,18 @@
                 this.EnableComponent(5, enable);
                 this.EnableComponent(9, enable);
                 this.EnableComponent(15, enable);
+
+                if (this.GetComponent(0) != null)
+                {
+                    LogicUnitStorageComponent unitStorageComponent = (LogicUnitStorageComponent) this.GetComponent(0);
+                    unitStorageComponent.SetMaxCapacity(buildingData.GetUnitStorageCapacity(this._upgLevel));
+                }
+
+                if (this.GetComponent(7) != null)
+                {
+                    LogicBunkerComponent bunkerComponent = (LogicBunkerComponent) this.GetComponent(7);
+                    bunkerComponent.SetMaxCapacity(buildingData.GetUnitStorageCapacity(this._upgLevel));
+                }
 
                 if (this.GetHitpointComponent() != null)
                 {

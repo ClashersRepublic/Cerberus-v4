@@ -28,6 +28,14 @@
         }
 
         /// <summary>
+        ///     Gets the npc data.
+        /// </summary>
+        public LogicNpcData GetNpcData()
+        {
+            return this._npcData;
+        }
+
+        /// <summary>
         ///     Gets the exp level.
         /// </summary>
         public override int GetExpLevel()

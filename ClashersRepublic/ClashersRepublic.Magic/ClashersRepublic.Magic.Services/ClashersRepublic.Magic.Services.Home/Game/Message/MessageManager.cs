@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game.Message
 {
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Services.Home.Game.Mode;
     using ClashersRepublic.Magic.Titan.Message;
@@ -34,6 +35,9 @@
                 case 14102:
                     this.EndClientTurnMessageReceived((EndClientTurnMessage) message);
                     break;
+                case 14134:
+                    this.AttackNpcMessageReceived((AttackNpcMessage) message);        
+                    break;
             }
         }
 
@@ -43,6 +47,14 @@
         internal void EndClientTurnMessageReceived(EndClientTurnMessage message)
         {
             this._gameMode.ClientTurnReceived(message.GetSubTick(), message.GetChecksum(), message.GetCommands());
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="AttackNpcMessage"/> is received.
+        /// </summary>
+        internal void AttackNpcMessageReceived(AttackNpcMessage message)
+        {
+            LogicNpcData npcData = message.GetNpcData();
         }
     }
 }

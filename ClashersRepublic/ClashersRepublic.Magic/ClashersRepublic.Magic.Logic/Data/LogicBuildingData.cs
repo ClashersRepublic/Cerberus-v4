@@ -439,17 +439,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.PercentageStoredDarkElixir[index];
         }
-
-        public int GetHousingSpace(int index)
-        {
-            return this.HousingSpace[index];
-        }
-
-        public int GetHousingSpaceAlt(int index)
-        {
-            return this.HousingSpaceAlt[index];
-        }
-
+        
         public int GetResourcePer100Hours(int index)
         {
             return this.ResourcePer100Hours[index];

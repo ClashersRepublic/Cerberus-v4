@@ -342,7 +342,7 @@
         /// </summary>
         public void AddRewardUnits()
         {
-            LogicCharacterData characterData = this._data.GetCharacterData();
+            LogicCharacterData characterData = this._data.GetRewardCharacterData();
 
             if (characterData != null)
             {
@@ -380,6 +380,10 @@
                                 }
 
                                 filter.AddIgnoreObject(component.GetParent());
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                     }

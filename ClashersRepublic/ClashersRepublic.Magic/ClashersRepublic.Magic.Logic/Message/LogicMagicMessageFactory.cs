@@ -196,6 +196,12 @@
                         message = new ServerErrorMessage();
                         break;
                     }
+
+                    case 24133:
+                    {
+                        message = new NpcDataMessage();
+                        break;
+                    }
                 }
             }
 
