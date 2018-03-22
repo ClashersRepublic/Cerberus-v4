@@ -74,7 +74,7 @@
         /// </summary>
         public override int GetMessageType()
         {
-            return 20104;
+            return 20101;
         }
 
         /// <summary>

@@ -39,7 +39,7 @@
 
             if (this._session != null)
             {
-                NetProxySessionManager.TryRemove(this._session.SessionName, out _);
+                NetProxySessionManager.TryRemove(this._session.SessionId, out _);
 
                 this._session.UnbindAllServers();
                 this._session.Destruct();

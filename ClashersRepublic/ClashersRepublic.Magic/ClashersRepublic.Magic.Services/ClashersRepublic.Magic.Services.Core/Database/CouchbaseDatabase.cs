@@ -7,7 +7,7 @@
 
     using Newtonsoft.Json.Linq;
 
-    public class CouchbaseDatabase : IDatabase
+    public class CouchbaseDatabase
     {
         private readonly ICluster _cluster;
         private readonly IBucket _bucket;
@@ -41,8 +41,7 @@
         /// </summary>
         public int GetHigherId()
         {
-            IQueryResult<dynamic> result =
-                this._bucket.Query<dynamic>(new QueryRequest().Statement(string.Format("SELECT MAX(id_lo) FROM `{0}` USE INDEX (id_idx) WHERE id_hi == 0", this._bucketName)));
+            IQueryResult<dynamic> result = this._bucket.Query<dynamic>(new QueryRequest().Statement(string.Format("SELECT MAX(id_lo) FROM `{0}` USE INDEX (id_idx) WHERE id_hi == 0", this._bucketName)));
 
             if (result.Success)
             {

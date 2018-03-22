@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network.Message
 {
-    using System;
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message.Account;
 
@@ -31,17 +30,11 @@
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
                     break;
-
-                case 20101:
-                    this.CreateAccountOkMessageReceived((CreateAccountOkMessage) message);
-                    break;
-                case 20102:
-                    this.CreateAccountFailedMessageReceived((CreateAccountFailedMessage) message);
-                    break;
-                case 20103:
+                    
+                case 20100:
                     this.LoginClientFailedMessageReceived((LoginClientFailedMessage) message);
                     break;
-                case 20104:
+                case 20101:
                     this.LoginClientOkMessageReceived((LoginClientOkMessage) message);
                     break;
             }
@@ -54,52 +47,7 @@
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
-
-        /// <summary>
-        ///     Called when the <see cref="CreateAccountOkMessage"/> is received.
-        /// </summary>
-        internal void CreateAccountOkMessageReceived(CreateAccountOkMessage message)
-        {
-            byte[] sessionId = message.GetSessionId();
-
-            if (sessionId != null)
-            {
-                if (NetProxySessionManager.TryGet(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out NetProxySession session))
-                {
-                    if (session.Client.State == 1)
-                    {
-                        LoginClientMessage loginClientMessage = new LoginClientMessage();
-
-                        loginClientMessage.SetAccountId(message.RemoveAccountId());
-                        loginClientMessage.SetPassToken(message.RemovePassToken());
-                        loginClientMessage.SetIPAddress(session.Client.GetAddress());
-                        loginClientMessage.SetDeviceModel(session.Client.DeviceModel);
-
-                        NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, loginClientMessage);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Called when the <see cref="CreateAccountFailedMessage"/> is received.
-        /// </summary>
-        internal void CreateAccountFailedMessageReceived(CreateAccountFailedMessage message)
-        {
-            byte[] sessionId = message.RemoveSessionId();
-
-            if (sessionId != null)
-            {
-                if (NetProxySessionManager.TryGet(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out NetProxySession session))
-                {
-                    if (session.Client.State != 6 && session.Client.State != -1)
-                    {
-                        session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
-                    }
-                }
-            }
-        }
-
+        
         /// <summary>
         ///     Called when the <see cref="LoginClientFailedMessage"/> is received.
         /// </summary>
@@ -109,8 +57,10 @@
 
             if (sessionId != null)
             {
-                if (NetProxySessionManager.TryGet(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out NetProxySession session))
+                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                 {
+                    Logging.Debug("loginClientFailedMessageReceived login failed, error code: " + message.GetErrorCode());
+
                     if (session.Client.State != 6 && session.Client.State != -1)
                     {
                         session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
@@ -128,28 +78,30 @@
 
             if (sessionId != null)
             {
-                if (NetProxySessionManager.TryGet(NetProxySessionManager.ConvertSessionIdToSessionName(sessionId), out NetProxySession session))
+                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                 {
                     if (session.Client.State == 1)
                     {
-                        LoginOkMessage loginOkMessage = new LoginOkMessage();
-                        loginOkMessage.AccountId = message.RemoveAccountId();
-                        loginOkMessage.HomeId = message.RemoveHomeId();
-                        loginOkMessage.PassToken = message.RemovePassToken();
-                        loginOkMessage.AccountCreatedDate = message.RemoveAccountCreatedDate();
-                        loginOkMessage.FacebookId = message.RemoveFacebookId();
-                        loginOkMessage.GamecenterId = message.RemoveGamecenterId();
-                        loginOkMessage.GoogleServiceId = message.RemoveGoogleServiceId();
-                        loginOkMessage.SessionCount = message.GetSessionCount();
-                        loginOkMessage.PlayTimeSeconds = message.GetPlayTimeSeconds();
-                        loginOkMessage.DaysSinceStartedPlaying = message.GetDaysSinceStartedPlaying();
-                        loginOkMessage.Region = "fr-FR";
+                        LoginOkMessage loginOkMessage = new LoginOkMessage
+                        {
+                            AccountId = message.RemoveAccountId(),
+                            HomeId = message.RemoveHomeId(),
+                            PassToken = message.RemovePassToken(),
+                            AccountCreatedDate = message.RemoveAccountCreatedDate(),
+                            FacebookId = message.RemoveFacebookId(),
+                            GamecenterId = message.RemoveGamecenterId(),
+                            GoogleServiceId = message.RemoveGoogleServiceId(),
+                            SessionCount = message.GetSessionCount(),
+                            PlayTimeSeconds = message.GetPlayTimeSeconds(),
+                            DaysSinceStartedPlaying = message.GetDaysSinceStartedPlaying(),
+                            Region = "fr-FR",
+                            ServerMajorVersion = LogicVersion.MajorVersion,
+                            ServerBuildVersion = LogicVersion.BuildVersion,
+                            ContentVersion = ResourceManager.GetContentVersion(),
+                            ContentUrlList = ResourceManager.ContentUrlList,
+                            ChronosContentUrlList = ResourceManager.ChronosContentUrlList
+                        };
 
-                        loginOkMessage.ServerMajorVersion = LogicVersion.MajorVersion;
-                        loginOkMessage.ServerBuildVersion = LogicVersion.BuildVersion;
-                        loginOkMessage.ContentVersion = ResourceManager.GetContentVersion();
-                        loginOkMessage.ContentUrlList = ResourceManager.ContentUrlList;
-                        loginOkMessage.ChronosContentUrlList = ResourceManager.ChronosContentUrlList;
 
                         session.SetAccountId(loginOkMessage.AccountId);
                         session.Client.Messaging.MessageManager.SendMessage(loginOkMessage);

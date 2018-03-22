@@ -15,7 +15,7 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetAccountSession"/> class.
         /// </summary>
-        internal NetAccountSession(Account account, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
+        internal NetAccountSession(Account account, byte[] sessionId) : base(sessionId)
         {
             this.Account = account;
         }
@@ -34,8 +34,6 @@
         public override void Destruct()
         {
             base.Destruct();
-
-            this.Account.SetSession(null);
             this.Account = null;
         }
     }

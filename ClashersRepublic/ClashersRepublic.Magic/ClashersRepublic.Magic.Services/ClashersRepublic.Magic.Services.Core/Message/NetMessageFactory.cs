@@ -16,13 +16,11 @@
             {
                 switch (messageType)
                 {
-                    case 10102: return new LoginClientMessage();
-                    case 10103: return new CreateAccountMessage();
-                    case 10104: return new CreateAccountBanMessage();
-                    case 10105: return new RevokeAccountBanMessage();
-
-                    case 10200: return new CreateHomeMessage();
-                    case 10201: return new AskForAvatarMessage();
+                    case 10100: return new LoginClientMessage();
+                    case 10101: return new CreateAccountBanMessage();
+                    case 10102: return new RevokeAccountBanMessage();
+                        
+                    case 10200: return new AskForAvatarMessage();
 
                     case 10300: return new BindServerMessage();
                     case 10301: return new ServerUnboundMessage();
@@ -37,14 +35,12 @@
             {
                 switch (messageType)
                 {
-                    case 20101: return new CreateAccountOkMessage();
-                    case 20102: return new CreateAccountFailedMessage();
-                    case 20103: return new LoginClientFailedMessage();
-                    case 20104: return new LoginClientOkMessage();
-                    case 20105: return new AccoutBanCreatedMessage();
-                    case 20106: return new AccountBanRevokedMessage();
+                    case 20100: return new LoginClientFailedMessage();
+                    case 20101: return new LoginClientOkMessage();
+                    case 20102: return new AccoutBanCreatedMessage();
+                    case 20103: return new AccountBanRevokedMessage();
                         
-                    case 20203: return new AvatarDataMessage();
+                    case 20200: return new AvatarDataMessage();
                     case 20210: return new AvatarChangeMessage();
                 }
             }

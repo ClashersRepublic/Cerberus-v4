@@ -10,11 +10,6 @@
         ///     Gets the session id.
         /// </summary>
         public byte[] SessionId { get; private set; }
-
-        /// <summary>
-        ///     Gets the session name.
-        /// </summary>
-        public string SessionName { get; private set; }
         
         /// <summary>
         ///     Gets the id of all servers.
@@ -37,11 +32,9 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetSession" /> class.
         /// </summary>
-        public NetSession(byte[] sessionId, string sessionName)
+        public NetSession(byte[] sessionId)
         {
             this.SessionId = sessionId;
-            this.SessionName = sessionName;
-
             this._serviceNodeSockets = new NetSocket[28];
         }
 
@@ -56,7 +49,6 @@
             }
 
             this.SessionId = null;
-            this.SessionName = null;
         }
 
         /// <summary>
@@ -112,11 +104,6 @@
 
             if (socket != null)
             {
-                if (message.GetEncodingLength() == 0)
-                {
-                    message.Encode();
-                }
-
                 NetMessageManager.SendMessage(socket, this.SessionId, message);
             }
             else

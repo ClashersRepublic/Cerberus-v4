@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Services.Core.Network
+﻿namespace ClashersRepublic.Magic.Services.Core.Utils
 {
     public class NetUtils
     {

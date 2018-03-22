@@ -25,7 +25,7 @@
             ServiceAccount.InitGame();
             ServiceAccount.InitNetwork();
 
-            ServiceAccount._titleTimer = new Timer(50);
+            ServiceAccount._titleTimer = new Timer(150);
             ServiceAccount._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
             ServiceAccount._titleTimer.Start();
 

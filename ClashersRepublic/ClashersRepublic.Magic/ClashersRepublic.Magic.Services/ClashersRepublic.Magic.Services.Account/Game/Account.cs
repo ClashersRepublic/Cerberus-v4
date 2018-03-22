@@ -47,6 +47,11 @@
         internal int PlayTimeSecs { get; private set; }
 
         /// <summary>
+        ///     Gets the total sessions.
+        /// </summary>
+        internal int TotalSessions { get; private set; }
+
+        /// <summary>
         ///     Gets the account created date.
         /// </summary>
         internal string AccountCreatedDate { get; private set; }
@@ -81,6 +86,7 @@
                 this.LastSessions.Remove(0);
             }
 
+            this.TotalSessions += 1;
             this.LastSessions.Add(new AccountSession(timestamp, ip, deviceModel));
         }
 

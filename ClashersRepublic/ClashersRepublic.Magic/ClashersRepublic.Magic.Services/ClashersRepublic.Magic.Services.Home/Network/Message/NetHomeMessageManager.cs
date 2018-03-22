@@ -10,7 +10,6 @@
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
-    using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
@@ -25,9 +24,6 @@
             switch (message.GetMessageType())
             {
                 case 10200:
-                    this.CreateHomeMessageReceived((CreateHomeMessage) message);
-                    break;
-                case 10201:
                     this.AskForAvatarMessageReceived((AskForAvatarMessage) message);
                     break;
 
@@ -54,34 +50,7 @@
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
-
-        /// <summary>
-        ///     Called when a <see cref="CreateHomeMessage"/> is received.
-        /// </summary>
-        internal void CreateHomeMessageReceived(CreateHomeMessage message)
-        {
-            LogicLong accountId = message.RemoveAccountId();
-
-            if (!accountId.IsZero())
-            {
-                if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, accountId) == ServiceCore.ServiceNodeId)
-                {
-                    if (!HomeManager.TryCreateHome(accountId, out _))
-                    {
-                        Logging.Warning("NetHomeMessageManager::createHomeMessageReceived home creation failed");
-                    }
-                }
-                else
-                {
-                    Logging.Warning("NetHomeMessageManager::createHomeMessageReceived account id is not valid");
-                }
-            }
-            else
-            {
-                Logging.Warning("NetHomeMessageManager::createHomeMessageReceived account id is equal at 0");
-            }
-        }
-
+        
         /// <summary>
         ///     Called when a <see cref="AskForAvatarMessage"/> is received.
         /// </summary>
@@ -91,7 +60,7 @@
 
             if (!avatarId.IsZero())
             {
-                if (HomeManager.TryGetHome(avatarId, out Home home))
+                if (HomeManager.TryGet(avatarId, out Home home))
                 {
                     AvatarDataMessage response = new AvatarDataMessage();
                     response.SetLogicClientAvatar(home.ClientAvatar);
@@ -109,29 +78,22 @@
 
             if (!accountId.IsZero())
             {
-                if (HomeManager.TryGetHome(accountId, out Home home))
+                if (HomeManager.TryGet(accountId, out Home home))
                 {
-                    NetHomeSession session = NetHomeSessionManager.TryCreate(home, message.GetSessionId());
+                    NetHomeSession session = NetHomeSessionManager.Create(home, message.RemoveSessionId());
 
-                    if (session != null)
+                    int[] ids = message.RemoveEndPoints();
+
+                    for (int i = 0; i < 28; i++)
                     {
-                        int[] ids = message.RemoveEndPoints();
-
-                        for (int i = 0; i < 28; i++)
+                        if (ids[i] != -1)
                         {
-                            if (ids[i] != -1)
-                            {
-                                session.SetServiceNodeId(i, ids[i]);
-                            }
+                            session.SetServiceNodeId(i, ids[i]);
                         }
+                    }
 
-                        home.SetSession(session);
-                        home.GameMode.Init();
-                    }
-                    else
-                    {
-                        Logging.Warning("NetHomeManager::serverBoundMessageReceived pSession->NULL");
-                    }
+                    home.SetSession(session);
+                    home.GameMode.Init();
                 }
             }
         }

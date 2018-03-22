@@ -7,7 +7,6 @@
         protected ByteStream Stream;
 
         protected byte[] SessionId;
-        protected byte SessionIdLength;
         protected int ServiceNodeId;
         protected int ServiceNodeType;
 
@@ -34,32 +33,20 @@
         {
             byte[] tmp = this.SessionId;
             this.SessionId = null;
-            this.SessionIdLength = 0;
             return tmp;
-        }
-
-        /// <summary>
-        ///     Gets the session length.
-        /// </summary>
-        public byte GetSessionIdLength()
-        {
-            return this.SessionIdLength;
         }
 
         /// <summary>
         ///     Sets the session id.
         /// </summary>
-        public void SetSessionId(byte[] value, int lenght)
+        public void SetSessionId(byte[] value)
         {
-            if (lenght <= 0xFF)
+            if (value != null && value.Length > 64)
             {
-                this.SessionId = value;
-                this.SessionIdLength = (byte) lenght;
+                Logging.Error("NetMessage::setSessionId session length is too big! (" + value.Length + ")");
             }
-            else
-            {
-                Logging.Warning("NetMessage::setSessionId session too big (" + lenght + ")");
-            }
+
+            this.SessionId = value;
         }
 
         /// <summary>
@@ -125,7 +112,6 @@
         {
             this.Stream.Destruct();
             this.SessionId = null;
-            this.SessionIdLength = 0;
         }
 
         /// <summary>
@@ -133,10 +119,9 @@
         /// </summary>
         public virtual void Decode()
         {
-            this.ServiceNodeType = this.Stream.ReadByte();
-            this.ServiceNodeId = this.Stream.ReadByte();
-            this.SessionIdLength = this.Stream.ReadByte();
-            this.SessionId = this.Stream.ReadBytes(this.SessionIdLength, 0xFF);
+            this.ServiceNodeType = this.Stream.ReadVInt();
+            this.ServiceNodeId = this.Stream.ReadVInt();
+            this.SessionId = this.Stream.ReadBytes(this.Stream.ReadVInt(), 64);
         }
 
         /// <summary>
@@ -146,8 +131,16 @@
         {
             this.Stream.WriteVInt(this.ServiceNodeType);
             this.Stream.WriteVInt(this.ServiceNodeId);
-            this.Stream.WriteByte(this.SessionIdLength);
-            this.Stream.WriteBytesWithoutLength(this.SessionId, this.SessionIdLength);
+
+            if (this.SessionId != null)
+            {
+                this.Stream.WriteVInt(this.SessionId.Length);
+                this.Stream.WriteBytesWithoutLength(this.SessionId, 12);
+            }
+            else
+            {
+                this.Stream.WriteVInt(-1);
+            }
         }
 
         /// <summary>

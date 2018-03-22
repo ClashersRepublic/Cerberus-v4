@@ -22,7 +22,7 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetProxySession"/> class.
         /// </summary>
-        internal NetProxySession(NetworkClient client, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
+        internal NetProxySession(NetworkClient client, byte[] sessionId) : base(sessionId)
         {
             this.Client = client;
         }

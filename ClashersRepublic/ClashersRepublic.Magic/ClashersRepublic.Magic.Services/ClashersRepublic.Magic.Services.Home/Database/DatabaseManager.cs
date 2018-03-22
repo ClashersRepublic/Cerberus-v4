@@ -19,7 +19,7 @@ namespace ClashersRepublic.Magic.Services.Home.Database
 
     internal static class DatabaseManager
     {
-        private static IDatabase[] _databases;
+        private static CouchbaseDatabase[] _databases;
 
         #if USE_THREAD
         private static Thread _insertThread;
@@ -33,7 +33,7 @@ namespace ClashersRepublic.Magic.Services.Home.Database
         /// </summary>
         internal static void Initialize()
         {
-            DatabaseManager._databases = new IDatabase[ServiceSettings.GetDatabaseUrls().Length];
+            DatabaseManager._databases = new CouchbaseDatabase[ServiceSettings.GetDatabaseUrls().Length];
 
             for (int i = 0; i < DatabaseManager._databases.Length; i++)
             {
@@ -65,9 +65,9 @@ namespace ClashersRepublic.Magic.Services.Home.Database
         }
 
         /// <summary>
-        ///     Gets the <see cref="IDatabase"/> instance.
+        ///     Gets the <see cref="CouchbaseDatabase"/> instance.
         /// </summary>
-        internal static IDatabase GetDatabase(int idx)
+        internal static CouchbaseDatabase GetDatabase(int idx)
         {
             return DatabaseManager._databases[idx];
         }
@@ -101,7 +101,7 @@ namespace ClashersRepublic.Magic.Services.Home.Database
         /// </summary>
         private static void InternalInsert(Home home)
         {
-            IDatabase database = DatabaseManager.GetDatabase(home.Id.GetHigherInt());
+            CouchbaseDatabase database = DatabaseManager.GetDatabase(home.Id.GetHigherInt());
 
             if (database != null)
             {
@@ -114,7 +114,7 @@ namespace ClashersRepublic.Magic.Services.Home.Database
         /// </summary>
         private static void InternalUpdate(Home home)
         {
-            IDatabase database = DatabaseManager.GetDatabase(home.Id.GetHigherInt());
+            CouchbaseDatabase database = DatabaseManager.GetDatabase(home.Id.GetHigherInt());
 
             if (database != null)
             {

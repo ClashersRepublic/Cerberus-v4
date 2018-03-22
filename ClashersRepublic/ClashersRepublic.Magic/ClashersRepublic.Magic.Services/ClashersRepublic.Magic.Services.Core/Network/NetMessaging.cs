@@ -55,7 +55,7 @@
 
             message.SetServiceNodeType(ServiceCore.ServiceNodeType);
             message.SetServiceNodeId(ServiceCore.ServiceNodeId);
-            message.SetSessionId(sessionId, sessionId?.Length ?? 0);
+            message.SetSessionId(sessionId);
             message.Encode();
 
             NetMessaging._messageHandler.Send(destinationSocket, new NetPacket(message));

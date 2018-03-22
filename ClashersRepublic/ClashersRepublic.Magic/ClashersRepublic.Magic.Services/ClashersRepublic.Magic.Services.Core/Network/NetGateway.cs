@@ -4,6 +4,7 @@
 
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
+    using ClashersRepublic.Magic.Services.Core.Utils;
 
     public static class NetGateway
     {

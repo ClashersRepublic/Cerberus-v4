@@ -5,12 +5,10 @@
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
-    using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
-    using ClashersRepublic.Magic.Titan.Util;
 
     internal class NetAccountMessageManager : NetMessageManager
     {
@@ -21,16 +19,13 @@
         {
             switch (message.GetMessageType())
             {
-                case 10102:
+                case 10100:
                     this.LoginClientMessageReceived((LoginClientMessage) message);
                     break;
-                case 10103:
-                    this.CreateAccountMessageReceived((CreateAccountMessage) message);
-                    break;
-                case 10104:
+                case 10101:
                     this.CreateAccountBanMessageReceived((CreateAccountBanMessage) message);
                     break;
-                case 10105:
+                case 10102:
                     this.RevokeAccountBanMessageReceived((RevokeAccountBanMessage) message);
                     break;
 
@@ -61,84 +56,75 @@
 
             if (!accountId.IsZero())
             {
-                if (AccountManager.TryGetAccount(accountId, out Account account))
+                string passToken = message.RemovePassToken();
+
+                if (passToken != null)
                 {
-                    if (account.PassToken.Equals(message.RemovePassToken()))
+                    if (AccountManager.TryGet(accountId, out Account account))
                     {
                         if (!account.IsBanned())
                         {
-                            if (NetAccountSessionManager.TryCreate(account, message.GetSessionId(), out NetAccountSession session))
-                            {
-                                if (account.Session != null)
-                                {
-                                    if (NetAccountSessionManager.TryRemove(account.Session.SessionName, out NetAccountSession oldSession))
-                                    {
-                                        NetSocket proxy = oldSession.GetServiceNodeEndPoint(1);
-                                        Logging.DoAssert(this, proxy != null, "NetAccountMessageManager::loginClientMessageReceived pProxy->NULL");
-                                        NetMessageManager.SendMessage(proxy, oldSession.SessionId, new UnbindServerMessage());
-
-                                        oldSession.Account.EndSession();
-                                        oldSession.SaveAccount();
-                                        oldSession.Destruct();
-                                    }
-                                }
-
-                                account.SetSession(session);
-                                session.SetServiceNodeId(1, message.GetServiceNodeId());
-                                account.SessionStarted(LogicTimeUtil.GetTimestamp(), message.GetIPAddress(), message.GetDeviceModel());
-
-                                LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
-
-                                loginClientOkMessage.SetAccountId(account.Id);
-                                loginClientOkMessage.SetHomeId(account.Id);
-                                loginClientOkMessage.SetPassToken(account.PassToken);
-                                loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
-
-                                NetAccountMessageManager.SendResponseMessage(message, loginClientOkMessage);
-                            }
+                            this.StartSession(account, message.RemoveSessionId(), message.GetServiceNodeId());
                         }
                         else
                         {
-                            LoginClientFailedMessage banMessage = new LoginClientFailedMessage();
-                            banMessage.SetErrorCode(2);
-                            NetAccountMessageManager.SendResponseMessage(message, banMessage);
+                            this.SendLoginClientFailedMessage(1, NetManager.GetServiceNodeEndPoint(1, message.GetServiceNodeId()));
                         }
-
-                        return;
+                    }
+                    else
+                    {
+                        this.SendLoginClientFailedMessage(2, NetManager.GetServiceNodeEndPoint(1, message.GetServiceNodeId()));
                     }
                 }
-            }
-
-            LoginClientFailedMessage responseMessage = new LoginClientFailedMessage();
-            responseMessage.SetErrorCode(1);
-            NetAccountMessageManager.SendResponseMessage(message, responseMessage);
-        }
-
-        /// <summary>
-        ///     Called when the <see cref="CreateAccountMessage"/> is received.
-        /// </summary>
-        internal void CreateAccountMessageReceived(CreateAccountMessage message)
-        {
-            if (AccountManager.TryCreateAccount(out LogicLong accountId, out Account account))
-            {
-                CreateHomeMessage createHomeMessage = new CreateHomeMessage();
-                createHomeMessage.SetAccountId(accountId);
-                NetMessageManager.SendMessage(10, NetManager.GetDocumentOwnerId(10, accountId), message.GetSessionId(), createHomeMessage);
-
-                CreateAccountOkMessage createAccountOkMessage = new CreateAccountOkMessage();
-
-                createAccountOkMessage.SetAccountId(accountId);
-                createAccountOkMessage.SetHomeId(accountId);
-                createAccountOkMessage.SetPassToken(account.PassToken);
-
-                NetAccountMessageManager.SendResponseMessage(message, createAccountOkMessage);
+                else
+                {
+                    this.SendLoginClientFailedMessage(2, NetManager.GetServiceNodeEndPoint(1, message.GetServiceNodeId()));
+                }
             }
             else
             {
-                CreateAccountFailedMessage createAccountFailedMessage = new CreateAccountFailedMessage();
-                createAccountFailedMessage.SetErrorCode(1);
-                NetAccountMessageManager.SendResponseMessage(message, createAccountFailedMessage);
+                string passToken = message.RemovePassToken();
+
+                if (passToken == null)
+                {
+                    this.StartSession(AccountManager.CreateAccount(), message.RemoveSessionId(), message.GetServiceNodeId());
+                }
+                else
+                {
+                    this.SendLoginClientFailedMessage(2, NetManager.GetServiceNodeEndPoint(1, message.GetServiceNodeId()));
+                }
             }
+        }
+
+        /// <summary>
+        ///     Handle the login of client.
+        /// </summary>
+        internal void StartSession(Account account, byte[] sessionId, int proxyId)
+        {
+            if (account.Session != null)
+            {
+                NetAccountSessionManager.TryRemove(sessionId);
+
+                account.Session.SendMessage(1, new UnbindServerMessage());
+                account.Session.Destruct();
+                account.SetSession(null);
+            }
+
+            NetAccountSession session = NetAccountSessionManager.Create(account, sessionId);
+
+            account.SetSession(session);
+            session.SetServiceNodeId(1, proxyId);
+
+            LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
+
+            loginClientOkMessage.SetAccountId(account.Id);
+            loginClientOkMessage.SetHomeId(account.Id);
+            loginClientOkMessage.SetPassToken(account.PassToken);
+            loginClientOkMessage.SetAccountCreatedDate(account.AccountCreatedDate);
+            loginClientOkMessage.SetSessionCount(account.TotalSessions);
+            loginClientOkMessage.SetPlayTimeSeconds(account.PlayTimeSecs);
+            
+            session.SendMessage(1, loginClientOkMessage);
         }
 
         /// <summary>
@@ -150,7 +136,7 @@
 
             if (accountId != null)
             {
-                if (AccountManager.TryGetAccount(accountId, out Account account))
+                if (AccountManager.TryGet(accountId, out Account account))
                 {
                     if (!account.IsBanned())
                     {
@@ -175,7 +161,7 @@
 
             if (accountId != null)
             {
-                if (AccountManager.TryGetAccount(accountId, out Account account))
+                if (AccountManager.TryGet(accountId, out Account account))
                 {
                     if (account.RevokeBan())
                     {
@@ -201,6 +187,16 @@
                     session.Destruct();
                 }
             }
+        }
+
+        /// <summary>
+        ///     Sends a <see cref="LoginClientFailedMessage"/> to the specified server.
+        /// </summary>
+        internal void SendLoginClientFailedMessage(int errorCode, NetSocket socket)
+        {
+            LoginClientFailedMessage message = new LoginClientFailedMessage();
+            message.SetErrorCode(errorCode);
+            NetMessageManager.SendMessage(socket, message);
         }
     }
 }

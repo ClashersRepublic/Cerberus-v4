@@ -1,18 +1,19 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game
 {
     using System.Threading.Tasks;
-    using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     using ClashersRepublic.Magic.Services.Home.Database;
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Titan.Math;
 
     internal static class HomeManager
     {
         private static int[] _homeCounters;
-        private static ConcurrentDictionary<long, Home> _homes;
+        private static Dictionary<long, Home> _homes;
 
         /// <summary>
         ///     Gets the total homes.
@@ -31,7 +32,7 @@
         internal static void Initialize()
         {
             HomeManager._homeCounters = new int[DatabaseManager.GetDatabaseCount()];
-            HomeManager._homes = new ConcurrentDictionary<long, Home>();
+            HomeManager._homes = new Dictionary<long, Home>();
         }
 
         /// <summary>
@@ -39,15 +40,18 @@
         /// </summary>
         internal static void LoadHomes()
         {
-            for (int highId = 0; highId < DatabaseManager.GetDatabaseCount(); highId++)
+            for (int i = 0; i < DatabaseManager.GetDatabaseCount(); i++)
             {
-                IDatabase database = DatabaseManager.GetDatabase(highId);
+                CouchbaseDatabase database = DatabaseManager.GetDatabase(i);
 
                 if (database != null)
                 {
+                    int highId = i;
                     int maxLowId = database.GetHigherId();
+
+                    object locker = new object();
                     
-                    Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 3 }, id =>
+                    Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 4 }, id =>
                     {
                         if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, id) == ServiceCore.ServiceNodeId)
                         {
@@ -57,9 +61,12 @@
                             {
                                 Home home = new Home();
                                 home.Load(json);
-                                HomeManager.TryAdd(home);
 
-                                HomeManager._homeCounters[highId] = LogicMath.Max(id, HomeManager._homeCounters[highId]);
+                                lock (locker)
+                                {
+                                    HomeManager._homes.Add(home.Id, home);
+                                    HomeManager._homeCounters[highId] = LogicMath.Max(id, HomeManager._homeCounters[highId]);
+                                }
                             }
                         }
                     });
@@ -72,51 +79,23 @@
         }
 
         /// <summary>
-        ///     Tries to add the specified <see cref="Home"/> instance.
-        /// </summary>
-        private static bool TryAdd(Home home)
-        {
-            return HomeManager._homes.TryAdd(home.Id, home);
-        }
-
-        /// <summary>
         ///     Tries to get the instance of the specified <see cref="Home"/> id.
         /// </summary>
-        private static bool TryGet(LogicLong avatarId, out Home home)
+        internal static bool TryGet(LogicLong avatarId, out Home home)
         {
             return HomeManager._homes.TryGetValue(avatarId, out home);
         }
-
-        /// <summary>
-        ///     Tries to remove the specified <see cref="Home"/> instance.
-        /// </summary>
-        private static bool TryRemove(LogicLong avatarId, out Home home)
-        {
-            return HomeManager._homes.TryRemove(avatarId, out home);
-        }
         
         /// <summary>
-        ///     Tries to create a new <see cref="Home"/> instance.
+        ///     Create a new <see cref="Home"/> instance.
         /// </summary>
-        internal static bool TryCreateHome(LogicLong homeId, out Home home)
+        internal static Home CreateHome(LogicLong homeId)
         {
-            home = new Home(homeId);
-            
-            if (HomeManager.TryAdd(home))
-            {
-                DatabaseManager.Insert(home);
-                return true;
-            }
+            Home home = new Home(homeId);
+            DatabaseManager.Insert(home);
+            HomeManager._homes.Add(homeId, home);
 
-            return false;
-        }
-
-        /// <summary>
-        ///     Tries to get the <see cref="Home"/> instance with id.
-        /// </summary>
-        internal static bool TryGetHome(LogicLong avatarId, out Home home)
-        {
-            return HomeManager.TryGet(avatarId, out home);
+            return home;
         }
     }
 }

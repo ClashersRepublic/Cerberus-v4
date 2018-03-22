@@ -5,21 +5,20 @@
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
-    using ClashersRepublic.Magic.Services.Core.Network;
     
     using Couchbase.Configuration.Client;
 
     internal static class DatabaseManager
     {
         private static int _scrambler;
-        private static IDatabase[] _databases;
+        private static CouchbaseDatabase[] _databases;
 
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
         {
-            DatabaseManager._databases = new IDatabase[ServiceSettings.GetDatabaseUrls().Length];
+            DatabaseManager._databases = new CouchbaseDatabase[ServiceSettings.GetDatabaseUrls().Length];
 
             for (int i = 0; i < DatabaseManager._databases.Length; i++)
             {
@@ -52,9 +51,9 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="IDatabase"/> instance.
+        ///     Gets the <see cref="CouchbaseDatabase"/> instance.
         /// </summary>
-        internal static IDatabase GetDatabase(int idx)
+        internal static CouchbaseDatabase GetDatabase(int idx)
         {
             if (idx > -1 && idx < DatabaseManager._databases.Length)
             {

@@ -71,17 +71,20 @@
                 {
                     LogicJSONArray eventArray = jsonObject.GetJSONArray("events");
 
-                    for (int i = 0; i < eventArray.Size(); i++)
+                    if (eventArray != null)
                     {
-                        LogicJSONObject calendarObject = eventArray.GetJSONObject(i);
-
-                        if (calendarObject != null)
+                        for (int i = 0; i < eventArray.Size(); i++)
                         {
+                            LogicJSONObject calendarObject = eventArray.GetJSONObject(i);
 
-                        }
-                        else
-                        {
-                            Debugger.Error("Events json malformed!");
+                            if (calendarObject != null)
+                            {
+
+                            }
+                            else
+                            {
+                                Debugger.Error("Events json malformed!");
+                            }
                         }
                     }
                 }

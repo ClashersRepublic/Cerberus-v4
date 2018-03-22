@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Core;
@@ -18,7 +19,7 @@
         private static string _passTokenChars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
         private static LogicRandom _random;
-        private static ConcurrentDictionary<long, Account> _accounts;
+        private static Dictionary<long, Account> _accounts;
 
         /// <summary>
         ///     Gets the total accounts.
@@ -38,7 +39,7 @@
         {
             AccountManager._accountCounters = new int[DatabaseManager.GetDatabaseCount()];
             AccountManager._random = new LogicRandom(LogicTimeUtil.GetTimestamp());
-            AccountManager._accounts = new ConcurrentDictionary<long, Account>();
+            AccountManager._accounts = new Dictionary<long, Account>();
         }
 
         /// <summary>
@@ -50,14 +51,16 @@
 
             for (int i = 0; i < dbCount; i++)
             {
-                IDatabase database = DatabaseManager.GetDatabase(i);
+                CouchbaseDatabase database = DatabaseManager.GetDatabase(i);
 
                 if (database != null)
                 {
                     int highId = i;
                     int maxLowId = database.GetHigherId();
-                    
-                    Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 3 }, id =>
+
+                    object locker = new object();
+
+                    Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 4 }, id =>
                     {
                         LogicLong accId = new LogicLong(highId, id);
 
@@ -69,9 +72,12 @@
                             {
                                 Account account = new Account();
                                 account.Load(json);
-                                AccountManager.TryAdd(account);
 
-                                AccountManager._accountCounters[highId] = LogicMath.Max(id, AccountManager._accountCounters[highId]);
+                                lock (locker)
+                                {
+                                    AccountManager._accounts.Add(account.Id, account);
+                                    AccountManager._accountCounters[highId] = LogicMath.Max(id, AccountManager._accountCounters[highId]);
+                                }
                             }
                         }
                     });
@@ -82,31 +88,15 @@
                 }
             }
         }
-
-        /// <summary>
-        ///     Tries to add the specified <see cref="Account"/> instance.
-        /// </summary>
-        private static bool TryAdd(Account account)
-        {
-            return AccountManager._accounts.TryAdd(account.Id, account);
-        }
-
+        
         /// <summary>
         ///     Tries to get the instance of the specified <see cref="Account"/> id.
         /// </summary>
-        private static bool TryGet(LogicLong accountId, out Account account)
+        internal static bool TryGet(LogicLong accountId, out Account account)
         {
             return AccountManager._accounts.TryGetValue(accountId, out account);
         }
-
-        /// <summary>
-        ///     Tries to remove the specified <see cref="Account"/> instance.
-        /// </summary>
-        private static bool TryRemove(LogicLong accountId, out Account account)
-        {
-            return AccountManager._accounts.TryRemove(accountId, out account);
-        }
-
+        
         /// <summary>
         ///     Generates a random passtoken.
         /// </summary>
@@ -145,42 +135,27 @@
         /// <summary>
         ///     Tries to create a new <see cref="Account"/> instance.
         /// </summary>
-        internal static bool TryCreateAccount(out LogicLong accountId, out Account account)
+        internal static Account CreateAccount()
         {
             int highId = AccountManager.GetRandomHigherId();
 
             if (highId != -1)
             {
-                IDatabase database = DatabaseManager.GetDatabase(highId);
+                CouchbaseDatabase database = DatabaseManager.GetDatabase(highId);
 
                 if (database != null)
                 {
-                    accountId = new LogicLong(highId, AccountManager._accountCounters[highId] += NetManager.GetServerCount(ServiceCore.ServiceNodeType));
-                    account = new Account(accountId, AccountManager.GeneratePassToken());
-                    
-                    bool success = AccountManager.TryAdd(account);
+                    LogicLong accountId = new LogicLong(highId, AccountManager._accountCounters[highId] += NetManager.GetServerCount(ServiceCore.ServiceNodeType));
+                    Account account = new Account(accountId, AccountManager.GeneratePassToken());                  
+                    AccountManager._accounts.Add(account.Id, account);
 
-                    if (success)
-                    {
-                        database.InsertDocument(accountId, LogicJSONParser.CreateJSONString(account.Save()));
-                    }
-                    
-                    return success;
+                    database.InsertDocument(accountId, LogicJSONParser.CreateJSONString(account.Save()));
+
+                    return account;
                 }
             }
 
-            accountId = null;
-            account = null;
-
-            return false;
-        }
-
-        /// <summary>
-        ///     Tries to get the <see cref="Account"/> instance with id.
-        /// </summary>
-        internal static bool TryGetAccount(LogicLong accountId, out Account account)
-        {
-            return AccountManager.TryGet(accountId, out account);
+            return null;
         }
     }
 }

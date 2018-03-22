@@ -165,80 +165,27 @@
             {
                 if (message.ResourceSha == ResourceManager.FingerprintSha)
                 {
-                    if (message.AccountId.IsZero())
+                    NetSocket socket = message.AccountId.IsZero() ? NetManager.GetRandomEndPoint(2) : NetManager.GetDocumentOwner(2, message.AccountId);
+
+                    if (socket != null)
                     {
-                        if (message.PassToken == null)
-                        {
-                            NetSocket socket = NetManager.GetRandomEndPoint(2);
+                        NetProxySession session = NetProxySessionManager.Create(this._client);
 
-                            if (socket != null)
-                            {
-                                NetProxySession session = NetProxySessionManager.TryCreate(this._client);
+                        session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
+                        session.SetServiceNodeId(2, socket.Id);
 
-                                if (session != null)
-                                {
-                                    this._client.SetSession(session);
-                                    byte[] sessionId = session.SessionId;
+                        this._client.SetSession(session);
 
-                                    session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
-                                    session.SetServiceNodeId(2, socket.Id);
-
-                                    NetMessageManager.SendMessage(socket, sessionId, new CreateAccountMessage());
-                                }
-                                else
-                                {
-                                    this.SendLoginFailedMessage(1);
-                                }
-                            }
-                            else
-                            {
-                                this.SendLoginFailedMessage(1, "Internal server error");
-                            }
-                        }
-                        else
-                        {
-                            this.SendLoginFailedMessage(1);
-                        }
+                        LoginClientMessage loginClientMessage = new LoginClientMessage();
+                        loginClientMessage.SetAccountId(message.AccountId);
+                        loginClientMessage.SetPassToken(message.PassToken);
+                        loginClientMessage.SetDeviceModel(this._client.DeviceModel);
+                        loginClientMessage.SetIPAddress(this._client.GetAddress());
+                        session.SendMessage(2, loginClientMessage);
                     }
                     else
                     {
-                        if (message.PassToken != null)
-                        {
-                            NetSocket socket = NetManager.GetServiceNodeEndPoint(2, NetManager.GetDocumentOwnerId(2, message.AccountId));
-
-                            if (socket != null)
-                            {
-                                NetProxySession session = NetProxySessionManager.TryCreate(this._client);
-
-                                if (session != null)
-                                {
-                                    this._client.SetSession(session);
-                                    byte[] sessionId = session.SessionId;
-
-                                    session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
-                                    session.SetServiceNodeId(2, socket.Id);
-
-                                    LoginClientMessage loginClientMessage = new LoginClientMessage();
-                                    loginClientMessage.SetAccountId(message.AccountId);
-                                    loginClientMessage.SetPassToken(message.PassToken);
-                                    loginClientMessage.SetIPAddress(this._client.GetAddress());
-                                    loginClientMessage.SetDeviceModel(this._client.DeviceModel);
-                                    NetMessageManager.SendMessage(socket, sessionId, loginClientMessage);
-                                }
-                                else
-                                {
-                                    this.SendLoginFailedMessage(1);
-                                }
-                            }
-                            else
-                            {
-                                this.SendLoginFailedMessage(1, "Internal server error");
-                            }
-                        }
-                        else
-                        {
-                            this.SendLoginFailedMessage(1);
-                        }
+                        this.SendLoginFailedMessage(1);
                     }
                 }
                 else

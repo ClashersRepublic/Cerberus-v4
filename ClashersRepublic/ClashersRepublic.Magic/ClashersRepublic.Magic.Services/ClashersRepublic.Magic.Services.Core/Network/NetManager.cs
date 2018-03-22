@@ -111,9 +111,9 @@
         }
 
         /// <summary>
-        ///     Gets the service node id with document id.
+        ///     Gets the document owner.
         /// </summary>
-        public static NetSocket GetDocumentOwnerEndPoint(int serviceNodeType, LogicLong documentId)
+        public static NetSocket GetDocumentOwner(int serviceNodeType, LogicLong documentId)
         {
             if (serviceNodeType > -1 && serviceNodeType < NetManager._endPoints.Length)
             {

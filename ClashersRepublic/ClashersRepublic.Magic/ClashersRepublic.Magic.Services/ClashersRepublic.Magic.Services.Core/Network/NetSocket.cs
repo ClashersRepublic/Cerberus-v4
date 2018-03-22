@@ -3,6 +3,7 @@
     using System.Threading;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
     using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
+    using ClashersRepublic.Magic.Services.Core.Utils;
 
     public class NetSocket
     {
@@ -39,7 +40,7 @@
         {
             while (!this.Socket.TrySendFrame(buffer, length))
             {
-                Thread.Sleep(5);
+                Thread.Sleep(2);
             }
         }
     }

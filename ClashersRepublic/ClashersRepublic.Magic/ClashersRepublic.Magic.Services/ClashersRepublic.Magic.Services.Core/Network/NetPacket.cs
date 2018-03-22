@@ -5,15 +5,16 @@
 
     internal class NetPacket
     {
-        private NetMessage _message;
+        private const byte PROTOCOL_VERSION = 2;
         private byte _protocolVersion;
+        private NetMessage _message;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetPacket" /> class.
         /// </summary>
         internal NetPacket()
         {
-            this._protocolVersion = 1;
+            this._protocolVersion = NetPacket.PROTOCOL_VERSION;
         }
 
         /// <summary>
@@ -38,7 +39,6 @@
         internal void Destruct()
         {
             this._message = null;
-            this._protocolVersion = 1;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@
 
             this._protocolVersion = stream.ReadByte();
 
-            if (this._protocolVersion == 1)
+            if (this._protocolVersion <= 2)
             {
                 if (!stream.IsAtEnd())
                 {
@@ -62,12 +62,10 @@
 
                     if (this._message == null)
                     {
-                        Logging.Warning("NetPacket::decode ignoring message of unknown type " + messageType);
+                        Logging.Error("NetPacket::decode unknown message received, type: " + messageType);
                     }
-                    else
-                    {
-                        this._message.GetByteStream().SetByteArray(messageBytes, messageLength);
-                    }
+
+                    this._message.GetByteStream().SetByteArray(messageBytes, messageLength);
                 }
             }
             else

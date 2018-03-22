@@ -26,7 +26,7 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetHomeSession"/> class.
         /// </summary>
-        internal NetHomeSession(Home home, byte[] sessionId, string sessionName) : base(sessionId, sessionName)
+        internal NetHomeSession(Home home, byte[] sessionId) : base(sessionId)
         {
             this.Home = home;
             this.PiranhaMessageManager = new MessageManager(home.GameMode);

@@ -21,7 +21,7 @@
         internal static void Initialize()
         {
             HomeResourceManager._npcLevels = new LogicArrayList<string>();
-            LogicDataTable npcTable = LogicDataTables.GetTable(21);
+            LogicDataTable npcTable = LogicDataTables.GetTable(16);
 
             for (int i = 0; i < npcTable.GetItemCount(); i++)
             {

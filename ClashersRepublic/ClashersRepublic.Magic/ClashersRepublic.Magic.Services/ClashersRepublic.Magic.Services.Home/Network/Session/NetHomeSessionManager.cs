@@ -1,13 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Network.Session
 {
-    using System;
-    using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Home.Game;
 
     internal static class NetHomeSessionManager
     {
-        private static ConcurrentDictionary<string, NetHomeSession> _sessions;
+        private static Dictionary<byte[], NetHomeSession> _sessions;
 
         /// <summary>
         ///     Gets the total sessions.
@@ -25,64 +25,38 @@
         /// </summary>
         internal static void Initialize()
         {
-            NetHomeSessionManager._sessions = new ConcurrentDictionary<string, NetHomeSession>();
-        }
-
-        /// <summary>
-        ///     Converts the session id to session name.
-        /// </summary>
-        internal static string ConvertSessionIdToSessionName(byte[] sessionId)
-        {
-            return BitConverter.ToString(sessionId).Replace("-", string.Empty).ToLower();
+            NetHomeSessionManager._sessions = new Dictionary<byte[], NetHomeSession>(new ByteArrayComparer());
         }
         
         /// <summary>
         ///     Creates a new <see cref="NetHomeSession"/> instance.
         /// </summary>
-        internal static NetHomeSession TryCreate(Home home, byte[] sessionId)
+        internal static NetHomeSession Create(Home home, byte[] sessionId)
         {
-            string sessionName = NetHomeSessionManager.ConvertSessionIdToSessionName(sessionId);
-
-            NetHomeSession session = new NetHomeSession(home, sessionId, sessionName);
-
-            if (NetHomeSessionManager._sessions.TryAdd(sessionName, session))
-            {
-                return session;
-            }
-
-            return null;
+            NetHomeSession session = new NetHomeSession(home, sessionId);
+            NetHomeSessionManager._sessions.Add(sessionId, session);
+            return session;
         }
-
-        /// <summary>
-        ///     Tries to get the <see cref="NetHomeSession"/> instance with his id.
-        /// </summary>
-        internal static bool TryGet(string sessionName, out NetHomeSession session)
-        {
-            return NetHomeSessionManager._sessions.TryGetValue(sessionName, out session);
-        }
-
+        
         /// <summary>
         ///     Tries to get the <see cref="NetHomeSession"/> instance with his id.
         /// </summary>
         internal static bool TryGet(byte[] sessionId, out NetHomeSession session)
         {
-            return NetHomeSessionManager._sessions.TryGetValue(NetHomeSessionManager.ConvertSessionIdToSessionName(sessionId), out session);
+            return NetHomeSessionManager._sessions.TryGetValue(sessionId, out session);
         }
-
-        /// <summary>
-        ///     Tries to remove the <see cref="NetHomeSession"/> instance associed with the specified id.
-        /// </summary>
-        internal static bool TryRemove(string sessionName, out NetHomeSession session)
-        {
-            return NetHomeSessionManager._sessions.TryRemove(sessionName, out session);
-        }
-
+        
         /// <summary>
         ///     Tries to remove the <see cref="NetHomeSession"/> instance associed with the specified id.
         /// </summary>
         internal static bool TryRemove(byte[] sessionId, out NetHomeSession session)
         {
-            return NetHomeSessionManager._sessions.TryRemove(NetHomeSessionManager.ConvertSessionIdToSessionName(sessionId), out session);
+            if (NetHomeSessionManager._sessions.TryGetValue(sessionId, out session))
+            {
+                return NetHomeSessionManager._sessions.Remove(sessionId);
+            }
+
+            return false;
         }
     }
 }
