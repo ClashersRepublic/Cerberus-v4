@@ -186,6 +186,7 @@
     <Compile Include="Message\Home\AttackNpcMessage.cs" />
     <Compile Include="Message\Home\EndClientTurnMessage.cs" />
     <Compile Include="Message\Home\ServerErrorMessage.cs" />
+    <Compile Include="Message\Home\GoHomeMessage.cs" />
     <Compile Include="Message\Home\WaitingToGoHomeMessage.cs" />
     <Compile Include="Message\Home\OwnHomeDataMessage.cs" />
     <Compile Include="Message\Home\OutOfSyncMessage.cs" />

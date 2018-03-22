@@ -112,7 +112,7 @@
         /// <summary>
         ///     Sets the home state.
         /// </summary>
-        private void SetHomeState()
+        internal void SetHomeState()
         {
             LogicClientAvatar homeOwnerAvatar = this._home.ClientAvatar;
             LogicClientHome clientHome = this._home.ClientHome;
@@ -161,7 +161,7 @@
         /// <summary>
         ///     Sets the npc attack state.
         /// </summary>
-        private void SetNpcAttackState(LogicNpcData data)
+        internal void SetNpcAttackState(LogicNpcData data)
         {
             LogicClientAvatar visitorAvatar = this._home.ClientAvatar;
             LogicNpcAvatar homeOwnerAvatar = LogicNpcAvatar.GetNpcAvatar(data);
@@ -187,6 +187,7 @@
             npcDataMessage.SetLogicNpcAvatar(homeOwnerAvatar);
             npcDataMessage.SetLogicClientHome(clientHome);
             npcDataMessage.SetLogicClientAvatar(visitorAvatar);
+            npcDataMessage.Encode();
 
             this.SetGameMode(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, 0, 0, GAME.ATTACK_STATE);
             this.Session.SendPiranhaMessage(1, npcDataMessage);

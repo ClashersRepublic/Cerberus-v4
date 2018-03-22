@@ -32,6 +32,9 @@
         {
             switch (message.GetMessageType())
             {
+                case 14101:
+                    this.GoHomeMessageReceived((GoHomeMessage) message);
+                    break;
                 case 14102:
                     this.EndClientTurnMessageReceived((EndClientTurnMessage) message);
                     break;
@@ -39,6 +42,14 @@
                     this.AttackNpcMessageReceived((AttackNpcMessage) message);        
                     break;
             }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="GoHomeMessage"/> is received.
+        /// </summary>
+        internal void GoHomeMessageReceived(GoHomeMessage message)
+        {
+            this._gameMode.SetHomeState();
         }
 
         /// <summary>
@@ -55,6 +66,11 @@
         internal void AttackNpcMessageReceived(AttackNpcMessage message)
         {
             LogicNpcData npcData = message.GetNpcData();
+
+            if (npcData != null)
+            {
+                this._gameMode.SetNpcAttackState(npcData);
+            }
         }
     }
 }

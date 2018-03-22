@@ -122,7 +122,7 @@
                         {
                             for (int j = 0; j < sizeX; j++)
                             {
-                                this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                                this.GetTile(tileX + j, tileY + i).AddGameObject(gameObject);
                             }
                         }
 
@@ -156,8 +156,8 @@
                         {
                             for (int j = 0; j < sizeX; j++)
                             {
-                                this._tiles[oldTileX + j + this._sizeX * oldTileY].RemoveGameObject(gameObject);
-                                this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                                this.GetTile(oldTileX + j, oldTileY + i).RemoveGameObject(gameObject);
+                                this.GetTile(tileX + j, tileY + i).AddGameObject(gameObject);
                             }
                         }
 
@@ -191,7 +191,7 @@
                         {
                             for (int j = 0; j < sizeX; j++)
                             {
-                                this._tiles[tileX + j + this._sizeX * tileY].AddGameObject(gameObject);
+                                this.GetTile(tileX + j, tileY + i).AddGameObject(gameObject);
                             }
                         }
 
@@ -242,7 +242,7 @@
                         {
                             for (int j = 0; j < sizeX; j++)
                             {
-                                this._tiles[tileX + j + this._sizeX * tileY].RefreshPassableFlag();
+                                this.GetTile(tileX + j, tileY + i).RefreshPassableFlag();
                             }
                         }
 
@@ -308,7 +308,7 @@
                     {
                         if (posX > -1 && posY > -1)
                         {
-                            LogicTile tile = this._tiles[posX + this._sizeX * posY];
+                            LogicTile tile = this.GetTile(posX + i, posY + j);
 
                             if (tile != null)
                             {

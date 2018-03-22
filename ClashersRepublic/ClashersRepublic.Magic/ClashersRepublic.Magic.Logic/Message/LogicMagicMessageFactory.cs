@@ -78,6 +78,12 @@
                         break;
                     }
 
+                    case 14101:
+                    {
+                        message = new GoHomeMessage();
+                        break;
+                    }
+
                     case 14102:
                     {
                         message = new EndClientTurnMessage();

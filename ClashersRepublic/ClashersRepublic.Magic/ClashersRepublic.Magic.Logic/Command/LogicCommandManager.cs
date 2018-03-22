@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Command
 {
+    using ClashersRepublic.Magic.Logic.Command.Battle;
     using ClashersRepublic.Magic.Logic.Command.Home;
     using ClashersRepublic.Magic.Logic.Command.Listener;
     using ClashersRepublic.Magic.Logic.Level;
@@ -260,6 +261,12 @@
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();
+                        break;
+                    }
+
+                    case 700:
+                    {
+                        command = new LogicPlaceAttackerCommand();
                         break;
                     }
 

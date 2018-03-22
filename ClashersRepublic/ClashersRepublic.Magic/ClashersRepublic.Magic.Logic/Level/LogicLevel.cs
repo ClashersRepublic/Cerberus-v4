@@ -1264,7 +1264,7 @@
                     {
                         for (int j = 0; j < height; j++)
                         {
-                            if (!this._tileMap.GetTile(x + i, y + j).IsBuildable(gameObject))
+                            if (!this._tileMap.GetTile(x + j, y + i).IsBuildable(gameObject))
                             {
                                 return false;
                             }

@@ -252,6 +252,22 @@
         }
 
         /// <summary>
+        ///     Gets the width in tiles.
+        /// </summary>
+        public override int GetWidthInTiles()
+        {
+            return this.GetObstacleData().Width;
+        }
+
+        /// <summary>
+        ///     Gets the height in tiles.
+        /// </summary>
+        public override int GetHeightInTiles()
+        {
+            return this.GetObstacleData().Height;
+        }
+
+        /// <summary>
         ///     Gets the fade time.
         /// </summary>
         public int GetFadeTime()

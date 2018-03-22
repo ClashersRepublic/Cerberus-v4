@@ -25,6 +25,7 @@
         /// </summary>
         public LogicClientHome()
         {
+            this._homeId = new LogicLong();
             this._compressibleHomeJson = new LogicCompressibleString();
             this._compressibleGlobalJson = new LogicCompressibleString();
             this._compressibleCalendarJson = new LogicCompressibleString();

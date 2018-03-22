@@ -197,6 +197,22 @@
         }
 
         /// <summary>
+        ///     Gets the width in tiles.
+        /// </summary>
+        public override int GetWidthInTiles()
+        {
+            return this.GetBuildingData().GetWidth();
+        }
+
+        /// <summary>
+        ///     Gets the height in tiles.
+        /// </summary>
+        public override int GetHeightInTiles()
+        {
+            return this.GetBuildingData().GetHeight();
+        }
+
+        /// <summary>
         ///     Destructs this instance.
         /// </summary>
         public override void Destruct()

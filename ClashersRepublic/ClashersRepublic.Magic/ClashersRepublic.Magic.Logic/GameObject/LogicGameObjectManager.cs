@@ -265,8 +265,12 @@
                 }
             }
 
-            this._level.GetTileMap().AddGameObject(gameObject);
             this._gameObjects[gameObject.GetGameObjectType()].Add(gameObject);
+
+            if (this._level.GetVillageType() == this._villageType)
+            {
+                this._level.GetTileMap().AddGameObject(gameObject);
+            }
         }
 
         /// <summary>
