@@ -318,7 +318,7 @@
 
             for (int i = 0; i < this._items.Count; i++)
             {
-                this._items[i].LoadingFinished();
+                this._items[i].CreateReferences();
             }
         }
 

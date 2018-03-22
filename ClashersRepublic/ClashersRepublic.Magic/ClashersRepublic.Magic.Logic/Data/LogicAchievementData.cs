@@ -30,9 +30,9 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// <summary>
         ///     Called when all instances has been loaded for initialized members in instance.
         /// </summary>
-        public override void LoadingFinished()
+        public override void CreateReferences()
         {
-            // LoadingFinished.
+            // CreateReferences.
         }
     }
 }

@@ -23,11 +23,11 @@
         }
 
         /// <summary>
-        ///     Called when the loading of csv has been finished.
+        ///     Called for create references.
         /// </summary>
-        public virtual void LoadingFinished()
+        public virtual void CreateReferences()
         {
-            // LoadingFinished.
+            // CreateReferences.
         }
 
         /// <summary>
