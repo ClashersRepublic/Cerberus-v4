@@ -10,7 +10,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
-
+    using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
@@ -78,23 +78,30 @@
 
             if (!accountId.IsZero())
             {
-                if (HomeManager.TryGet(accountId, out Home home))
+                if (!HomeManager.TryGet(accountId, out Home home))
                 {
-                    NetHomeSession session = NetHomeSessionManager.Create(home, message.RemoveSessionId());
-
-                    int[] ids = message.RemoveEndPoints();
-
-                    for (int i = 0; i < 28; i++)
+                    if (NetManager.GetDocumentOwnerId(10, accountId) != ServiceCore.ServiceNodeId)
                     {
-                        if (ids[i] != -1)
-                        {
-                            session.SetServiceNodeId(i, ids[i]);
-                        }
+                        return;
                     }
 
-                    home.SetSession(session);
-                    home.GameMode.Init();
+                    HomeManager.CreateHome(accountId);
                 }
+
+                NetHomeSession session = NetHomeSessionManager.Create(home, message.RemoveSessionId());
+
+                int[] ids = message.RemoveEndPoints();
+
+                for (int i = 0; i < 28; i++)
+                {
+                    if (ids[i] != -1)
+                    {
+                        session.SetServiceNodeId(i, ids[i]);
+                    }
+                }
+
+                home.SetSession(session);
+                home.GameMode.Init();
             }
         }
 
