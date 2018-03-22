@@ -85,7 +85,7 @@
                         return;
                     }
 
-                    HomeManager.CreateHome(accountId);
+                    home = HomeManager.CreateHome(accountId);
                 }
 
                 NetHomeSession session = NetHomeSessionManager.Create(home, message.RemoveSessionId());
