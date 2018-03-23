@@ -11,6 +11,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
@@ -23,10 +24,6 @@
         {
             switch (message.GetMessageType())
             {
-                case 10200:
-                    this.AskForAvatarMessageReceived((AskForAvatarMessage) message);
-                    break;
-
                 case 10301:
                     this.ServerUnboundMessageReceived((ServerUnboundMessage) message);
                     break;
@@ -49,24 +46,6 @@
         internal static void SendResponseMessage(NetMessage requestMessage, NetMessage responseMessage)
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
-        }
-        
-        /// <summary>
-        ///     Called when a <see cref="AskForAvatarMessage"/> is received.
-        /// </summary>
-        internal void AskForAvatarMessageReceived(AskForAvatarMessage message)
-        {
-            LogicLong avatarId = message.RemoveAvatarId();
-
-            if (!avatarId.IsZero())
-            {
-                if (HomeManager.TryGet(avatarId, out Home home))
-                {
-                    AvatarDataMessage response = new AvatarDataMessage();
-                    response.SetLogicClientAvatar(home.ClientAvatar);
-                    NetHomeMessageManager.SendResponseMessage(message, response);
-                }
-            }
         }
         
         /// <summary>

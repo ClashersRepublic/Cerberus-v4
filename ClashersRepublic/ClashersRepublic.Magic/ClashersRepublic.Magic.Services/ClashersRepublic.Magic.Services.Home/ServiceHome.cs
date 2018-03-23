@@ -14,7 +14,6 @@
 
     internal static class ServiceHome
     {
-        private const int ServiceNodeType = 10;    
         private static Timer _titleTimer;
 
         /// <summary>
@@ -22,13 +21,13 @@
         /// </summary>
         internal static void Initialize(string[] args)
         {
-            ServiceCore.Initialize(ServiceHome.ServiceNodeType, new NetHomeMessageManager(), args);
+            ServiceCore.Initialize(10, new NetHomeMessageManager(), args);
 
             ServiceHome.InitLogic();
             ServiceHome.InitGame();
             ServiceHome.InitNetwork();
 
-            ServiceHome._titleTimer = new Timer(50);
+            ServiceHome._titleTimer = new Timer(150);
             ServiceHome._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
             ServiceHome._titleTimer.Start();
 

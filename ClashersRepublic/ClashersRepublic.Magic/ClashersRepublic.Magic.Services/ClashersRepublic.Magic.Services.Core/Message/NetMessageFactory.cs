@@ -20,8 +20,6 @@
                     case 10101: return new CreateAccountBanMessage();
                     case 10102: return new RevokeAccountBanMessage();
                         
-                    case 10200: return new AskForAvatarMessage();
-
                     case 10300: return new BindServerMessage();
                     case 10301: return new ServerUnboundMessage();
                     case 10302: return new ServerBoundMessage();
@@ -40,7 +38,6 @@
                     case 20102: return new AccoutBanCreatedMessage();
                     case 20103: return new AccountBanRevokedMessage();
                         
-                    case 20200: return new AvatarDataMessage();
                     case 20210: return new AvatarChangeMessage();
                 }
             }

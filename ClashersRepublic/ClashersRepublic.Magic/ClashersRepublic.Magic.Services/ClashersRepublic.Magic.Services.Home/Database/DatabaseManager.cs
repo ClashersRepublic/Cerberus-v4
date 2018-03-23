@@ -1,4 +1,4 @@
-﻿// #define USE_THREAD
+﻿#define USE_THREAD
 
 namespace ClashersRepublic.Magic.Services.Home.Database
 {
@@ -12,21 +12,21 @@ namespace ClashersRepublic.Magic.Services.Home.Database
 
     using Couchbase.Configuration.Client;
 
-    #if USE_THREAD
+#if USE_THREAD
     using System.Collections.Concurrent;
     using System.Threading;
-    #endif
+#endif
 
     internal static class DatabaseManager
     {
         private static CouchbaseDatabase[] _databases;
 
-        #if USE_THREAD
+#if USE_THREAD
         private static Thread _insertThread;
         private static Thread _updateThread;
         private static ConcurrentQueue<Home> _insertQueue;
         private static ConcurrentQueue<Home> _updateQueue;
-        #endif
+#endif
 
         /// <summary>
         ///     Initializes this instance.
@@ -46,14 +46,14 @@ namespace ClashersRepublic.Magic.Services.Home.Database
                 }, "magic-homes", ServiceSettings.GetDatabaseUserName(), ServiceSettings.GetDatabasePassword());
             }
 
-            #if USE_THREAD
+#if USE_THREAD
             DatabaseManager._insertQueue = new ConcurrentQueue<Home>();
             DatabaseManager._updateQueue = new ConcurrentQueue<Home>();
             DatabaseManager._insertThread = new Thread(DatabaseManager.InsertLoop);
             DatabaseManager._updateThread = new Thread(DatabaseManager.UpdateLoop);
             DatabaseManager._insertThread.Start();
             DatabaseManager._updateThread.Start();
-            #endif
+#endif
         }
 
         /// <summary>
@@ -77,11 +77,11 @@ namespace ClashersRepublic.Magic.Services.Home.Database
         /// </summary>
         internal static void Insert(Home home)
         {
-            #if USE_THREAD
+#if USE_THREAD
             DatabaseManager._insertQueue.Enqueue(home);
-            #else
+#else
             DatabaseManager.InternalInsert(home);
-            #endif
+#endif
         }
 
         /// <summary>
@@ -89,11 +89,11 @@ namespace ClashersRepublic.Magic.Services.Home.Database
         /// </summary>
         internal static void Update(Home home)
         {
-            #if USE_THREAD
+#if USE_THREAD
             DatabaseManager._updateQueue.Enqueue(home);
-            #else
+#else
             DatabaseManager.InternalUpdate(home);
-                        #endif
+#endif
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace ClashersRepublic.Magic.Services.Home.Database
             }
         }
 
-        #if USE_THREAD
+#if USE_THREAD
         /// <summary>
         ///     Loop for the insert thread.
         /// </summary>
@@ -154,6 +154,6 @@ namespace ClashersRepublic.Magic.Services.Home.Database
                 Thread.Sleep(1);
             }
         }
-        #endif
+#endif
     }
 }

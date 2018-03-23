@@ -265,8 +265,6 @@
     <Compile Include="Message\Account\LoginClientOkMessage.cs" />
     <Compile Include="Message\Account\LoginClientMessage.cs" />
     <Compile Include="Message\Avatar\AvatarChangeMessage.cs" />
-    <Compile Include="Message\Avatar\AvatarDataMessage.cs" />
-    <Compile Include="Message\Avatar\AskForAvatarMessage.cs" />
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />
     <Compile Include="Message\NetMessageManager.cs" />
@@ -1352,6 +1350,8 @@
     <Content Include="offline\assets\7b02e775a89e06e4ec18fb72ebd4de634c48e3d3\sfx\caf\xmastree.caf" />
     <Content Include="offline\assets\7b02e775a89e06e4ec18fb72ebd4de634c48e3d3\sfx\caf\xp_gain_06.caf" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Message\Home\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
