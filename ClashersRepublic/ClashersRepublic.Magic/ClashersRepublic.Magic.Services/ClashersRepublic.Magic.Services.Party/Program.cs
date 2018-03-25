@@ -40,7 +40,7 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Sessions: " + NetPartySessionManager.TotalSessions + " - Homes: " + PartyAccountManager.TotalAccounts;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Sessions: " + NetPartySessionManager.TotalSessions + " - Accounts: " + PartyAccountManager.TotalAccounts;
         }
     }
 }
