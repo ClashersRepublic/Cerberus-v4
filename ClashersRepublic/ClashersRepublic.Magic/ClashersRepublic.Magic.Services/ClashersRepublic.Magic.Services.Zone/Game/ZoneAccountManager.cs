@@ -1,0 +1,98 @@
+﻿namespace ClashersRepublic.Magic.Services.Zone.Game
+{
+    using System.Threading.Tasks;
+    using System.Collections.Generic;
+    
+    using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Core.Database;
+    using ClashersRepublic.Magic.Services.Core.Network;
+
+    using ClashersRepublic.Magic.Titan.Json;
+    using ClashersRepublic.Magic.Titan.Math;
+
+    internal static class ZoneAccountManager
+    {
+        private static Dictionary<long, ZoneAccount> _zones;
+
+        /// <summary>
+        ///     Gets the total accounts.
+        /// </summary>
+        internal static int TotalAccounts
+        {
+            get
+            {
+                return ZoneAccountManager._zones.Count;
+            }
+        }
+
+        /// <summary>
+        ///     Initializes this instance.
+        /// </summary>
+        internal static void Initialize()
+        {
+            ZoneAccountManager._zones = new Dictionary<long, ZoneAccount>();
+        }
+
+        /// <summary>
+        ///     Loads all accounts from database.
+        /// </summary>
+        internal static void LoadAccounts()
+        {
+            for (int i = 0; i < DatabaseManager.GetDatabaseCount(); i++)
+            {
+                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(i);
+
+                if (database != null)
+                {
+                    int highId = i;
+                    int maxLowId = database.GetHigherId();
+
+                    object locker = new object();
+                    
+                    Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 4 }, id =>
+                    {
+                        if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, id) == ServiceCore.ServiceNodeId)
+                        {
+                            string json = database.GetDocument(new LogicLong(highId, id));
+
+                            if (json != null)
+                            {
+                                ZoneAccount zoneAccount = new ZoneAccount();
+                                zoneAccount.Load(json);
+
+                                lock (locker)
+                                {
+                                    ZoneAccountManager._zones.Add(zoneAccount.Id, zoneAccount);
+                                }
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    Logging.Warning("ZoneAccountManager::loadAccounts pDatabase->NULL");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Tries to get the instance of the specified <see cref="ZoneAccount"/> id.
+        /// </summary>
+        internal static bool TryGet(LogicLong avatarId, out ZoneAccount account)
+        {
+            return ZoneAccountManager._zones.TryGetValue(avatarId, out account);
+        }
+        
+        /// <summary>
+        ///     Create a new <see cref="ZoneAccount"/> instance.
+        /// </summary>
+        internal static ZoneAccount CreateZoneAccount(LogicLong homeId)
+        {
+            ZoneAccount home = new ZoneAccount(homeId);
+            ZoneAccountManager._zones.Add(homeId, home);
+            DatabaseManager.Insert(homeId, LogicJSONParser.CreateJSONString(home.Save()));
+            
+            return home;
+        }
+    }
+}

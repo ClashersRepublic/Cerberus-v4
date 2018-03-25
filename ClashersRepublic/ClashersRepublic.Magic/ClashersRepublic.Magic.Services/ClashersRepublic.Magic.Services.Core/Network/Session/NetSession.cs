@@ -1,6 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network.Session
 {
     using ClashersRepublic.Magic.Services.Core.Message;
+    using ClashersRepublic.Magic.Services.Core.Message.Network;
+    using ClashersRepublic.Magic.Services.Core.Message.Session;
+    using ClashersRepublic.Magic.Titan.Message;
 
     public class NetSession
     {
@@ -109,6 +112,45 @@
             else
             {
                 Logging.Warning("NetSession::sendMessage server is not set, nodeType: " + serviceNodeType);
+            }
+        }
+
+        /// <summary>
+        ///     Forwards the specified <see cref="PiranhaMessage"/> to the service.
+        /// </summary>
+        public void SendPiranhaMessage(int serviceNodeType, PiranhaMessage message)
+        {
+            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
+
+            if (socket != null)
+            {
+                if (message.GetEncodingLength() == 0)
+                {
+                    message.Encode();
+                }
+
+                ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
+                forwardPiranhaMessage.SetPiranhaMessage(message);
+                NetMessageManager.SendMessage(socket, this.SessionId, forwardPiranhaMessage);
+            }
+        }
+
+        /// <summary>
+        ///     Forwards the specified <see cref="PiranhaMessage"/> to the service.
+        /// </summary>
+        public void SendErrorPiranhaMessage(int serviceNodeType, PiranhaMessage message)
+        {
+            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
+
+            if (socket != null)
+            {
+                if (message.GetEncodingLength() == 0)
+                {
+                    message.Encode();
+                }
+
+                this.SendPiranhaMessage(serviceNodeType, message);
+                this.SendMessage(1, new UnbindServerMessage());
             }
         }
     }

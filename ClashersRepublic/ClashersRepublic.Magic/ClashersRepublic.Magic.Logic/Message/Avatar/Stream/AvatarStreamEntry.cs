@@ -27,6 +27,16 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            this._id = null;
+            this._senderAvatarId = null;
+            this._senderName = null;
+        }
+
+        /// <summary>
         ///     Encodes this instance.
         /// </summary>
         public virtual void Encode(ChecksumEncoder encoder)

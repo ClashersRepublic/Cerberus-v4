@@ -110,6 +110,7 @@
                         session.Client.State = 6;
 
                         session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.HomeId));
+                        session.BindServer(9, NetManager.GetDocumentOwnerId(9, loginOkMessage.AccountId));
 
                         if (message.GetChatAccountBanSeconds() != 0)
                         {

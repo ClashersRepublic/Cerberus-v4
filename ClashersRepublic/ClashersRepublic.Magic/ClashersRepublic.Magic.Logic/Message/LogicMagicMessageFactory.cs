@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Avatar.Stream;
     using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Message.Security;
@@ -206,6 +207,12 @@
                     case 24133:
                     {
                         message = new NpcDataMessage();
+                        break;
+                    }
+
+                    case 24411:
+                    {
+                        message = new AvatarStreamMessage();
                         break;
                     }
                 }
