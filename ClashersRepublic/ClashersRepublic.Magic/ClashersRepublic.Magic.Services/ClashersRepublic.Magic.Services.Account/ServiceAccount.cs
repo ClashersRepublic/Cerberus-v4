@@ -50,7 +50,7 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
-            DatabaseManager.Initialize("magic-accounts");
+            DatabaseManager.Initialize("magic-account");
         }
 
         /// <summary>

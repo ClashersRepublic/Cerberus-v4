@@ -102,14 +102,14 @@
         {
             string passToken = null;
 
-            for (int i = 0, rnd = AccountManager._random.Rand(0x7fffffff); i < 40; i++, rnd >>= 8)
+            for (int i = 0, rnd = 0; i < 40; i++, rnd >>= 8)
             {
-                if (rnd == 0)
+                if (i % 4 == 0)
                 {
                     rnd = AccountManager._random.Rand(0x7fffffff);
                 }
 
-                passToken += AccountManager._passTokenChars[rnd % (AccountManager._passTokenChars.Length + 1) - 1];
+                passToken += AccountManager._passTokenChars[rnd % AccountManager._passTokenChars.Length];
             }
 
             return passToken;

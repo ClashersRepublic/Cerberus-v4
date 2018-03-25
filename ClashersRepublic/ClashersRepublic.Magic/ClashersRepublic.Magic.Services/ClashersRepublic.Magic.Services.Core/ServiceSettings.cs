@@ -75,18 +75,6 @@
                         }
                     }
 
-                    LogicJSONArray avatarArray = nodeObject.GetJSONArray("avatar");
-
-                    if (avatarArray != null)
-                    {
-                        ServiceSettings._serviceIPs[3] = new string[avatarArray.Size()];
-
-                        for (int i = 0; i < avatarArray.Size(); i++)
-                        {
-                            ServiceSettings._serviceIPs[3][i] = avatarArray.GetJSONString(i).GetStringValue();
-                        }
-                    }
-
                     LogicJSONArray globalArray = nodeObject.GetJSONArray("global_chat");
 
                     if (globalArray != null)
@@ -99,19 +87,19 @@
                         }
                     }
 
-                    LogicJSONArray streamArray = nodeObject.GetJSONArray("stream");
+                    LogicJSONArray avatarArray = nodeObject.GetJSONArray("avatar");
 
-                    if (streamArray != null)
+                    if (avatarArray != null)
                     {
-                        ServiceSettings._serviceIPs[9] = new string[streamArray.Size()];
+                        ServiceSettings._serviceIPs[9] = new string[avatarArray.Size()];
 
-                        for (int i = 0; i < streamArray.Size(); i++)
+                        for (int i = 0; i < avatarArray.Size(); i++)
                         {
-                            ServiceSettings._serviceIPs[9][i] = streamArray.GetJSONString(i).GetStringValue();
+                            ServiceSettings._serviceIPs[9][i] = avatarArray.GetJSONString(i).GetStringValue();
                         }
                     }
 
-                    LogicJSONArray homeArray = nodeObject.GetJSONArray("home");
+                    LogicJSONArray homeArray = nodeObject.GetJSONArray("zone");
 
                     if (homeArray != null)
                     {
@@ -123,7 +111,7 @@
                         }
                     }
 
-                    LogicJSONArray allianceArray = nodeObject.GetJSONArray("alliance");
+                    LogicJSONArray allianceArray = nodeObject.GetJSONArray("party");
 
                     if (allianceArray != null)
                     {
@@ -135,7 +123,7 @@
                         }
                     }
 
-                    LogicJSONArray leagueArray = nodeObject.GetJSONArray("league");
+                    LogicJSONArray leagueArray = nodeObject.GetJSONArray("ranking");
 
                     if (leagueArray != null)
                     {

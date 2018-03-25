@@ -2,7 +2,7 @@
 {
     using ClashersRepublic.Magic.Logic.Message.Avatar.Stream;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
-
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Party.Game;
     using ClashersRepublic.Magic.Services.Party.Game.Message;
 
@@ -33,7 +33,7 @@
         {
             AvatarStreamMessage message = new AvatarStreamMessage();
             message.SetStreamEntries(this.PartyAccount.GetStreamEntries());
-            this.SendPiranhaMessage(1, message);
+            this.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, message);
         }
 
         /// <summary>

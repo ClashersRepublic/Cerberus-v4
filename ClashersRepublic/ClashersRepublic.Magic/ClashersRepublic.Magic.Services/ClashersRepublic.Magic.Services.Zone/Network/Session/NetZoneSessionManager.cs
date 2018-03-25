@@ -58,5 +58,13 @@
 
             return false;
         }
+
+        /// <summary>
+        ///     Removes the <see cref="NetZoneSession"/> instance associed with the specified id.
+        /// </summary>
+        internal static bool Remove(byte[] sessionId)
+        {
+            return NetZoneSessionManager._sessions.Remove(sessionId);
+        }
     }
 }

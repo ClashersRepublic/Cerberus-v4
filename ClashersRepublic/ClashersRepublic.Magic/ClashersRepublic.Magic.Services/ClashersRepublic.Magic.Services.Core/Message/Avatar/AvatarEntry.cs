@@ -17,6 +17,9 @@
         private int _allianceExpLevel;
         private int _allianceRole;
         private int _badgeId;
+        private int _nameChangeState;
+
+        private bool _nameSetByUser;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AvatarEntry"/> class.
@@ -36,6 +39,8 @@
             this._facebookId = avatar.GetFacebookId();
             this._expLevel = avatar.GetExpLevel();
             this._leagueType = avatar.GetLeagueType();
+            this._nameChangeState = avatar.GetNameChangeState();
+            this._nameSetByUser = avatar.GetNameSetByUser();
 
             if (avatar.IsInAlliance())
             {
@@ -56,6 +61,8 @@
             this._facebookId = stream.ReadString(900000);
             this._expLevel = stream.ReadVInt();
             this._leagueType = stream.ReadVInt();
+            this._nameChangeState = stream.ReadVInt();
+            this._nameSetByUser = stream.ReadBoolean();
 
             if (stream.ReadBoolean())
             {
@@ -76,6 +83,8 @@
             encoder.WriteString(this._facebookId);
             encoder.WriteVInt(this._expLevel);
             encoder.WriteVInt(this._leagueType);
+            encoder.WriteVInt(this._nameChangeState);
+            encoder.WriteBoolean(this._nameSetByUser);
 
             if (this._allianceId != null)
             {
@@ -101,6 +110,8 @@
             this._facebookId = entry._facebookId;
             this._expLevel = entry._expLevel;
             this._leagueType = entry._leagueType;
+            this._nameChangeState = entry._nameChangeState;
+            this._nameSetByUser = entry._nameSetByUser;
             this._allianceId = entry._allianceId;
             this._allianceExpLevel = entry._allianceExpLevel;
             this._allianceRole = entry._allianceRole;

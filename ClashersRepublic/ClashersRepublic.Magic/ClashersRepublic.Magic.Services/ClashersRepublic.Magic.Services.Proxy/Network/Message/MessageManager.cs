@@ -8,7 +8,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Network;
-
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Message;
@@ -120,7 +120,7 @@
             switch (errorCode)
             {
                 case 7:
-                    loginFailedMessage.ContentUrl = "https://raw.githubusercontent.com/Mimi8298/magic-assets/master/";
+                    loginFailedMessage.ContentUrl = ResourceManager.GetContentUrl();
                     loginFailedMessage.CompressedFingerprintJson = ResourceManager.CompressedFingeprintJson;
                     break;
                 case 8:
@@ -171,8 +171,8 @@
                     {
                         NetProxySession session = NetProxySessionManager.Create(this._client);
 
-                        session.SetServiceNodeId(1, ServiceCore.ServiceNodeId);
-                        session.SetServiceNodeId(2, socket.Id);
+                        session.SetServiceNodeId(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, ServiceCore.ServiceNodeId);
+                        session.SetServiceNodeId(NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY, socket.Id);
 
                         this._client.SetSession(session);
 
@@ -181,7 +181,7 @@
                         loginClientMessage.SetPassToken(message.PassToken);
                         loginClientMessage.SetDeviceModel(this._client.DeviceModel);
                         loginClientMessage.SetIPAddress(this._client.GetAddress());
-                        session.SendMessage(2, loginClientMessage);
+                        session.SendMessage(NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY, loginClientMessage);
                     }
                     else
                     {

@@ -9,6 +9,8 @@
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
+    using ClashersRepublic.Magic.Services.Core.Utils;
+
     using ClashersRepublic.Magic.Services.Proxy.Network.ServerSocket;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
@@ -23,6 +25,9 @@
         {
             switch (message.GetMessageType())
             {
+                case 10303:
+                    this.UpdateServerEndPointMessageReceived((UpdateServerEndPointMessage) message);
+                    break;
                 case 10304:
                     this.UnbindServerMessageReceived((UnbindServerMessage) message);
                     break;
@@ -36,6 +41,10 @@
                     break;
                 case 20101:
                     this.LoginClientOkMessageReceived((LoginClientOkMessage) message);
+                    break;
+
+                default:
+                    Logging.Debug("NetProxyMessageManager::receiveMessage no case for message type " + message.GetMessageType());
                     break;
             }
         }
@@ -109,8 +118,7 @@
                         session.Client.Messaging.Send(loginOkMessage);
                         session.Client.State = 6;
 
-                        session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.HomeId));
-                        session.BindServer(9, NetManager.GetDocumentOwnerId(9, loginOkMessage.AccountId));
+                        session.BindServer(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, loginOkMessage.AccountId));
 
                         if (message.GetChatAccountBanSeconds() != 0)
                         {
@@ -131,6 +139,25 @@
                                 Logging.Warning("loginClientOkMessageReceived no chat server is available");
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="UpdateServerEndPointMessage"/> is received.
+        /// </summary>
+        internal void UpdateServerEndPointMessageReceived(UpdateServerEndPointMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (sessionId != null)
+            {
+                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+                {
+                    if (message.GetServerType() != ServiceCore.ServiceNodeType)
+                    {
+                        session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
                     }
                 }
             }

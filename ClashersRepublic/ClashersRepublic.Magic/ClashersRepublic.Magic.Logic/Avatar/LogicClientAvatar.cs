@@ -307,6 +307,30 @@
         }
 
         /// <summary>
+        ///     Sets if the name has been set by user.
+        /// </summary>
+        public void SetNameSetByUser(bool set)
+        {
+            this._nameSetByUser = set;
+        }
+
+        /// <summary>
+        ///     Gets the name change state.
+        /// </summary>
+        public int GetNameChangeState()
+        {
+            return this._nameChangeState;
+        }
+
+        /// <summary>
+        ///     Sets the name change state.
+        /// </summary>
+        public void SetNameChangeState(int state)
+        {
+            this._nameChangeState = state;
+        }
+
+        /// <summary>
         ///     Gets the name.
         /// </summary>
         public string GetName()

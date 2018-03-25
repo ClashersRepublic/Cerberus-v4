@@ -1,20 +1,18 @@
-﻿namespace ClashersRepublic.Magic.Services.Zone
+﻿namespace ClashersRepublic.Magic.Services.Avatar
 {
     using System.Timers;
 
     using ClashersRepublic.Magic.Logic.Data;
-    
-    using ClashersRepublic.Magic.Services.Zone.Game;
-    using ClashersRepublic.Magic.Services.Zone.Network.Message;
-    using ClashersRepublic.Magic.Services.Zone.Network.Session;
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Utils;
-    using ClashersRepublic.Magic.Services.Zone.Handler;
-    using ClashersRepublic.Magic.Services.Zone.Resource;
+    using ClashersRepublic.Magic.Services.Avatar.Game;
+    using ClashersRepublic.Magic.Services.Avatar.Handler;
+    using ClashersRepublic.Magic.Services.Avatar.Network.Message;
+    using ClashersRepublic.Magic.Services.Avatar.Network.Session;
 
-    internal static class ServiceZone
+    internal static class ServiceAvatar
     {
         private static Timer _titleTimer;
 
@@ -23,17 +21,17 @@
         /// </summary>
         internal static void Initialize(string[] args)
         {
-            ServiceCore.Initialize(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, new NetZoneMessageManager(), args);
+            ServiceCore.Initialize(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, new NetAvatarMessageManager(), args);
 
-            ServiceZone.InitLogic();
-            ServiceZone.InitGame();
-            ServiceZone.InitNetwork();
+            ServiceAvatar.InitLogic();
+            ServiceAvatar.InitGame();
+            ServiceAvatar.InitNetwork();
 
-            ServiceZone._titleTimer = new Timer(200);
-            ServiceZone._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
-            ServiceZone._titleTimer.Start();
+            ServiceAvatar._titleTimer = new Timer(200);
+            ServiceAvatar._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
+            ServiceAvatar._titleTimer.Start();
 
-            ServiceZone.Start();
+            ServiceAvatar.Start();
         }
 
         /// <summary>
@@ -41,7 +39,7 @@
         /// </summary>
         internal static void Start()
         {
-            ZoneAccountManager.LoadAccounts();
+            AvatarAccountManager.LoadAccounts();
             ExitHandler.Initialize();
             ServiceCore.Start();
         }
@@ -52,8 +50,7 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
-            DatabaseManager.Initialize("magic-zone");
-            HomeResourceManager.Initialize();
+            DatabaseManager.Initialize("magic-avatar");
         }
 
         /// <summary>
@@ -61,7 +58,7 @@
         /// </summary>
         internal static void InitNetwork()
         {
-            NetZoneSessionManager.Initialize();
+            NetAvatarSessionManager.Initialize();
         }
 
         /// <summary>
@@ -69,7 +66,7 @@
         /// </summary>
         internal static void InitGame()
         {
-            ZoneAccountManager.Initialize();
+            AvatarAccountManager.Initialize();
         }
     }
 }

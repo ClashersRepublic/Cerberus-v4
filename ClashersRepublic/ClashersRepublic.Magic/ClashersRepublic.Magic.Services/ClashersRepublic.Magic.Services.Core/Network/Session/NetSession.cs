@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Titan.Message;
 
     public class NetSession
@@ -150,7 +151,7 @@
                 }
 
                 this.SendPiranhaMessage(serviceNodeType, message);
-                this.SendMessage(1, new UnbindServerMessage());
+                this.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
             }
         }
     }

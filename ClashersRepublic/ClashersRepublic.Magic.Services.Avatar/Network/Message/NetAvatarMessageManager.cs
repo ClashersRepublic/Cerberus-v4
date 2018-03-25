@@ -1,22 +1,20 @@
-﻿namespace ClashersRepublic.Magic.Services.Zone.Network.Message
+﻿namespace ClashersRepublic.Magic.Services.Avatar.Network.Message
 {
     using System;
-    using ClashersRepublic.Magic.Logic.Command.Server;
-    using ClashersRepublic.Magic.Services.Zone.Game;
-    using ClashersRepublic.Magic.Services.Zone.Network.Session;
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
-    using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
-
     using ClashersRepublic.Magic.Services.Core.Network;
-
+    using ClashersRepublic.Magic.Services.Avatar.Game;
+    using ClashersRepublic.Magic.Services.Avatar.Network.Session;
+    using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
-    internal class NetZoneMessageManager : NetMessageManager
+    internal class NetAvatarMessageManager : NetMessageManager
     {
         /// <summary>
         ///     Receives the specicified <see cref="NetMessage"/>.
@@ -25,7 +23,7 @@
         {
             if (message.GetSessionId() == null)
             {
-                Logging.Warning("NetZoneMessageManager::receiveMessage session id is not defined");
+                Logging.Warning("NetAvatarMessageManager::receiveMessage session id is not defined");
                 return;
             }
 
@@ -44,6 +42,10 @@
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
                     break;
+
+                case 20211:
+
+                    break;
             }
         }
 
@@ -54,7 +56,7 @@
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
-        
+
         /// <summary>
         ///     Called when a <see cref="ServerBoundMessage"/> is received.
         /// </summary>
@@ -64,28 +66,27 @@
 
             if (!accountId.IsZero())
             {
-                if (!ZoneAccountManager.TryGet(accountId, out ZoneAccount zoneAccount))
+                if (!AvatarAccountManager.TryGet(accountId, out AvatarAccount avatarAccount))
                 {
                     if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, accountId) != ServiceCore.ServiceNodeId)
                     {
                         return;
                     }
 
-                    zoneAccount = ZoneAccountManager.CreateZoneAccount(accountId);
+                    avatarAccount = AvatarAccountManager.CreatePartyAccount(accountId);
                 }
                 else
                 {
-                    if (zoneAccount.Session != null)
+                    if (avatarAccount.Session != null)
                     {
-                        NetZoneSessionManager.Remove(zoneAccount.Session.SessionId);
+                        NetAvatarSessionManager.Remove(avatarAccount.Session.SessionId);
 
-                        zoneAccount.GameMode.DeInit();
-                        zoneAccount.Session.Destruct();
-                        zoneAccount.SetSession(null);
+                        avatarAccount.Session.Destruct();
+                        avatarAccount.SetSession(null);
                     }
                 }
 
-                NetZoneSession session = NetZoneSessionManager.Create(zoneAccount, message.RemoveSessionId());
+                NetAvatarSession session = NetAvatarSessionManager.Create(avatarAccount, message.RemoveSessionId());
 
                 int[] ids = message.RemoveEndPoints();
 
@@ -97,8 +98,10 @@
                     }
                 }
 
-                zoneAccount.SetSession(session);
-                zoneAccount.GameMode.Init();
+                avatarAccount.SetSession(session);
+
+                session.BindServer(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, accountId));
+                session.BindServer(NetUtils.SERVICE_NODE_TYPE_PARTY_CONTAINER, NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_PARTY_CONTAINER, accountId));
             }
         }
 
@@ -109,10 +112,9 @@
         {
             byte[] sessionId = message.GetSessionId();
 
-            if (NetZoneSessionManager.TryRemove(sessionId, out NetZoneSession session))
+            if (NetAvatarSessionManager.TryRemove(sessionId, out NetAvatarSession session))
             {
-                session.ZoneAccount.GameMode.DeInit();
-                session.ZoneAccount.SetSession(null);
+                session.AvatarAccount.SetSession(null);
                 session.Destruct();
             }
         }
@@ -124,7 +126,7 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (NetZoneSessionManager.TryGet(sessionId, out NetZoneSession session))
+            if (NetAvatarSessionManager.TryGet(sessionId, out NetAvatarSession session))
             {
                 if (message.GetServerType() != ServiceCore.ServiceNodeType)
                 {
@@ -140,7 +142,7 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (NetZoneSessionManager.TryGet(sessionId, out NetZoneSession session))
+            if (NetAvatarSessionManager.TryGet(sessionId, out NetAvatarSession session))
             {
                 PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
 
@@ -153,27 +155,22 @@
                     }
                     catch (Exception exception)
                     {
-                        Logging.Warning("NetZoneMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
+                        Logging.Warning("NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
                     }
                 }
             }
         }
 
         /// <summary>
-        ///     Calledw hen a <see cref="AllowServerCommandMessage"/> is received.
+        ///     Called when a <see cref="AvatarEntryMessage"/> is received.
         /// </summary>
-        internal void AllowServerCommandMessageReceived(AllowServerCommandMessage message)
+        internal void AvatarEntryMessageReceived(AvatarEntryMessage message)
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (NetZoneSessionManager.TryGet(sessionId, out NetZoneSession session))
+            if (NetAvatarSessionManager.TryGet(sessionId, out NetAvatarSession session))
             {
-                LogicServerCommand serverCommand = message.RemoveServerCommand();
-
-                if (serverCommand != null)
-                {
-                    session.ZoneAccount.GameMode.AddAvailableServerCommand(serverCommand);
-                }
+                message.RemoveAvatarEntry().CopyTo(session.AvatarAccount.AvatarEntry);
             }
         }
     }

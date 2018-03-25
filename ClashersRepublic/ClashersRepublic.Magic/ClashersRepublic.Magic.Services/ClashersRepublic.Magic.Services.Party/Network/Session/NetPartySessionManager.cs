@@ -58,5 +58,13 @@
 
             return false;
         }
+
+        /// <summary>
+        ///     Remove the specified session.
+        /// </summary>
+        internal static bool Remove(byte[] sessionId)
+        {
+            return NetPartySessionManager._sessions.Remove(sessionId);
+        }
     }
 }

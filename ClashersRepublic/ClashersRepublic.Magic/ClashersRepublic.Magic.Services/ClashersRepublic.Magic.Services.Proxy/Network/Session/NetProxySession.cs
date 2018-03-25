@@ -4,7 +4,7 @@
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
-
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Titan.Math;
 
     internal class NetProxySession : NetSession
@@ -70,16 +70,19 @@
 
                     if (updateBoundServers)
                     {
-                        for (int i = 3; i < this._serviceNodeSockets.Length; i++)
+                        for (int i = 0; i < this._serviceNodeSockets.Length; i++)
                         {
-                            if (this._serviceNodeSockets[i] != null)
+                            if (i != NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY && i != NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER)
                             {
-                                UpdateServerEndPointMessage updateMessage = new UpdateServerEndPointMessage();
+                                if (this._serviceNodeSockets[i] != null)
+                                {
+                                    UpdateServerEndPointMessage updateMessage = new UpdateServerEndPointMessage();
 
-                                updateMessage.SetServerType(serviceNodeType);
-                                updateMessage.SetServerId(serviceNodeId);
+                                    updateMessage.SetServerType(serviceNodeType);
+                                    updateMessage.SetServerId(serviceNodeId);
 
-                                NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, updateMessage);
+                                    NetMessageManager.SendMessage(this._serviceNodeSockets[i], this.SessionId, updateMessage);
+                                }
                             }
                         }
                     }

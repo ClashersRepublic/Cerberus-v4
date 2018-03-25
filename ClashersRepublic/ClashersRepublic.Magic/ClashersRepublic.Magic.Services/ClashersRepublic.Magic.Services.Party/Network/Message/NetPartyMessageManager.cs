@@ -19,6 +19,12 @@
         /// </summary>
         public override void ReceiveMessage(NetMessage message)
         {
+            if (message.GetSessionId() == null)
+            {
+                Logging.Warning("NetPartyMessageManager::receiveMessage session id is not defined");
+                return;
+            }
+
             switch (message.GetMessageType())
             {
                 case 10301:
@@ -44,7 +50,7 @@
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
-        
+
         /// <summary>
         ///     Called when a <see cref="ServerBoundMessage"/> is received.
         /// </summary>
@@ -62,6 +68,16 @@
                     }
 
                     partyAccount = PartyAccountManager.CreatePartyAccount(accountId);
+                }
+                else
+                {
+                    if (partyAccount.Session != null)
+                    {
+                        NetPartySessionManager.Remove(partyAccount.Session.SessionId);
+
+                        partyAccount.Session.Destruct();
+                        partyAccount.SetSession(null);
+                    }
                 }
 
                 NetPartySession session = NetPartySessionManager.Create(partyAccount, message.RemoveSessionId());
@@ -87,14 +103,10 @@
         internal void ServerUnboundMessageReceived(ServerUnboundMessage message)
         {
             byte[] sessionId = message.GetSessionId();
-
-            if (sessionId != null)
+            if (NetPartySessionManager.TryRemove(sessionId, out NetPartySession session))
             {
-                if (NetPartySessionManager.TryRemove(sessionId, out NetPartySession session))
-                {
-                    session.PartyAccount.SetSession(null);
-                    session.Destruct();
-                }
+                session.PartyAccount.SetSession(null);
+                session.Destruct();
             }
         }
 
@@ -105,14 +117,11 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            if (NetPartySessionManager.TryGet(sessionId, out NetPartySession session))
             {
-                if (NetPartySessionManager.TryGet(sessionId, out NetPartySession session))
+                if (message.GetServerType() != ServiceCore.ServiceNodeType)
                 {
-                    if (message.GetServerType() != ServiceCore.ServiceNodeType)
-                    {
-                        session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
-                    }
+                    session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
                 }
             }
         }
@@ -124,23 +133,20 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            if (NetPartySessionManager.TryGet(sessionId, out NetPartySession session))
             {
-                if (NetPartySessionManager.TryGet(sessionId, out NetPartySession session))
-                {
-                    PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+                PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
 
-                    if (piranhaMessage != null)
+                if (piranhaMessage != null)
+                {
+                    try
                     {
-                        try
-                        {
-                            piranhaMessage.Decode();
-                            session.PiranhaMessageManager.ReceiveMessage(piranhaMessage);
-                        }
-                        catch (Exception exception)
-                        {
-                            Logging.Warning("NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
-                        }
+                        piranhaMessage.Decode();
+                        session.PiranhaMessageManager.ReceiveMessage(piranhaMessage);
+                    }
+                    catch (Exception exception)
+                    {
+                        Logging.Warning("NetPartyMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
                     }
                 }
             }

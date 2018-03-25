@@ -15,6 +15,7 @@
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Zone.Game.Command;
     using ClashersRepublic.Magic.Services.Zone.Network.Session;
     using ClashersRepublic.Magic.Services.Zone.Resource;
@@ -104,7 +105,7 @@
 
             if (this._defenseMode)
             {
-                this.Session.SendPiranhaMessage(1, new WaitingToGoHomeMessage());
+                this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new WaitingToGoHomeMessage());
             }
             else
             {
@@ -158,7 +159,7 @@
             ownHomeDataMessage.Encode();
 
             this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, 0, GAME.HOME_STATE);
-            this.Session.SendPiranhaMessage(1, ownHomeDataMessage);
+            this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, ownHomeDataMessage);
         }
 
         /// <summary>
@@ -193,7 +194,7 @@
             npcDataMessage.Encode();
 
             this.SetGameMode(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, 0, 0, GAME.ATTACK_STATE);
-            this.Session.SendPiranhaMessage(1, npcDataMessage);
+            this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, npcDataMessage);
         }
 
         /// <summary>
@@ -310,7 +311,7 @@
                     {
                         AvailableServerCommand availableServerCommand = new AvailableServerCommand();
                         availableServerCommand.SetServerCommand(serverCommand);
-                        this.Session.SendPiranhaMessage(1, availableServerCommand);
+                        this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, availableServerCommand);
                     }
                 }
             }

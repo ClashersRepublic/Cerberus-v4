@@ -92,7 +92,7 @@
         /// </summary>
         public override int GetServiceNodeType()
         {
-            return 9;
+            return 11;
         }
 
         /// <summary>
