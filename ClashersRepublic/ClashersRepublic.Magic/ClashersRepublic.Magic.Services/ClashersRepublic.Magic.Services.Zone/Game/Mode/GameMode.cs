@@ -15,6 +15,7 @@
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
+    using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Zone.Game.Command;
     using ClashersRepublic.Magic.Services.Zone.Network.Session;
@@ -27,7 +28,7 @@
     {
         private int _currentTimestamp;
 
-        private ZoneAccount _home;
+        private ZoneAccount _zoneAccount;
         private LogicGameMode _logicGameMode;
         private LogicArrayList<LogicServerCommand> _bufferedServerCommands;
 
@@ -40,16 +41,16 @@
         {
             get
             {
-                return this._home.Session;
+                return this._zoneAccount.Session;
             }
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameMode"/> class.
         /// </summary>
-        internal GameMode(ZoneAccount home)
+        internal GameMode(ZoneAccount zoneAccount)
         {
-            this._home = home;
+            this._zoneAccount = zoneAccount;
             this._bufferedServerCommands = new LogicArrayList<LogicServerCommand>(40);
         }
 
@@ -80,12 +81,12 @@
                     LogicJSONObject jsonObject = new LogicJSONObject();
 
                     this._logicGameMode.SaveToJSON(jsonObject);
-                    this._home.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
+                    this._zoneAccount.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
 
-                    CompressibleStringHelper.Compress(this._home.ClientHome.GetCompressibleHomeJSON());
+                    CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
                 }
 
-                DatabaseManager.Update(0, this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
+                DatabaseManager.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
             }
             else
             {
@@ -118,11 +119,11 @@
         /// </summary>
         internal void SetHomeState()
         {
-            LogicClientAvatar homeOwnerAvatar = this._home.ClientAvatar;
-            LogicClientHome clientHome = this._home.ClientHome;
+            LogicClientAvatar homeOwnerAvatar = this._zoneAccount.ClientAvatar;
+            LogicClientHome clientHome = this._zoneAccount.ClientHome;
 
             int currentTimestamp = LogicTimeUtil.GetTimestamp();
-            int secondsSinceLastSave = currentTimestamp - this._home.SaveTimestamp;
+            int secondsSinceLastSave = currentTimestamp - this._zoneAccount.SaveTimestamp;
 
             if (secondsSinceLastSave < 0)
             {
@@ -167,7 +168,7 @@
         /// </summary>
         internal void SetNpcAttackState(LogicNpcData data)
         {
-            LogicClientAvatar visitorAvatar = this._home.ClientAvatar;
+            LogicClientAvatar visitorAvatar = this._zoneAccount.ClientAvatar;
             LogicNpcAvatar homeOwnerAvatar = LogicNpcAvatar.GetNpcAvatar(data);
             LogicClientHome clientHome = new LogicClientHome();
 
@@ -253,9 +254,11 @@
                         break;
                     default:
                         Logging.Warning("GameMode::setGameMode mode " + mode + " doesn't exist");
-                        break;
+                        return;
                 }
             }
+
+            this.SendAvatarEntryMessage();
         }
 
         /// <summary>
@@ -380,6 +383,8 @@
         /// </summary>
         internal void ClientTurnReceived(int subTick, int checksum, LogicArrayList<LogicCommand> commands)
         {
+            bool updateAvatarEntry = false;
+
             if (subTick > -1)
             {
                 int currentTimestamp = LogicTimeUtil.GetTimestamp();
@@ -401,6 +406,8 @@
                                 {
                                     commandManager.AddCommand(commands[i]);
                                 }
+
+                                updateAvatarEntry = true;
                             }
                         }
 
@@ -408,6 +415,11 @@
                         {
                             this._logicGameMode.UpdateOneSubTick();
                         } while (++serverTick != subTick);
+
+                        if (updateAvatarEntry)
+                        {
+                            this.SendAvatarEntryMessage();
+                        }
 
                         Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
                     }
@@ -425,6 +437,18 @@
             {
                 Logging.Warning("GameMode::clientTurnReceived subTick is negative");
             }
+        }
+
+        /// <summary>
+        ///     Sends a <see cref="AvatarEntryMessage"/> to the avatar service node.
+        /// </summary>
+        internal void SendAvatarEntryMessage()
+        {
+            AvatarEntryMessage avatarEntryMessage = new AvatarEntryMessage();
+            AvatarEntry entry = new AvatarEntry();
+            entry.SetData(this._zoneAccount.ClientAvatar);
+            avatarEntryMessage.SetAvatarEntry(entry);
+            this.Session.SendMessage(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, avatarEntryMessage);
         }
 
         private enum GAME

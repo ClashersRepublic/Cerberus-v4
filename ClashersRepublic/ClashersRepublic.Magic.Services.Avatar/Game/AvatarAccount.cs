@@ -57,6 +57,13 @@
             LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
 
             this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "id_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "id_lo"));
+
+            LogicJSONObject entryObject = jsonObject.GetJSONObject("entry");
+
+            if (entryObject != null)
+            {
+                this.AvatarEntry.Load(entryObject);
+            }
         }
 
         /// <summary>
@@ -68,7 +75,8 @@
 
             jsonObject.Put("id_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
             jsonObject.Put("id_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
-            
+            jsonObject.Put("entry", this.AvatarEntry.Save());
+
             return jsonObject;
         }
     }

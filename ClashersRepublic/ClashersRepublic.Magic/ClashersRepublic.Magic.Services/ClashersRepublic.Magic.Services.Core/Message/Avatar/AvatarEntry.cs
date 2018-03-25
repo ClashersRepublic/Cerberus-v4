@@ -1,7 +1,9 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Avatar
 {
     using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Titan.DataStream;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class AvatarEntry
@@ -28,7 +30,7 @@
         {
             this._avatarId = new LogicLong();
         }
-
+        
         /// <summary>
         ///     Sets the data.
         /// </summary>
@@ -105,17 +107,74 @@
         /// </summary>
         public void CopyTo(AvatarEntry entry)
         {
-            this._avatarId = entry._avatarId;
-            this._avatarName = entry._avatarName;
-            this._facebookId = entry._facebookId;
-            this._expLevel = entry._expLevel;
-            this._leagueType = entry._leagueType;
-            this._nameChangeState = entry._nameChangeState;
-            this._nameSetByUser = entry._nameSetByUser;
-            this._allianceId = entry._allianceId;
-            this._allianceExpLevel = entry._allianceExpLevel;
-            this._allianceRole = entry._allianceRole;
-            this._badgeId = entry._badgeId;
+            entry._avatarId = this._avatarId;
+            entry._avatarName = this._avatarName;
+            entry._facebookId = this._facebookId;
+            entry._expLevel = this._expLevel;
+            entry._leagueType = this._leagueType;
+            entry._nameChangeState = this._nameChangeState;
+            entry._nameSetByUser = this._nameSetByUser;
+            entry._allianceId = this._allianceId;
+            entry._allianceExpLevel = this._allianceExpLevel;
+            entry._allianceRole = this._allianceRole;
+            entry._badgeId = this._badgeId;
+        }
+
+        /// <summary>
+        ///     Loads this instance from json.
+        /// </summary>
+        public void Load(LogicJSONObject jsonObject)
+        {
+            this._avatarId = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "avatar_id_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "avatar_id_lo"));
+            this._avatarName = LogicJSONHelper.GetJSONString(jsonObject, "name");
+            this._facebookId = LogicJSONHelper.GetJSONString(jsonObject, "facebook_id");
+            this._expLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "exp_lvl");
+            this._leagueType = LogicJSONHelper.GetJSONNumber(jsonObject, "league_type");
+            this._nameChangeState = LogicJSONHelper.GetJSONNumber(jsonObject, "name_change_state");
+            this._nameSetByUser = LogicJSONHelper.GetJSONBoolean(jsonObject, "name_set");
+
+            LogicJSONNumber allianceIdHigh = jsonObject.GetJSONNumber("alliance_id_hi");
+            LogicJSONNumber allianceIdLow = jsonObject.GetJSONNumber("alliance_id_lo");
+
+            if (allianceIdHigh != null && allianceIdLow != null)
+            {
+                this._allianceId = new LogicLong(allianceIdHigh.GetIntValue(), allianceIdLow.GetIntValue());
+                this._allianceExpLevel = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_exp_lvl");
+                this._allianceRole = LogicJSONHelper.GetJSONNumber(jsonObject, "alliance_role");
+                this._badgeId = LogicJSONHelper.GetJSONNumber(jsonObject, "badge_id");
+            }
+            else
+            {
+                this._badgeId = -1;
+            }
+        }
+
+        /// <summary>
+        ///     Saves this instance to json.
+        /// </summary>
+        public LogicJSONObject Save()
+        {
+            LogicJSONObject jsonObject  = new LogicJSONObject();
+
+            jsonObject.Put("avatar_id_hi", new LogicJSONNumber(this._avatarId.GetHigherInt()));
+            jsonObject.Put("avatar_id_lo", new LogicJSONNumber(this._avatarId.GetLowerInt()));
+            jsonObject.Put("name", new LogicJSONString(this._avatarName));
+            jsonObject.Put("facebook_id", new LogicJSONString(this._facebookId));
+            jsonObject.Put("exp_lvl", new LogicJSONNumber(this._expLevel));
+            jsonObject.Put("league_type", new LogicJSONNumber(this._leagueType));
+            jsonObject.Put("name_change_state", new LogicJSONNumber(this._nameChangeState));
+            jsonObject.Put("name_set", new LogicJSONBoolean(this._nameSetByUser));
+
+            if (this._allianceId != null)
+            {
+                jsonObject.Put("alliance_id_hi", new LogicJSONNumber(this._allianceId.GetHigherInt()));
+                jsonObject.Put("alliance_id_lo", new LogicJSONNumber(this._allianceId.GetLowerInt()));
+                jsonObject.Put("alliance_exp_lvl", new LogicJSONNumber(this._allianceExpLevel));
+                jsonObject.Put("alliance_role", new LogicJSONNumber(this._allianceRole));
+                jsonObject.Put("badge_id", new LogicJSONNumber(this._badgeId));
+            }
+
+            return jsonObject;
         }
     }
 }

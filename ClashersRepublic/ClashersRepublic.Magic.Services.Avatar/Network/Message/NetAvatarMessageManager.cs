@@ -7,10 +7,15 @@
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
+
     using ClashersRepublic.Magic.Services.Avatar.Game;
     using ClashersRepublic.Magic.Services.Avatar.Network.Session;
+
+    using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Utils;
+
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
@@ -44,7 +49,7 @@
                     break;
 
                 case 20211:
-
+                    this.AvatarEntryMessageReceived((AvatarEntryMessage) message);
                     break;
             }
         }
@@ -114,6 +119,8 @@
 
             if (NetAvatarSessionManager.TryRemove(sessionId, out NetAvatarSession session))
             {
+                DatabaseManager.Update(0, session.AvatarAccount.Id, LogicJSONParser.CreateJSONString(session.AvatarAccount.Save()));
+
                 session.AvatarAccount.SetSession(null);
                 session.Destruct();
             }
@@ -171,6 +178,13 @@
             if (NetAvatarSessionManager.TryGet(sessionId, out NetAvatarSession session))
             {
                 message.RemoveAvatarEntry().CopyTo(session.AvatarAccount.AvatarEntry);
+                
+                if (session.GetServiceNodeEndPoint(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER) != null)
+                {
+                    AvatarEntryMessage avatarEntryMessage = new AvatarEntryMessage();
+                    avatarEntryMessage.SetAvatarEntry(session.AvatarAccount.AvatarEntry);
+                    session.SendMessage(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER, avatarEntryMessage);
+                }
             }
         }
     }
