@@ -35,7 +35,7 @@
         /// </summary>
         internal static void Initialize()
         {
-            AccountManager._accountCounters = new int[DatabaseManager.GetDatabaseCount()];
+            AccountManager._accountCounters = new int[DatabaseManager.GetDatabaseCount(0)];
             AccountManager._random = new LogicRandom(LogicTimeUtil.GetTimestamp());
             AccountManager._accounts = new Dictionary<long, Account>();
         }
@@ -45,11 +45,11 @@
         /// </summary>
         internal static void LoadAccounts()
         {
-            int dbCount = DatabaseManager.GetDatabaseCount();
+            int dbCount = DatabaseManager.GetDatabaseCount(0);
 
             for (int i = 0; i < dbCount; i++)
             {
-                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(i);
+                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(0, i);
 
                 if (database != null)
                 {
@@ -144,7 +144,7 @@
 
             if (highId != -1)
             {
-                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(highId);
+                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(0, highId);
 
                 if (database != null)
                 {

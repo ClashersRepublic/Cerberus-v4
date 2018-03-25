@@ -50,7 +50,8 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
-            DatabaseManager.Initialize("magic-party");
+            DatabaseManager.Initialize("magic-party_avatar");
+            DatabaseManager.Initialize("magic-party_alliance");
         }
 
         /// <summary>

@@ -25,7 +25,7 @@
         /// </summary>
         public void SaveAccount()
         {
-            DatabaseManager.Update(this.Account.Id, LogicJSONParser.CreateJSONString(this.Account.Save()));
+            DatabaseManager.Update(0, this.Account.Id, LogicJSONParser.CreateJSONString(this.Account.Save()));
         }
 
         /// <summary>

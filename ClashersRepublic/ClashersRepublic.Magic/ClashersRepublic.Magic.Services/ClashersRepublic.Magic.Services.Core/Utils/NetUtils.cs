@@ -2,7 +2,8 @@
 {
     public class NetUtils
     {
-        public const int SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY = 1;
+        public const int SERVICE_NODE_TYPE_PROXY_CONTAINER = 1;
+        public const int SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY = 2;
         public const int SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER = 6;
         public const int SERVICE_NODE_TYPE_AVATAR_CONTAINER = 9;
         public const int SERVICE_NODE_TYPE_ZONE_CONTAINER = 10;
@@ -34,7 +35,7 @@
                 case 9: return "Avatar";
                 case 10: return "Zone";
                 case 11: return "Party";
-                case 13: return "League";
+                case 13: return "Ranking";
                 case 27: return "Battle";
                 default: return string.Empty;
             }

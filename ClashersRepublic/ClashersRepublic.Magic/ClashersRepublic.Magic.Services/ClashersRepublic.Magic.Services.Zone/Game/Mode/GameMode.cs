@@ -84,7 +84,7 @@
                     CompressibleStringHelper.Compress(this._home.ClientHome.GetCompressibleHomeJSON());
                 }
 
-                DatabaseManager.Update(this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
+                DatabaseManager.Update(0, this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
             }
             else
             {

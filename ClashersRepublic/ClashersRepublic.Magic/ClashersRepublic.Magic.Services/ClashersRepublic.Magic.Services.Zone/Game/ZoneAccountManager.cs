@@ -38,9 +38,9 @@
         /// </summary>
         internal static void LoadAccounts()
         {
-            for (int i = 0; i < DatabaseManager.GetDatabaseCount(); i++)
+            for (int i = 0; i < DatabaseManager.GetDatabaseCount(0); i++)
             {
-                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(i);
+                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(0, i);
 
                 if (database != null)
                 {
@@ -90,7 +90,7 @@
         {
             ZoneAccount home = new ZoneAccount(homeId);
             ZoneAccountManager._zones.Add(homeId, home);
-            DatabaseManager.Insert(homeId, LogicJSONParser.CreateJSONString(home.Save()));
+            DatabaseManager.Insert(0, homeId, LogicJSONParser.CreateJSONString(home.Save()));
             
             return home;
         }
