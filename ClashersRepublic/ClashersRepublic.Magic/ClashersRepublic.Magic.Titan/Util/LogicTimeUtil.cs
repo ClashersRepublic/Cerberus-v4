@@ -17,9 +17,25 @@
         /// <summary>
         ///     Gets the current timestamp.
         /// </summary>
+        public static int GetTimestamp(DateTime time)
+        {
+            return (int) time.Subtract(LogicTimeUtil.Unix).TotalSeconds;
+        }
+
+        /// <summary>
+        ///     Gets the current timestamp.
+        /// </summary>
         public static string GetTimestampMS()
         {
             return DateTime.UtcNow.Subtract(LogicTimeUtil.Unix).TotalMilliseconds.ToString("#");
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="DateTime"/> instance from timestamp.
+        /// </summary>
+        public static DateTime GetDateTimeFromTimestamp(int timestamp)
+        {
+            return LogicTimeUtil.Unix.AddSeconds(timestamp);
         }
     }
 }

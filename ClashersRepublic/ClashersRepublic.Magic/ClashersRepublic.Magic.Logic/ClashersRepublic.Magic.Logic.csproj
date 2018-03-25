@@ -163,6 +163,7 @@
     <Compile Include="Level\LogicTileMap.cs" />
     <Compile Include="LogicNpcAttack.cs" />
     <Compile Include="LogicVersion.cs" />
+    <Compile Include="Message\Account\ChatAccountBanStatusMessage.cs" />
     <Compile Include="Message\Account\DisconnectedMessage.cs" />
     <Compile Include="Message\Account\PersonalBreakStartedMessage.cs" />
     <Compile Include="Message\Account\ShutdownStartedMessage.cs" />
@@ -178,6 +179,8 @@
     <Compile Include="Message\Account\LoginOkMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
+    <Compile Include="Message\Avatar\Stream\AvatarStreamEntry.cs" />
+    <Compile Include="Message\Avatar\Stream\AvatarStreamEntryFactory.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountBoundMessage.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountAlreadyBoundMessage.cs" />
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
@@ -3519,7 +3522,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Message\Alliance\Stream\" />
-    <Folder Include="Message\Avatar\Stream\" />
     <Folder Include="Message\Battle\" />
     <Folder Include="Message\DeviceLink\" />
     <Folder Include="Message\Facebook\" />

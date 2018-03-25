@@ -1,34 +1,24 @@
-﻿namespace ClashersRepublic.Magic.Services.Home.Network.Message
+﻿namespace ClashersRepublic.Magic.Services.Stream.Network.Message
 {
     using System;
-    using ClashersRepublic.Magic.Logic.Command.Server;
-    using ClashersRepublic.Magic.Services.Home.Game;
-    using ClashersRepublic.Magic.Services.Home.Network.Session;
-
+    
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
-    using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
-
     using ClashersRepublic.Magic.Services.Core.Network;
-
+    using ClashersRepublic.Magic.Services.Stream.Game;
+    using ClashersRepublic.Magic.Services.Stream.Network.Session;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
-    internal class NetHomeMessageManager : NetMessageManager
+    internal class NetStreamMessageManager : NetMessageManager
     {
         /// <summary>
         ///     Receives the specicified <see cref="NetMessage"/>.
         /// </summary>
         public override void ReceiveMessage(NetMessage message)
         {
-            if (message.GetSessionId() == null)
-            {
-                Logging.Warning("NetHomeMessageManager::receiveMessage session id is not defined");
-                return;
-            }
-
             switch (message.GetMessageType())
             {
                 case 10301:
@@ -64,17 +54,17 @@
 
             if (!accountId.IsZero())
             {
-                if (!HomeManager.TryGet(accountId, out Home home))
+                if (!StreamManager.TryGet(accountId, out Stream stream))
                 {
                     if (NetManager.GetDocumentOwnerId(10, accountId) != ServiceCore.ServiceNodeId)
                     {
                         return;
                     }
 
-                    home = HomeManager.CreateHome(accountId);
+                    stream = StreamManager.CreateStream(accountId);
                 }
 
-                NetHomeSession session = NetHomeSessionManager.Create(home, message.RemoveSessionId());
+                NetStreamSession session = NetStreamSessionManager.Create(stream, message.RemoveSessionId());
 
                 int[] ids = message.RemoveEndPoints();
 
@@ -86,8 +76,9 @@
                     }
                 }
 
-                home.SetSession(session);
-                home.GameMode.Init();
+                stream.SetSession(session);
+
+
             }
         }
 
@@ -98,11 +89,13 @@
         {
             byte[] sessionId = message.GetSessionId();
 
-            if (NetHomeSessionManager.TryRemove(sessionId, out NetHomeSession session))
+            if (sessionId != null)
             {
-                session.Home.GameMode.DeInit();
-                session.Home.SetSession(null);
-                session.Destruct();
+                if (NetStreamSessionManager.TryRemove(sessionId, out NetStreamSession session))
+                {
+                    session.Stream.SetSession(null);
+                    session.Destruct();
+                }
             }
         }
 
@@ -113,11 +106,14 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (NetHomeSessionManager.TryGet(sessionId, out NetHomeSession session))
+            if (sessionId != null)
             {
-                if (message.GetServerType() != ServiceCore.ServiceNodeType)
+                if (NetStreamSessionManager.TryGet(sessionId, out NetStreamSession session))
                 {
-                    session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
+                    if (message.GetServerType() != ServiceCore.ServiceNodeType)
+                    {
+                        session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
+                    }
                 }
             }
         }
@@ -129,39 +125,24 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (NetHomeSessionManager.TryGet(sessionId, out NetHomeSession session))
+            if (sessionId != null)
             {
-                PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
-
-                if (piranhaMessage != null)
+                if (NetStreamSessionManager.TryGet(sessionId, out NetStreamSession session))
                 {
-                    try
+                    PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+
+                    if (piranhaMessage != null)
                     {
-                        piranhaMessage.Decode();
-                        session.PiranhaMessageManager.ReceiveMessage(piranhaMessage);
+                        try
+                        {
+                            piranhaMessage.Decode();
+                            session.PiranhaMessageManager.ReceiveMessage(piranhaMessage);
+                        }
+                        catch (Exception exception)
+                        {
+                            Logging.Warning("NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
+                        }
                     }
-                    catch (Exception exception)
-                    {
-                        Logging.Warning("NetHomeMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Calledw hen a <see cref="AllowServerCommandMessage"/> is received.
-        /// </summary>
-        internal void AllowServerCommandMessageReceived(AllowServerCommandMessage message)
-        {
-            byte[] sessionId = message.RemoveSessionId();
-
-            if (NetHomeSessionManager.TryGet(sessionId, out NetHomeSession session))
-            {
-                LogicServerCommand serverCommand = message.RemoveServerCommand();
-
-                if (serverCommand != null)
-                {
-                    session.Home.GameMode.AddAvailableServerCommand(serverCommand);
                 }
             }
         }

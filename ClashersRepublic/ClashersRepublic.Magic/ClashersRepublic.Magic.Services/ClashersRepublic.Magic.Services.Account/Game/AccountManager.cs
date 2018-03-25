@@ -1,10 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Game
 {
     using System.Threading.Tasks;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-
-    using ClashersRepublic.Magic.Services.Account.Database;
+    
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Network;
@@ -51,7 +49,7 @@
 
             for (int i = 0; i < dbCount; i++)
             {
-                CouchbaseDatabase database = DatabaseManager.GetDatabase(i);
+                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(i);
 
                 if (database != null)
                 {
@@ -141,7 +139,7 @@
 
             if (highId != -1)
             {
-                CouchbaseDatabase database = DatabaseManager.GetDatabase(highId);
+                CouchbaseDatabase database = DatabaseManager.GetDatabaseAt(highId);
 
                 if (database != null)
                 {

@@ -1,6 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Message.Account
 {
-    public class AccoutBanCreatedMessage : NetMessage
+    public class AccountBanCreatedMessage : NetMessage
     {
         /// <summary>
         ///     Destructs this instance.

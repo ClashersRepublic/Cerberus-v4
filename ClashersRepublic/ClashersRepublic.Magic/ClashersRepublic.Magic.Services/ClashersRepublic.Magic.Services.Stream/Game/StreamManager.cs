@@ -1,27 +1,27 @@
-﻿namespace ClashersRepublic.Magic.Services.Home.Game
+﻿namespace ClashersRepublic.Magic.Services.Stream.Game
 {
-    using System.Threading.Tasks;
     using System.Collections.Generic;
-    
+    using System.Threading.Tasks;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
 
-    internal static class HomeManager
+    internal static class StreamManager
     {
-        private static int[] _homeCounters;
-        private static Dictionary<long, Home> _homes;
+        private static int[] _streamCounters;
+        private static Dictionary<long, Stream> _streams;
 
         /// <summary>
-        ///     Gets the total homes.
+        ///     Gets the total streams.
         /// </summary>
-        internal static int TotalHomes
+        internal static int TotalStreams
         {
             get
             {
-                return HomeManager._homes.Count;
+                return StreamManager._streams.Count;
             }
         }
 
@@ -30,14 +30,14 @@
         /// </summary>
         internal static void Initialize()
         {
-            HomeManager._homeCounters = new int[DatabaseManager.GetDatabaseCount()];
-            HomeManager._homes = new Dictionary<long, Home>();
+            StreamManager._streamCounters = new int[DatabaseManager.GetDatabaseCount()];
+            StreamManager._streams = new Dictionary<long, Stream>();
         }
 
         /// <summary>
         ///     Loads all homes from database.
         /// </summary>
-        internal static void LoadHomes()
+        internal static void LoadStreams()
         {
             for (int i = 0; i < DatabaseManager.GetDatabaseCount(); i++)
             {
@@ -49,7 +49,7 @@
                     int maxLowId = database.GetHigherId();
 
                     object locker = new object();
-                    
+
                     Parallel.For(1, maxLowId + 1, new ParallelOptions { MaxDegreeOfParallelism = 4 }, id =>
                     {
                         if (NetManager.GetDocumentOwnerId(ServiceCore.ServiceNodeType, id) == ServiceCore.ServiceNodeId)
@@ -58,13 +58,13 @@
 
                             if (json != null)
                             {
-                                Home home = new Home();
-                                home.Load(json);
+                                Stream stream = new Stream();
+                                stream.Load(json);
 
                                 lock (locker)
                                 {
-                                    HomeManager._homes.Add(home.Id, home);
-                                    HomeManager._homeCounters[highId] = LogicMath.Max(id, HomeManager._homeCounters[highId]);
+                                    StreamManager._streams.Add(stream.Id, stream);
+                                    StreamManager._streamCounters[highId] = LogicMath.Max(id, StreamManager._streamCounters[highId]);
                                 }
                             }
                         }
@@ -78,23 +78,23 @@
         }
 
         /// <summary>
-        ///     Tries to get the instance of the specified <see cref="Home"/> id.
+        ///     Tries to get the instance of the specified <see cref="Stream"/> id.
         /// </summary>
-        internal static bool TryGet(LogicLong avatarId, out Home home)
+        internal static bool TryGet(LogicLong avatarId, out Stream home)
         {
-            return HomeManager._homes.TryGetValue(avatarId, out home);
+            return StreamManager._streams.TryGetValue(avatarId, out home);
         }
-        
-        /// <summary>
-        ///     Create a new <see cref="Home"/> instance.
-        /// </summary>
-        internal static Home CreateHome(LogicLong homeId)
-        {
-            Home home = new Home(homeId);
-            DatabaseManager.Insert(homeId, LogicJSONParser.CreateJSONString(home.Save()));
-            HomeManager._homes.Add(homeId, home);
 
-            return home;
+        /// <summary>
+        ///     Create a new <see cref="Stream"/> instance.
+        /// </summary>
+        internal static Stream CreateStream(LogicLong homeId)
+        {
+            Stream stream = new Stream(homeId);
+            DatabaseManager.Insert(homeId, LogicJSONParser.CreateJSONString(stream.Save()));
+            StreamManager._streams.Add(homeId, stream);
+
+            return stream;
         }
     }
 }

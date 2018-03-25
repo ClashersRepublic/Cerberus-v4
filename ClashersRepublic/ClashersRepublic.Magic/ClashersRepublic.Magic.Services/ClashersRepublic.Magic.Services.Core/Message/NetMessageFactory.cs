@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
 
@@ -27,6 +28,8 @@
                     case 10304: return new UnbindServerMessage();
 
                     case 10400: return new ForwardPiranhaMessage();
+
+                    case 10511: return new AllowServerCommandMessage();
                 }
             }
             else
@@ -35,10 +38,11 @@
                 {
                     case 20100: return new LoginClientFailedMessage();
                     case 20101: return new LoginClientOkMessage();
-                    case 20102: return new AccoutBanCreatedMessage();
+                    case 20102: return new AccountBanCreatedMessage();
                     case 20103: return new AccountBanRevokedMessage();
                         
                     case 20210: return new AvatarChangeMessage();
+                    case 20211: return new AvatarEntryMessage();
                 }
             }
 

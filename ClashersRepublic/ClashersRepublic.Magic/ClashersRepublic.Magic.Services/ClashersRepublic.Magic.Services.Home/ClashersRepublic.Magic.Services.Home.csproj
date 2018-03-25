@@ -64,7 +64,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\DatabaseManager.cs" />
     <Compile Include="Game\Avatar\Change\AvatarChangeListener.cs" />
     <Compile Include="Game\Command\CommandManagerListener.cs" />
     <Compile Include="Game\Home.cs" />

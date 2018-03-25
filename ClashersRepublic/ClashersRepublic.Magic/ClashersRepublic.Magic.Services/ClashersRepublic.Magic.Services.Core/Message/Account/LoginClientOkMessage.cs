@@ -14,6 +14,7 @@
         private int _sessionCount;
         private int _playTimeSeconds;
         private int _daysSinceStartedPlaying;
+        private int _chatAccountBanSecs;
 
         /// <summary>
         ///     Destructs this instance.
@@ -48,6 +49,7 @@
             this.Stream.WriteVInt(this._sessionCount);
             this.Stream.WriteVInt(this._playTimeSeconds);
             this.Stream.WriteVInt(this._daysSinceStartedPlaying);
+            this.Stream.WriteVInt(this._chatAccountBanSecs);
         }
 
         /// <summary>
@@ -67,6 +69,7 @@
             this._sessionCount = this.Stream.ReadVInt();
             this._playTimeSeconds = this.Stream.ReadVInt();
             this._daysSinceStartedPlaying = this.Stream.ReadVInt();
+            this._chatAccountBanSecs = this.Stream.ReadVInt();
         }
 
         /// <summary>
@@ -249,6 +252,22 @@
         public void SetDaysSinceStartedPlaying(int value)
         {
             this._daysSinceStartedPlaying = value;
+        }
+
+        /// <summary>
+        ///     Gets the chat account ban seconds.
+        /// </summary>
+        public int GetChatAccountBanSeconds()
+        {
+            return this._chatAccountBanSecs;
+        }
+
+        /// <summary>
+        ///     Sets the chat account ban seconds.
+        /// </summary>
+        public void SetChatAccountBanSeconds(int value)
+        {
+            this._chatAccountBanSecs = value;
         }
     }
 }

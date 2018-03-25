@@ -1,7 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Account.Network.Session
 {
-    using ClashersRepublic.Magic.Services.Account.Database;
     using ClashersRepublic.Magic.Services.Account.Game;
+    using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
     using ClashersRepublic.Magic.Titan.Json;
 
@@ -25,7 +25,7 @@
         /// </summary>
         public void SaveAccount()
         {
-            DatabaseManager.GetDatabase(this.Account.Id.GetHigherInt()).UpdateDocument(this.Account.Id, LogicJSONParser.CreateJSONString(this.Account.Save()));
+            DatabaseManager.Update(this.Account.Id, LogicJSONParser.CreateJSONString(this.Account.Save()));
         }
 
         /// <summary>

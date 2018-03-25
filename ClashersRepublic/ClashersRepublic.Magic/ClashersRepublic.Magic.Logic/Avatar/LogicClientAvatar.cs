@@ -323,6 +323,22 @@
         }
 
         /// <summary>
+        ///     Gets the facebook id.
+        /// </summary>
+        public string GetFacebookId()
+        {
+            return this._facebookId;
+        }
+
+        /// <summary>
+        ///     Sets the facebook id.
+        /// </summary>
+        public void SetFacebookId(string facebookId)
+        {
+            this._facebookId = facebookId;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the avatar has enough diamonds.
         /// </summary>
         public bool HasEnoughDiamonds(int count, bool callListener, LogicLevel level)

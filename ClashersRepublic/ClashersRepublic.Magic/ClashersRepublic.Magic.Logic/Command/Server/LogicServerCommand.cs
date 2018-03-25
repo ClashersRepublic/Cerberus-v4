@@ -46,12 +46,6 @@
         public override void Decode(ByteStream stream)
         {
             this._id = stream.ReadInt();
-
-            if (this._id == -1)
-            {
-                Debugger.Error("LogicServerCommand::decode() id is not set!");
-            }
-
             base.Decode(stream);
         }
 

@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Home.Game.Mode
 {
     using System;
+
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Command.Server;
@@ -11,11 +12,13 @@
     using ClashersRepublic.Magic.Logic.Mode;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Util;
+
     using ClashersRepublic.Magic.Services.Core;
-    using ClashersRepublic.Magic.Services.Home.Database;
+    using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Home.Game.Command;
     using ClashersRepublic.Magic.Services.Home.Network.Session;
     using ClashersRepublic.Magic.Services.Home.Resource;
+
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -81,7 +84,7 @@
                     CompressibleStringHelper.Compress(this._home.ClientHome.GetCompressibleHomeJSON());
                 }
 
-                DatabaseManager.Update(this._home);
+                DatabaseManager.Update(this._home.Id, LogicJSONParser.CreateJSONString(this._home.Save()));
             }
             else
             {

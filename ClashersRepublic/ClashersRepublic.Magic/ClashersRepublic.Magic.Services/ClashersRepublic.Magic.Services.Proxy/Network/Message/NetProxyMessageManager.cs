@@ -94,20 +94,42 @@
                             SessionCount = message.GetSessionCount(),
                             PlayTimeSeconds = message.GetPlayTimeSeconds(),
                             DaysSinceStartedPlaying = message.GetDaysSinceStartedPlaying(),
-                            Region = "fr-FR",
+
                             ServerMajorVersion = LogicVersion.MajorVersion,
                             ServerBuildVersion = LogicVersion.BuildVersion,
                             ContentVersion = ResourceManager.GetContentVersion(),
                             ContentUrlList = ResourceManager.ContentUrlList,
-                            ChronosContentUrlList = ResourceManager.ChronosContentUrlList
+                            ChronosContentUrlList = ResourceManager.ChronosContentUrlList,
+
+                            Region = "fr-FR"
                         };
 
 
                         session.SetAccountId(loginOkMessage.AccountId);
-                        session.Client.Messaging.MessageManager.SendMessage(loginOkMessage);
-                        session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.AccountId));
-
+                        session.Client.Messaging.Send(loginOkMessage);
                         session.Client.State = 6;
+
+                        session.BindServer(10, NetManager.GetDocumentOwnerId(10, loginOkMessage.HomeId));
+
+                        if (message.GetChatAccountBanSeconds() != 0)
+                        {
+                            ChatAccountBanStatusMessage chatAccountBanStatusMessage = new ChatAccountBanStatusMessage();
+                            chatAccountBanStatusMessage.SetBanSeconds(message.GetChatAccountBanSeconds());
+                            session.Client.Messaging.Send(chatAccountBanStatusMessage);
+                        }
+                        else
+                        {
+                            NetSocket socket = NetManager.GetRandomEndPoint(6);
+
+                            if (socket != null)
+                            {
+                                // REQUEST.
+                            }
+                            else
+                            {
+                                Logging.Warning("loginClientOkMessageReceived no chat server is available");
+                            }
+                        }
                     }
                 }
             }

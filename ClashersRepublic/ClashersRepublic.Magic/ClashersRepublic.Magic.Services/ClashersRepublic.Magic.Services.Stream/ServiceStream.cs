@@ -1,19 +1,17 @@
-﻿namespace ClashersRepublic.Magic.Services.Home
+﻿namespace ClashersRepublic.Magic.Services.Stream
 {
     using System.Timers;
 
     using ClashersRepublic.Magic.Logic.Data;
-    
-    using ClashersRepublic.Magic.Services.Home.Game;
-    using ClashersRepublic.Magic.Services.Home.Network.Message;
-    using ClashersRepublic.Magic.Services.Home.Network.Session;
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Database;
-    using ClashersRepublic.Magic.Services.Home.Handler;
-    using ClashersRepublic.Magic.Services.Home.Resource;
+    using ClashersRepublic.Magic.Services.Stream.Game;
+    using ClashersRepublic.Magic.Services.Stream.Handler;
+    using ClashersRepublic.Magic.Services.Stream.Network.Message;
+    using ClashersRepublic.Magic.Services.Stream.Network.Session;
 
-    internal static class ServiceHome
+    internal static class ServiceStream
     {
         private static Timer _titleTimer;
 
@@ -22,17 +20,17 @@
         /// </summary>
         internal static void Initialize(string[] args)
         {
-            ServiceCore.Initialize(10, new NetHomeMessageManager(), args);
+            ServiceCore.Initialize(10, new NetStreamMessageManager(), args);
 
-            ServiceHome.InitLogic();
-            ServiceHome.InitGame();
-            ServiceHome.InitNetwork();
+            ServiceStream.InitLogic();
+            ServiceStream.InitGame();
+            ServiceStream.InitNetwork();
 
-            ServiceHome._titleTimer = new Timer(200);
-            ServiceHome._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
-            ServiceHome._titleTimer.Start();
+            ServiceStream._titleTimer = new Timer(200);
+            ServiceStream._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
+            ServiceStream._titleTimer.Start();
 
-            ServiceHome.Start();
+            ServiceStream.Start();
         }
 
         /// <summary>
@@ -40,7 +38,7 @@
         /// </summary>
         internal static void Start()
         {
-            HomeManager.LoadHomes();
+            StreamManager.LoadStreams();
             ExitHandler.Initialize();
             ServiceCore.Start();
         }
@@ -51,8 +49,7 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
-            DatabaseManager.Initialize("magic-homes");
-            HomeResourceManager.Initialize();
+            DatabaseManager.Initialize("magic-streams");
         }
 
         /// <summary>
@@ -60,7 +57,7 @@
         /// </summary>
         internal static void InitNetwork()
         {
-            NetHomeSessionManager.Initialize();
+            NetStreamSessionManager.Initialize();
         }
 
         /// <summary>
@@ -68,7 +65,7 @@
         /// </summary>
         internal static void InitGame()
         {
-            HomeManager.Initialize();
+            StreamManager.Initialize();
         }
     }
 }

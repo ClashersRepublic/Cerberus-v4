@@ -45,6 +45,7 @@
             }
 
             ServiceCore.LoadConfig();
+
             WebManager.Initialize();
 
             ServiceCore.InitConfig();

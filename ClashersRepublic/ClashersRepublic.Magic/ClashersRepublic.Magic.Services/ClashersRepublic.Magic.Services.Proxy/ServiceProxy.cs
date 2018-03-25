@@ -29,7 +29,8 @@
             ServiceProxy.InitNetwork();
 
             ServiceProxy.Random = new LogicRandom(LogicTimeUtil.GetTimestamp());
-            ServiceProxy.TitleTimer = new Timer(150);
+
+            ServiceProxy.TitleTimer = new Timer(200);
             ServiceProxy.TitleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
             ServiceProxy.TitleTimer.Start();
 

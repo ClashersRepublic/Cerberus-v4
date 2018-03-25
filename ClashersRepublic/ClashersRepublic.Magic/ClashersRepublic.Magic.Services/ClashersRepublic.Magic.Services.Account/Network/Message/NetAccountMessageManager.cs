@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
@@ -144,7 +145,7 @@
                         {
                             if (account.CreateBan(message.GetReason(), message.GetEndTime()))
                             {
-                                NetAccountMessageManager.SendResponseMessage(message, new AccoutBanCreatedMessage());
+                                NetAccountMessageManager.SendResponseMessage(message, new AccountBanCreatedMessage());
                             }
                         }
                     }

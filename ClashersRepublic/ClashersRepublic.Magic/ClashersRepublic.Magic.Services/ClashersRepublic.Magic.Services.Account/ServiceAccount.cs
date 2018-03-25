@@ -3,13 +3,15 @@
     using System.Timers;
 
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Services.Account.Database;
+
     using ClashersRepublic.Magic.Services.Account.Game;
     using ClashersRepublic.Magic.Services.Account.Handler;
     using ClashersRepublic.Magic.Services.Account.Network.Message;
     using ClashersRepublic.Magic.Services.Account.Network.Session;
+
     using ClashersRepublic.Magic.Services.Core;
-    
+    using ClashersRepublic.Magic.Services.Core.Database;
+
     internal static class ServiceAccount
     { 
         private static Timer _titleTimer;
@@ -30,7 +32,6 @@
             ServiceAccount._titleTimer.Start();
 
             ServiceAccount.Start();
-            ServiceCore.Start();
         }
 
         /// <summary>
@@ -40,6 +41,7 @@
         {
             AccountManager.LoadAccounts();
             ExitHandler.Initialize();
+            ServiceCore.Start();
         }
 
         /// <summary>
@@ -48,7 +50,7 @@
         internal static void InitLogic()
         {
             LogicDataTables.Initialize();
-            DatabaseManager.Initialize();
+            DatabaseManager.Initialize("magic-accounts");
         }
 
         /// <summary>
