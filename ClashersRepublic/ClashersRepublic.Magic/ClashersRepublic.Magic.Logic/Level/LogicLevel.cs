@@ -958,6 +958,7 @@
             LogicDataTable trapTable = LogicDataTables.GetTable(11);
             LogicDataTable decoTable = LogicDataTables.GetTable(17);
 
+            int townHallLevelVillage2 = this._homeOwnerAvatar.GetTownHallVillage2Level();
             int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
             int expLevel = this._homeOwnerAvatar.GetExpLevel();
 
@@ -965,8 +966,10 @@
 
             for (int i = 0; i < this._newShopBuildings.Count; i++)
             {
+                LogicData data = buildingTable.GetItemAt(i);
+
                 int currentNewItemCount = this._newShopBuildings[i];
-                int unlockedShopItemCount = this.GetShopUnlockCount(buildingTable.GetItemAt(i), townHallLevel);
+                int unlockedShopItemCount = this.GetShopUnlockCount(data, data.GetVillageType() == 0 ? townHallLevel : townHallLevelVillage2);
 
                 newShopBuildingArray.Add(new LogicJSONNumber(unlockedShopItemCount - currentNewItemCount));
             }
@@ -977,8 +980,10 @@
 
             for (int i = 0; i < this._newShopTraps.Count; i++)
             {
+                LogicData data = trapTable.GetItemAt(i);
+
                 int currentNewItemCount = this._newShopTraps[i];
-                int unlockedShopItemCount = this.GetShopUnlockCount(trapTable.GetItemAt(i), townHallLevel);
+                int unlockedShopItemCount = this.GetShopUnlockCount(data, data.GetVillageType() == 0 ? townHallLevel : townHallLevelVillage2);
 
                 newShopTrapArray.Add(new LogicJSONNumber(unlockedShopItemCount - currentNewItemCount));
             }
@@ -1003,7 +1008,113 @@
         /// </summary>
         public void LoadShopNewItems()
         {
-            // TODO: Implement LogicLevel::loadShopNewItems();
+            if (this._levelJSON != null)
+            {
+                for (int i = 0; i < this._newShopBuildings.Count; i++)
+                {
+                    this._newShopBuildings[i] = 0;
+                }
+
+                for (int i = 0; i < this._newShopTraps.Count; i++)
+                {
+                    this._newShopTraps[i] = 0;
+                }
+
+                for (int i = 0; i < this._newShopDecos.Count; i++)
+                {
+                    this._newShopDecos[i] = 0;
+                }
+
+                LogicDataTable buildingTable = LogicDataTables.GetTable(0);
+                LogicDataTable trapTable = LogicDataTables.GetTable(11);
+                LogicDataTable decoTable = LogicDataTables.GetTable(17);
+
+                int townHallLevelVillage2 = this._homeOwnerAvatar.GetTownHallVillage2Level();
+                int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
+                int expLevel = this._homeOwnerAvatar.GetExpLevel();
+
+                LogicJSONArray buildingArray = this._levelJSON.GetJSONArray("newShopBuildings");
+
+                if (buildingArray != null)
+                {
+                    for (int i = 0; i < this._newShopBuildings.Count; i++)
+                    {
+                        LogicData data = buildingTable.GetItemAt(i);
+                        
+                        int unlockedShopItemCount = this.GetShopUnlockCount(data, data.GetVillageType() == 0 ? townHallLevel : townHallLevelVillage2);
+
+                        if (i < buildingArray.Size())
+                        {
+                            unlockedShopItemCount -= buildingArray.GetJSONNumber(i).GetIntValue();
+                        }
+
+                        this._newShopBuildings[i] = unlockedShopItemCount;
+                    }
+                }
+
+                LogicJSONArray trapArray = this._levelJSON.GetJSONArray("newShopTraps");
+
+                if (trapArray != null)
+                {
+                    for (int i = 0; i < this._newShopTraps.Count; i++)
+                    {
+                        LogicData data = trapTable.GetItemAt(i);
+
+                        int unlockedShopItemCount = this.GetShopUnlockCount(data, data.GetVillageType() == 0 ? townHallLevel : townHallLevelVillage2);
+
+                        if (i < trapArray.Size())
+                        {
+                            unlockedShopItemCount -= trapArray.GetJSONNumber(i).GetIntValue();
+                        }
+
+                        this._newShopTraps[i] = unlockedShopItemCount;
+                    }
+                }
+
+                LogicJSONArray decoArray = this._levelJSON.GetJSONArray("newShopDecos");
+
+                if (decoArray != null)
+                {
+                    for (int i = 0; i < this._newShopDecos.Count; i++)
+                    {
+                        int unlockedShopItemCount = this.GetShopUnlockCount(decoTable.GetItemAt(i), expLevel);
+
+                        if (i < decoArray.Size())
+                        {
+                            unlockedShopItemCount -= decoArray.GetJSONNumber(i).GetIntValue();
+                        }
+
+                        this._newShopDecos[i] = unlockedShopItemCount;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the unlocked shop item count.
+        /// </summary>
+        public bool SetUnlockedShopItemCount(LogicData data, int index, int count, int villageType)
+        {
+            if (data.GetVillageType() == villageType)
+            {
+                switch (data.GetDataType())
+                {
+                    case 0:
+                        this._newShopBuildings[index] = count;
+                        break;
+                    case 11:
+                        this._newShopTraps[index] = count;
+                        break;
+                    case 17:
+                        this._newShopDecos[index] = count;
+                        break;
+                    default: return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

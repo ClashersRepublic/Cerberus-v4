@@ -268,6 +268,12 @@
                         break;
                     }
 
+                    case 532:
+                    {
+                        command = new LogicNewShopItemsSeenCommand();
+                        break;
+                    }
+
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();

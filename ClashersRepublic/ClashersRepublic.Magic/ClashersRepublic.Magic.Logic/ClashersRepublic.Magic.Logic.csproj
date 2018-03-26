@@ -62,6 +62,7 @@
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicNewShopItemsSeenCommand.cs" />
     <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicMissionProgressCommand.cs" />
     <Compile Include="Command\Home\LogicTrainUnitCommand.cs" />
