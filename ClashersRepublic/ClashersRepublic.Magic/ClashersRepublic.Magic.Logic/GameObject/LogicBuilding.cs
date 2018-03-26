@@ -9,6 +9,7 @@
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public sealed class LogicBuilding : LogicGameObject
     {
@@ -586,6 +587,8 @@
                     {
                         goto finishConstruction;
                     }
+
+                    Debugger.Log("LogicBuilding::fastForwardTime remaningConstructionTime: " + this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()));
                 }
 
                 int maxClockTowerFastForward = this._level.GetUpdatedClockTowerBoostTime();
@@ -644,7 +647,7 @@
             else
             {
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime() + constructionTime);
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
 
                 this._level.GetWorkerManagerAt(this.GetBuildingData().GetVillageType()).AllocateWorker(this);
             }
