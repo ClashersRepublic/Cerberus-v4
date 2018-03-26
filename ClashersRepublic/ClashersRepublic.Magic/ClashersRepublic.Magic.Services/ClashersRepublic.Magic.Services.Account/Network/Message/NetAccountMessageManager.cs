@@ -111,7 +111,7 @@
         {
             if (account.Session != null)
             {
-                NetAccountSessionManager.TryRemove(sessionId);
+                NetAccountSessionManager.TryRemove(account.Session.SessionId);
 
                 account.Session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
                 account.Session.Destruct();
