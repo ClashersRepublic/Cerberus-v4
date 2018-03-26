@@ -588,7 +588,7 @@
                         goto finishConstruction;
                     }
 
-                    Debugger.Log("LogicBuilding::fastForwardTime remaningConstructionTime: " + this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()));
+                    base.FastForwardTime(secs);
                 }
 
                 int maxClockTowerFastForward = this._level.GetUpdatedClockTowerBoostTime();
