@@ -1,7 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Command.Server
 {
     using ClashersRepublic.Magic.Titan.DataStream;
-    using ClashersRepublic.Magic.Titan.Debug;
 
     public class LogicServerCommand : LogicCommand
     {
@@ -56,6 +55,14 @@
         {
             encoder.WriteInt(this._id);
             base.Encode(encoder);
+        }
+
+        /// <summary>
+        ///     Gets if this command is server command.
+        /// </summary>
+        public override bool IsServerCommand()
+        {
+            return true;
         }
     }
 }

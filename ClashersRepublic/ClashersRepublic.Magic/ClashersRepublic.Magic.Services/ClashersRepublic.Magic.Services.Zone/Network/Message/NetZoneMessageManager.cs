@@ -49,6 +49,9 @@
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
                     break;
 
+                case 10511:
+                    this.AllowServerCommandMessageReceived((AllowServerCommandMessage) message);
+                    break;
                 case 10520:
                     this.AskForAvatarProfileFullEntryMessageReceived((AskForAvatarProfileFullEntryMessage) message);
                     break;
@@ -66,7 +69,7 @@
         /// <summary>
         ///     Called when a <see cref="ServerBoundMessage"/> is received.
         /// </summary>
-        internal void ServerBoundMessageReceived(ServerBoundMessage message)
+        private void ServerBoundMessageReceived(ServerBoundMessage message)
         {
             LogicLong accountId = message.RemoveAccountId();
 
@@ -113,7 +116,7 @@
         /// <summary>
         ///     Called when a <see cref="ServerUnboundMessage"/> is received.
         /// </summary>
-        internal void ServerUnboundMessageReceived(ServerUnboundMessage message)
+        private void ServerUnboundMessageReceived(ServerUnboundMessage message)
         {
             byte[] sessionId = message.GetSessionId();
 
@@ -144,7 +147,7 @@
         /// <summary>
         ///     Called when a <see cref="ForwardPiranhaMessage"/> is received.
         /// </summary>
-        internal void ForwardPiranhaMessageReceived(ForwardPiranhaMessage message)
+        private void ForwardPiranhaMessageReceived(ForwardPiranhaMessage message)
         {
             byte[] sessionId = message.RemoveSessionId();
 
@@ -170,7 +173,7 @@
         /// <summary>
         ///     Calledw when a <see cref="AllowServerCommandMessage"/> is received.
         /// </summary>
-        internal void AllowServerCommandMessageReceived(AllowServerCommandMessage message)
+        private void AllowServerCommandMessageReceived(AllowServerCommandMessage message)
         {
             byte[] sessionId = message.RemoveSessionId();
 

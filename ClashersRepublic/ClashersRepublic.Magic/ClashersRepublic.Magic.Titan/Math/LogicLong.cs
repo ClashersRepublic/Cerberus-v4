@@ -96,6 +96,30 @@
         }
 
         /// <summary>
+        ///     Gets the hash code of this instance.
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return this.HashCode();
+        }
+
+        /// <summary>
+        ///     Determines whether the specified object is equal to the current object.
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            if (obj != null)
+            {
+                if (obj is LogicLong logicLong)
+                {
+                    return logicLong._highInteger == this._highInteger && logicLong._lowInteger == this._lowInteger;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         public override string ToString()

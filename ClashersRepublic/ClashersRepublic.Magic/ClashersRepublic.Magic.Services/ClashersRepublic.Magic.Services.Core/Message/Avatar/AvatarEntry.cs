@@ -260,6 +260,22 @@
         }
 
         /// <summary>
+        ///     Gets if the name is set by user.
+        /// </summary>
+        public bool GetNameSetByUser()
+        {
+            return this._nameSetByUser;
+        }
+
+        /// <summary>
+        ///     Sets if the name is set by user.
+        /// </summary>
+        public void SetNameSetByUser(bool set)
+        {
+            this._nameSetByUser = set;
+        }
+
+        /// <summary>
         ///     Loads this instance from json.
         /// </summary>
         public void Load(LogicJSONObject jsonObject)

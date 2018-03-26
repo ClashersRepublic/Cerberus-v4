@@ -69,6 +69,7 @@
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
     <Compile Include="Command\LogicCommand.cs" />
     <Compile Include="Command\LogicCommandManager.cs" />
+    <Compile Include="Command\Server\LogicChangeAvatarNameCommand.cs" />
     <Compile Include="Command\Server\LogicLeaveAllianceCommand.cs" />
     <Compile Include="Command\Server\LogicJoinAllianceCommand.cs" />
     <Compile Include="Command\Server\LogicServerCommand.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Message\Account\LoginOkMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
+    <Compile Include="Message\Avatar\ChangeAvatarNameMessage.cs" />
     <Compile Include="Message\Avatar\AvatarProfileFullEntry.cs" />
     <Compile Include="Message\Avatar\AvatarProfileMessage.cs" />
     <Compile Include="Message\Avatar\Stream\AvatarStreamEntry.cs" />

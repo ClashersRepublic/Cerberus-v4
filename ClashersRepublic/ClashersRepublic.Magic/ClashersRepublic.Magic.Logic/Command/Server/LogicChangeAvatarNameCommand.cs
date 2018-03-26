@@ -3,11 +3,11 @@
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.DataStream;
-    using ClashersRepublic.Magic.Titan.Math;
 
-    public class LogicLeaveAllianceCommand : LogicServerCommand
+    public class LogicChangeAvatarNameCommand : LogicServerCommand
     {
-        private LogicLong _allianceId;
+        private string _avatarName;
+        private int _nameChangeState;
 
         /// <summary>
         ///     Destructs this instance.
@@ -15,7 +15,7 @@
         public override void Destruct()
         {
             base.Destruct();
-            this._allianceId = null;
+            this._avatarName = null;
         }
 
         /// <summary>
@@ -23,7 +23,9 @@
         /// </summary>
         public override void Decode(ByteStream stream)
         {
-            this._allianceId = stream.ReadLong();
+            this._avatarName = stream.ReadString(900000);
+            this._nameChangeState = stream.ReadInt();
+
             base.Decode(stream);
         }
 
@@ -32,7 +34,9 @@
         /// </summary>
         public override void Encode(ChecksumEncoder encoder)
         {
-            encoder.WriteLong(this._allianceId);
+            encoder.WriteString(this._avatarName);
+            encoder.WriteInt(this._nameChangeState);
+
             base.Encode(encoder);
         }
 
@@ -45,19 +49,9 @@
 
             if (playerAvatar != null)
             {
-                if (playerAvatar.IsInAlliance())
-                {
-                    if (playerAvatar.GetAllianceId().Equals(this._allianceId))
-                    {
-                        playerAvatar.SetAllianceId(null);
-                        playerAvatar.SetAllianceName(null);
-                        playerAvatar.SetAllianceBadge(-1);
-                        playerAvatar.SetAllianceExpLevel(-1);
-                        playerAvatar.GetChangeListener().AllianceLeft();
-                    }
-                }
-
-                level.GetGameListener().AllianceLeft();
+                playerAvatar.SetName(this._avatarName);
+                playerAvatar.SetNameSetByUser(true);
+                playerAvatar.SetNameChangeState(this._nameChangeState);
 
                 return 0;
             }
@@ -70,7 +64,23 @@
         /// </summary>
         public override int GetCommandType()
         {
-            return 2;
+            return 3;
+        }
+
+        /// <summary>
+        ///     Sets the avatar name.
+        /// </summary>
+        public void SetAvatarName(string avatarName)
+        {
+            this._avatarName = avatarName;
+        }
+
+        /// <summary>
+        ///     Sets the avatar name change state.
+        /// </summary>
+        public void SetAvatarNameChangeState(int state)
+        {
+            this._nameChangeState = state;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Avatar
 {
+    using System.Text.RegularExpressions;
     using System.Timers;
 
     using ClashersRepublic.Magic.Logic.Data;
@@ -15,6 +16,7 @@
     internal static class ServiceAvatar
     {
         private static Timer _titleTimer;
+        internal static Regex Regex;
 
         /// <summary>
         ///     Initializes this instance.
@@ -30,6 +32,8 @@
             ServiceAvatar._titleTimer = new Timer(200);
             ServiceAvatar._titleTimer.Elapsed += (sender, eventArgs) => Program.UpdateConsoleTitle();
             ServiceAvatar._titleTimer.Start();
+
+            ServiceAvatar.Regex = new Regex(@"\s+", RegexOptions.Compiled);
 
             ServiceAvatar.Start();
         }

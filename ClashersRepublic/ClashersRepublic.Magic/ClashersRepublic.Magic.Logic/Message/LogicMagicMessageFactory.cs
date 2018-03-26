@@ -81,6 +81,12 @@
                         break;
                     }
 
+                    case 10212:
+                    {
+                        message = new ChangeAvatarNameMessage();
+                        break;
+                    }
+
                     case 14101:
                     {
                         message = new GoHomeMessage();

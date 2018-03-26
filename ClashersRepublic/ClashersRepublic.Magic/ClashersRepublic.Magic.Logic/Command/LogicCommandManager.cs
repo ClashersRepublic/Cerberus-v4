@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Logic.Command.Battle;
     using ClashersRepublic.Magic.Logic.Command.Home;
     using ClashersRepublic.Magic.Logic.Command.Listener;
+    using ClashersRepublic.Magic.Logic.Command.Server;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.DataStream;
     using ClashersRepublic.Magic.Titan.Debug;
@@ -229,6 +230,15 @@
             {
                 switch (type)
                 {
+                    case 1:
+                        command = new LogicJoinAllianceCommand();
+                        break;
+                    case 2:
+                        command = new LogicLeaveAllianceCommand();
+                        break;
+                    case 3:
+                        command = new LogicChangeAvatarNameCommand();
+                        break;
                     default:
                     {
                         Debugger.Error("LogicCommandManager::createCommand() - Unknown command type: " + type);

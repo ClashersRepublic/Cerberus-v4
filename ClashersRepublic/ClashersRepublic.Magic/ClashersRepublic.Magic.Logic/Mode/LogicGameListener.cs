@@ -41,6 +41,10 @@
         {
         }
 
+        public virtual void AllianceLeft()
+        {
+        }
+
         public virtual void LevelUp(int expLevel)
         {
         }

@@ -317,6 +317,8 @@
                         availableServerCommand.SetServerCommand(serverCommand);
                         this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, availableServerCommand);
                     }
+
+                    Logging.Debug(string.Format("GameMode::addAvailableServerCommand cmd: {0} id: {1}", serverCommand.GetCommandType(), serverCommand.GetId()));
                 }
             }
         }
@@ -405,7 +407,38 @@
 
                                 for (int i = 0; i < commands.Count; i++)
                                 {
-                                    commandManager.AddCommand(commands[i]);
+                                    LogicCommand cmd = commands[i];
+
+                                    if (cmd.IsServerCommand())
+                                    {
+                                        LogicServerCommand sCmd = (LogicServerCommand) cmd;
+
+                                        if (sCmd.GetId() != -1)
+                                        {
+                                            if (this.IsBufferedServerCommand(sCmd))
+                                            {
+                                                cmd = this._bufferedServerCommands[sCmd.GetId()];
+
+                                                if (cmd.GetExecuteSubTick() == -1)
+                                                {
+                                                    cmd.SetExecuteSubTick(sCmd.GetExecuteSubTick());
+                                                    commandManager.AddCommand(cmd);
+                                                }
+                                                else
+                                                {
+                                                    Logging.Warning("GameMode::clientTurnReceived setExecuteSubTick called twice!");
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Logging.Warning("GameMode::clientTurnReceived id is not set!");
+                                        }
+
+                                        continue;
+                                    }
+                                    
+                                    commandManager.AddCommand(cmd);
                                 }
 
                                 commandExecuted = true;
