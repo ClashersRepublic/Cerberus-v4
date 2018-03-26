@@ -72,7 +72,14 @@
 
                     if (session.Client.State != 6 && session.Client.State != -1)
                     {
-                        session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
+                        if (message.GetErrorCode() == 1)
+                        {
+                            session.Client.Messaging.MessageManager.SendLoginFailedMessage(11, message.GetReason());
+                        }
+                        else
+                        {
+                            session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
+                        }
                     }
                 }
             }

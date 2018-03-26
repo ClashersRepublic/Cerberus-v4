@@ -145,12 +145,30 @@
                         this.CurrentBan = null;
                         return false;
                     }
-
-                    return true;
                 }
+
+                return true;
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///     Gets the remaining ban time.
+        /// </summary>
+        internal int GetRemainingBanTime()
+        {
+            if (this.CurrentBan != null)
+            {
+                if (this.CurrentBan.EndBanTime != -1)
+                {
+                    return LogicMath.Max(LogicTimeUtil.GetTimestamp() - this.CurrentBan.EndBanTime, 0);
+                }
+
+                return -1;
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -238,6 +256,14 @@
                     this.LastSessions.Add(session);
                 }
             }
+
+            LogicJSONObject banObject = jsonObject.GetJSONObject("ban");
+
+            if (banObject != null)
+            {
+                this.CurrentBan = new AccountBan();
+                this.CurrentBan.Load(banObject);
+            }
         }
 
         internal class AccountBan
@@ -251,6 +277,14 @@
             ///     Gets the timestamp of the end ban time.
             /// </summary>
             internal int EndBanTime { get; private set; }
+
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="AccountBan"/> class.
+            /// </summary>
+            internal AccountBan()
+            {
+                // AccountBan.
+            }
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="AccountBan"/> class.

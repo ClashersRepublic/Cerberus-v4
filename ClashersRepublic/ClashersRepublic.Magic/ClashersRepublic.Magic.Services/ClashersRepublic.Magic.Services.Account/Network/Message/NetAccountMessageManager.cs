@@ -10,6 +10,7 @@
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     internal class NetAccountMessageManager : NetMessageManager
     {
@@ -72,11 +73,11 @@
                     {
                         if (!account.IsBanned())
                         {
-                            this.StartSession(account, sessionId, message.GetServiceNodeId());
+                            this.StartSession(account, message.GetIPAddress(), message.GetDeviceModel(), sessionId, message.GetServiceNodeId());
                         }
                         else
                         {
-                            this.SendLoginClientFailedMessage(1, sessionId, NetManager.GetServiceNodeEndPoint(1, message.GetServiceNodeId()));
+                            this.SendLoginClientFailedMessage(1, sessionId, NetManager.GetServiceNodeEndPoint(1, message.GetServiceNodeId()), account.CurrentBan.BanReason, account.GetRemainingBanTime());
                         }
                     }
                     else
@@ -95,7 +96,7 @@
 
                 if (passToken == null)
                 {
-                    this.StartSession(AccountManager.CreateAccount(), sessionId, message.GetServiceNodeId());
+                    this.StartSession(AccountManager.CreateAccount(), message.GetIPAddress(), message.GetDeviceModel(), sessionId, message.GetServiceNodeId());
                 }
                 else
                 {
@@ -107,7 +108,7 @@
         /// <summary>
         ///     Handle the login of client.
         /// </summary>
-        internal void StartSession(Account account, byte[] sessionId, int proxyId)
+        internal void StartSession(Account account, string ipAddress, string deviceModel, byte[] sessionId, int proxyId)
         {
             if (account.Session != null)
             {
@@ -121,6 +122,7 @@
             NetAccountSession session = NetAccountSessionManager.Create(account, sessionId);
 
             account.SetSession(session);
+            account.SessionStarted(LogicTimeUtil.GetTimestamp(), ipAddress, deviceModel);
             session.SetServiceNodeId(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, proxyId);
 
             LoginClientOkMessage loginClientOkMessage = new LoginClientOkMessage();
@@ -191,10 +193,12 @@
         /// <summary>
         ///     Sends a <see cref="LoginClientFailedMessage"/> to the specified server.
         /// </summary>
-        internal void SendLoginClientFailedMessage(int errorCode, byte[] sessionId, NetSocket socket)
+        internal void SendLoginClientFailedMessage(int errorCode, byte[] sessionId, NetSocket socket, string reason = null, int remainingTime = -1)
         {
             LoginClientFailedMessage message = new LoginClientFailedMessage();
             message.SetErrorCode(errorCode);
+            message.SetReason(reason);
+            message.SetRemainingTime(remainingTime);
             NetMessageManager.SendMessage(socket, sessionId, message);
         }
     }
