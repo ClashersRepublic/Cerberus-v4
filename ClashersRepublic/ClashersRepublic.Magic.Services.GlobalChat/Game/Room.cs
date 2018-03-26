@@ -58,24 +58,26 @@
             {
                 message = ServiceGlobalChat.Regex.Replace(message, " ");
 
+                GlobalChatLineMessage globalChatLineMessage = new GlobalChatLineMessage();
+
+                globalChatLineMessage.SetMessage(message);
+                globalChatLineMessage.SetAvatarId(entry.GetAvatarId());
+                globalChatLineMessage.SetHomeId(entry.GetHomeId());
+                globalChatLineMessage.SetAvatarName(entry.GetAvatarName());
+                globalChatLineMessage.SetAvatarExpLevel(entry.GetAvatarExpLevel());
+                globalChatLineMessage.SetAvatarLeagueType(entry.GetAvatarLeagueType());
+
+                if (entry.GetAllianceId() != null)
+                {
+                    globalChatLineMessage.SetAllianceId(entry.GetAllianceId());
+                    globalChatLineMessage.SetAllianceName(entry.GetAllianceName());
+                    globalChatLineMessage.SetAllianceBadgeId(entry.GetAllianceBadgeId());
+                }
+
+                globalChatLineMessage.Encode();
+
                 for (int i = 0; i < this._sessions.Count; i++)
                 {
-                    GlobalChatLineMessage globalChatLineMessage = new GlobalChatLineMessage();
-
-                    globalChatLineMessage.SetMessage(message);
-                    globalChatLineMessage.SetAvatarId(entry.GetAvatarId());
-                    globalChatLineMessage.SetHomeId(entry.GetHomeId());
-                    globalChatLineMessage.SetAvatarName(entry.GetAvatarName());
-                    globalChatLineMessage.SetAvatarExpLevel(entry.GetAvatarExpLevel());
-                    globalChatLineMessage.SetAvatarLeagueType(entry.GetAvatarLeagueType());
-
-                    if (entry.GetAllianceId() != null)
-                    {
-                        globalChatLineMessage.SetAllianceId(entry.GetAllianceId());
-                        globalChatLineMessage.SetAllianceName(entry.GetAllianceName());
-                        globalChatLineMessage.SetAllianceBadgeId(entry.GetAllianceBadgeId());
-                    }
-
                     this._sessions[i].SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, globalChatLineMessage);
                 }
             }

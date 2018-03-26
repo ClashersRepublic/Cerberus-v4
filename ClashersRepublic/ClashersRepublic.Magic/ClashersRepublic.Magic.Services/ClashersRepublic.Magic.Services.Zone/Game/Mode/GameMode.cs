@@ -61,7 +61,6 @@
         {
             if (this._logicGameMode != null)
             {
-                this.Save();
                 this._logicGameMode.Destruct();
                 this._logicGameMode = null;
             }
@@ -82,6 +81,7 @@
 
                     this._logicGameMode.SaveToJSON(jsonObject);
                     this._zoneAccount.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
+                    this.SendAvatarEntryMessage();
 
                     CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
                 }
@@ -111,6 +111,7 @@
             else
             {
                 this.SetHomeState();
+                this.Save();
             }
         }
 
@@ -383,8 +384,6 @@
         /// </summary>
         internal void ClientTurnReceived(int subTick, int checksum, LogicArrayList<LogicCommand> commands)
         {
-            bool updateAvatarEntry = false;
-
             if (subTick > -1)
             {
                 int currentTimestamp = LogicTimeUtil.GetTimestamp();
@@ -396,6 +395,8 @@
 
                     if (subTick > serverTick)
                     {
+                        bool commandExecuted = false;
+
                         if (commands != null)
                         {
                             if (commands.Count != 0)
@@ -407,7 +408,7 @@
                                     commandManager.AddCommand(commands[i]);
                                 }
 
-                                updateAvatarEntry = true;
+                                commandExecuted = true;
                             }
                         }
 
@@ -416,9 +417,9 @@
                             this._logicGameMode.UpdateOneSubTick();
                         } while (++serverTick != subTick);
 
-                        if (updateAvatarEntry)
+                        if (commandExecuted)
                         {
-                            this.SendAvatarEntryMessage();
+                            this.Save();
                         }
 
                         Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));

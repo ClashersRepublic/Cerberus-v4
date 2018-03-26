@@ -267,9 +267,10 @@
     <Compile Include="Message\Account\LoginClientOkMessage.cs" />
     <Compile Include="Message\Account\LoginClientMessage.cs" />
     <Compile Include="Message\Avatar\AvatarEntryMessage.cs" />
-    <Compile Include="Message\Avatar\AvatarChangeMessage.cs" />
     <Compile Include="Message\Avatar\AvatarEntry.cs" />
     <Compile Include="Message\Avatar\Stream\AddAvatarStreamEntryMessage.cs" />
+    <Compile Include="Message\Home\AvatarProfileFullEntryMessage.cs" />
+    <Compile Include="Message\Home\AskForAvatarProfileFullEntryMessage.cs" />
     <Compile Include="Message\Home\AllowServerCommandMessage.cs" />
     <Compile Include="Message\NetMessage.cs" />
     <Compile Include="Message\NetMessageFactory.cs" />

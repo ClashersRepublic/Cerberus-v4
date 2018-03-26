@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Message
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Avatar;
     using ClashersRepublic.Magic.Logic.Message.Avatar.Stream;
     using ClashersRepublic.Magic.Logic.Message.Chat;
     using ClashersRepublic.Magic.Logic.Message.Google;
@@ -101,6 +102,12 @@
                     case 14262:
                     {
                         message = new BindGoogleServiceAccountMessage();
+                        break;
+                    }
+
+                    case 14325:
+                    {
+                        message = new AskForAvatarProfileMessage();
                         break;
                     }
 
@@ -214,6 +221,12 @@
                     case 24133:
                     {
                         message = new NpcDataMessage();
+                        break;
+                    }
+
+                    case 24334:
+                    {
+                        message = new AvatarProfileMessage();
                         break;
                     }
 

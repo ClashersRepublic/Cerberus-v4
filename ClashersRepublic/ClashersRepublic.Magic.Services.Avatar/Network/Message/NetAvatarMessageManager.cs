@@ -1,7 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Avatar.Network.Message
 {
     using System;
-
+    using ClashersRepublic.Magic.Logic.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
@@ -13,6 +13,7 @@
 
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Utils;
 
     using ClashersRepublic.Magic.Titan.Json;
@@ -50,6 +51,10 @@
 
                 case 20211:
                     this.AvatarEntryMessageReceived((AvatarEntryMessage) message);
+                    break;
+
+                case 20520:
+                    this.AvatarProfileFullEntryMessageReceived((AvatarProfileFullEntryMessage) message);
                     break;
             }
         }
@@ -185,6 +190,21 @@
                     avatarEntryMessage.SetAvatarEntry(session.AvatarAccount.AvatarEntry);
                     session.SendMessage(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER, avatarEntryMessage);
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="AvatarProfileFullEntryMessage"/> is received.
+        /// </summary>
+        internal void AvatarProfileFullEntryMessageReceived(AvatarProfileFullEntryMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (NetAvatarSessionManager.TryGet(sessionId, out NetAvatarSession session))
+            {
+                AvatarProfileMessage avatarProfileMessage = new AvatarProfileMessage();
+                avatarProfileMessage.SetAvatarProfileFullEntry(message.RemoveAvatarProfileFullEntry());
+                session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, avatarProfileMessage);
             }
         }
     }

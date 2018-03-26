@@ -179,6 +179,8 @@
     <Compile Include="Message\Account\LoginOkMessage.cs" />
     <Compile Include="Message\Account\LoginFailedMessage.cs" />
     <Compile Include="Message\Account\LoginMessage.cs" />
+    <Compile Include="Message\Avatar\AvatarProfileFullEntry.cs" />
+    <Compile Include="Message\Avatar\AvatarProfileMessage.cs" />
     <Compile Include="Message\Avatar\Stream\AvatarStreamEntry.cs" />
     <Compile Include="Message\Avatar\Stream\AvatarStreamEntryFactory.cs" />
     <Compile Include="Message\Avatar\Stream\AvatarStreamMessage.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="Message\Google\GoogleServiceAccountBoundMessage.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountAlreadyBoundMessage.cs" />
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
+    <Compile Include="Message\Avatar\AskForAvatarProfileMessage.cs" />
     <Compile Include="Message\Home\NpcDataMessage.cs" />
     <Compile Include="Message\Home\AvailableServerCommand.cs" />
     <Compile Include="Message\Home\AttackNpcMessage.cs" />

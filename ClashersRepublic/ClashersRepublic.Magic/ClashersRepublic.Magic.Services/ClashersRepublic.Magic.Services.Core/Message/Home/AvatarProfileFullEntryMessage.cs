@@ -1,11 +1,10 @@
-﻿namespace ClashersRepublic.Magic.Services.Core.Message.Avatar
+﻿namespace ClashersRepublic.Magic.Services.Core.Message.Home
 {
-    using ClashersRepublic.Magic.Logic.Avatar.Change;
-    using ClashersRepublic.Magic.Services.Core.Game.Avatar.Change;
+    using ClashersRepublic.Magic.Logic.Message.Avatar;
 
-    public class AvatarChangeMessage : NetMessage
+    public class AvatarProfileFullEntryMessage : NetMessage
     {
-        private LogicAvatarChange _entry;
+        private AvatarProfileFullEntry _entry;
 
         /// <summary>
         ///     Destructs this instance.
@@ -13,7 +12,12 @@
         public override void Destruct()
         {
             base.Destruct();
-            this._entry = null;
+
+            if (this._entry != null)
+            {
+                this._entry.Destruct();
+                this._entry = null;
+            }
         }
 
         /// <summary>
@@ -22,7 +26,6 @@
         public override void Encode()
         {
             base.Encode();
-            this.Stream.WriteVInt(this._entry.GetAvatarChangeType());
             this._entry.Encode(this.Stream);
         }
 
@@ -32,7 +35,7 @@
         public override void Decode()
         {
             base.Decode();
-            this._entry = AvatarChangeFactory.CreateAvatarChangeByType(this.Stream.ReadVInt());
+            this._entry = new AvatarProfileFullEntry();
             this._entry.Decode(this.Stream);
         }
 
@@ -41,23 +44,23 @@
         /// </summary>
         public override int GetMessageType()
         {
-            return 20210;
+            return 20520;
         }
 
         /// <summary>
-        ///     Removes the <see cref="LogicAvatarChange"/> instance.
+        ///     Removes the <see cref="AvatarProfileFullEntry"/> instance.
         /// </summary>
-        public LogicAvatarChange RemoveAvatarChangeEntry()
+        public AvatarProfileFullEntry RemoveAvatarProfileFullEntry()
         {
-            LogicAvatarChange tmp = this._entry;
+            AvatarProfileFullEntry tmp = this._entry;
             this._entry = null;
             return tmp;
         }
 
         /// <summary>
-        ///     Sets the <see cref="LogicAvatarChange"/> instance.
+        ///     Sets the <see cref="AvatarProfileFullEntry"/> instance.
         /// </summary>
-        public void SetAvatarChangeEntry(LogicAvatarChange entry)
+        public void SetAvatarProfileFullEntry(AvatarProfileFullEntry entry)
         {
             this._entry = entry;
         }

@@ -185,6 +185,7 @@
             if (NetAccountSessionManager.TryRemove(sessionId, out NetAccountSession session))
             {
                 session.Account.EndSession();
+                session.Account.SetSession(null);
                 session.SaveAccount();
                 session.Destruct();
             }

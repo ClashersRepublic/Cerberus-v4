@@ -29,6 +29,20 @@
         }
 
         /// <summary>
+        ///     Clones this instance.
+        /// </summary>
+        public LogicCompressibleString Clone()
+        {
+            LogicCompressibleString clone = new LogicCompressibleString();
+            ByteStream stream = new ByteStream(100);
+            this.Encode(stream);
+            stream.SetOffset(0);
+            clone.Decode(stream);
+            stream.Destruct();
+            return clone;
+        }
+
+        /// <summary>
         ///     Decodes this instance.
         /// </summary>
         public void Decode(ByteStream stream)

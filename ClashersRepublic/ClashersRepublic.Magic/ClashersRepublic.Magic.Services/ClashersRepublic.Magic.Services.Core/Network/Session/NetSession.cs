@@ -119,7 +119,7 @@
         /// <summary>
         ///     Forwards the specified <see cref="PiranhaMessage"/> to the service.
         /// </summary>
-        public void SendPiranhaMessage(int serviceNodeType, PiranhaMessage message)
+        public void  SendPiranhaMessage(int serviceNodeType, PiranhaMessage message)
         {
             NetSocket socket = this._serviceNodeSockets[serviceNodeType];
 

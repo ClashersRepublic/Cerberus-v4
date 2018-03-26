@@ -1,7 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Services.Zone.Network.Message
 {
     using System;
+
     using ClashersRepublic.Magic.Logic.Command.Server;
+    using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Logic.Message.Avatar;
+    using ClashersRepublic.Magic.Logic.Util;
+
     using ClashersRepublic.Magic.Services.Zone.Game;
     using ClashersRepublic.Magic.Services.Zone.Network.Session;
 
@@ -10,7 +15,6 @@
     using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
-
     using ClashersRepublic.Magic.Services.Core.Network;
 
     using ClashersRepublic.Magic.Titan.Math;
@@ -43,6 +47,10 @@
 
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
+                    break;
+
+                case 10520:
+                    this.AskForAvatarProfileFullEntryMessageReceived((AskForAvatarProfileFullEntryMessage) message);
                     break;
             }
         }
@@ -160,7 +168,7 @@
         }
 
         /// <summary>
-        ///     Calledw hen a <see cref="AllowServerCommandMessage"/> is received.
+        ///     Calledw when a <see cref="AllowServerCommandMessage"/> is received.
         /// </summary>
         internal void AllowServerCommandMessageReceived(AllowServerCommandMessage message)
         {
@@ -174,6 +182,33 @@
                 {
                     session.ZoneAccount.GameMode.AddAvailableServerCommand(serverCommand);
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="AskForAvatarProfileFullEntryMessage"/> is received.
+        /// </summary>
+        private void AskForAvatarProfileFullEntryMessageReceived(AskForAvatarProfileFullEntryMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (ZoneAccountManager.TryGet(message.RemoveAvatarId(), out ZoneAccount account))
+            {
+                AvatarProfileFullEntryMessage avatarProfileFullEntryMessage = new AvatarProfileFullEntryMessage();
+                AvatarProfileFullEntry entry = new AvatarProfileFullEntry();
+                LogicCompressibleString compressibleString = account.ClientHome.GetCompressibleHomeJSON().Clone();
+
+                if (!compressibleString.IsCompressed())
+                {
+                    CompressibleStringHelper.Compress(compressibleString);
+                }
+
+                entry.SetLogicClientAvatar(account.ClientAvatar); 
+                entry.SetCompressedHomeJSON(compressibleString.RemoveCompressed());
+                avatarProfileFullEntryMessage.SetAvatarProfileFullEntry(entry);
+                compressibleString.Destruct();
+
+                NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, avatarProfileFullEntryMessage);
             }
         }
     }

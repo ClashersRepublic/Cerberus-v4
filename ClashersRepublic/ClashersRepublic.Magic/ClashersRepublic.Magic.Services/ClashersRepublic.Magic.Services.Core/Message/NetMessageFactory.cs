@@ -31,6 +31,7 @@
                     case 10400: return new ForwardPiranhaMessage();
 
                     case 10511: return new AllowServerCommandMessage();
+                    case 10520: return new AskForAvatarProfileFullEntryMessage();
 
                     case 11500: return new AddAvatarStreamEntryMessage();
                 }
@@ -44,8 +45,9 @@
                     case 20102: return new AccountBanCreatedMessage();
                     case 20103: return new AccountBanRevokedMessage();
                         
-                    case 20210: return new AvatarChangeMessage();
                     case 20211: return new AvatarEntryMessage();
+
+                    case 20520: return new AvatarProfileFullEntryMessage();
                 }
             }
 

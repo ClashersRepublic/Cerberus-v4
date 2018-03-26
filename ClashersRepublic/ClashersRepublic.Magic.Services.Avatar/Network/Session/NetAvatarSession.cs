@@ -27,6 +27,7 @@
         internal NetAvatarSession(AvatarAccount avatarAccount, byte[] sessionId) : base(sessionId)
         {
             this.AvatarAccount = avatarAccount;
+            this.PiranhaMessageManager = new MessageManager(this);
         }
 
         /// <summary>
