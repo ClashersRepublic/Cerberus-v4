@@ -1,13 +1,16 @@
 ﻿{
   "version": "9.256",
   "node": {
-    "proxy": [ "127.0.0.1" ],
-    "account": [ "127.0.0.1" ],
-    "home": [ "127.0.0.1" ]
+    "proxy": ["127.0.0.1"],
+    "account": ["127.0.0.1"],
+    "global_chat": ["127.0.0.1"],
+    "avatar": ["127.0.0.1"],
+    "zone": ["127.0.0.1"],
+    "party": ["127.0.0.1"]
   },
   "database": {
-    "urls": [ "127.0.0.1" ],
+    "urls": ["127.0.0.1"],
     "user": "MagicServer",
     "pass": "50xejrem5lhxcd6940lqmdfim2fcaqxboysx25ou6xcw0jy5kqlpqsmygj2820gd"
-  } 
+  }
 }

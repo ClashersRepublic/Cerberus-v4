@@ -128,16 +128,7 @@
                         }
                         else
                         {
-                            NetSocket socket = NetManager.GetRandomEndPoint(6);
-
-                            if (socket != null)
-                            {
-                                // REQUEST.
-                            }
-                            else
-                            {
-                                Logging.Warning("loginClientOkMessageReceived no chat server is available");
-                            }
+                            session.BindServer(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER, NetManager.GetRandomEndPoint(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER).Id);
                         }
                     }
                 }
@@ -199,7 +190,7 @@
                 {
                     session.UnbindServer(message.GetServiceNodeType(), false);
 
-                    if (message.GetServiceNodeType() == 2 || message.GetServiceNodeType() == 10)
+                    if (message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY || message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER)
                     {
                         NetworkTcpServerGateway.Disconnect(session.Client.Messaging.Connection);
                     }

@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Network
 {
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
     internal class NetworkClient
@@ -41,6 +42,7 @@
             {
                 NetProxySessionManager.TryRemove(this._session.SessionId, out _);
 
+                this._session.SetServiceNodeId(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, -1);
                 this._session.UnbindAllServers();
                 this._session.Destruct();
                 this._session = null;

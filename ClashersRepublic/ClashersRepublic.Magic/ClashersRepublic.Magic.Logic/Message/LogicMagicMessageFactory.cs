@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Logic.Message.Account;
     using ClashersRepublic.Magic.Logic.Message.Avatar.Stream;
+    using ClashersRepublic.Magic.Logic.Message.Chat;
     using ClashersRepublic.Magic.Logic.Message.Google;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Message.Security;
@@ -100,6 +101,12 @@
                     case 14262:
                     {
                         message = new BindGoogleServiceAccountMessage();
+                        break;
+                    }
+
+                    case 14715:
+                    {
+                        message = new SendGlobalChatLineMessage();
                         break;
                     }
                 }
@@ -213,6 +220,12 @@
                     case 24411:
                     {
                         message = new AvatarStreamMessage();
+                        break;
+                    }
+
+                    case 24715:
+                    {
+                        message = new GlobalChatLineMessage();
                         break;
                     }
                 }

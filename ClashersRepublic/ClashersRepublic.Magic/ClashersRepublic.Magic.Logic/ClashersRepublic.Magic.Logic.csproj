@@ -182,6 +182,8 @@
     <Compile Include="Message\Avatar\Stream\AvatarStreamEntry.cs" />
     <Compile Include="Message\Avatar\Stream\AvatarStreamEntryFactory.cs" />
     <Compile Include="Message\Avatar\Stream\AvatarStreamMessage.cs" />
+    <Compile Include="Message\Chat\GlobalChatLineMessage.cs" />
+    <Compile Include="Message\Chat\SendGlobalChatLineMessage.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountBoundMessage.cs" />
     <Compile Include="Message\Google\GoogleServiceAccountAlreadyBoundMessage.cs" />
     <Compile Include="Message\Google\BindGoogleServiceAccountMessage.cs" />
