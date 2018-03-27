@@ -1,11 +1,13 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
+    using System;
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Titan.Json;
 
     public sealed class LogicResourceProductionComponent : LogicComponent
     {
@@ -90,7 +92,15 @@
 
                     if (remainingTime != 0)
                     {
-                        return (((this._productionPer100Hour >> 31) << 32) | this._productionPer100Hour) * (totalTime - remainingTime) / 360000;
+                        long productionPer100Hour = this._productionPer100Hour;
+                        long maxTime = 0;
+
+                        if (this._productionPer100Hour > 0)
+                        {
+                            maxTime = 360000L * this._maxResources / this._productionPer100Hour;
+                        }
+
+                        return (int) (productionPer100Hour * ((int) maxTime - remainingTime) / 360000L);
                     }
 
                     return this._maxResources;
@@ -209,6 +219,30 @@
             checksum.WriteValue("m_maxResources", this._maxResources);
             checksum.WriteValue("m_productionPer100Hour", this._productionPer100Hour);
             checksum.EndObject();
+        }
+
+        /// <summary>
+        ///     Loads this instance from json.
+        /// </summary>
+        public override void Load(LogicJSONObject jsonObject)
+        {
+            LogicJSONNumber resourceTimeObject = jsonObject.GetJSONNumber("res_time");
+            Int32 time = this._productionPer100Hour > 0 ? (int)(360000L * this._maxResources / this._productionPer100Hour) : 0;
+
+            if (resourceTimeObject != null)
+            {
+                time = LogicMath.Min(resourceTimeObject.GetIntValue(), time);
+            }
+
+            this._resourceTimer.StartTimer(time, this._parent.GetLevel().GetLogicTime(), false, -1);
+        }
+
+        /// <summary>
+        ///     Saves this instance to json.
+        /// </summary>
+        public override void Save(LogicJSONObject jsonObject)
+        {
+           jsonObject.Put("res_time", new LogicJSONNumber(this._resourceTimer.GetRemainingSeconds(this._parent.GetLevel().GetLogicTime())));
         }
     }
 }
