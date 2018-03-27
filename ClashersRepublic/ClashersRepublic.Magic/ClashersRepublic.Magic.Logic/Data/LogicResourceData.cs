@@ -4,6 +4,8 @@ namespace ClashersRepublic.Magic.Logic.Data
 
     public class LogicResourceData : LogicData
     {
+        private LogicResourceData _warResourceReferenceData;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicResourceData" /> class.
         /// </summary>
@@ -27,7 +29,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int TextRed { get; protected set; }
         public int TextGreen { get; protected set; }
         public int TextBlue { get; protected set; }
-        public string WarRefResource { get; protected set; }
         public string BundleIconExportName { get; protected set; }
 
         /// <summary>
@@ -35,7 +36,21 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
-            // CreateReferences.
+            string warRefResource = this.GetValue("WarRefResource", 0);
+
+            if (warRefResource.Length > 0)
+            {
+                this._warResourceReferenceData = LogicDataTables.GetResourceByName(warRefResource);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the war <see cref="LogicResourceData"/> reference.
+        /// </summary>
+        /// <returns></returns>
+        public LogicResourceData GetWarResourceReferenceData()
+        {
+            return this._warResourceReferenceData;
         }
     }
 }

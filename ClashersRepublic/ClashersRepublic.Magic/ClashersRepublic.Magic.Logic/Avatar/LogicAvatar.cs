@@ -505,7 +505,7 @@
 
                 for (int i = 0; i < this._resourceCap.Count; i++)
                 {
-                    if (this._resourceCount[i].GetData() == data)
+                    if (this._resourceCap[i].GetData() == data)
                     {
                         index = i;
                         break;
@@ -536,7 +536,7 @@
 
                 for (int i = 0; i < this._resourceCap.Count; i++)
                 {
-                    if (this._resourceCount[i].GetData() == data)
+                    if (this._resourceCap[i].GetData() == data)
                     {
                         index = i;
                         break;

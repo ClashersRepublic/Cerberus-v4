@@ -34,6 +34,14 @@
         }
 
         /// <summary>
+        ///     Gets the resource data.
+        /// </summary>
+        public LogicResourceData GetResourceData()
+        {
+            return this._resourceData;
+        }
+
+        /// <summary>
         ///     Restarts the timer.
         /// </summary>
         public void RestartTimer()
@@ -112,7 +120,7 @@
         /// <summary>
         ///     Collects available resources.
         /// </summary>
-        public void CollectResources(bool updateListener)
+        public int CollectResources(bool updateListener)
         {
             if (this._parent.GetLevel().GetHomeOwnerAvatar() != null)
             {
@@ -150,10 +158,18 @@
 
                                 clientAvatar.CommodityCountChangeHelper(0, this._resourceData, resourceCount);
                             }
+                            else
+                            {
+                                resourceCount = 0;
+                            }
                         }
+
+                        return resourceCount;
                     }
                 }
             }
+
+            return 0;
         }
 
         /// <summary>
@@ -162,6 +178,24 @@
         public override void FastForwardTime(int time)
         {
             int remainingSeconds = this._resourceTimer.GetRemainingSeconds(this._parent.GetLevel().GetLogicTime());
+            int boostTime = this._parent.GetRemainingBoostTime();
+
+            if (boostTime > 0 && LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() > 1 && !this._parent.GetBoostPaused())
+            {
+                time += (LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() - 1) * LogicMath.Min(time, boostTime);
+            }
+
+            int clockBoostTime = this._parent.GetLevel().GetRemainingClockTowerBoostTime();
+
+            if (clockBoostTime > 0 && !this._parent.GetLevel().IsClockTowerBoostPaused())
+            {
+                if (this._parent.GetData().GetVillageType() == 1)
+                {
+                    time += (LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 1) * LogicMath.Min(time, clockBoostTime);
+                }
+            }
+
+            this._resourceTimer.StartTimer(LogicMath.Max(remainingSeconds - time, 0), this._parent.GetLevel().GetLogicTime(), false, -1);
         }
 
         /// <summary>

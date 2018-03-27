@@ -18,6 +18,9 @@
 
         private int _state;
         private int _currentTimestamp;
+        private int _shieldTime;
+        private int _guardTime;
+        private int _maintenanceTime;
 
         private LogicTimer _battleTimer;
         private LogicLevel _level;
@@ -25,10 +28,6 @@
         private LogicGameListener _gameListener;
         private LogicCalendar _calendar;
         private LogicConfiguration _configuration;
-
-        private LogicTimer _shieldTimer;
-        private LogicTimer _guardTimer;
-        private LogicTimer _maintenanceTimer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicGameMode" /> class.
@@ -39,9 +38,6 @@
             this._commandManager = new LogicCommandManager(this._level);
             this._calendar = new LogicCalendar();
             this._configuration = new LogicConfiguration();
-            this._shieldTimer = new LogicTimer();
-            this._guardTimer = new LogicTimer();
-            this._maintenanceTimer = new LogicTimer();
             this._currentTimestamp = -1;
         }
 
@@ -67,29 +63,11 @@
                 this._calendar.Destruct();
                 this._calendar = null;
             }
-
-            if (this._maintenanceTimer != null)
-            {
-                this._maintenanceTimer.Destruct();
-                this._maintenanceTimer = null;
-            }
-
+            
             if (this._battleTimer != null)
             {
                 this._battleTimer.Destruct();
                 this._battleTimer = null;
-            }
-
-            if (this._shieldTimer != null)
-            {
-                this._shieldTimer.Destruct();
-                this._shieldTimer = null;
-            }
-
-            if (this._guardTimer != null)
-            {
-                this._guardTimer.Destruct();
-                this._guardTimer = null;
             }
 
             this._configuration = null;
@@ -196,7 +174,23 @@
         /// </summary>
         public int GetShieldRemainingSeconds()
         {
-            return this._shieldTimer.GetRemainingSeconds(this._level.GetLogicTime());
+            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._shieldTime - this._level.GetLogicTime()), 0);
+        }
+
+        /// <summary>
+        ///     Gets the remaining guard time.
+        /// </summary>
+        public int GetGuardRemainingSeconds()
+        {
+            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._guardTime - this._level.GetLogicTime()), 0);
+        }
+
+        /// <summary>
+        ///     Gets the remaining guard time.
+        /// </summary>
+        public int GetMaintenanceRemainingSeconds()
+        {
+            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._maintenanceTime - this._level.GetLogicTime()), 0);
         }
 
         /// <summary>
@@ -298,9 +292,9 @@
                 this._level.FastForwardTime(secondsSinceLastSave);
                 this._level.LoadingFinished();
 
-                this._shieldTimer.StartTimer(home.GetShieldDurationSeconds(), this._level.GetLogicTime(), false, -1);
-                this._guardTimer.StartTimer(home.GetGuardDurationSeconds(), this._level.GetLogicTime(), false, -1);
-                this._maintenanceTimer.StartTimer(home.GetNextMaintenanceSeconds(), this._level.GetLogicTime(), false, -1);
+                this._shieldTime = LogicTime.GetSecondsInTicks(home.GetShieldDurationSeconds());
+                this._guardTime = LogicTime.GetSecondsInTicks(home.GetGuardDurationSeconds());
+                this._maintenanceTime = LogicTime.GetSecondsInTicks(home.GetNextMaintenanceSeconds());
             }
         }
 

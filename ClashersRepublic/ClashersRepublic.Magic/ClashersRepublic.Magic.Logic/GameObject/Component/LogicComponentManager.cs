@@ -47,6 +47,14 @@
         }
 
         /// <summary>
+        ///     Gets all components to specified index.
+        /// </summary>
+        public LogicArrayList<LogicComponent> GetComponents(int componentType)
+        {
+            return this._components[componentType];
+        }
+
+        /// <summary>
         ///     Removes the specified component.
         /// </summary>
         public void RemoveComponent(LogicComponent component)

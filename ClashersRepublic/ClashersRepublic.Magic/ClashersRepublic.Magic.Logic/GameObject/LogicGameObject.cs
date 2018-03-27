@@ -219,6 +219,14 @@
         }
 
         /// <summary>
+        ///     Gets the hitpoint component.
+        /// </summary>
+        public LogicResourceProductionComponent GetResourceProductionComponent()
+        {
+            return (LogicResourceProductionComponent) this._components[5];
+        }
+
+        /// <summary>
         ///     Removes the specified component.
         /// </summary>
         public void RemoveComponent(int componentType)
@@ -390,6 +398,14 @@
         public virtual int GetRemainingBoostTime()
         {
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets if the boost is paused.
+        /// </summary>
+        public virtual bool GetBoostPaused()
+        {
+            return false;
         }
 
         /// <summary>

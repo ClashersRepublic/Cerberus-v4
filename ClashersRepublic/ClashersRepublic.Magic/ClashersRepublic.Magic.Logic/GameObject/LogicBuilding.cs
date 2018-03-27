@@ -9,7 +9,6 @@
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Logic.Helper;
-    using ClashersRepublic.Magic.Titan.Util;
 
     public sealed class LogicBuilding : LogicGameObject
     {
@@ -91,6 +90,18 @@
                 LogicResourceProductionComponent resourceProductionComponent = new LogicResourceProductionComponent(this, buildingData.GetProduceResource());
                 resourceProductionComponent.SetEnabled(false);
                 this.AddComponent(resourceProductionComponent);
+            }
+
+            if (buildingData.StoresResources())
+            {
+                if (buildingData.IsAllianceCastle())
+                {
+                    // TODO: Implement LogicBunkerResourceStorageComponent.
+                }
+                else
+                {
+                    this.AddComponent(new LogicResourceStorageComponent(this));
+                }
             }
         }
 
@@ -919,6 +930,13 @@
                 {
                     LogicResourceProductionComponent resourceProductionComponent = (LogicResourceProductionComponent) this.GetComponent(5);
                     resourceProductionComponent.SetProduction(buildingData.GetResourcePer100Hours(this._upgLevel), buildingData.GetResourceMax(this._upgLevel));
+                }
+
+                if (this.GetComponent(6) != null)
+                {
+                    LogicResourceStorageComponent resourceStorageComponent = (LogicResourceStorageComponent) this.GetComponent(6);
+                    resourceStorageComponent.SetMaxArray(buildingData.GetMaxStoredResourceCounts(this._upgLevel));
+                    resourceStorageComponent.SetMaxPercentageArray(buildingData.GetMaxPercentageStoredResourceCounts(this._upgLevel));
                 }
             }
         }

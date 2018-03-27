@@ -4,6 +4,7 @@ namespace ClashersRepublic.Magic.Logic.Data
     using ClashersRepublic.Magic.Titan.CSV;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicBuildingData : LogicData
     {
@@ -12,6 +13,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         private LogicResourceData[] _altBuildResource;
         private LogicResourceData _produceResource;
         private LogicHeroData _heroData;
+        private LogicArrayList<int>[] _storedResourceCounts;
+        private LogicArrayList<int>[] _percentageStoredResourceCounts;
 
         private int[] _constructionTimes;
         private int[] _townHallLevel;
@@ -45,17 +48,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string Icon { get; protected set; }
         protected string[] ExportNameBuildAnim { get; set; }
         protected string[] ExportNameUpgradeAnim { get; set; }
-        protected int[] MaxStoredGold { get; set; }
-        protected int[] MaxStoredElixir { get; set; }
-        protected int[] MaxStoredDarkElixir { get; set; }
-        protected int[] MaxStoredWarGold { get; set; }
-        protected int[] MaxStoredWarElixir { get; set; }
-        protected int[] MaxStoredWarDarkElixir { get; set; }
-        protected int[] MaxStoredGold2 { get; set; }
-        protected int[] MaxStoredElixir2 { get; set; }
-        public int PercentageStoredGold { get; protected set; }
-        public int PercentageStoredElixir { get; protected set; }
-        protected int[] PercentageStoredDarkElixir { get; set; }
         public bool LootOnDestruction { get; protected set; }
         public bool Bunker { get; protected set; }
         public int Village2Housing { get; protected set; }
@@ -234,6 +226,8 @@ namespace ClashersRepublic.Magic.Logic.Data
 
             this._buildResource = new LogicResourceData[longestArraySize];
             this._altBuildResource = new LogicResourceData[longestArraySize];
+            this._storedResourceCounts = new LogicArrayList<int>[longestArraySize];
+            this._percentageStoredResourceCounts = new LogicArrayList<int>[longestArraySize];
             this._townHallLevel = new int[longestArraySize];
             this._townHallVillage2Level = new int[longestArraySize];
 
@@ -243,6 +237,16 @@ namespace ClashersRepublic.Magic.Logic.Data
                 this._altBuildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("AltBuildResource", i));
                 this._townHallLevel[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel", i) - 1, 0);
                 this._townHallVillage2Level[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel2", i) - 1, 0);
+                this._storedResourceCounts[i] = new LogicArrayList<int>();
+                this._percentageStoredResourceCounts[i] = new LogicArrayList<int>();
+
+                LogicDataTable table = LogicDataTables.GetTable(2);
+
+                for (int j = 0; j < table.GetItemCount(); j++)
+                {
+                    this._storedResourceCounts[i].Add(this.GetIntegerValue("MaxStored" + table.GetItemAt(j).GetName(), i));
+                    this._percentageStoredResourceCounts[i].Add(this.GetIntegerValue("PercentageStored" + table.GetItemAt(j).GetName(), i));
+                }
             }
 
             this._produceResource = LogicDataTables.GetResourceByName(this.GetValue("ProducesResource", 0));
@@ -412,51 +416,31 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.ExportNameUpgradeAnim[index];
         }
 
-        public int GetMaxStoredGold(int index)
+        public bool StoresResources()
         {
-            return this.MaxStoredGold[index];
+            LogicArrayList<int> storeCount = this._storedResourceCounts[0];
+
+            for (int i = 0; i < storeCount.Count; i++)
+            {
+                if (storeCount[i] > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public int GetMaxStoredElixir(int index)
+        public LogicArrayList<int> GetMaxStoredResourceCounts(int idx)
         {
-            return this.MaxStoredElixir[index];
+            return this._storedResourceCounts[idx];
         }
 
-        public int GetMaxStoredDarkElixir(int index)
+        public LogicArrayList<int> GetMaxPercentageStoredResourceCounts(int idx)
         {
-            return this.MaxStoredDarkElixir[index];
+            return this._percentageStoredResourceCounts[idx];
         }
 
-        public int GetMaxStoredWarGold(int index)
-        {
-            return this.MaxStoredWarGold[index];
-        }
-
-        public int GetMaxStoredWarElixir(int index)
-        {
-            return this.MaxStoredWarElixir[index];
-        }
-
-        public int GetMaxStoredWarDarkElixir(int index)
-        {
-            return this.MaxStoredWarDarkElixir[index];
-        }
-
-        public int GetMaxStoredGold2(int index)
-        {
-            return this.MaxStoredGold2[index];
-        }
-
-        public int GetMaxStoredElixir2(int index)
-        {
-            return this.MaxStoredElixir2[index];
-        }
-
-        public int GetPercentageStoredDarkElixir(int index)
-        {
-            return this.PercentageStoredDarkElixir[index];
-        }
-        
         public int GetResourcePer100Hours(int index)
         {
             return this.ResourcePer100Hours[index];

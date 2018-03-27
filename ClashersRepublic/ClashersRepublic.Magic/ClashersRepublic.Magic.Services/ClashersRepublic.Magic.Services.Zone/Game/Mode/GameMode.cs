@@ -80,7 +80,12 @@
                     LogicJSONObject jsonObject = new LogicJSONObject();
 
                     this._logicGameMode.SaveToJSON(jsonObject);
+
                     this._zoneAccount.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
+                    this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
+                    this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
+                    this._zoneAccount.ClientHome.SetNextMaintenanceSeconds(this._logicGameMode.GetMaintenanceRemainingSeconds());
+
                     this.SendAvatarEntryMessage();
 
                     CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
@@ -232,6 +237,7 @@
                 
                 this._logicGameMode = new LogicGameMode();
                 this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
+
                 this._currentTimestamp = currentTimestamp;
 
                 switch (mode)

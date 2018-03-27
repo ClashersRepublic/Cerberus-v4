@@ -268,6 +268,12 @@
                         break;
                     }
 
+                    case 506:
+                    {
+                        command = new LogicCollectResourcesCommand();
+                        break;
+                    }
+
                     case 508:
                     {
                         command = new LogicTrainUnitCommand();

@@ -62,6 +62,7 @@
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicCollectResourcesCommand.cs" />
     <Compile Include="Command\Home\LogicMoveBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicUpgradeBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicNewShopItemsSeenCommand.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="GameObject\Component\LogicComponentFilter.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
+    <Compile Include="GameObject\Component\LogicResourceStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicBunkerComponent.cs" />
     <Compile Include="GameObject\Component\LogicVillage2UnitComponent.cs" />

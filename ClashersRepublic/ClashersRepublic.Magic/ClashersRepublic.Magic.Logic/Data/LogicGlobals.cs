@@ -23,6 +23,7 @@
         private int _liveReplayFrequencySecs;
         private int _challengeBaseSaveCooldown;
         private int _allianceCreateCost;
+        private int _resourceProductionBoostMultiplier;
         private int _clockTowerBoostMultiplier;
         private int _clockTowerBoostCooldownSecs;
         private int _clampLongTimeStampsToDays;
@@ -49,6 +50,7 @@
         private bool _saveVillageObjects;
         private bool _workerForZeroBuildingTime;
         private bool _adjustEndSubtickUseCurrentTime;
+        private bool _collectAllResourcesAtOnce;
         
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
@@ -78,6 +80,7 @@
             this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
             this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
+            this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
             this._clockTowerBoostCooldownSecs = 60 * this.GetIntValue("CLOCK_TOWER_BOOST_COOLDOWN_MINS");
             this._clampLongTimeStampsToDays = this.GetIntValue("CLAMP_LONG_TIME_STAMPS_TO_DAYS");
             this._workerCostSecondBuildCost = this.GetIntValue("WORKER_COST_2ND");
@@ -103,6 +106,7 @@
             this._saveVillageObjects = this.GetBoolValue("SAVE_VILLAGE_OBJECTS");
             this._workerForZeroBuildingTime = this.GetBoolValue("WORKER_FOR_ZERO_BUILD_TIME");
             this._adjustEndSubtickUseCurrentTime = this.GetBoolValue("ADJUST_END_SUBTICK_USE_CURRENT_TIME");
+            this._collectAllResourcesAtOnce = this.GetBoolValue("COLLECT_ALL_RESOURCES_AT_ONCE");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -213,6 +217,14 @@
         public int GetClockTowerBoostMultiplier()
         {
             return this._clockTowerBoostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the resource production boost multiplier.
+        /// </summary>
+        public int GetResourceProductionBoostMultiplier()
+        {
+            return this._resourceProductionBoostMultiplier;
         }
 
         /// <summary>
@@ -342,6 +354,11 @@
         public bool AdjustEndSubtickUseCurrentTime()
         {
             return this._adjustEndSubtickUseCurrentTime;
+        }
+
+        public bool CollectAllResourcesAtOnce()
+        {
+            return this._collectAllResourcesAtOnce;
         }
 
         /// <summary>

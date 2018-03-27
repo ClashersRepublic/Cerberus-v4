@@ -1159,6 +1159,54 @@
         }
 
         /// <summary>
+        ///     Refreshes resource caps.
+        /// </summary>
+        public void RefreshResourceCaps()
+        {
+            if (this._homeOwnerAvatar != null)
+            {
+                if (this._homeOwnerAvatar.IsClientAvatar())
+                {
+                    LogicClientAvatar clientAvatar = (LogicClientAvatar) this._homeOwnerAvatar;
+                    LogicDataTable table = LogicDataTables.GetTable(2);
+
+                    for (int i = 0, cnt = 0; i < table.GetItemCount(); i++, cnt = 0)
+                    {
+                        LogicResourceData data = (LogicResourceData) table.GetItemAt(i);
+
+                        for (int j = 0; j < 2; j++)
+                        {
+                            if (data.GetWarResourceReferenceData() != null)
+                            {
+                                // TODO: Implement this.
+                            }
+                            else
+                            {
+                                LogicArrayList<LogicComponent> components = this._gameObjectManagers[j].GetComponentManager().GetComponents(6);
+
+                                for (int k = 0; k < components.Count; k++)
+                                {
+                                    LogicResourceStorageComponent resourceStorageComponent = (LogicResourceStorageComponent) components[k];
+
+                                    if (resourceStorageComponent.IsEnabled())
+                                    {
+                                        cnt += resourceStorageComponent.GetMax(i);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!data.PremiumCurrency)
+                        {
+                            clientAvatar.SetResourceCap(data, cnt);
+                            clientAvatar.GetChangeListener().CommodityCountChanged(1, data, cnt);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Sets the home owner avatar instance.
         /// </summary>
         public void SetHomeOwnerAvatar(LogicAvatar avatar)
@@ -1433,6 +1481,8 @@
             {
                 this._gameObjectManagers[i].GetComponentManager().DevideAvatarResourcesToStorages();
             }
+
+            this.RefreshResourceCaps();
 
             for (int i = 0; i < 2; i++)
             {

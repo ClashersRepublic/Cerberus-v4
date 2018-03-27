@@ -53,6 +53,14 @@
         }
 
         /// <summary>
+        ///     Refreshes the resource count.
+        /// </summary>
+        public virtual void RefreshResourceCount()
+        {
+            // RefreshResourceCount.
+        }
+
+        /// <summary>
         ///     Called when experience was gained.
         /// </summary>
         public virtual void XpGained(int count)
