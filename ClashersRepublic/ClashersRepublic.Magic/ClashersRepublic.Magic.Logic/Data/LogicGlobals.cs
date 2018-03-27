@@ -32,6 +32,13 @@
         private int _workerCostFourthBuildCost;
         private int _workerCostFifthBuildCost;
         private int _challengeBaseCooldownEnabledOnTh;
+        private int _spellTrainingCostMultiplier;
+        private int _spellSpeedUpCostMultiplier;
+        private int _heroHealthSpeedUpCostMultipler;
+        private int _troopRequestSpeedUpCostMultiplier;
+        private int _troopTrainingCostMultiplier;
+        private int _speedUpBoostCooldownCostMultiplier;
+        private int _clockTowerSpeedUpMultiplier;
 
         private bool _useNewTraining;
         private bool _moreAccurateTime;
@@ -88,6 +95,13 @@
             this._workerCostFourthBuildCost = this.GetIntValue("WORKER_COST_4TH");
             this._workerCostFifthBuildCost = this.GetIntValue("WORKER_COST_5TH");
             this._challengeBaseCooldownEnabledOnTh = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
+            this._spellTrainingCostMultiplier = this.GetIntValue("SPELL_TRAINING_COST_MULTIPLIER");
+            this._spellSpeedUpCostMultiplier = this.GetIntValue("SPELL_SPEED_UP_COST_MULTIPLIER");
+            this._heroHealthSpeedUpCostMultipler = this.GetIntValue("HERO_HEALTH_SPEED_UP_COST_MULTIPLIER");
+            this._troopRequestSpeedUpCostMultiplier = this.GetIntValue("TROOP_REQUEST_SPEED_UP_COST_MULTIPLIER");
+            this._troopTrainingCostMultiplier = this.GetIntValue("TROOP_TRAINING_COST_MULTIPLIER");
+            this._speedUpBoostCooldownCostMultiplier = this.GetIntValue("SPEEDUP_BOOST_COOLDOWN_COST_MULTIPLIER");
+            this._clockTowerSpeedUpMultiplier = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
@@ -266,6 +280,62 @@
         }
 
         /// <summary>
+        ///     Gets the multiplier of the spell training cost.
+        /// </summary>
+        public int GetSpellTrainingCostMultiplier()
+        {
+            return this._spellTrainingCostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of the speed up of spell.
+        /// </summary>
+        public int GetSpellSpeedUpCostMultiplier()
+        {
+            return this._spellSpeedUpCostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of the speed up of hero health.
+        /// </summary>
+        public int GetHeroHealthSpeedUpCostMultipler()
+        {
+            return this._heroHealthSpeedUpCostMultipler;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of the speed up of troop request.
+        /// </summary>
+        public int GetTroopRequestSpeedUpCostMultiplier()
+        {
+            return this._troopRequestSpeedUpCostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of troop training.
+        /// </summary>
+        public int GetTroopTrainingCostMultiplier()
+        {
+            return this._troopTrainingCostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of the speed up of boost cooldown.
+        /// </summary>
+        public int GetSpeedUpBoostCooldownCostMultiplier()
+        {
+            return this._speedUpBoostCooldownCostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of the speed up of clock tower.
+        /// </summary>
+        public int GetClockTowerSpeedUpMultiplier()
+        {
+            return this._clockTowerSpeedUpMultiplier;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the time is more accurate.
         /// </summary>
         public bool MoreAccurateTime()
@@ -414,14 +484,14 @@
         /// <summary>
         ///     Gets the speed up cost.
         /// </summary>
-        public int GetSpeedUpCost(int time, int multiplier, bool isVillage2)
+        public int GetSpeedUpCost(int time, int multiplier, int villageType)
         {
             int speedUpDiamondCostPerMin;
             int speedUpDiamondCostPerHour;
             int speedUpDiamondCostPerDay;
             int speedUpDiamondCostPerWeek;
 
-            if (isVillage2)
+            if (villageType == 1)
             {
                 speedUpDiamondCostPerMin = this._speedUpDiamondCostPerMinVillage2;
                 speedUpDiamondCostPerHour = this._speedUpDiamondCostPerHourVillage2;

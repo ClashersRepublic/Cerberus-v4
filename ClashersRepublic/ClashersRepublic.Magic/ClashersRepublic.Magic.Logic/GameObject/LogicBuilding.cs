@@ -9,6 +9,7 @@
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Logic.Util;
 
     public sealed class LogicBuilding : LogicGameObject
     {
@@ -691,6 +692,29 @@
                 }
 
                 this._level.GetGameListener().TownHallLevelTooLow(this.GetRequiredTownHallLevelForUpgrade());
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Speed up the construction.
+        /// </summary>
+        public bool SpeedUpConstruction()
+        {
+            if (this._constructionTimer != null)
+            {
+                int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._constructionTimer?.GetRemainingSeconds(this._level.GetLogicTime()) ?? 0, 0, this._villageType);
+
+                if (this._level.GetPlayerAvatar().HasEnoughDiamonds(speedUpCost, true, this._level))
+                {
+                    Debugger.Log("LogicBuilding::speedUpConstruction speedup cost: " + speedUpCost);
+
+                    this._level.GetPlayerAvatar().UseDiamonds(speedUpCost);
+                    this.FinishConstruction(true);
+
+                    return true;
+                }
             }
 
             return false;

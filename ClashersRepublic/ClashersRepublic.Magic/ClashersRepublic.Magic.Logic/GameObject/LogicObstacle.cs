@@ -324,12 +324,11 @@
         {
             if (this._clearTimer != null)
             {
-                LogicClientAvatar playerAvatar = (LogicClientAvatar) this._level.GetPlayerAvatar();
-                int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime()), 0, this._villageType > 0);
+                int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._clearTimer.GetRemainingSeconds(this._level.GetLogicTime()), 0, this._villageType);
 
-                if (playerAvatar.HasEnoughDiamonds(speedUpCost, true, this._level))
+                if (this._level.GetPlayerAvatar().HasEnoughDiamonds(speedUpCost, true, this._level))
                 {
-                    playerAvatar.UseDiamonds(speedUpCost);
+                    this._level.GetPlayerAvatar().UseDiamonds(speedUpCost);
                     this.ClearingFinished(false);
                     return true;
                 }

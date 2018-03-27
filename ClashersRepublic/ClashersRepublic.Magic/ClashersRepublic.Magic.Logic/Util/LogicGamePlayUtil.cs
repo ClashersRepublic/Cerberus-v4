@@ -17,17 +17,34 @@
         /// <summary>
         ///     Gets the cost of the speed up.
         /// </summary>
-        public static int GetSpeedUpCost(int time, int speedUpType, bool isVillage2)
+        public static int GetSpeedUpCost(int time, int speedUpType, int villageType)
         {
             int multiplier = 100;
 
             switch (speedUpType)
             {
                 case 1:
+                    multiplier = LogicDataTables.GetGlobals().UseNewTraining() ? LogicDataTables.GetGlobals().GetSpellTrainingCostMultiplier() : 
+                                                                                 LogicDataTables.GetGlobals().GetSpellSpeedUpCostMultiplier();
+                    break;
+                case 2:
+                    multiplier = LogicDataTables.GetGlobals().GetHeroHealthSpeedUpCostMultipler();
+                    break;
+                case 3:
+                    multiplier = LogicDataTables.GetGlobals().GetTroopRequestSpeedUpCostMultiplier();
+                    break;
+                case 4:
+                    multiplier = LogicDataTables.GetGlobals().GetTroopTrainingCostMultiplier();
+                    break;
+                case 5:
+                    multiplier = LogicDataTables.GetGlobals().GetSpeedUpBoostCooldownCostMultiplier();
+                    break;
+                case 6:
+                    multiplier = LogicDataTables.GetGlobals().GetClockTowerSpeedUpMultiplier();
                     break;
             }
 
-            return LogicDataTables.GetGlobals().GetSpeedUpCost(time, multiplier, isVillage2);
+            return LogicDataTables.GetGlobals().GetSpeedUpCost(time, multiplier, villageType);
         }
     }
 }

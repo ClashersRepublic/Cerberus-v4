@@ -268,6 +268,12 @@
                         break;
                     }
 
+                    case 504:
+                    {
+                        command = new LogicSpeedUpConstructionCommand();
+                        break;
+                    }
+
                     case 506:
                     {
                         command = new LogicCollectResourcesCommand();
