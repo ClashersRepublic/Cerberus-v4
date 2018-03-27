@@ -651,7 +651,7 @@
                 return this._upgLevel >= this._level.GetGameMode().GetConfiguration().GetMaxTownHallLevel() - 1;
             }
 
-            if (buildingData.GetVillageType() != 0 || this.GetRequiredTownHallLevelForUpgrade() < this._level.GetGameMode().GetConfiguration().GetMaxTownHallLevel() - 1)
+            if (buildingData.GetVillageType() != 1 || this.GetRequiredTownHallLevelForUpgrade() < this._level.GetGameMode().GetConfiguration().GetMaxTownHallLevel() - 1)
             {
                 return this._upgLevel >= buildingData.GetUpgradeLevelCount() - 1;
             }

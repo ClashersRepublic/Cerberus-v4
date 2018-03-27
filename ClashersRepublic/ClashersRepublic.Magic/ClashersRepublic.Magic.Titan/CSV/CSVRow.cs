@@ -92,7 +92,7 @@
 
                 if (index >= arraySize || arraySize < 1)
                 {
-                    index = arraySize - 1;
+                    index = LogicMath.Max(arraySize - 1, 0);
                 }
 
                 return this._table.GetBooleanValueAt(columnIndex, this._rowOffset + index);
@@ -130,7 +130,7 @@
 
                 if (index >= arraySize || arraySize < 1)
                 {
-                    index = arraySize - 1;
+                    index = LogicMath.Max(arraySize - 1, 0);
                 }
 
                 return this._table.GetIntegerValueAt(columnIndex, this._rowOffset + index);
