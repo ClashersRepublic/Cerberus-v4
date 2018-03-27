@@ -65,7 +65,7 @@
         private int _lastAllianceLevel;
         private int _lastLeagueShuffle;
         private int _lastSeasonSeen;
-        private int _lastNewsSeen;
+        private int _lastSeenNews;
         private int _waveNumber;
         private int _experienceVersion;
         private int _warTutorialsSeen;
@@ -100,6 +100,8 @@
 
             this._troopRequestMessage = string.Empty;
             this._warRequestMessage = string.Empty;
+            this._lastSeenNews = -1;
+
             this._time = new LogicTime();
             this._gameListener = new LogicGameListener();
             this._achievementManager = new LogicAchievementManager(this);
@@ -923,7 +925,7 @@
                 jsonObject.Put("last_alliance_level", new LogicJSONNumber(this._lastAllianceLevel));
                 jsonObject.Put("last_league_shuffle", new LogicJSONNumber(this._lastLeagueShuffle));
                 jsonObject.Put("last_season_seen", new LogicJSONNumber(this._lastSeasonSeen));
-                jsonObject.Put("last_news_seen", new LogicJSONNumber(this._lastNewsSeen));
+                jsonObject.Put("last_news_seen", new LogicJSONNumber(this._lastSeenNews));
 
                 if (this._troopRequestMessage.Length > 0)
                 {
@@ -1132,6 +1134,25 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///     Sets the last seen news.
+        /// </summary>
+        public void SetLastSeenNews(int lastSeenNews)
+        {
+            if (this._lastSeenNews < lastSeenNews)
+            {
+                this._lastSeenNews = lastSeenNews;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the last seen news.
+        /// </summary>
+        public int GetLastSeenNews()
+        {
+            return this._lastSeenNews;
         }
 
         /// <summary>
@@ -1564,7 +1585,7 @@
                 }
 
                 this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
-                this._lastNewsSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
+                this._lastSeenNews = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
                 this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");
 
                 LogicJSONString troopRequestObject = this._levelJSON.GetJSONString("troop_req_msg");
