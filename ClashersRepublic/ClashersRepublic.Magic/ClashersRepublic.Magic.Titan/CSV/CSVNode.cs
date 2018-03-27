@@ -131,6 +131,8 @@
                 }
             }
 
+            fields.Add(readField);
+
             return fields;
         }
 
