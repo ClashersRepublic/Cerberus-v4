@@ -3,6 +3,7 @@ namespace ClashersRepublic.Magic.Logic.Data
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.CSV;
     using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicBuildingData : LogicData
     {
@@ -13,6 +14,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         private LogicHeroData _heroData;
 
         private int[] _constructionTimes;
+        private int[] _townHallLevel;
+        private int[] _townHallVillage2Level;
         private int _upgradeLevelCount;
         private bool _isClockTower;
         private bool _isFlamer;
@@ -37,8 +40,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string ExportNameConstruction { get; protected set; }
         public string ExportNameLocked { get; protected set; }
         protected int[] BuildCost { get; set; }
-        protected int[] TownHallLevel { get; set; }
-        protected int[] TownHallLevel2 { get; set; }
         protected int Width { get; set; }
         protected int Height { get; set; }
         public string Icon { get; protected set; }
@@ -233,11 +234,15 @@ namespace ClashersRepublic.Magic.Logic.Data
 
             this._buildResource = new LogicResourceData[longestArraySize];
             this._altBuildResource = new LogicResourceData[longestArraySize];
+            this._townHallLevel = new int[longestArraySize];
+            this._townHallVillage2Level = new int[longestArraySize];
 
             for (int i = 0; i < longestArraySize; i++)
             {
                 this._buildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("BuildResource", i));
                 this._altBuildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("AltBuildResource", i));
+                this._townHallLevel[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel", i) - 1, 0);
+                this._townHallVillage2Level[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel2", i) - 1, 0);
             }
 
             this._produceResource = LogicDataTables.GetResourceByName(this.GetValue("ProducesResource", 0));
@@ -379,12 +384,12 @@ namespace ClashersRepublic.Magic.Logic.Data
 
         public int GetRequiredTownHallLevel(int index)
         {
-            return this.TownHallLevel[index];
+            return this._townHallLevel[index];
         }
 
         public int GetTownHallLevel2(int index)
         {
-            return this.TownHallLevel2[index];
+            return this._townHallVillage2Level[index];
         }
 
         public int GetWidth()

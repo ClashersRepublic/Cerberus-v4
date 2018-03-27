@@ -85,7 +85,7 @@
         /// </summary>
         public void SetHitpoints(int hp)
         {
-            this._hp = LogicMath.Clamp(this._hp, 0, 100 * this._maxHp);
+            this._hp = LogicMath.Clamp(hp, 0, 100 * this._maxHp);
         }
 
         /// <summary>

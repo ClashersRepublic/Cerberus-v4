@@ -413,7 +413,7 @@
                 Debugger.Error("LogicBuilding::load - Upgrade level was not found!");
                 this._upgLevel = 0;
             }
-
+            
             this._level.GetWorkerManagerAt(1).DeallocateWorker(this);
             this._level.GetWorkerManagerAt(this._villageType).DeallocateWorker(this);
 
