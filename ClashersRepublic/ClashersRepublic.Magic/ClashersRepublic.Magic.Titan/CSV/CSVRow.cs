@@ -80,6 +80,28 @@
         }
 
         /// <summary>
+        ///     Gets the clamped boolean value at specified column and specified index.
+        /// </summary>
+        public bool GetClampedBooleanValue(string columnName, int index)
+        {
+            int columnIndex = this.GetColumnIndexByName(columnName);
+
+            if (columnIndex != -1)
+            {
+                int arraySize = this._table.GetArraySizeAt(this, columnIndex);
+
+                if (index >= arraySize || arraySize < 1)
+                {
+                    index = arraySize - 1;
+                }
+
+                return this._table.GetBooleanValueAt(columnIndex, this._rowOffset + index);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Gets the integer value at specified column and specified index.
         /// </summary>
         public int GetIntegerValue(string columnName, int index)
@@ -96,6 +118,28 @@
         }
 
         /// <summary>
+        ///     Gets the clamped integer value at specified column and specified index.
+        /// </summary>
+        public int GetClampedIntegerValue(string columnName, int index)
+        {
+            int columnIndex = this.GetColumnIndexByName(columnName);
+
+            if (columnIndex != -1)
+            {
+                int arraySize = this._table.GetArraySizeAt(this, columnIndex);
+
+                if (index >= arraySize || arraySize < 1)
+                {
+                    index = arraySize - 1;
+                }
+
+                return this._table.GetIntegerValueAt(columnIndex, this._rowOffset + index);
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         ///     Gets the value at specified column and specified index.
         /// </summary>
         public string GetValue(string columnName, int index)
@@ -109,6 +153,28 @@
         public string GetValueAt(int columnIndex, int index)
         {
             return this._table.GetValueAt(columnIndex, this._rowOffset + index);
+        }
+
+        /// <summary>
+        ///     Gets the clamped value at specified column and specified index.
+        /// </summary>
+        public string GetClampedValue(string columnName, int index)
+        {
+            int columnIndex = this.GetColumnIndexByName(columnName);
+
+            if (columnIndex != -1)
+            {
+                int arraySize = this._table.GetArraySizeAt(this, columnIndex);
+
+                if (index >= arraySize || arraySize < 1)
+                {
+                    index = LogicMath.Max(arraySize - 1, 0);
+                }
+
+                return this._table.GetValueAt(columnIndex, this._rowOffset + index);
+            }
+
+            return string.Empty;
         }
 
         /// <summary>

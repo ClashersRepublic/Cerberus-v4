@@ -279,6 +279,21 @@
         }
 
         /// <summary>
+        ///     Gets the townhall level.
+        /// </summary>
+        public int GetTownHallLevel(int villageType)
+        {
+            LogicBuilding townHall = this._gameObjectManagers[villageType].GetTownHall();
+
+            if (townHall != null)
+            {
+                return townHall.GetUpgradeLevel();
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         ///     Gets the number of buildings.
         /// </summary>
         public int GetBuildingCount(bool includeDestructed, bool includeLocked)

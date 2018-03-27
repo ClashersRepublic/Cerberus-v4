@@ -7,7 +7,8 @@ namespace ClashersRepublic.Magic.Logic.Data
     public class LogicBuildingData : LogicData
     {
         private LogicBuildingClassData _buildingClass;
-        private LogicResourceData _buildResource;
+        private LogicResourceData[] _buildResource;
+        private LogicResourceData[] _altBuildResource;
         private LogicResourceData _produceResource;
         private LogicHeroData _heroData;
 
@@ -35,7 +36,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string ExportNameNpc { get; protected set; }
         public string ExportNameConstruction { get; protected set; }
         public string ExportNameLocked { get; protected set; }
-        protected string BuildResource { get; set; }
         protected int[] BuildCost { get; set; }
         protected int[] TownHallLevel { get; set; }
         protected int[] TownHallLevel2 { get; set; }
@@ -60,7 +60,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int Village2Housing { get; protected set; }
         protected int[] HousingSpace { get; set; }
         protected int[] HousingSpaceAlt { get; set; }
-        public string ProducesResource { get; protected set; }
         protected int[] ResourcePer100Hours { get; set; }
         protected int[] ResourceMax { get; set; }
         protected int[] ResourceIconLimit { get; set; }
@@ -146,7 +145,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool PreventsHealing { get; protected set; }
         protected int[] StrengthWeight { get; set; }
         public int AlternatePickNewTargetDelay { get; protected set; }
-        protected string[] AltBuildResource { get; set; }
         public int SpeedMod { get; protected set; }
         public int StatusEffectTime { get; protected set; }
         protected int[] ShockwavePushStrength { get; set; }
@@ -231,9 +229,18 @@ namespace ClashersRepublic.Magic.Logic.Data
                                              this.GetIntegerValue("BuildTimeS", i);
             }
 
+            int longestArraySize = this._row.GetBiggestArraySize();
 
-            this._buildResource = LogicDataTables.GetResourceByName(this.BuildResource);
-            this._produceResource = LogicDataTables.GetResourceByName(this.ProducesResource);
+            this._buildResource = new LogicResourceData[longestArraySize];
+            this._altBuildResource = new LogicResourceData[longestArraySize];
+
+            for (int i = 0; i < longestArraySize; i++)
+            {
+                this._buildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("BuildResource", i));
+                this._altBuildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("AltBuildResource", i));
+            }
+
+            this._produceResource = LogicDataTables.GetResourceByName(this.GetValue("ProducesResource", 0));
 
             string heroType = this.GetValue("HeroType", 0);
 
@@ -330,9 +337,14 @@ namespace ClashersRepublic.Magic.Logic.Data
             return this.HousingSpaceAlt[level];
         }
 
-        public LogicResourceData GetBuildResource()
+        public LogicResourceData GetBuildResource(int idx)
         {
-            return this._buildResource;
+            return this._buildResource[idx];
+        }
+
+        public LogicResourceData GetAltBuildResource(int idx)
+        {
+            return this._altBuildResource[idx];
         }
 
         public LogicResourceData GetProduceResource()
@@ -624,12 +636,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.StrengthWeight[index];
         }
-
-        public string GetAltBuildResource(int index)
-        {
-            return this.AltBuildResource[index];
-        }
-
+        
         public int GetShockwavePushStrength(int index)
         {
             return this.ShockwavePushStrength[index];

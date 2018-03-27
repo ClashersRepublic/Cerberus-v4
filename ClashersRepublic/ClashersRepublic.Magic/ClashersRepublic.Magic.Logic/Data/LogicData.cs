@@ -94,6 +94,14 @@
         }
 
         /// <summary>
+        ///     Gets a clamped boolean value at specified column and specified index.
+        /// </summary>
+        public bool GetClampedBooleanValue(string columnName, int index)
+        {
+            return this._row.GetClampedBooleanValue(columnName, index);
+        }
+
+        /// <summary>
         ///     Gets a integer value at specified column and specified index.
         /// </summary>
         public int GetIntegerValue(string columnName, int index)
@@ -102,11 +110,27 @@
         }
 
         /// <summary>
+        ///     Gets a clamped integer value at specified column and specified index.
+        /// </summary>
+        public int GetClampedIntegerValue(string columnName, int index)
+        {
+            return this._row.GetClampedIntegerValue(columnName, index);
+        }
+
+        /// <summary>
         ///     Gets a value at specified column and specified index.
         /// </summary>
         public string GetValue(string columnName, int index)
         {
             return this._row.GetValue(columnName, index);
+        }
+
+        /// <summary>
+        ///     Gets a clamped value at specified column and specified index.
+        /// </summary>
+        public string GetClampedValue(string columnName, int index)
+        {
+            return this._row.GetClampedValue(columnName, index);
         }
 
         /// <summary>
@@ -132,7 +156,7 @@
 
                         if (elementType == typeof(int))
                         {
-                            int arraySize = this.GetArraySize(propertyInfo.Name);
+                            int arraySize = this._row.GetBiggestArraySize();
                             int[] array = new int[arraySize];
 
                             for (int i = 0; i < arraySize; i++)
@@ -144,7 +168,7 @@
                         }
                         else if (elementType == typeof(bool))
                         {
-                            int arraySize = this.GetArraySize(propertyInfo.Name);
+                            int arraySize = this._row.GetBiggestArraySize();
                             bool[] array = new bool[arraySize];
 
                             for (int i = 0; i < arraySize; i++)
@@ -156,7 +180,7 @@
                         }
                         else if (elementType == typeof(string))
                         {
-                            int arraySize = this.GetArraySize(propertyInfo.Name);
+                            int arraySize = this._row.GetBiggestArraySize();
                             string[] array = new string[arraySize];
 
                             for (int i = 0; i < arraySize; i++)

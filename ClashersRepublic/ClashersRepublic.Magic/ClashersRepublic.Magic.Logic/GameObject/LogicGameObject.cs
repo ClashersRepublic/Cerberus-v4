@@ -77,6 +77,14 @@
         }
 
         /// <summary>
+        ///     Removes all references with the specified gameobject.
+        /// </summary>
+        public void RemoveGameObjectReferences(LogicGameObject gameObject)
+        {
+            // RemoveGameObjectReferences.
+        }
+
+        /// <summary>
         ///     Adds the specified component.
         /// </summary>
         public void AddComponent(LogicComponent component)
@@ -259,7 +267,18 @@
         /// </summary>
         public void SetPositionXY(int x, int y)
         {
-            this._position.Set(x, y);
+            if (this._position.X != x || this._position.Y != y)
+            {
+                int oldX = this.GetTileX();
+                int oldY = this.GetTileY();
+
+                this._position.Set(x, y);
+
+                if (this._globalId != 0)
+                {
+                    this._level.GetTileMap().GameObjectMoved(this, oldX, oldY);
+                }
+            }
         }
 
         /// <summary>
@@ -461,7 +480,7 @@
                 Debugger.Error("LogicGameObject::load - x or y is NULL!");
             }
 
-            this.SetPositionXY(xNumber.GetIntValue() << 9, yNumber.GetIntValue() << 9);
+            this.SetInitialPosition(xNumber.GetIntValue() << 9, yNumber.GetIntValue() << 9);
         }
 
         /// <summary>

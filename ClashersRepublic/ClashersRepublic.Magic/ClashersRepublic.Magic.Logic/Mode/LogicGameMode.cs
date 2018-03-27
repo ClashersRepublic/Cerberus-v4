@@ -24,6 +24,7 @@
         private LogicCommandManager _commandManager;
         private LogicGameListener _gameListener;
         private LogicCalendar _calendar;
+        private LogicConfiguration _configuration;
 
         private LogicTimer _shieldTimer;
         private LogicTimer _guardTimer;
@@ -37,6 +38,7 @@
             this._level = new LogicLevel(this);
             this._commandManager = new LogicCommandManager(this._level);
             this._calendar = new LogicCalendar();
+            this._configuration = new LogicConfiguration();
             this._shieldTimer = new LogicTimer();
             this._guardTimer = new LogicTimer();
             this._maintenanceTimer = new LogicTimer();
@@ -66,10 +68,31 @@
                 this._calendar = null;
             }
 
-            this._maintenanceTimer = null;
-            this._battleTimer = null;
-            this._shieldTimer = null;
-            this._guardTimer = null;
+            if (this._maintenanceTimer != null)
+            {
+                this._maintenanceTimer.Destruct();
+                this._maintenanceTimer = null;
+            }
+
+            if (this._battleTimer != null)
+            {
+                this._battleTimer.Destruct();
+                this._battleTimer = null;
+            }
+
+            if (this._shieldTimer != null)
+            {
+                this._shieldTimer.Destruct();
+                this._shieldTimer = null;
+            }
+
+            if (this._guardTimer != null)
+            {
+                this._guardTimer.Destruct();
+                this._guardTimer = null;
+            }
+
+            this._configuration = null;
         }
 
         /// <summary>
@@ -127,6 +150,14 @@
         public LogicLevel GetLevel()
         {
             return this._level;
+        }
+
+        /// <summary>
+        ///     Gets the configuration instance.
+        /// </summary>
+        public LogicConfiguration GetConfiguration()
+        {
+            return this._configuration;
         }
 
         /// <summary>
@@ -321,7 +352,6 @@
         /// </summary>
         public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
         {
-
         }
     }
 }

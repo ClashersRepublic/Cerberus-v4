@@ -88,7 +88,8 @@
                         if (!level.IsBuildingCapReached(this._buildingData, true))
                         {
                             LogicClientAvatar playerAvatar = level.GetPlayerAvatar();
-                            LogicResourceData buildResourceData = this._buildingData.GetBuildResource();
+                            LogicResourceData buildResourceData = this._buildingData.GetBuildResource(0);
+
                             int buildResourceCost = this._buildingData.GetBuildCost(0, level);
 
                             if (playerAvatar.HasEnoughResources(buildResourceData, buildResourceCost, true, this, false))

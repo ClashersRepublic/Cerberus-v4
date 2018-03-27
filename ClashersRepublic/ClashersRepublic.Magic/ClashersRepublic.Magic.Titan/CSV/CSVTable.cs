@@ -38,11 +38,6 @@
                 switch (column.ColumnType)
                 {
                     case -1:
-                    {
-                        column.AddStringValue(value);
-                        break;
-                    }
-
                     case 0:
                     {
                         column.AddStringValue(value);
@@ -129,19 +124,8 @@
                 if (rowIdx != -1)
                 {
                     CSVColumn column = this._columnList[columnIdx];
-
-                    int nextRowOffset;
-
-                    if (rowIdx + 1 >= this._rowList.Count)
-                    {
-                        nextRowOffset = column.GetSize();
-                    }
-                    else
-                    {
-                        nextRowOffset = this._rowList[rowIdx + 1].GetRowOffset();
-                    }
-
-                    return column.GetArraySize(this._rowList[rowIdx].GetRowOffset(), nextRowOffset);
+                    return column.GetArraySize(this._rowList[rowIdx].GetRowOffset(), 
+                                               rowIdx + 1 >= this._rowList.Count ? column.GetSize() : this._rowList[rowIdx + 1].GetRowOffset());
                 }
             }
 
@@ -201,14 +185,7 @@
         /// </summary>
         public bool GetBooleanValue(string name, int index)
         {
-            int columnIndex = this._columnNameList.IndexOf(name);
-
-            if (columnIndex != -1)
-            {
-                return this._columnList[columnIndex].GetBooleanValue(index);
-            }
-
-            return false;
+            return this.GetBooleanValueAt(this._columnNameList.IndexOf(name), index);
         }
 
         /// <summary>
@@ -229,14 +206,7 @@
         /// </summary>
         public int GetIntegerValue(string name, int index)
         {
-            int columnIndex = this._columnNameList.IndexOf(name);
-
-            if (columnIndex != -1)
-            {
-                return this._columnList[columnIndex].GetIntegerValue(index);
-            }
-
-            return 0;
+            return this.GetIntegerValueAt(this._columnNameList.IndexOf(name), index);
         }
 
         /// <summary>
@@ -246,7 +216,14 @@
         {
             if (columnIndex != -1)
             {
-                return this._columnList[columnIndex].GetIntegerValue(index);
+                int value = this._columnList[columnIndex].GetIntegerValue(index);
+
+                if (value == 0x7fffffff)
+                {
+                    value = 0;
+                }
+
+                return value;
             }
 
             return 0;
@@ -257,14 +234,7 @@
         /// </summary>
         public string GetValue(string name, int index)
         {
-            int columnIndex = this._columnNameList.IndexOf(name);
-
-            if (columnIndex != -1)
-            {
-                return this._columnList[columnIndex].GetStringValue(index);
-            }
-
-            return string.Empty;
+            return this.GetValueAt(this._columnNameList.IndexOf(name), index);
         }
 
         /// <summary>

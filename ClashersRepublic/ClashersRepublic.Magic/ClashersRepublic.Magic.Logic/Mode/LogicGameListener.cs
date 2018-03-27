@@ -52,5 +52,9 @@
         public virtual void ShowTroopPlacementTutorial(int data)
         {
         }
+
+        public virtual void TownHallLevelTooLow(int lvl)
+        {
+        }
     }
 }

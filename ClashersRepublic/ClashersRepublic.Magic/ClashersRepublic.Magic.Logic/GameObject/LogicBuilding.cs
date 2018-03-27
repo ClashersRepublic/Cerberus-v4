@@ -190,6 +190,14 @@
         }
 
         /// <summary>
+        ///     Gets the wall index.
+        /// </summary>
+        public int GetWallIndex()
+        {
+            return this._wallIndex;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicBuilding"/> instance is wall.
         /// </summary>
         public override bool IsWall()
@@ -628,6 +636,52 @@
         }
 
         /// <summary>
+        ///     Gets if this building is maxed.
+        /// </summary>
+        public bool IsMaxUpgradeLevel()
+        {
+            LogicBuildingData buildingData = this.GetBuildingData();
+
+            if (buildingData.IsTownHallVillage2())
+            {
+                return this._upgLevel >= this._level.GetGameMode().GetConfiguration().GetMaxTownHallLevel() - 1;
+            }
+
+            if (buildingData.GetVillageType() != 0 || this.GetRequiredTownHallLevelForUpgrade() < this._level.GetGameMode().GetConfiguration().GetMaxTownHallLevel() - 1)
+            {
+                return this._upgLevel >= buildingData.GetUpgradeLevelCount() - 1;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        ///     Gets the required townhall level for upgrade.
+        /// </summary>
+        public int GetRequiredTownHallLevelForUpgrade()
+        {
+            return this.GetBuildingData().GetRequiredTownHallLevel(LogicMath.Min(this._upgLevel + 1, this.GetBuildingData().GetUpgradeLevelCount()));
+        }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicBuilding"/> can be upgraded.
+        /// </summary>
+        public bool CanUpgrade(bool canCallListener)
+        {
+            if (this._constructionTimer == null && !this.IsMaxUpgradeLevel())
+            {
+                if (this._level.GetTownHallLevel(this._villageType) >= this.GetRequiredTownHallLevelForUpgrade())
+                {
+                    return true;
+                }
+
+                this._level.GetGameListener().TownHallLevelTooLow(this.GetRequiredTownHallLevelForUpgrade());
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Starts the construction of the <see cref="LogicBuilding"/>.
         /// </summary>
         public void StartConstructing(bool ignoreState)
@@ -655,6 +709,52 @@
             if (this._villageType == 1 && this._isLocked)
             {
                 // this._level.GetGameListener.???
+            }
+        }
+
+        /// <summary>
+        ///     Starts the construction of the <see cref="LogicBuilding"/>.
+        /// </summary>
+        public void StartUpgrading(bool ignoreState, bool gearup)
+        {
+            if (this._constructionTimer != null)
+            {
+                this._constructionTimer.Destruct();
+                this._constructionTimer = null;
+            }
+
+            int constructionTime;
+
+            if (this._gearing)
+            {
+                constructionTime = this.GetBuildingData().GetGearUpTime(this._upgLevel);
+                this._gearing = true;
+            }
+            else
+            {
+                constructionTime = this.GetBuildingData().GetConstructionTime(this._upgLevel + 1, this._level, 0);
+                this._upgrading = true;
+            }
+
+            if (constructionTime <= 0)
+            {
+                this.FinishConstruction(ignoreState);
+            }
+            else
+            {
+                this._level.GetWorkerManagerAt(this._gearing ? 1 : this.GetBuildingData().GetVillageType()).AllocateWorker(this);
+
+                if (this.GetComponent(5) != null)
+                {
+                    ((LogicResourceProductionComponent) this.GetComponent(5)).CollectResources(false);
+                }
+
+                this.EnableComponent(5, false);
+                this.EnableComponent(3, false);
+                this.EnableComponent(9, false);
+
+                this._constructionTimer = new LogicTimer();
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
             }
         }
 

@@ -26,11 +26,16 @@
         private LogicRandom _tileGrassRespawnRandom;
         private readonly LogicComponentManager _componentManager;
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
+        private readonly LogicArrayList<LogicBuilding> _barracks;
+        private readonly LogicArrayList<LogicBuilding> _darkBarracks;
 
         private LogicBuilding _allianceCastle;
         private LogicBuilding _clockTower;
         private LogicBuilding _townHall;
         private LogicBuilding _laboratory;
+        private LogicBuilding _spellForge;
+        private LogicBuilding _darkSpellForge;
+
         //private LogicAlliancePortal _alliancePortal;
         private LogicObstacle _lootCart;
         private LogicVillageObject _shipyard;
@@ -46,6 +51,7 @@
         private int _gemBoxPeriodSecs;
         private int _passedRespawnSecs;
         private int _passedTimeGrassRespawnSecs;
+        private int _unitProductionCount;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicGameObjectManager" /> class.
@@ -61,9 +67,11 @@
 
             for (int i = 0; i < 9; i++)
             {
-                this._gameObjects[i] = new LogicArrayList<LogicGameObject>(128);
+                this._gameObjects[i] = new LogicArrayList<LogicGameObject>(32);
             }
 
+            this._barracks = new LogicArrayList<LogicBuilding>();
+            this._darkBarracks = new LogicArrayList<LogicBuilding>();
             this._gemBoxData = LogicDataTables.GetObstacleByName("Bonus Gembox");
             this._componentManager = new LogicComponentManager(level);
             this._listener = new LogicGameObjectManagerListener();
@@ -94,6 +102,22 @@
                 }
             }
 
+            if (this._barracks.Count != 0)
+            {
+                do
+                {
+                    this._barracks.Remove(0);
+                } while (this._barracks.Count != 0);
+            }
+
+            if (this._darkBarracks.Count != 0)
+            {
+                do
+                {
+                    this._darkBarracks.Remove(0);
+                } while (this._darkBarracks.Count != 0);
+            }
+
             if (this._unitProduction != null)
             {
                 this._unitProduction.Destruct();
@@ -105,7 +129,7 @@
                 this._spellProduction.Destruct();
                 this._spellProduction = null;
             }
-            
+
             this._listener = null;
             this._obstacleRespawnRandom = null;
             this._tileGrassRespawnRandom = null;
@@ -115,6 +139,8 @@
             this._clockTower = null;
             this._townHall = null;
             this._laboratory = null;
+            this._spellForge = null;
+            this._darkSpellForge = null;
             this._lootCart = null;
             this._shipyard = null;
             this._rowBoat = null;
@@ -185,13 +211,11 @@
                     {
                         if (buildingData.GetProducesUnitsOfType() == 1)
                         {
-                            /*v32 = *(_DWORD*)(v3 + 200)
-                            sub_238DCC(v32, (int)&v52);*/
+                            this._barracks.Add(building);
                         }
                         else if (buildingData.GetProducesUnitsOfType() == 2)
                         {
-                            /*v32 = *(_DWORD*)(v3 + 204);
-                            sub_238DCC(v32, (int)&v52);*/
+                            this._darkBarracks.Add(building);
                         }
                     }
                 }
@@ -218,21 +242,26 @@
 
                 if (buildingData.GetUnitProduction(0) >= 1)
                 {
-                    //++*(_DWORD*)(v3 + 292);
+                    this._unitProductionCount += 1;
                 }
 
                 if (buildingData.ForgesSpells)
                 {
                     int unitsOfType = buildingData.GetProducesUnitsOfType();
-                    /*v49 = v3 + 192;
+
                     if (unitsOfType == 1)
-                        v49 = v3 + 188;
-                    *(_DWORD*)v49 = v52;*/
+                    {
+                        this._darkSpellForge = building;
+                    }
+                    else
+                    {
+                        this._spellForge = building;
+                    }
                 }
             }
             else if (gameObjectType == 3)
             {
-                LogicObstacle obstacleObject = (LogicObstacle)gameObject;
+                LogicObstacle obstacleObject = (LogicObstacle) gameObject;
                 LogicObstacleData obstacleObjectData = obstacleObject.GetObstacleData();
 
                 if (obstacleObjectData.IsLootCart())
@@ -246,7 +275,7 @@
             }
             else if (gameObjectType == 8)
             {
-                LogicVillageObject villageObject = (LogicVillageObject)gameObject;
+                LogicVillageObject villageObject = (LogicVillageObject) gameObject;
                 LogicVillageObjectData villageObjectData = villageObject.GetVillageObjectData();
 
                 if (villageObjectData.IsShipyard())
@@ -270,6 +299,131 @@
             if (this._level.GetVillageType() == this._villageType)
             {
                 this._level.GetTileMap().AddGameObject(gameObject);
+            }
+        }
+
+        /// <summary>
+        ///     Removes the specified gameobject.
+        /// </summary>
+        public void RemoveGameObject(LogicGameObject gameObject)
+        {
+            int index = -1;
+            int gameObjectType = gameObject.GetGameObjectType();
+
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[gameObjectType];
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (gameObjects[i].GetGlobalID() == gameObject.GetGlobalID())
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            gameObjects.Remove(index);
+
+            if (this._townHall == gameObject)
+            {
+                this._townHall = null;
+            }
+
+            if (this._clockTower == gameObject)
+            {
+                this._clockTower = null;
+            }
+
+            if (gameObjectType == 0)
+            {
+                LogicBuildingData buildingData = ((LogicBuilding) gameObject).GetBuildingData();
+
+                if (buildingData.IsWorkerBuilding() || buildingData.IsTownHallVillage2())
+                {
+                    this._level.GetWorkerManagerAt(this._villageType).DecreaseWorkerCount();
+                }
+
+                if (buildingData.GetUnitProduction(0) > 0)
+                {
+                    this._unitProductionCount -= 1;
+
+                    if (!buildingData.ForgesSpells)
+                    {
+                        if (buildingData.GetProducesUnitsOfType() == 1)
+                        {
+                            for (int i = 0; i < this._barracks.Count; i++)
+                            {
+                                if (this._barracks[i] == gameObject)
+                                {
+                                    this._barracks.Remove(i);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (buildingData.GetProducesUnitsOfType() == 2)
+                        {
+                            for (int i = 0; i < this._darkBarracks.Count; i++)
+                            {
+                                if (this._darkBarracks[i] == gameObject)
+                                {
+                                    this._darkBarracks.Remove(i);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (this._allianceCastle == gameObject)
+                {
+                    this._allianceCastle = null;
+                }
+
+                if (this._laboratory == gameObject)
+                {
+                    this._laboratory = null;
+                }
+
+                if (this._spellForge == gameObject)
+                {
+                    this._spellForge = null;
+                }
+
+                if (this._darkSpellForge == gameObject)
+                {
+                    this._darkSpellForge = null;
+                }
+
+                gameObject.Destruct();
+
+                this.RemoveGameObjectReferences(gameObject);
+            }
+        }
+
+        /// <summary>
+        ///     Removes all references on the specified gameobject.
+        /// </summary>
+        private void RemoveGameObjectReferences(LogicGameObject gameObject)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                for (int j = 0; j < gameObjects.Count; j++)
+                {
+                    gameObjects[j].RemoveGameObjectReferences(gameObject);
+                }
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                this._level.GetWorkerManagerAt(i).RemoveGameObjectReference(gameObject);
+            }
+
+            this._componentManager.RemoveGameObjectReferences(gameObject);
+
+            if (this._lootCart == gameObject)
+            {
+                this._lootCart = null;
             }
         }
 

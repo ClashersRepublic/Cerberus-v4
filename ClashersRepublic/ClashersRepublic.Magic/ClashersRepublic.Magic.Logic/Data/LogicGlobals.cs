@@ -30,6 +30,7 @@
         private int _workerCostThirdBuildCost;
         private int _workerCostFourthBuildCost;
         private int _workerCostFifthBuildCost;
+        private int _challengeBaseCooldownEnabledOnTh;
 
         private bool _useNewTraining;
         private bool _moreAccurateTime;
@@ -83,6 +84,7 @@
             this._workerCostThirdBuildCost = this.GetIntValue("WORKER_COST_3RD");
             this._workerCostFourthBuildCost = this.GetIntValue("WORKER_COST_4TH");
             this._workerCostFifthBuildCost = this.GetIntValue("WORKER_COST_5TH");
+            this._challengeBaseCooldownEnabledOnTh = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
@@ -241,6 +243,14 @@
                 case 4: return this._workerCostFifthBuildCost;
                 default: return this._workerCostFifthBuildCost;
             }
+        }
+
+        /// <summary>
+        ///     Gets the townhall for the challenge base cooldown.
+        /// </summary>
+        public int GetChallengeBaseCooldownTownHall()
+        {
+            return this._challengeBaseCooldownEnabledOnTh;
         }
 
         /// <summary>

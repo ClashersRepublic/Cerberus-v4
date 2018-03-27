@@ -149,6 +149,29 @@
         }
 
         /// <summary>
+        ///     Gets the tall grass object.
+        /// </summary>
+        public LogicObstacle GetTallGrass()
+        {
+            for (int i = 0; i < this._gameObjects.Count; i++)
+            {
+                LogicGameObject gameObject = this._gameObjects[i];
+
+                if (gameObject.GetGameObjectType() == 3)
+                {
+                    LogicObstacle obstacle = (LogicObstacle) this._gameObjects[i];
+
+                    if (obstacle.GetObstacleData().TallGrass)
+                    {
+                        return obstacle;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         ///     Gets the <see cref="LogicGameObject"/> instance at the specified index.
         /// </summary>
         public LogicGameObject GetGameObject(int idx)

@@ -62,6 +62,8 @@
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicMoveBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicUpgradeBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicNewShopItemsSeenCommand.cs" />
     <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicMissionProgressCommand.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Level\LogicRect.cs" />
     <Compile Include="Level\LogicTile.cs" />
     <Compile Include="Level\LogicTileMap.cs" />
+    <Compile Include="LogicConfiguration.cs" />
     <Compile Include="LogicNpcAttack.cs" />
     <Compile Include="LogicVersion.cs" />
     <Compile Include="Message\Account\ChatAccountBanStatusMessage.cs" />

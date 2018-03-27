@@ -256,6 +256,18 @@
                         break;
                     }
 
+                    case 501:
+                    {
+                        command = new LogicMoveBuildingCommand();
+                        break;
+                    }
+
+                    case 502:
+                    {
+                        command = new LogicUpgradeBuildingCommand();
+                        break;
+                    }
+
                     case 508:
                     {
                         command = new LogicTrainUnitCommand();

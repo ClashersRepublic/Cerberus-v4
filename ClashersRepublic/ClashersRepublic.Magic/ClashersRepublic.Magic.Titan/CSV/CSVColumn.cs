@@ -5,7 +5,7 @@
 
     public class CSVColumn
     {
-        private readonly LogicArrayList<bool> _boolValue;
+        private readonly LogicArrayList<byte> _boolValue;
         private readonly LogicArrayList<int> _intValue;
         private readonly LogicArrayList<string> _stringValue;
 
@@ -17,7 +17,7 @@
             this.ColumnType = type;
 
             this._intValue = new LogicArrayList<int>();
-            this._boolValue = new LogicArrayList<bool>();
+            this._boolValue = new LogicArrayList<byte>();
             this._stringValue = new LogicArrayList<string>();
 
             switch (type)
@@ -67,13 +67,13 @@
 
                 case 1:
                 {
-                    this._intValue.Add(0);
+                    this._intValue.Add(0x7fffffff);
                     break;
                 }
 
                 case 2:
                 {
-                    this._boolValue.Add(false);
+                    this._boolValue.Add(2);
                     break;
                 }
             }
@@ -84,7 +84,7 @@
         /// </summary>
         public void AddBooleanValue(bool value)
         {
-            this._boolValue.Add(value);
+            this._boolValue.Add((byte) (value ? 1 : 0));
         }
 
         /// <summary>
@@ -108,7 +108,48 @@
         /// </summary>
         public int GetArraySize(int startOffset, int endOffset)
         {
-            return endOffset - startOffset;
+            switch (this.ColumnType)
+            {
+                default:
+                {
+                    for (int i = endOffset - 1; i + 1 > startOffset; i--)
+                    {
+                        if (this._stringValue[i].Length > 0)
+                        {
+                            return i - startOffset + 1;
+                        }
+                    }
+
+                    break;
+                }
+                case 1:
+                {
+                    for (int i = endOffset - 1; i + 1 > startOffset; i--)
+                    {
+                        if (this._intValue[i] != 0x7fffffff)
+                        {
+                            return i - startOffset + 1;
+                        }
+                    }
+                
+                    break;
+                }
+
+                case 2:
+                {
+                    for (int i = endOffset - 1; i + 1 > startOffset; i--)
+                    {
+                        if (this._boolValue[i] != 2)
+                        {
+                            return i - startOffset + 1;
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -116,7 +157,7 @@
         /// </summary>
         public bool GetBooleanValue(int index)
         {
-            return this._boolValue[index];
+            return this._boolValue[index] == 1;
         }
 
         /// <summary>
