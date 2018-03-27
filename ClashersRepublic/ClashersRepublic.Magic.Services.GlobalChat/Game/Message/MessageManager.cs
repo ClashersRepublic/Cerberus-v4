@@ -1,7 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Game.Message
 {
+    using System;
     using ClashersRepublic.Magic.Logic.Message.Chat;
+
+    using ClashersRepublic.Magic.Services.Core.Message.Debug;
     using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
+
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class MessageManager
@@ -42,7 +46,27 @@
         /// </summary>
         private void SendGlobalChatLineMessageReceived(SendGlobalChatLineMessage message)
         {
-            this._session.Room.ReceiveMessage(this._session.AvatarEntry, message.RemoveMessage());
+            string chatMessage = message.RemoveMessage();
+
+            #if DEBUG
+            if (chatMessage.StartsWith("/DEBUG ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                DebugCommand debugCommand = DebugCommandFactory.CreateDebugCommandByName(chatMessage.Substring(7).ToLowerInvariant());
+
+                if (debugCommand != null)
+                {
+                    if (debugCommand.GetServiceNodeType() != -1)
+                    {
+                        ExecuteDebugCommandMessage executeDebugCommandMessage = new ExecuteDebugCommandMessage();
+                        executeDebugCommandMessage.SetDebugCommand(debugCommand);
+                        this._session.SendMessage(debugCommand.GetServiceNodeType(), executeDebugCommandMessage);
+                        return;
+                    }
+                }
+            }
+            #endif
+
+            this._session.Room.ReceiveMessage(this._session.AvatarEntry, chatMessage);
         }
     }
 }

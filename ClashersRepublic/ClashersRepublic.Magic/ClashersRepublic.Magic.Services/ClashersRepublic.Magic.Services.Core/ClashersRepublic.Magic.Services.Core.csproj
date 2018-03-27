@@ -269,6 +269,10 @@
     <Compile Include="Message\Avatar\AvatarEntryMessage.cs" />
     <Compile Include="Message\Avatar\AvatarEntry.cs" />
     <Compile Include="Message\Avatar\Stream\AddAvatarStreamEntryMessage.cs" />
+    <Compile Include="Message\Debug\DebugResetZoneCommand.cs" />
+    <Compile Include="Message\Debug\DebugCommand.cs" />
+    <Compile Include="Message\Debug\DebugCommandFactory.cs" />
+    <Compile Include="Message\Debug\ExecuteDebugCommandMessage.cs" />
     <Compile Include="Message\Home\AvatarProfileFullEntryMessage.cs" />
     <Compile Include="Message\Home\AskForAvatarProfileFullEntryMessage.cs" />
     <Compile Include="Message\Home\AllowServerCommandMessage.cs" />

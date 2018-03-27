@@ -13,6 +13,7 @@
 
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
+    using ClashersRepublic.Magic.Services.Core.Message.Debug;
     using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Utils;
 
@@ -47,6 +48,10 @@
 
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
+                    break;
+
+                case 10600:
+                    this.ExecuteDebugCommandMessageReceived((ExecuteDebugCommandMessage)message);
                     break;
 
                 case 20211:
@@ -205,6 +210,33 @@
                 AvatarProfileMessage avatarProfileMessage = new AvatarProfileMessage();
                 avatarProfileMessage.SetAvatarProfileFullEntry(message.RemoveAvatarProfileFullEntry());
                 session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, avatarProfileMessage);
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ExecuteDebugCommandMessage"/> is received.
+        /// </summary>
+        private void ExecuteDebugCommandMessageReceived(ExecuteDebugCommandMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (NetAvatarSessionManager.TryGet(sessionId, out NetAvatarSession session))
+            {
+                DebugCommand debugCommand = message.RemoveDebugCommand();
+
+                if (debugCommand.GetServiceNodeType() == ServiceCore.ServiceNodeType)
+                {
+                    switch (debugCommand.GetCommandType())
+                    {
+                        default:
+                            Logging.Debug(string.Format("executeDebugCommandMessageReceived unknown debug command received ({0})", debugCommand.GetCommandType()));
+                            break;
+                    }
+                }
+                else
+                {
+                    Logging.Debug(string.Format("executeDebugCommandMessageReceived invalid debug command received ({0})", debugCommand.GetCommandType()));
+                }
             }
         }
     }

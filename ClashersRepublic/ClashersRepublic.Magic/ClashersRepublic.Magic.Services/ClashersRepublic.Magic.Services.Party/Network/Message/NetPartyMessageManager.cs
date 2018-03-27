@@ -4,6 +4,7 @@
     
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
+    using ClashersRepublic.Magic.Services.Core.Message.Debug;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
@@ -35,6 +36,10 @@
                     break;
                 case 10303:
                     this.UpdateServerEndPointMessageReceived((UpdateServerEndPointMessage) message);
+                    break;
+
+                case 10600:
+                    this.ExecuteDebugCommandMessageReceived((ExecuteDebugCommandMessage) message);
                     break;
 
                 case 10400:
@@ -103,6 +108,7 @@
         internal void ServerUnboundMessageReceived(ServerUnboundMessage message)
         {
             byte[] sessionId = message.GetSessionId();
+
             if (NetPartySessionManager.TryRemove(sessionId, out NetPartySession session))
             {
                 session.PartyAccount.SetSession(null);
@@ -148,6 +154,33 @@
                     {
                         Logging.Warning("NetPartyMessageManager::forwardPiranhaMessageReceived piranha message handle exception, trace: " + exception);
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ExecuteDebugCommandMessage"/> is received.
+        /// </summary>
+        private void ExecuteDebugCommandMessageReceived(ExecuteDebugCommandMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (NetPartySessionManager.TryGet(sessionId, out NetPartySession session))
+            {
+                DebugCommand debugCommand = message.RemoveDebugCommand();
+
+                if (debugCommand.GetServiceNodeType() == ServiceCore.ServiceNodeType)
+                {
+                    switch (debugCommand.GetCommandType())
+                    {
+                        default:
+                            Logging.Debug(string.Format("executeDebugCommandMessageReceived unknown debug command received ({0})", debugCommand.GetCommandType()));
+                            break;
+                    }
+                }
+                else
+                {
+                    Logging.Debug(string.Format("executeDebugCommandMessageReceived invalid debug command received ({0})", debugCommand.GetCommandType()));
                 }
             }
         }

@@ -3,6 +3,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Account;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar.Stream;
+    using ClashersRepublic.Magic.Services.Core.Message.Debug;
     using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
@@ -32,6 +33,8 @@
 
                     case 10511: return new AllowServerCommandMessage();
                     case 10520: return new AskForAvatarProfileFullEntryMessage();
+
+                    case 10600: return new ExecuteDebugCommandMessage();
 
                     case 11500: return new AddAvatarStreamEntryMessage();
                 }

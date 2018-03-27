@@ -1,22 +1,21 @@
 ﻿namespace ClashersRepublic.Magic.Services.Zone.Network.Message
 {
     using System;
-
     using ClashersRepublic.Magic.Logic.Command.Server;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Message.Avatar;
+    using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Logic.Util;
-
     using ClashersRepublic.Magic.Services.Zone.Game;
     using ClashersRepublic.Magic.Services.Zone.Network.Session;
-
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
+    using ClashersRepublic.Magic.Services.Core.Message.Debug;
     using ClashersRepublic.Magic.Services.Core.Message.Home;
     using ClashersRepublic.Magic.Services.Core.Message.Network;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
-
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
 
@@ -55,6 +54,10 @@
                 case 10520:
                     this.AskForAvatarProfileFullEntryMessageReceived((AskForAvatarProfileFullEntryMessage) message);
                     break;
+
+                case 10600:
+                    this.ExecuteDebugCommandMessageReceived((ExecuteDebugCommandMessage) message);
+                    break;
             }
         }
 
@@ -65,7 +68,7 @@
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
-        
+
         /// <summary>
         ///     Called when a <see cref="ServerBoundMessage"/> is received.
         /// </summary>
@@ -153,6 +156,12 @@
 
             if (NetZoneSessionManager.TryGet(sessionId, out NetZoneSession session))
             {
+                if (session.PiranhaMessageManager == null)
+                {
+                    Logging.Debug("NetZoneMessage::forwardPiranhaMessageReceived session disposed");
+                    return;
+                }
+
                 PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
 
                 if (piranhaMessage != null)
@@ -206,12 +215,50 @@
                     CompressibleStringHelper.Compress(compressibleString);
                 }
 
-                entry.SetLogicClientAvatar(account.ClientAvatar); 
+                entry.SetLogicClientAvatar(account.ClientAvatar);
                 entry.SetCompressedHomeJSON(compressibleString.RemoveCompressed());
                 avatarProfileFullEntryMessage.SetAvatarProfileFullEntry(entry);
                 compressibleString.Destruct();
 
                 NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, avatarProfileFullEntryMessage);
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ExecuteDebugCommandMessage"/> is received.
+        /// </summary>
+        private void ExecuteDebugCommandMessageReceived(ExecuteDebugCommandMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (NetZoneSessionManager.TryGet(sessionId, out NetZoneSession session))
+            {
+                DebugCommand debugCommand = message.RemoveDebugCommand();
+
+                if (debugCommand.GetServiceNodeType() == ServiceCore.ServiceNodeType)
+                {
+                    switch (debugCommand.GetCommandType())
+                    {
+                        case 1000:
+                            ZoneAccount account = session.ZoneAccount;
+                            NetZoneSessionManager.Remove(sessionId);
+
+                            session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new OutOfSyncMessage());
+                            session.ZoneAccount.GameMode.DeInit();
+                            session.ZoneAccount.SetSession(null);
+                            session.Destruct();
+
+                            ZoneAccountManager.UpdateZoneAccount(account.Id, new ZoneAccount(account.Id));
+                            break;
+                        default:
+                            Logging.Debug(string.Format("executeDebugCommandMessageReceived unknown debug command received ({0})", debugCommand.GetCommandType()));
+                            break;
+                    }
+                }
+                else
+                {
+                    Logging.Debug(string.Format("executeDebugCommandMessageReceived invalid debug command received ({0})", debugCommand.GetCommandType()));
+                }
             }
         }
     }

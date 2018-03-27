@@ -6,6 +6,7 @@
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
+    using ClashersRepublic.Magic.Services.Core.Message.Debug;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Utils;
@@ -39,6 +40,10 @@
 
                 case 10301:
                     this.ServerUnboundMessageReceived((ServerUnboundMessage) message);
+                    break;
+
+                case 10600:
+                    this.ExecuteDebugCommandMessageReceived((ExecuteDebugCommandMessage) message);
                     break;
 
                 default:
@@ -201,6 +206,33 @@
             message.SetReason(reason);
             message.SetRemainingTime(remainingTime);
             NetMessageManager.SendMessage(socket, sessionId, message);
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="ExecuteDebugCommandMessage"/> is received.
+        /// </summary>
+        private void ExecuteDebugCommandMessageReceived(ExecuteDebugCommandMessage message)
+        {
+            byte[] sessionId = message.GetSessionId();
+
+            if (NetAccountSessionManager.TryGet(sessionId, out NetAccountSession session))
+            {
+                DebugCommand debugCommand = message.RemoveDebugCommand();
+
+                if (debugCommand.GetServiceNodeType() == ServiceCore.ServiceNodeType)
+                {
+                    switch (debugCommand.GetCommandType())
+                    {
+                        default:
+                            Logging.Debug(string.Format("executeDebugCommandMessageReceived unknown debug command received ({0})", debugCommand.GetCommandType()));
+                            break;
+                    }
+                }
+                else
+                {
+                    Logging.Debug(string.Format("executeDebugCommandMessageReceived invalid debug command received ({0})", debugCommand.GetCommandType()));
+                }
+            }
         }
     }
 }

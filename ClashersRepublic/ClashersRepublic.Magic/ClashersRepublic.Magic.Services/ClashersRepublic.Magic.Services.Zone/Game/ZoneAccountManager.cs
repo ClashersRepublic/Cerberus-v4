@@ -82,7 +82,24 @@
         {
             return ZoneAccountManager._zones.TryGetValue(avatarId, out account);
         }
-        
+
+        /// <summary>
+        ///     Tries to update the instance in database.
+        /// </summary>
+        internal static void UpdateZoneAccount(LogicLong homeId, ZoneAccount update)
+        {
+            if (ZoneAccountManager._zones.ContainsKey(homeId))
+            {
+                ZoneAccountManager._zones[homeId] = update;
+            }
+            else
+            {
+                ZoneAccountManager._zones.Add(homeId, update);
+            }
+
+            DatabaseManager.Update(0, homeId, LogicJSONParser.CreateJSONString(update.Save()));
+        }
+
         /// <summary>
         ///     Create a new <see cref="ZoneAccount"/> instance.
         /// </summary>
