@@ -413,7 +413,18 @@
         /// </summary>
         public virtual void FastForwardTime(int time)
         {
-            // FastForwardTime.
+            for (int i = 0; i < this._components.Count; i++)
+            {
+                LogicComponent component = this._components[i];
+
+                if (component != null)
+                {
+                    if (component.IsEnabled())
+                    {
+                        component.FastForwardTime(time);
+                    }
+                }
+            }
         }
 
         /// <summary>

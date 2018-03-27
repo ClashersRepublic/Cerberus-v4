@@ -985,6 +985,14 @@
         }
 
         /// <summary>
+        ///     Helper for exp gain.
+        /// </summary>
+        public virtual void XpGainHelper(int count)
+        {
+            // XpGainHelper.
+        }
+
+        /// <summary>
         ///     Gets the all units.
         /// </summary>
         public LogicArrayList<LogicDataSlot> GetUnits()

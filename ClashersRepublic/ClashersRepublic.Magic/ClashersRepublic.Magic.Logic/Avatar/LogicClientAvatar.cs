@@ -564,7 +564,7 @@
         /// <summary>
         ///     Helper for exp gain.
         /// </summary>
-        public void XpGainHelper(int count)
+        public override void XpGainHelper(int count)
         {
             if (count > 0)
             {

@@ -635,9 +635,11 @@
 
                 for (int i = 0; i < 9; i++)
                 {
-                    for (int j = 0; j < this._gameObjects[i].Count; j++)
+                    LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                    for (int j = 0; j < gameObjects.Count; j++)
                     {
-                        this._gameObjects[i][j].FastForwardTime(totalSecs);
+                        gameObjects[j].FastForwardTime(totalSecs);
                     }
                 }
             }

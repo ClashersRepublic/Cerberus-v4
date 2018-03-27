@@ -625,6 +625,10 @@
                     base.FastForwardTime(secs);
                 }
             }
+            else
+            {
+                base.FastForwardTime(secs);
+            }
         }
 
         /// <summary>
@@ -787,7 +791,7 @@
                         }
                         else
                         {
-                            if (this._upgLevel > 0 || this._upgrading)
+                            if (this._upgLevel != 0 || this._upgrading)
                             {
                                 int newUpgLevel = this._upgLevel + 1;
 
@@ -797,7 +801,7 @@
                                     newUpgLevel = this.GetBuildingData().GetUpgradeLevelCount() - 1;
                                 }
 
-                                int constructionTime = this.GetBuildingData().GetConstructionTime(this._upgLevel, this._level, 0);
+                                int constructionTime = this.GetBuildingData().GetConstructionTime(newUpgLevel, this._level, 0);
                                 int xpGain = LogicMath.Sqrt(constructionTime);
                                 this.SetUpgradeLevel(newUpgLevel);
 
@@ -805,7 +809,7 @@
                             }
                             else
                             {
-                                int constructionTime = this.GetBuildingData().GetConstructionTime(this._upgLevel, this._level, 0);
+                                int constructionTime = this.GetBuildingData().GetConstructionTime(0, this._level, 0);
                                 int xpGain = LogicMath.Sqrt(constructionTime);
                                 this.SetUpgradeLevel(this._upgLevel);
 
@@ -871,15 +875,15 @@
                 }
             }
 
-            if (this._upgLevel != 0 || this.IsUpgrading() || this._constructionTimer == null)
+            if (this._upgLevel != 0 || this._upgrading || this._constructionTimer == null)
             {
                 bool enable = this._constructionTimer == null;
 
-                this.EnableComponent(1, enable);
                 this.EnableComponent(3, enable);
-                this.EnableComponent(5, enable);
                 this.EnableComponent(9, enable);
+                this.EnableComponent(1, enable);
                 this.EnableComponent(15, enable);
+                this.EnableComponent(5, enable);
 
                 if (this.GetComponent(0) != null)
                 {

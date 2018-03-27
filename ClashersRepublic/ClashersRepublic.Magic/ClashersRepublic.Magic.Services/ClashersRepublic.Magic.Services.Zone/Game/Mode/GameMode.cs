@@ -229,7 +229,7 @@
                 {
                     CompressibleStringHelper.Uncompress(compressibleGlobalJSON);
                 }
-
+                
                 this._logicGameMode = new LogicGameMode();
                 this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
                 this._currentTimestamp = currentTimestamp;
@@ -244,10 +244,11 @@
                         {
                             switch (state)
                             {
-                                case 0:
-                                    if (state == 8) this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
-                                    else this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
-
+                                case 8:
+                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
+                                    break;
+                                default:
+                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
                                     break;
                             }
                         }
