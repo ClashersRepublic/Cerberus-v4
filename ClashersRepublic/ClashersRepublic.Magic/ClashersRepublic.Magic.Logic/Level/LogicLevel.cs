@@ -959,6 +959,8 @@
                             this._unplacedObjects[i].WriteToJSON(obj);
                             unplacedArray.Add(obj);
                         }
+
+                        jsonObject.Put("unplaced", unplacedArray);
                     }
                 }
             }

@@ -88,7 +88,9 @@
 
                     this.SendAvatarEntryMessage();
 
+#if !DEBUG
                     CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
+#endif
                 }
 
                 DatabaseManager.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
