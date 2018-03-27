@@ -56,5 +56,13 @@
         public virtual void TownHallLevelTooLow(int lvl)
         {
         }
+
+        public virtual void AchievementCompleted(LogicAchievementData data)
+        {
+        }
+
+        public virtual void AchievementProgress(LogicAchievementData data)
+        {
+        }
     }
 }

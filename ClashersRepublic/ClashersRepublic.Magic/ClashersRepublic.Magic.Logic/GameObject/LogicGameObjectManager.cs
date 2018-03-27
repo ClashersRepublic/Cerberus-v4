@@ -498,6 +498,22 @@
         }
 
         /// <summary>
+        ///     Gets the gear up building count.
+        /// </summary>
+        public int GetGearUpBuildingCount()
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
+            int cnt = 0;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                cnt += ((LogicBuilding) gameObjects[i]).GetGearLevel() > 0 ? 1 : 0;
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
         ///     Gets the highest building level.
         /// </summary>
         public int GetHighestBuildingLevel(LogicBuildingData data)

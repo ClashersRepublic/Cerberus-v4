@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
     using ClashersRepublic.Magic.Logic.Level;
+    using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicComponentManager
@@ -183,6 +184,150 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets the max barrack level.
+        /// </summary>
+        public int GetMaxBarrackLevel()
+        {
+            LogicArrayList<LogicComponent> components = this._components[3];
+
+            if (components.Count > 0)
+            {
+                int maxUpgLevel = -1;
+                int idx = 0;
+
+                do
+                {
+                    LogicUnitProductionComponent component = (LogicUnitProductionComponent) components[idx];
+
+                    if (component.GetProductionType() == 0)
+                    {
+                        if (component.GetParent().GetGameObjectType() == 0)
+                        {
+                            LogicBuilding parent = (LogicBuilding) component.GetParent();
+
+                            if (parent.GetBuildingData().GetProducesUnitsOfType() == 1)
+                            {
+                                maxUpgLevel = LogicMath.Max(parent.GetUpgradeLevel(), maxUpgLevel);
+                            }
+                        }
+                    }
+                } while (++idx != components.Count);
+
+                return maxUpgLevel;
+            }
+
+            return -1;
+        }
+        
+        /// <summary>
+        ///     Gets the max dark barrack level.
+        /// </summary>
+        public int GetMaxDarkBarrackLevel()
+        {
+            LogicArrayList<LogicComponent> components = this._components[3];
+
+            if (components.Count > 0)
+            {
+                int maxUpgLevel = -1;
+                int idx = 0;
+
+                do
+                {
+                    LogicUnitProductionComponent component = (LogicUnitProductionComponent)components[idx];
+
+                    if (component.GetProductionType() == 0)
+                    {
+                        if (component.GetParent().GetGameObjectType() == 0)
+                        {
+                            LogicBuilding parent = (LogicBuilding)component.GetParent();
+
+                            if (parent.GetBuildingData().GetProducesUnitsOfType() == 2 && (!parent.IsConstructing() || parent.IsUpgrading()))
+                            {
+                                maxUpgLevel = LogicMath.Max(parent.GetUpgradeLevel(), maxUpgLevel);
+                            }
+                        }
+                    }
+                } while (++idx != components.Count);
+
+                return maxUpgLevel;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        ///     Gets the max spell forge level.
+        /// </summary>
+        public int GetMaxSpellForgeLevel()
+        {
+            LogicArrayList<LogicComponent> components = this._components[3];
+
+            if (components.Count > 0)
+            {
+                int maxUpgLevel = -1;
+                int idx = 0;
+
+                do
+                {
+                    LogicUnitProductionComponent component = (LogicUnitProductionComponent)components[idx];
+
+                    if (component.GetProductionType() != 0)
+                    {
+                        if (component.GetParent().GetGameObjectType() == 0)
+                        {
+                            LogicBuilding parent = (LogicBuilding)component.GetParent();
+
+                            if (parent.GetBuildingData().GetProducesUnitsOfType() == 1 && (!parent.IsConstructing() || parent.IsUpgrading()))
+                            {
+                                maxUpgLevel = LogicMath.Max(parent.GetUpgradeLevel(), maxUpgLevel);
+                            }
+                        }
+                    }
+                } while (++idx != components.Count);
+
+                return maxUpgLevel;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        ///     Gets the max spell forge level.
+        /// </summary>
+        public int GetMaxMiniSpellForgeLevel()
+        {
+            LogicArrayList<LogicComponent> components = this._components[3];
+
+            if (components.Count > 0)
+            {
+                int maxUpgLevel = -1;
+                int idx = 0;
+
+                do
+                {
+                    LogicUnitProductionComponent component = (LogicUnitProductionComponent)components[idx];
+
+                    if (component.GetProductionType() != 0)
+                    {
+                        if (component.GetParent().GetGameObjectType() == 0)
+                        {
+                            LogicBuilding parent = (LogicBuilding)component.GetParent();
+
+                            if (parent.GetBuildingData().GetProducesUnitsOfType() == 2 && (!parent.IsConstructing() || parent.IsUpgrading()))
+                            {
+                                maxUpgLevel = LogicMath.Max(parent.GetUpgradeLevel(), maxUpgLevel);
+                            }
+                        }
+                    }
+                } while (++idx != components.Count);
+
+                return maxUpgLevel;
+            }
+
+            return -1;
         }
 
         /// <summary>

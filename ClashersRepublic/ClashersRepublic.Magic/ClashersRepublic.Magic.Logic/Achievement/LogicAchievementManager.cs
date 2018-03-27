@@ -4,6 +4,7 @@
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Math;
+    using ClashersRepublic.Magic.Titan.Util;
 
     public class LogicAchievementManager
     {
@@ -30,6 +31,66 @@
         /// </summary>
         public void RefreshStatus()
         {
+            if (this._level.GetState() == 1)
+            {
+                LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
+                LogicDataTable dataTable = LogicDataTables.GetTable(22);
+
+                for (int i = 0, progress = 0; i < dataTable.GetItemCount(); i++, progress = 0)
+                {
+                    LogicAchievementData achievementData = (LogicAchievementData) dataTable.GetItemAt(i);
+
+                    switch (achievementData.GetActionType())
+                    {
+                        case 0:
+                            progress = playerAvatar.GetTotalNpcStars();
+                            break;
+                        case 1:
+                            progress = this._level.GetGameObjectManager().GetHighestBuildingLevel(achievementData.GetBuildingData()) + 1;
+                            break;
+                        case 2:
+                            progress = playerAvatar.GetScore();
+                            break;
+                        case 3:
+                            progress = achievementData.GetCharacterData().IsUnlockedForBarrackLevel(LogicMath.Max(this._level.GetComponentManagerAt(achievementData.GetVillageType()).GetMaxBarrackLevel(), 0)) ? 1 : 0;
+                            break;
+                        case 12:
+                            progress = playerAvatar.GetLeagueType();
+                            break;
+                        case 16:
+                            progress = playerAvatar.IsAccountBound() ? 1 : 0;
+                            break;
+                        case 17:
+                            progress = playerAvatar.GetDuelScore();
+                            break;
+                        case 18:
+                            progress = this._level.GetGameObjectManager().GetGearUpBuildingCount();
+                            break;
+                        case 19:
+                            LogicArrayList<LogicAchievementData> achievementLevels = achievementData.GetAchievementLevels();
+
+                            if (achievementLevels.Count <= 0)
+                            {
+                                break;
+                            }
+
+                            for (int j = 0; j < achievementLevels.Count; j++)
+                            {
+                                if (!this._level.IsBuildingUnlocked(achievementLevels[j].GetBuildingData()))
+                                {
+                                    goto refresh;
+                                }
+                            }
+
+                            progress = 1;
+
+                            break;
+                    }
+
+                    refresh:
+                    this.RefreshAchievementProgress(playerAvatar, achievementData, progress);
+                }
+            }
         }
 
         /// <summary>
@@ -45,6 +106,26 @@
                 if (currentValue < newValue)
                 {
                     avatar.SetAchievementProgress(data, value);
+                    avatar.GetChangeListener().CommodityCountChanged(0, data, newValue);
+                }
+
+                int tmp = LogicMath.Min(newValue, data.GetActionCount());
+
+                if (currentValue < tmp)
+                {
+                    LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
+
+                    if (playerAvatar == avatar)
+                    {
+                        if (tmp == data.GetActionCount())
+                        {
+                            this._level.GetGameListener().AchievementCompleted(data);
+                        }
+                        else
+                        {
+                            this._level.GetGameListener().AchievementProgress(data);
+                        }
+                    }
                 }
             }
         }

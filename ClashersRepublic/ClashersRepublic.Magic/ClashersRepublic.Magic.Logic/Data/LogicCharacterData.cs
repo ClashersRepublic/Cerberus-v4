@@ -4,6 +4,8 @@ namespace ClashersRepublic.Magic.Logic.Data
 
     public class LogicCharacterData : LogicCombatItemData
     {
+        private int _unlockedBarrackLevel;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicCharacterData" /> class.
         /// </summary>
@@ -14,7 +16,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
         public string SWF { get; protected set; }
-        public int BarrackLevel { get; protected set; }
         public int Speed { get; protected set; }
         protected int[] Hitpoints { get; set; }
         protected int[] AttackRange { get; set; }
@@ -134,6 +135,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         public override void CreateReferences()
         {
             base.CreateReferences();
+            this._unlockedBarrackLevel = this.GetIntegerValue("BarrackLevel", 0) - 1;
         }
 
         public int GetHitpoints(int index)
@@ -254,6 +256,11 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetSpecialAbilityAttribute3(int index)
         {
             return this.SpecialAbilityAttribute3[index];
+        }
+
+        public bool IsUnlockedForBarrackLevel(int barrackLevel)
+        {
+            return this._unlockedBarrackLevel != -1 && this._unlockedBarrackLevel <= barrackLevel;
         }
 
         public override int GetCombatItemType()

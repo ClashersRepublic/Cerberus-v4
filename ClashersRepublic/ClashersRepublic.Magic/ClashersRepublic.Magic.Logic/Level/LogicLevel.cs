@@ -1428,6 +1428,26 @@
         }
 
         /// <summary>
+        ///     Gets if the specified building data is repaired.
+        /// </summary>
+        public bool IsBuildingUnlocked(LogicBuildingData buildingData)
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[buildingData.GetVillageType()].GetGameObjects(0);
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                LogicBuilding building = (LogicBuilding) gameObjects[i];
+
+                if (building.GetData() == buildingData && !building.IsLocked())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Gets if the specified place is valid for building.
         /// </summary>
         public bool IsValidPlaceForBuilding(int x, int y, int width, int height, LogicGameObject gameObject)
@@ -1577,6 +1597,8 @@
 
                 this._helpOpened = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "help_opened");
             }
+
+            this._achievementManager.RefreshStatus();
         }
 
         /// <summary>

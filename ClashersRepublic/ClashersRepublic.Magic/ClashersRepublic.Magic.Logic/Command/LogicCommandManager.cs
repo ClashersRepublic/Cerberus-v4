@@ -130,15 +130,15 @@
             }
 
             if (commandType >= 500
-                && commandType < 600
+                && commandType < 700
                 && state != 1)
             {
                 Debugger.Error("Execute command failed! Command is only allowed in home state.");
                 return false;
             }
 
-            if (commandType >= 600
-                && commandType < 700
+            if (commandType >= 700
+                && commandType < 800
                 && state != 2
                 && state != 5)
             {
@@ -292,6 +292,12 @@
                         break;
                     }
 
+                    case 523:
+                    {
+                        command = new LogicClaimAchievementRewardCommand();
+                        break;
+                    }
+
                     case 532:
                     {
                         command = new LogicNewShopItemsSeenCommand();
@@ -301,6 +307,12 @@
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();
+                        break;
+                    }
+
+                    case 604:
+                    {
+                        command = new LogicSeenBuilderMenuCommand();
                         break;
                     }
 

@@ -35,6 +35,8 @@
         {
             LogicBuildingData buildingData = this.GetBuildingData();
 
+            this._isLocked = buildingData.IsLocked();
+
             if (buildingData.GetHitpoints(0) > 0)
             {
                 LogicHitpointComponent hitpointComponent = new LogicHitpointComponent(this, buildingData.GetHitpoints(0), 1);
@@ -146,6 +148,14 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets the gear level.
+        /// </summary>
+        public int GetGearLevel()
+        {
+            return this._gear;
         }
 
         /// <summary>

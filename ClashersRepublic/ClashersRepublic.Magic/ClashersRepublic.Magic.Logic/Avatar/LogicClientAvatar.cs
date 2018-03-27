@@ -446,7 +446,7 @@
         /// </summary>
         public int GetLeagueType()
         {
-            return this._leagueType;
+            return LogicMath.Clamp(this._leagueType, 0, LogicDataTables.GetTable(28).GetItemCount() - 1);
         }
 
         /// <summary>
@@ -455,6 +455,14 @@
         public int GetScore()
         {
             return this._score;
+        }
+
+        /// <summary>
+        ///     Gets the duel score.
+        /// </summary>
+        public int GetDuelScore()
+        {
+            return this._duelScore;
         }
 
         /// <summary>
@@ -486,79 +494,6 @@
             LogicDataTable table = LogicDataTables.GetTable(28);
             Debugger.DoAssert(this._leagueType > -1 && table.GetItemCount() > this._leagueType, "Player league ranking out of bounds");
             return (LogicLeagueData) table.GetItemAt(this._leagueType);
-        }
-
-        /// <summary>
-        ///     Gets the variable value.
-        /// </summary>
-        public int GetVariable(LogicVariableData data)
-        {
-            int index = -1;
-
-            for (int i = 0; i < this._variables.Count; i++)
-            {
-                if (this._variables[i].GetData() == data)
-                {
-                    index = i;
-                    break;
-                }
-            }
-
-            if (index != -1)
-            {
-                return this._variables[index].GetCount();
-            }
-
-            return 0;
-        }
-
-        /// <summary>
-        ///     Sets the variable.
-        /// </summary>
-        public void SetVariable(LogicVariableData data, int count)
-        {
-            int index = -1;
-
-            for (int i = 0; i < this._variables.Count; i++)
-            {
-                if (this._variables[i].GetData() == data)
-                {
-                    index = i;
-                    break;
-                }
-            }
-
-            if (index != -1)
-            {
-                this._variables[index].SetCount(count);
-            }
-            else
-            {
-                this._variables.Add(new LogicDataSlot(data, count));
-            }
-        }
-
-        /// <summary>
-        ///     Gets the variable by name.
-        /// </summary>
-        public int GetVariableByName(string name)
-        {
-            LogicVariableData data = LogicDataTables.GetVariableByName(name);
-
-            if (data == null)
-            {
-                Debugger.Error("getVariableByName() Invalid Name " + name);
-            }
-
-            return this.GetVariable(data);
-        }
-
-        /// <summary>
-        ///     Gets the star bonus counter.
-        /// </summary>
-        public int GetStarBonusCounter()
-        {
-            return this.GetVariableByName("StarBonusCounter");
         }
 
         /// <summary>
@@ -1303,8 +1238,8 @@
             encoder.WriteInt(6900);
             encoder.WriteInt(this._redPackageState);
             encoder.WriteInt(this._warPreference);
-            encoder.WriteInt(0);
-            encoder.WriteInt(0);
+            encoder.WriteInt(1);
+            encoder.WriteInt(1);
 
             if (false)
             {

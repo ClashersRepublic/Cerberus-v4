@@ -483,11 +483,108 @@
         }
 
         /// <summary>
+        ///     Gets the variable value.
+        /// </summary>
+        public int GetVariable(LogicVariableData data)
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._variables.Count; i++)
+            {
+                if (this._variables[i].GetData() == data)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                return this._variables[index].GetCount();
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Sets the variable.
+        /// </summary>
+        public void SetVariable(LogicVariableData data, int count)
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._variables.Count; i++)
+            {
+                if (this._variables[i].GetData() == data)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                this._variables[index].SetCount(count);
+            }
+            else
+            {
+                this._variables.Add(new LogicDataSlot(data, count));
+            }
+        }
+
+        /// <summary>
+        ///     Gets the variable by name.
+        /// </summary>
+        public int GetVariableByName(string name)
+        {
+            LogicVariableData data = LogicDataTables.GetVariableByName(name);
+
+            if (data == null)
+            {
+                Debugger.Error("getVariableByName() Invalid Name " + name);
+            }
+
+            return this.GetVariable(data);
+        }
+
+
+        /// <summary>
+        ///     Sets the variable by name.
+        /// </summary>
+        public void SetVariableByName(string name, int value)
+        {
+            LogicVariableData data = LogicDataTables.GetVariableByName(name);
+
+            if (data == null)
+            {
+                Debugger.Error("getVariableByName() Invalid Name " + name);
+            }
+
+            this.SetVariable(data, value);
+        }
+
+        /// <summary>
+        ///     Gets the star bonus counter.
+        /// </summary>
+        public int GetStarBonusCounter()
+        {
+            return this.GetVariableByName("StarBonusCounter");
+        }
+
+        /// <summary>
         ///     Gets the unused resource cap.
         /// </summary>
         public int GetUnusedResourceCap(LogicResourceData data)
         {
             return LogicMath.Max(this.GetResourceCap(data) - this.GetResourceCount(data), 0);
+        }
+
+        /// <summary>
+        ///     Gets if the account is bounded.
+        /// </summary>
+        public bool IsAccountBound()
+        {
+            return this.GetVariableByName("AccountBound") != 0;
         }
 
         /// <summary>
@@ -885,6 +982,21 @@
         }
 
         /// <summary>
+        ///     Gets the total npc stars.
+        /// </summary>
+        public int GetTotalNpcStars()
+        {
+            int cnt = 0;
+
+            for (int i = 0; i < this._npcStars.Count; i++)
+            {
+                cnt += this._npcStars[i].GetCount();
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
         ///     Gets the looted npc gold count.
         /// </summary>
         public int GetLootedNpcGold(LogicNpcData data)
@@ -1120,7 +1232,7 @@
         /// <summary>
         ///     Sets the value indicating if the achievement is claimed.
         /// </summary>
-        public void SetAchievementRewardClaimed(LogicAchievementData data)
+        public void SetAchievementRewardClaimed(LogicAchievementData data, bool claimed)
         {
             int index = -1;
 
@@ -1133,9 +1245,19 @@
                 }
             }
 
-            if (index == -1)
+            if (claimed)
             {
-                this._achievementRewardClaimed.Add(data);
+                if (index == -1)
+                {
+                    this._achievementRewardClaimed.Add(data);
+                }
+            }
+            else
+            {
+                if (index != -1)
+                {
+                    this._achievementRewardClaimed.Remove(index);
+                }
             }
         }
 
@@ -1180,7 +1302,7 @@
                 progressCount = this._achievementProgress[index].GetCount();
             }
 
-            return progressCount >= data.ActionCount;
+            return progressCount >= data.GetActionCount();
         }
 
         /// <summary>
