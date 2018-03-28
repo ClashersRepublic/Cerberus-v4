@@ -346,6 +346,12 @@
                         break;
                     }
 
+                    case 577:
+                    {
+                        command = new LogicSwapBuildingCommand();
+                        break;
+                    }
+
                     case 604:
                     {
                         command = new LogicSeenBuilderMenuCommand();

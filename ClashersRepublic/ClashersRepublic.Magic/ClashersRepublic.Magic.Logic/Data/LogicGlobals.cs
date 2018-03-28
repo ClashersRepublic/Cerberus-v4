@@ -77,6 +77,7 @@
         private bool _workerForZeroBuildingTime;
         private bool _adjustEndSubtickUseCurrentTime;
         private bool _collectAllResourcesAtOnce;
+        private bool _useSwapBuildings;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
@@ -159,6 +160,7 @@
             this._workerForZeroBuildingTime = this.GetBoolValue("WORKER_FOR_ZERO_BUILD_TIME");
             this._adjustEndSubtickUseCurrentTime = this.GetBoolValue("ADJUST_END_SUBTICK_USE_CURRENT_TIME");
             this._collectAllResourcesAtOnce = this.GetBoolValue("COLLECT_ALL_RESOURCES_AT_ONCE");
+            this._useSwapBuildings = this.GetBoolValue("USE_SWAP_BUILDINGS");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -467,6 +469,11 @@
         public bool CollectAllResourcesAtOnce()
         {
             return this._collectAllResourcesAtOnce;
+        }
+
+        public bool UseSwapBuildings()
+        {
+            return this._useSwapBuildings;
         }
 
         /// <summary>
