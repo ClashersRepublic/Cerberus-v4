@@ -310,6 +310,12 @@
                         break;
                     }
 
+                    case 550:
+                    {
+                        command = new LogicRemoveUnitsCommand();
+                        break;
+                    }
+
                     case 604:
                     {
                         command = new LogicSeenBuilderMenuCommand();
