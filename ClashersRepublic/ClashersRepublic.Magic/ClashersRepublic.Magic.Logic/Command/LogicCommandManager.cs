@@ -304,6 +304,12 @@
                         break;
                     }
 
+                    case 533:
+                    {
+                        command = new LogicMoveMultipleBuildingCommand();
+                        break;
+                    }
+
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();

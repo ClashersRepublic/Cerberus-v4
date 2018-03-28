@@ -1496,6 +1496,33 @@
         }
 
         /// <summary>
+        ///     Gets if the specified place is valid for building.
+        /// </summary>
+        public bool IsValidPlaceForBuildingWithIgnoreList(int x, int y, int width, int height, LogicGameObject[] gameObjects, int count)
+        {
+            if (this._playArea.InInside(x, y))
+            {
+                if (this._playArea.InInside(x + width, y + height))
+                {
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            if (!this._tileMap.GetTile(x + j, y + i).IsBuildableWithIgnoreList(gameObjects, count))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether a free worker is available.
         /// </summary>
         public bool HasFreeWorkers(LogicCommand command, int villageType)
