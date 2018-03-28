@@ -62,6 +62,8 @@
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicEditModeShownCommand.cs" />
+    <Compile Include="Command\Home\LogicUnlockBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicFreeWorkerCommand.cs" />
     <Compile Include="Command\Home\LogicBuyResourcesCommand.cs" />
     <Compile Include="Command\Home\LogicMoveMultipleBuildingCommand.cs" />

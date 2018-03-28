@@ -1194,10 +1194,10 @@
 
             encoder.WriteInt(this._leagueType);
             encoder.WriteInt(this._allianceCastleLevel);
-            encoder.WriteInt(this._allianceCastleUsedCapacity);
             encoder.WriteInt(this._allianceCastleTotalCapacity);
-            encoder.WriteInt(this._allianceCastleUsedSpellCapacity);
+            encoder.WriteInt(this._allianceCastleUsedCapacity);
             encoder.WriteInt(this._allianceCastleTotalSpellCapacity);
+            encoder.WriteInt(this._allianceCastleUsedSpellCapacity);
 
             encoder.WriteInt(this._townHallLevel);
             encoder.WriteInt(this._townHallLevelVillage2);

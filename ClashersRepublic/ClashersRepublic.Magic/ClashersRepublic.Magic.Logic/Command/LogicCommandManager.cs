@@ -298,6 +298,12 @@
                         break;
                     }
 
+                    case 520:
+                    {
+                        command = new LogicUnlockBuildingCommand();
+                        break;
+                    }
+
                     case 521:
                     {
                         command = new LogicFreeWorkerCommand();
@@ -325,6 +331,12 @@
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();
+                        break;
+                    }
+
+                    case 544:
+                    {
+                        command = new LogicEditModeShownCommand();
                         break;
                     }
 

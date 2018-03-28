@@ -452,6 +452,10 @@
             {
                 this._isLocked = lockedObject.IsTrue();
             }
+            else
+            {
+                this._isLocked = false;
+            }
 
             LogicJSONNumber constTimeObject = jsonObject.GetJSONNumber("const_t");
 
@@ -687,6 +691,26 @@
         public int GetRequiredTownHallLevelForUpgrade()
         {
             return this.GetBuildingData().GetRequiredTownHallLevel(LogicMath.Min(this._upgLevel + 1, this.GetBuildingData().GetUpgradeLevelCount()));
+        }
+
+        /// <summary>
+        ///     Gets the required townhall level for unlock.
+        /// </summary>
+        public bool CanUnlock(bool canCallListener)
+        {
+            if (this._constructionTimer != null || this._upgLevel != 0 || !this._isLocked)
+            {
+                return false;
+            }
+
+            bool canUnlock = this._level.GetTownHallLevel(this._villageType) >= this.GetBuildingData().GetRequiredTownHallLevel(0);
+
+            if (!canUnlock)
+            {
+                this._level.GetGameListener().TownHallLevelTooLow(this.GetRequiredTownHallLevelForUpgrade());
+            }
+
+            return canUnlock;
         }
 
         /// <summary>

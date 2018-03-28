@@ -236,6 +236,22 @@
         }
 
         /// <summary>
+        ///     Gets if the edit mode is shown.
+        /// </summary>
+        public bool IsEditModeShown()
+        {
+            return this._editModeShown;
+        }
+
+        /// <summary>
+        ///     Sets if the dit mode is shown.
+        /// </summary>
+        public void SetEditModeShown()
+        {
+            this._editModeShown = true;
+        }
+
+        /// <summary>
         ///     Gets the state.
         /// </summary>
         public int GetState()
@@ -976,6 +992,15 @@
 
                 jsonObject.Put("army_names", armyNameArray);
 
+                int accountFlags = 0;
+
+                if (this._editModeShown)
+                {
+                    accountFlags |= 2;
+                }
+
+                jsonObject.Put("account_flags", new LogicJSONNumber(accountFlags));
+
                 if (this._unplacedObjects != null)
                 {
                     if (this._unplacedObjects.Count > 0)
@@ -1616,6 +1641,15 @@
             {
                 this._lastLeagueRank = 0;
                 this._lastAllianceLevel = 1;
+
+                LogicJSONNumber accountFlagObject = this._levelJSON.GetJSONNumber("account_flags");
+
+                if (accountFlagObject != null)
+                {
+                    int value = accountFlagObject.GetIntValue();
+
+                    this._editModeShown = ((value >> 1) & 1) != 0;
+                }
 
                 LogicJSONNumber lastLeagueRankObject = this._levelJSON.GetJSONNumber("last_league_rank");
 
