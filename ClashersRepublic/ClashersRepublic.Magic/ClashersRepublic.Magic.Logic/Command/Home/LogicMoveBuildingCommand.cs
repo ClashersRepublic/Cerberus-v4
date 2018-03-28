@@ -127,7 +127,7 @@
 
                                     if (homeOwnerAvatar.GetTownHallLevel() >= LogicDataTables.GetGlobals().GetChallengeBaseCooldownTownHall())
                                     {
-                                        // TODO: Implement Challenge Cooldown.
+                                        level.SetLayoutCooldownSecs(level.GetActiveLayout(level.GetVillageType()), LogicDataTables.GetGlobals().GetChallengeBaseSaveCooldown());
                                     }
                                 }
                             }

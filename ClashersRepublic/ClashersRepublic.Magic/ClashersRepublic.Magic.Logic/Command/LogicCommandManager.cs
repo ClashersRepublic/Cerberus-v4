@@ -286,9 +286,21 @@
                         break;
                     }
 
+                    case 518:
+                    {
+                        command = new LogicBuyResourcesCommand();
+                        break;
+                    }
+
                     case 519:
                     {
                         command = new LogicMissionProgressCommand();
+                        break;
+                    }
+
+                    case 521:
+                    {
+                        command = new LogicFreeWorkerCommand();
                         break;
                     }
 

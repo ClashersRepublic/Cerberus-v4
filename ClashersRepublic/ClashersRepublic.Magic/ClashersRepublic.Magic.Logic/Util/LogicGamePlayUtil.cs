@@ -46,5 +46,13 @@
 
             return LogicDataTables.GetGlobals().GetSpeedUpCost(time, multiplier, villageType);
         }
+
+        /// <summary>
+        ///     Gets the resource diamond cost.
+        /// </summary>
+        public static int GetResourceDiamondCost(int count, LogicResourceData data)
+        {
+            return LogicDataTables.GetGlobals().GetResourceDiamondCost(count, data);
+        }
     }
 }

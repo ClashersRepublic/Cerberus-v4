@@ -1,5 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Command.Home
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.DataStream;
@@ -308,27 +310,39 @@
                             int width = gameObject.GetWidthInTiles();
                             int height = gameObject.GetHeightInTiles();
 
-                            if (gameObject.GetVillageType() > 0)
+                            for (int j = 0; j < width; j++)
                             {
-                                for (int j = 0; j < width; j++)
+                                for (int k = 0; k < height; k++)
                                 {
-                                    for (int k = 0; k < height; k++)
-                                    {
-                                        LogicObstacle tallGrass = level.GetTileMap().GetTile(x + j, y + k).GetTallGrass();
+                                    LogicObstacle tallGrass = level.GetTileMap().GetTile(x + j, y + k).GetTallGrass();
 
-                                        if (tallGrass != null)
-                                        {
-                                            level.GetGameObjectManager().RemoveGameObject(tallGrass);
-                                        }
+                                    if (tallGrass != null)
+                                    {
+                                        level.GetGameObjectManager().RemoveGameObject(tallGrass);
                                     }
                                 }
                             }
                         }
+
+                        if (validGameObjects)
+                        {
+                            if (level.GetHomeOwnerAvatar() != null)
+                            {
+                                LogicAvatar homeOwnerAvatar = level.GetHomeOwnerAvatar();
+
+                                if (homeOwnerAvatar.GetTownHallLevel() >= LogicDataTables.GetGlobals().GetChallengeBaseCooldownTownHall())
+                                {
+                                    level.SetLayoutCooldownSecs(level.GetActiveLayout(level.GetVillageType()), LogicDataTables.GetGlobals().GetChallengeBaseSaveCooldown());
+                                }
+                            }
+                        }
+
+                        return 0;
                     }
                 }
             }
 
-            return 0;
+            return -1;
         }
     }
 }

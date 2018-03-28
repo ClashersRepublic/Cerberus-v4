@@ -67,7 +67,10 @@
             if (index != -1)
             {
                 Debugger.Warning("LogicWorkerManager::allocateWorker called twice for same target!");
+                return;
             }
+
+            this._constructions.Add(gameObject);
         }
 
         /// <summary>
@@ -170,7 +173,7 @@
                         break;
                 }
 
-                if (gameObject == null || minRemaining < tmpRemaining)
+                if (gameObject == null || minRemaining > tmpRemaining)
                 {
                     gameObject = tmp;
                     minRemaining = tmpRemaining;
@@ -178,6 +181,53 @@
             }
 
             return gameObject;
+        }
+
+        /// <summary>
+        ///     Finishes the task of one worker.
+        /// </summary>
+        public bool FinishTaskOfOneWorker()
+        {
+            LogicGameObject gameObject = this.GetShortestTaskGO();
+
+            if (gameObject != null)
+            {
+                switch (gameObject.GetGameObjectType())
+                {
+                    case 0:
+                        LogicBuilding building = (LogicBuilding) gameObject;
+
+                        if (building.IsConstructing())
+                        {
+                            return building.SpeedUpConstruction();
+                        }
+
+                        if (building.GetHeroBaseComponent() != null)
+                        {
+                            // TODO: Implement LogicHeroBaseComponent::speedUpUpgrade.
+                        }
+
+                        break;
+                    case 3:
+                        LogicObstacle obstacle = (LogicObstacle) gameObject;
+
+                        if (obstacle.IsClearingOnGoing())
+                        {
+                            return obstacle.SpeedUpClearing();
+                        }
+
+                        break;
+                    case 4:
+                        // Trap.
+                        break;
+                    case 8:
+                        LogicVillageObject villageObject = (LogicVillageObject) gameObject;
+
+                        break;
+                }
+            }
+
+            return false;
         }
     }
 }

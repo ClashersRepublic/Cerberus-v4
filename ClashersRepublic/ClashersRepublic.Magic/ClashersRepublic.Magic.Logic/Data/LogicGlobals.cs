@@ -15,6 +15,25 @@
         private int _speedUpDiamondCostPerDayVillage2;
         private int _speedUpDiamondCostPerWeekVillage2;
 
+        private int _resourceDiamondCost100;
+        private int _resourceDiamondCost1000;
+        private int _resourceDiamondCost10000;
+        private int _resourceDiamondCost100000;
+        private int _resourceDiamondCost1000000;
+        private int _resourceDiamondCost10000000;
+        private int _village2ResourceDiamondCost100;
+        private int _village2ResourceDiamondCost1000;
+        private int _village2ResourceDiamondCost10000;
+        private int _village2resourceDiamondCost100000;
+        private int _village2resourceDiamondCost1000000;
+        private int _village2ResourceDiamondCost10000000;
+        private int _darkElixirDiamondCost1;
+        private int _darkElixirDiamondCost10;
+        private int _darkElixirDiamondCost100;
+        private int _darkElixirDiamondCost1000;
+        private int _darkElixirDiamondCost10000;
+        private int _darkElixirDiamondCost100000;
+
         private int _startingDiamonds;
         private int _startingElixir;
         private int _startingElixir2;
@@ -58,7 +77,7 @@
         private bool _workerForZeroBuildingTime;
         private bool _adjustEndSubtickUseCurrentTime;
         private bool _collectAllResourcesAtOnce;
-        
+
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
 
@@ -77,6 +96,25 @@
             this._speedUpDiamondCostPerHourVillage2 = this.GetIntValue("VILLAGE2_SPEED_UP_DIAMOND_COST_1_HOUR");
             this._speedUpDiamondCostPerDayVillage2 = this.GetIntValue("VILLAGE2_SPEED_UP_DIAMOND_COST_24_HOURS");
             this._speedUpDiamondCostPerWeekVillage2 = this.GetIntValue("VILLAGE2_SPEED_UP_DIAMOND_COST_1_WEEK");
+
+            this._resourceDiamondCost100 = this.GetIntValue("RESOURCE_DIAMOND_COST_100");
+            this._resourceDiamondCost1000 = this.GetIntValue("RESOURCE_DIAMOND_COST_1000");
+            this._resourceDiamondCost10000 = this.GetIntValue("RESOURCE_DIAMOND_COST_10000");
+            this._resourceDiamondCost100000 = this.GetIntValue("RESOURCE_DIAMOND_COST_100000");
+            this._resourceDiamondCost1000000 = this.GetIntValue("RESOURCE_DIAMOND_COST_1000000");
+            this._resourceDiamondCost10000000 = this.GetIntValue("RESOURCE_DIAMOND_COST_10000000");
+            this._village2ResourceDiamondCost100 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_100");
+            this._village2ResourceDiamondCost1000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_1000");
+            this._village2ResourceDiamondCost10000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_10000");
+            this._village2resourceDiamondCost100000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_100000");
+            this._village2resourceDiamondCost1000000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_1000000");
+            this._village2ResourceDiamondCost10000000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_10000000");
+            this._darkElixirDiamondCost1 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_1");
+            this._darkElixirDiamondCost10 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_10");
+            this._darkElixirDiamondCost100 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_100");
+            this._darkElixirDiamondCost1000 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_1000");
+            this._darkElixirDiamondCost10000 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_10000");
+            this._darkElixirDiamondCost100000 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_100000");
 
             this._startingDiamonds = this.GetIntValue("STARTING_DIAMONDS");
             this._startingGold = this.GetIntValue("STARTING_GOLD");
@@ -449,8 +487,8 @@
             if (data != null)
             {
                 return this._village2TroopHousingBuildCost[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data),
-                                                           0,
-                                                           this._village2TroopHousingBuildCost.Length - 1)];
+                    0,
+                    this._village2TroopHousingBuildCost.Length - 1)];
             }
             else
             {
@@ -470,12 +508,111 @@
             if (data != null)
             {
                 return this._village2TroopHousingBuildTimeSecs[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data) - ignoreBuildingCnt,
-                                                               0, 
-                                                               this._village2TroopHousingBuildTimeSecs.Length - 1)];
+                    0,
+                    this._village2TroopHousingBuildTimeSecs.Length - 1)];
             }
             else
             {
                 Debugger.Error("Could not find Troop Housing2 data");
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the resource diamond cost.
+        /// </summary>
+        public int GetResourceDiamondCost(int count, LogicResourceData data)
+        {
+            if (LogicDataTables.GetDarkElixirData() != data)
+            {
+                int resourceDiamondCost100;
+                int resourceDiamondCost1000;
+                int resourceDiamondCost10000;
+                int resourceDiamondCost100000;
+                int resourceDiamondCost1000000;
+                int resourceDiamondCost10000000;
+
+                if (data.GetVillageType() == 1)
+                {
+                    resourceDiamondCost100 = this._village2ResourceDiamondCost100;
+                    resourceDiamondCost1000 = this._village2ResourceDiamondCost1000;
+                    resourceDiamondCost10000 = this._village2ResourceDiamondCost10000;
+                    resourceDiamondCost100000 = this._village2resourceDiamondCost100000;
+                    resourceDiamondCost1000000 = this._village2resourceDiamondCost1000000;
+                    resourceDiamondCost10000000 = this._village2ResourceDiamondCost10000000;
+                }
+                else
+                {
+                    resourceDiamondCost100 = this._resourceDiamondCost100;
+                    resourceDiamondCost1000 = this._resourceDiamondCost1000;
+                    resourceDiamondCost10000 = this._resourceDiamondCost10000;
+                    resourceDiamondCost100000 = this._resourceDiamondCost100000;
+                    resourceDiamondCost1000000 = this._resourceDiamondCost1000000;
+                    resourceDiamondCost10000000 = this._resourceDiamondCost10000000;
+                }
+
+                if (count >= 1)
+                {
+                    if (count >= 1000)
+                    {
+                        if (count >= 10000)
+                        {
+                            if (count >= 100000)
+                            {
+                                if (count >= 1000000)
+                                {
+                                    return resourceDiamondCost1000000 + ((resourceDiamondCost10000000 - resourceDiamondCost1000000) * (count / 1000 - 1000) + 4500) / 9000;
+                                }
+
+                                return resourceDiamondCost100000 + ((resourceDiamondCost1000000 - resourceDiamondCost100000) * (count / 100 - 1000) + 4500) / 9000;
+                            }
+
+                            return resourceDiamondCost10000 + ((resourceDiamondCost100000 - resourceDiamondCost10000) * (count / 10 - 1000) + 4500) / 9000;
+                        }
+
+                        return resourceDiamondCost1000 + ((resourceDiamondCost10000 - resourceDiamondCost1000) * (count - 1000) + 4500) / 9000;
+                    }
+
+                    return resourceDiamondCost100;
+                }
+
+                return 0;
+            }
+            else
+            {
+                return this.GetDarkElixirDiamondCost(count);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the dark elixir diamond cost.
+        /// </summary>
+        public int GetDarkElixirDiamondCost(int count)
+        {
+            if (count >= 1)
+            {
+                if (count >= 10)
+                {
+                    if (count >= 100)
+                    {
+                        if (count >= 1000)
+                        {
+                            if (count >= 10000)
+                            {
+                                return this._darkElixirDiamondCost10000 + ((this._darkElixirDiamondCost100000 - this._darkElixirDiamondCost10000) * (count - 10000) + 45000) / 90000;
+                            }
+
+                            return this._darkElixirDiamondCost1000 + ((this._darkElixirDiamondCost10000 - this._darkElixirDiamondCost1000) * (count - 1000) + 4500) / 9000;
+                        }
+
+                        return this._darkElixirDiamondCost100 + ((this._darkElixirDiamondCost1000 - this._darkElixirDiamondCost100) * (count - 100) + 450) / 900;
+                    }
+
+                    return this._darkElixirDiamondCost10 + ((_darkElixirDiamondCost100 - this._darkElixirDiamondCost10) * (count - 10) + 45) / 90;
+                }
+
+                return this._darkElixirDiamondCost1 + ((this._darkElixirDiamondCost10 - this._darkElixirDiamondCost1) * (count - 1) + 4) / 9;
             }
 
             return 0;

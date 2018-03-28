@@ -281,6 +281,33 @@
         }
 
         /// <summary>
+        ///     Gets the active layout.
+        /// </summary>
+        public int GetActiveLayout(int villageType)
+        {
+            return villageType == 0 ? this._activeLayout : this._activeLayoutVillage2;
+        }
+
+        /// <summary>
+        ///     Sets the layout cooldown.
+        /// </summary>
+        public void SetLayoutCooldownSecs(int index, int secs)
+        {
+            if (index < 6 && this._villageType == 0)
+            {
+                this._layoutCooldown[index] = 15 * secs;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the layout cooldown.
+        /// </summary>
+        public int GetLayoutCooldown(int index)
+        {
+            return this._layoutCooldown[index];
+        }
+
+        /// <summary>
         ///     Gets the townhall level.
         /// </summary>
         public int GetTownHallLevel(int villageType)
