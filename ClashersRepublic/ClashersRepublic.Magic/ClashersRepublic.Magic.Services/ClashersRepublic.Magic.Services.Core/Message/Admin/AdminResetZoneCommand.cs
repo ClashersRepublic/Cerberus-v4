@@ -1,21 +1,22 @@
-﻿namespace ClashersRepublic.Magic.Services.Core.Message.Debug
+﻿namespace ClashersRepublic.Magic.Services.Core.Message.Admin
 {
+    using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Titan.DataStream;
 
-    public class DebugCommand
+    public class AdminResetZoneCommand : AdminCommand
     {
         /// <summary>
-        ///     Initialzes a new instance of the <see cref="DebugCommand"/> class.
+        ///     Initialzes a new instance of the <see cref="AdminResetZoneCommand"/> class.
         /// </summary>
-        public DebugCommand()
+        public AdminResetZoneCommand()
         {
-            // DebugCommand.
+            // AdminResetZoneCommand.
         }
 
         /// <summary>
         ///     Destucts this instance.
         /// </summary>
-        public virtual void Destruct()
+        public override void Destruct()
         {
             // Destruct.
         }
@@ -23,7 +24,7 @@
         /// <summary>
         ///     Decodes this instance.
         /// </summary>
-        public virtual void Decode(ByteStream stream)
+        public override void Decode(ByteStream stream)
         {
             // Decode.
         }
@@ -31,7 +32,7 @@
         /// <summary>
         ///     Encodes this instance.
         /// </summary>
-        public virtual void Encode(ChecksumEncoder encoder)
+        public override void Encode(ChecksumEncoder encoder)
         {
             // Encode.
         }
@@ -39,17 +40,17 @@
         /// <summary>
         ///     Gets the command type.
         /// </summary>
-        public virtual int GetCommandType()
+        public override int GetCommandType()
         {
-            return 0;
+            return 1000;
         }
 
         /// <summary>
         ///     Gets the service node type.
         /// </summary>
-        public virtual int GetServiceNodeType()
+        public override int GetServiceNodeType()
         {
-            return -1;
+            return NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER;
         }
     }
 }

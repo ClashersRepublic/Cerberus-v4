@@ -616,7 +616,7 @@
                         return this._darkElixirDiamondCost100 + ((this._darkElixirDiamondCost1000 - this._darkElixirDiamondCost100) * (count - 100) + 450) / 900;
                     }
 
-                    return this._darkElixirDiamondCost10 + ((_darkElixirDiamondCost100 - this._darkElixirDiamondCost10) * (count - 10) + 45) / 90;
+                    return this._darkElixirDiamondCost10 + ((this._darkElixirDiamondCost100 - this._darkElixirDiamondCost10) * (count - 10) + 45) / 90;
                 }
 
                 return this._darkElixirDiamondCost1 + ((this._darkElixirDiamondCost10 - this._darkElixirDiamondCost1) * (count - 1) + 4) / 9;

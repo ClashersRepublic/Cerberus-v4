@@ -1674,7 +1674,6 @@
 
                 this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
                 this._lastSeenNews = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
-                this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");
 
                 LogicJSONString troopRequestObject = this._levelJSON.GetJSONString("troop_req_msg");
 

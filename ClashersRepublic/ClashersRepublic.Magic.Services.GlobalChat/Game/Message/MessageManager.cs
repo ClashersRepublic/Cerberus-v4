@@ -2,8 +2,7 @@
 {
     using System;
     using ClashersRepublic.Magic.Logic.Message.Chat;
-
-    using ClashersRepublic.Magic.Services.Core.Message.Debug;
+    using ClashersRepublic.Magic.Services.Core.Message.Admin;
     using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Message;
@@ -47,24 +46,22 @@
         private void SendGlobalChatLineMessageReceived(SendGlobalChatLineMessage message)
         {
             string chatMessage = message.RemoveMessage();
-
-            #if DEBUG
-            if (chatMessage.StartsWith("/DEBUG ", StringComparison.InvariantCultureIgnoreCase))
+            
+            if (chatMessage.StartsWith("/admin ", StringComparison.InvariantCultureIgnoreCase))
             {
-                DebugCommand debugCommand = DebugCommandFactory.CreateDebugCommandByName(chatMessage.Substring(7).ToLowerInvariant());
+                AdminCommand adminCommand = AdminCommandFactory.CreateDebugCommandByName(chatMessage.Substring(7).ToLowerInvariant());
 
-                if (debugCommand != null)
+                if (adminCommand != null)
                 {
-                    if (debugCommand.GetServiceNodeType() != -1)
+                    if (adminCommand.GetServiceNodeType() != -1)
                     {
-                        ExecuteDebugCommandMessage executeDebugCommandMessage = new ExecuteDebugCommandMessage();
-                        executeDebugCommandMessage.SetDebugCommand(debugCommand);
-                        this._session.SendMessage(debugCommand.GetServiceNodeType(), executeDebugCommandMessage);
+                        ExecuteAdminCommandMessage executeAdminCommandMessage = new ExecuteAdminCommandMessage();
+                        executeAdminCommandMessage.SetDebugCommand(adminCommand);
+                        this._session.SendMessage(adminCommand.GetServiceNodeType(), executeAdminCommandMessage);
                         return;
                     }
                 }
             }
-            #endif
 
             this._session.Room.ReceiveMessage(this._session.AvatarEntry, chatMessage);
         }

@@ -22,6 +22,7 @@
         protected int _allianceCastleUsedSpellCapacity;
         protected int _allianceUnitVisitCapacity;
         protected int _allianceUnitSpellVisitCapacity;
+        protected int _defensePercentage;
         protected int _badgeId;
         protected int _leagueType;
 

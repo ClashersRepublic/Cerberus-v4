@@ -239,6 +239,10 @@
                     case 3:
                         command = new LogicChangeAvatarNameCommand();
                         break;
+                    case 7:
+                        command = new LogicDiamondsAddedCommand();
+                        break;
+
                     default:
                     {
                         Debugger.Error("LogicCommandManager::createCommand() - Unknown command type: " + type);
@@ -337,6 +341,12 @@
                     case 544:
                     {
                         command = new LogicEditModeShownCommand();
+                        break;
+                    }
+
+                    case 549:
+                    {
+                        command = new LogicUpgradeMultipleBuildingCommand();
                         break;
                     }
 

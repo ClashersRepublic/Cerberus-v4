@@ -2,7 +2,6 @@
 {
     using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.GameObject;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Util;

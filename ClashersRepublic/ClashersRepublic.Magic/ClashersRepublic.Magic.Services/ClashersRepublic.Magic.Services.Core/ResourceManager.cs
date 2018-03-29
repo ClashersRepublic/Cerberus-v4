@@ -60,7 +60,7 @@
 
             if (json != null)
             {
-                LogicJSONObject jsonObject = (LogicJSONObject)LogicJSONParser.Parse(json);
+                LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
                 LogicJSONArray fileArray = jsonObject.GetJSONArray("files");
                 LogicJSONString shaObject = jsonObject.GetJSONString("sha");
 

@@ -54,6 +54,11 @@
                 this._buffer = null;
             }
 
+            if (this.Socket != null)
+            {
+                this.Socket.Close(200);
+            }
+
             this.ReadEvent = null;
         }
 

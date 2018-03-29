@@ -33,6 +33,7 @@
         private int _expPoints;
         private int _diamonds;
         private int _freeDiamonds;
+        private int _cumulativePurchasedDiamonds;
         private int _score;
         private int _duelScore;
         private int _warPreference;
@@ -47,6 +48,7 @@
         private int _treasuryDarkElixirCount;
         private int _redPackageState;
         private int _nameChangeState;
+        private int _shieldCostAmount;
 
         private string _facebookId;
         private string _allianceName;
@@ -442,11 +444,47 @@
         }
 
         /// <summary>
+        ///     Adds cumulative purchased diamonds.
+        /// </summary>
+        public void AddCumulativePurchasedDiamonds(int count)
+        {
+            this._cumulativePurchasedDiamonds += count;
+        }
+
+        /// <summary>
+        ///     Gets cumulative purchased diamonds.
+        /// </summary>
+        public int GetCumulativePurchasedDiamonds()
+        {
+            return this._cumulativePurchasedDiamonds;
+        }
+
+        /// <summary>
         ///     Gets the league type.
         /// </summary>
         public int GetLeagueType()
         {
             return LogicMath.Clamp(this._leagueType, 0, LogicDataTables.GetTable(28).GetItemCount() - 1);
+        }
+
+        /// <summary>
+        ///     Gets the red package state.
+        /// </summary>
+        public int GetRedPackageState()
+        {
+            return this._redPackageState;
+        }
+
+        /// <summary>
+        ///     Sets the red package state.
+        /// </summary>
+        public void SetRedPackageState(int state)
+        {
+            if (this._redPackageState != state)
+            {
+                this._redPackageState = state;
+                // Listener.
+            }
         }
 
         /// <summary>
@@ -586,7 +624,7 @@
             this._legendLeagueTournamentEntry.Decode(stream);
             this._legendLeagueTournamentVillage2Entry.Decode(stream);
 
-            stream.ReadInt();
+            this._defensePercentage = stream.ReadInt();
             stream.ReadInt();
             stream.ReadInt();
 
@@ -628,13 +666,10 @@
 
             this._nameSetByUser = stream.ReadBoolean();
             this._nameChangeState = stream.ReadInt();
-
-            stream.ReadInt();
-
+            this._cumulativePurchasedDiamonds = stream.ReadInt();
             this._redPackageState = stream.ReadInt();
             this._warPreference = stream.ReadInt();
-
-            stream.ReadInt();
+            this._shieldCostAmount = stream.ReadInt();
             stream.ReadInt();
 
             if (stream.ReadBoolean())
@@ -1188,7 +1223,7 @@
             this._legendLeagueTournamentEntry.Encode(encoder);
             this._legendLeagueTournamentVillage2Entry.Encode(encoder);
 
-            encoder.WriteInt(0);
+            encoder.WriteInt(this._defensePercentage);
             encoder.WriteInt(0);
             encoder.WriteInt(0);
 
@@ -1235,10 +1270,10 @@
             encoder.WriteBoolean(this._nameSetByUser);
             encoder.WriteBoolean(false);
             encoder.WriteInt(this._nameChangeState);
-            encoder.WriteInt(6900);
+            encoder.WriteInt(this._cumulativePurchasedDiamonds);
             encoder.WriteInt(this._redPackageState);
             encoder.WriteInt(this._warPreference);
-            encoder.WriteInt(1);
+            encoder.WriteInt(this._shieldCostAmount);
             encoder.WriteInt(1);
 
             if (false)

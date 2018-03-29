@@ -6,7 +6,7 @@
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Account;
-    using ClashersRepublic.Magic.Services.Core.Message.Debug;
+    using ClashersRepublic.Magic.Services.Core.Message.Admin;
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Utils;
@@ -43,7 +43,7 @@
                     break;
 
                 case 10600:
-                    this.ExecuteDebugCommandMessageReceived((ExecuteDebugCommandMessage) message);
+                    this.ExecuteAdminCommandMessageReceived((ExecuteAdminCommandMessage) message);
                     break;
 
                 default:
@@ -209,28 +209,28 @@
         }
 
         /// <summary>
-        ///     Called when a <see cref="ExecuteDebugCommandMessage"/> is received.
+        ///     Called when a <see cref="ExecuteAdminCommandMessage"/> is received.
         /// </summary>
-        private void ExecuteDebugCommandMessageReceived(ExecuteDebugCommandMessage message)
+        private void ExecuteAdminCommandMessageReceived(ExecuteAdminCommandMessage message)
         {
             byte[] sessionId = message.GetSessionId();
 
             if (NetAccountSessionManager.TryGet(sessionId, out NetAccountSession session))
             {
-                DebugCommand debugCommand = message.RemoveDebugCommand();
+                AdminCommand adminCommand = message.RemoveDebugCommand();
 
-                if (debugCommand.GetServiceNodeType() == ServiceCore.ServiceNodeType)
+                if (adminCommand.GetServiceNodeType() == ServiceCore.ServiceNodeType)
                 {
-                    switch (debugCommand.GetCommandType())
+                    switch (adminCommand.GetCommandType())
                     {
                         default:
-                            Logging.Debug(string.Format("executeDebugCommandMessageReceived unknown debug command received ({0})", debugCommand.GetCommandType()));
+                            Logging.Debug(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
                             break;
                     }
                 }
                 else
                 {
-                    Logging.Debug(string.Format("executeDebugCommandMessageReceived invalid debug command received ({0})", debugCommand.GetCommandType()));
+                    Logging.Debug(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
                 }
             }
         }
