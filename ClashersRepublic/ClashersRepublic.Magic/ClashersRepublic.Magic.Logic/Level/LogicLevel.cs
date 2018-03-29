@@ -1563,9 +1563,9 @@
         /// </summary>
         public bool IsValidPlaceForBuilding(int x, int y, int width, int height, LogicGameObject gameObject)
         {
-            if (this._playArea.InInside(x, y))
+            if (x >= 0 && y >= 0)
             {
-                if (this._playArea.InInside(x + width, y + height))
+                if (width + x <= 50 && height + y <= 50)
                 {
                     for (int i = 0; i < width; i++)
                     {
@@ -1688,7 +1688,7 @@
             }
 
             this.RefreshResourceCaps();
-
+            
             for (int i = 0; i < 2; i++)
             {
                 this._gameObjectManagers[i].GetComponentManager().CalculateLoot(true);

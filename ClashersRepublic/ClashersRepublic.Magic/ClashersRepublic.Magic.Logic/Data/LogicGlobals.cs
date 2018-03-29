@@ -51,6 +51,8 @@
         private int _challengeBaseCooldownEnabledOnTh;
         private int _obstacleRespawnSecs;
         private int _obstacleMaxCount;
+        private int _resourceProductionLootPercentage;
+        private int _darkElixirProductionLootPercentage;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -84,6 +86,7 @@
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
+        private int[] _lootMultiplierByTownHallDifference;
 
         private LogicResourceData _allianceCreateResourceData;
 
@@ -137,6 +140,8 @@
             this._challengeBaseCooldownEnabledOnTh = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
             this._obstacleRespawnSecs = this.GetIntValue("OBSTACLE_RESPAWN_SECONDS");
             this._obstacleMaxCount = this.GetIntValue("OBSTACLE_COUNT_MAX");
+            this._resourceProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE");
+            this._darkElixirProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE_DARK_ELIXIR");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -186,6 +191,15 @@
             for (int i = 0; i < this._village2TroopHousingBuildTimeSecs.Length; i++)
             {
                 this._village2TroopHousingBuildTimeSecs[i] = village2TroopHousingBuildTimeSecsData.GetNumberArray(i);
+            }
+
+            LogicGlobalData lootMultiplierByTownHallDifferenceObject = this.GetGlobalData("LOOT_MULTIPLIER_BY_TH_DIFF");
+
+            this._lootMultiplierByTownHallDifference = new int[lootMultiplierByTownHallDifferenceObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._lootMultiplierByTownHallDifference.Length; i++)
+            {
+                this._lootMultiplierByTownHallDifference[i] = lootMultiplierByTownHallDifferenceObject.GetNumberArray(i);
             }
         }
 
@@ -314,6 +328,27 @@
         public int GetObstacleMaxCount()
         {
             return this._obstacleMaxCount;
+        }
+
+        /// <summary>
+        ///     Gets the resource production loot percentage.
+        /// </summary>
+        public int GetResourceProductionLootPercentage(LogicResourceData data)
+        {
+            if (LogicDataTables.GetDarkElixirData() == data)
+            {
+                return this._darkElixirProductionLootPercentage;
+            }
+
+            return this._resourceProductionLootPercentage;
+        }
+
+        /// <summary>
+        ///     Gets the loot multiplier by townhall difference.
+        /// </summary>
+        public int GetLootMultiplierByTownHallDiff(int townHallLevel1, int townHallLevel2)
+        {
+            return this._lootMultiplierByTownHallDifference[LogicMath.Clamp(townHallLevel1 + 4 - townHallLevel2, 0, this._lootMultiplierByTownHallDifference.Length - 1)];
         }
 
         /// <summary>

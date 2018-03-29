@@ -26,8 +26,6 @@
 
     internal class GameMode
     {
-        private int _currentTimestamp;
-
         private ZoneAccount _zoneAccount;
         private LogicGameMode _logicGameMode;
         private LogicArrayList<LogicServerCommand> _bufferedServerCommands;
@@ -81,6 +79,7 @@
 
                     this._logicGameMode.SaveToJSON(jsonObject);
 
+                    this._zoneAccount.SetSaveTimestamp(this._logicGameMode.GetActiveTimestamp());
                     this._zoneAccount.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
                     this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
                     this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
@@ -161,6 +160,7 @@
 
             OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
 
+            ownHomeDataMessage.SetElapsedSecs(-1);
             ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
             ownHomeDataMessage.SetSecondsSinceLastSave(secondsSinceLastSave);
             ownHomeDataMessage.SetLogicClientAvatar(homeOwnerAvatar);
@@ -209,7 +209,7 @@
         /// <summary>
         ///     Sets the gamemode.
         /// </summary>
-        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed, int state, GAME mode)
+        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs, int state, GAME mode)
         {
             if (this._logicGameMode != null)
             {
@@ -239,13 +239,11 @@
                 
                 this._logicGameMode = new LogicGameMode();
                 this._logicGameMode.GetCommandManager().SetListener(new CommandManagerListener(this));
-
-                this._currentTimestamp = currentTimestamp;
-
+                
                 switch (mode)
                 {
                     case GAME.HOME_STATE:
-                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, seed);
+                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
                         break;
                     case GAME.ATTACK_STATE:
                         if (homeOwnerAvatar.IsNpcAvatar())
@@ -253,10 +251,10 @@
                             switch (state)
                             {
                                 case 8:
-                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, seed);
+                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
                                     break;
                                 default:
-                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, seed);
+                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
                                     break;
                             }
                         }
@@ -398,7 +396,7 @@
             if (subTick > -1)
             {
                 int currentTimestamp = LogicTimeUtil.GetTimestamp();
-                int calculateTimestamp = this._currentTimestamp + LogicTime.GetTicksInSeconds(subTick);
+                int calculateTimestamp = this._logicGameMode.GetActiveTimestamp();
 
                 if (currentTimestamp >= calculateTimestamp)
                 {
@@ -464,7 +462,9 @@
                             this.Save();
                         }
 
-                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} server checksum: {2}", subTick, checksum, this._logicGameMode.CalculateChecksum(1)));
+                        int serverChecksum = this._logicGameMode.CalculateChecksum(false);
+                        
+                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} server checksum: {2}", subTick, checksum, serverChecksum));
                     }
                     else
                     {

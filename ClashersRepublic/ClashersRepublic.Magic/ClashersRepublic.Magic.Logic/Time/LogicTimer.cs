@@ -136,7 +136,7 @@
         {
             if(this._endTimestamp != -1)
             {
-                int currentTime = LogicDataTables.GetGlobals().AdjustEndSubtickUseCurrentTime() ? level.GetGameMode().GetCurrentTime() : level.GetGameMode().GetCurrentTimestamp();
+                int currentTime = LogicDataTables.GetGlobals().AdjustEndSubtickUseCurrentTime() ? level.GetGameMode().GetActiveTimestamp() : level.GetGameMode().GetCurrentTimestamp();
 
                 if (currentTime != -1)
                 {

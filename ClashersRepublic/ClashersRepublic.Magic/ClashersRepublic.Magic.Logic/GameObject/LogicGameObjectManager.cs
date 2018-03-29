@@ -198,7 +198,7 @@
 
             gameObject.SetGlobalID(globalId);
 
-            LogicRandom random = new LogicRandom(this._level.GetGameMode().GetLogicSeed() + globalId);
+            LogicRandom random = new LogicRandom(this._level.GetGameMode().GetCurrentTimestamp() + globalId);
             random.Rand(0x7fffffff);
             random.Rand(0x7fffffff);
             random.Rand(0x7fffffff);
@@ -588,7 +588,7 @@
         /// <summary>
         ///     Gets the checksum for this instance.
         /// </summary>
-        public void GetChecksum(ChecksumHelper checksum, int mode)
+        public void GetChecksum(ChecksumHelper checksum, bool includeGameObjects)
         {
             checksum.StartObject("LogicGameObjectManager");
 
@@ -601,7 +601,7 @@
 
             checksum.WriteValue("numGameObjects", num);
 
-            if (mode == 1)
+            if (includeGameObjects)
             {
                 for (int i = 0; i < 9; i++)
                 {
@@ -609,7 +609,7 @@
 
                     for (int j = 0; j < this._gameObjects[i].Count; j++)
                     {
-                        this._gameObjects[i][j].GetChecksum(checksum);
+                        this._gameObjects[i][j].GetChecksum(checksum, includeGameObjects);
                     }
 
                     checksum.EndArray();
@@ -621,7 +621,7 @@
 
                 for (int i = 0; i < this._gameObjects[0].Count; i++)
                 {
-                    this._gameObjects[0][i].GetChecksum(checksum);
+                    this._gameObjects[0][i].GetChecksum(checksum, false);
                 }
 
                 checksum.EndArray();

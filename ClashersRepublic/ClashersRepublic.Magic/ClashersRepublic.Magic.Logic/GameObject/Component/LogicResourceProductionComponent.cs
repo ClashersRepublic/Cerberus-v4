@@ -244,5 +244,58 @@
         {
            jsonObject.Put("res_time", new LogicJSONNumber(this._resourceTimer.GetRemainingSeconds(this._parent.GetLevel().GetLogicTime())));
         }
+
+        /// <summary>
+        ///     Recalculates the available loot.
+        /// </summary>
+        public void RecalculateAvailableLoot()
+        {
+            LogicAvatar homeOwnerAvatar = this._parent.GetLevel().GetHomeOwnerAvatar();
+
+            if (!homeOwnerAvatar.IsNpcAvatar())
+            {
+                int matchType = this._parent.GetLevel().GetMatchType();
+
+                if (matchType < 10)
+                {
+                    if (matchType == 0 ||
+                        matchType == 2 ||
+                        matchType >= 4 && matchType <= 6)
+                    {
+                        int resourceProductionLootPercentage = LogicDataTables.GetGlobals().GetResourceProductionLootPercentage(this._resourceData);
+
+                        if (homeOwnerAvatar.IsClientAvatar())
+                        {
+                            if (this._parent.GetLevel().GetVisitorAvatar() != null)
+                            {
+                                LogicAvatar visitorAvatar = this._parent.GetLevel().GetVisitorAvatar();
+
+                                if (visitorAvatar.IsClientAvatar())
+                                {
+                                    resourceProductionLootPercentage = resourceProductionLootPercentage *
+                                                                       LogicDataTables.GetGlobals().GetLootMultiplierByTownHallDiff(visitorAvatar.GetTownHallLevel(),
+                                                                                                                                    homeOwnerAvatar.GetTownHallLevel()) / 100;
+                                }
+                            }
+                        }
+
+                        if (resourceProductionLootPercentage > 100)
+                        {
+                            resourceProductionLootPercentage = 100;
+                        }
+
+                        this._availableLoot = this.GetResourceCount() * resourceProductionLootPercentage / 100;
+                    }
+                }
+                else
+                {
+                    this._availableLoot = 0;
+                }
+            }
+            else
+            {
+                this._availableLoot = 0;
+            }
+        }
     }
 }

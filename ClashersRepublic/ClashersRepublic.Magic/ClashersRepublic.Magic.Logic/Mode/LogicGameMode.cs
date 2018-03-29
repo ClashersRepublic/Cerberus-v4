@@ -21,7 +21,7 @@
         private int _shieldTime;
         private int _guardTime;
         private int _maintenanceTime;
-        private int _seed;
+        private int _elapsedSecs;
 
         private LogicTimer _battleTimer;
         private LogicLevel _level;
@@ -77,7 +77,7 @@
         /// <summary>
         ///     Calculates the checksum of this instance.
         /// </summary>
-        public ChecksumHelper CalculateChecksum(int mode)
+        public ChecksumHelper CalculateChecksum(bool includeGameObjects)
         {
             ChecksumHelper checksum = new ChecksumHelper();
 
@@ -100,7 +100,7 @@
                 checksum.EndObject();
             }
 
-            this._level.GetGameObjectManager().GetChecksum(checksum, mode);
+            this._level.GetGameObjectManager().GetChecksum(checksum, includeGameObjects);
 
             if (this._calendar != null)
             {
@@ -142,7 +142,7 @@
         /// <summary>
         ///     Gets the current time.
         /// </summary>
-        public int GetCurrentTime()
+        public int GetActiveTimestamp()
         {
             return (int) (16L * this._level.GetLogicTime() / 1000 + this._currentTimestamp);
         }
@@ -153,6 +153,14 @@
         public int GetCurrentTimestamp()
         {
             return this._currentTimestamp;
+        }
+
+        /// <summary>
+        ///     Gets the elapsed seconds.
+        /// </summary>
+        public int GetElapsedSeconds()
+        {
+            return this._elapsedSecs;
         }
 
         /// <summary>
@@ -193,21 +201,27 @@
         {
             return LogicMath.Max(LogicTime.GetTicksInSeconds(this._maintenanceTime - this._level.GetLogicTime()), 0);
         }
-
-        /// <summary>
-        ///     Gets the logic seed.
-        /// </summary>
-        public int GetLogicSeed()
-        {
-            return this._seed;
-        }
-
+        
         /// <summary>
         ///     Saves this instance to json.
         /// </summary>
         public void SaveToJSON(LogicJSONObject jsonObject)
         {
             this._level.SaveToJSON(jsonObject);
+        }
+
+        /// <summary>
+        ///     Sub ticks this instance.
+        /// </summary>
+        public void SubTick()
+        {
+            if (this._state == 1)
+            {
+                this._calendar.SetCalendarData(this.GetActiveTimestamp(), this._level.GetHomeOwnerAvatar(), this._level);
+            }
+
+            this._commandManager.SubTick();
+            this._level.SubTick();
         }
 
         /// <summary>
@@ -219,8 +233,7 @@
 
             if (this._state != 2 || !this._battleOver)
             {
-                this._commandManager.SubTick();
-                this._level.SubTick();
+                this.SubTick();
 
                 // if (this._replay != null)
                 // {
@@ -282,12 +295,12 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
         {
             if (home != null)
             {
                 this._state = 1;
-                this._seed = seed;
+                this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
                 this._configuration.Load((LogicJSONObject) LogicJSONParser.Parse(home.GetGlobalJSON()));
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
@@ -312,7 +325,7 @@
         /// <summary>
         ///     Loads the npc attack state.
         /// </summary>
-        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
+        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
         {
             if (this._state == 1)
             {
@@ -321,7 +334,7 @@
             else
             {
                 this._state = 2;
-                this._seed = seed;
+                this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 

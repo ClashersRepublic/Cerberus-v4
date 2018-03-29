@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
     using ClashersRepublic.Magic.Logic.Level;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -34,9 +35,40 @@
         /// <summary>
         ///     Calculates the loot.
         /// </summary>
-        public void CalculateLoot(bool unk)
+        public void CalculateLoot(bool includeStorage)
         {
-            // TODO: Implement LogicComponentManager::calculateLoot();
+            if (this._components[6].Count > 0)
+            {
+                if (includeStorage)
+                {
+                    LogicArrayList<LogicComponent> components = this._components[6];
+
+                    for (int i = 0; i < components.Count; i++)
+                    {
+                        ((LogicResourceStorageComponent) components[i]).RecalculateAvailableLoot();
+                    }
+                }
+            }
+
+            if (this._components[5].Count > 0)
+            {
+                LogicArrayList<LogicComponent> components = this._components[5];
+
+                for (int i = 0; i < components.Count; i++)
+                {
+                    ((LogicResourceProductionComponent) components[i]).RecalculateAvailableLoot();
+                }
+            }
+
+            if (this._components[11].Count > 0)
+            {
+                LogicArrayList<LogicComponent> components = this._components[11];
+                Debugger.DoAssert(components.Count < 2, "Too many war storage components");
+
+                for (int i = 0; i < components.Count; i++)
+                {
+                }
+            }
         }
 
         /// <summary>

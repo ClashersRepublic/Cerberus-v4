@@ -799,7 +799,7 @@
             else
             {
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetActiveTimestamp());
 
                 this._level.GetWorkerManagerAt(this.GetBuildingData().GetVillageType()).AllocateWorker(this);
             }
@@ -852,7 +852,7 @@
                 this.EnableComponent(9, false);
 
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetActiveTimestamp());
             }
         }
 
@@ -1027,11 +1027,11 @@
         /// <summary>
         ///     Gets the checksum of this instance.
         /// </summary>
-        public override void GetChecksum(ChecksumHelper checksum)
+        public override void GetChecksum(ChecksumHelper checksum, bool includeGameObjects)
         {
             checksum.StartObject("LogicBuilding");
 
-            base.GetChecksum(checksum);
+            base.GetChecksum(checksum, includeGameObjects);
 
             if (this.GetComponent(6) != null)
             {

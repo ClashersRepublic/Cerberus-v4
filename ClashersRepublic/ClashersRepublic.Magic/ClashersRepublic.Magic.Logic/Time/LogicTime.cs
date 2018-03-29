@@ -26,7 +26,7 @@
         /// </summary>
         public bool IsFullTick()
         {
-            return this._tick << 30 == 0;
+            return (this._tick + 1) << 30 == 0;
         }
         
         /// <summary>
@@ -100,17 +100,6 @@
         public static implicit operator int(LogicTime time)
         {
             return time._tick;
-        }
-
-        /// <summary>
-        ///     Converts ticks to time.
-        /// </summary>
-        public static implicit operator LogicTime(int tick)
-        {
-            return new LogicTime
-            {
-                _tick = tick
-            };
         }
     }
 }

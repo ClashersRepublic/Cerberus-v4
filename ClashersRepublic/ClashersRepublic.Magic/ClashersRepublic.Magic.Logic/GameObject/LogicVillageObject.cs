@@ -212,15 +212,7 @@
                 this._listener.LoadedFromJSON();
             }
         }
-
-        /// <summary>
-        ///     Gets the checksum of this <see cref="LogicObstacle"/> instance.
-        /// </summary>
-        public override void GetChecksum(ChecksumHelper checksum)
-        {
-            base.GetChecksum(checksum);
-        }
-
+        
         /// <summary>
         ///     Gets the <see cref="LogicGameObject"/> type.
         /// </summary>

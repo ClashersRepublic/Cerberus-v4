@@ -142,6 +142,14 @@
         }
 
         /// <summary>
+        ///     Recalculate the available loot.
+        /// </summary>
+        public void RecalculateAvailableLoot()
+        {
+
+        }
+
+        /// <summary>
         ///     Gets the component type of this instance.
         /// </summary>
         public override int GetComponentType()

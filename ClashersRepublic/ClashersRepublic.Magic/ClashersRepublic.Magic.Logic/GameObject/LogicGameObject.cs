@@ -454,26 +454,29 @@
         /// <summary>
         ///     Gets the checksum of this instance.
         /// </summary>
-        public virtual void GetChecksum(ChecksumHelper checksum)
+        public virtual void GetChecksum(ChecksumHelper checksum, bool includeGameObjects)
         {
-            checksum.StartObject("LogicGameObject");
-
-            checksum.WriteValue("type", this.GetGameObjectType());
-            checksum.WriteValue("globalID", this._globalId);
-            checksum.WriteValue("dataGlobalID", this._data.GetGlobalID());
-            checksum.WriteValue("x", this.GetX());
-            checksum.WriteValue("y", this.GetY());
-            checksum.WriteValue("seed", this._seed);
-
-            if (this.GetHitpointComponent() != null)
+            if (includeGameObjects)
             {
-                LogicHitpointComponent hitpointComponent = this.GetHitpointComponent();
+                checksum.StartObject("LogicGameObject");
 
-                checksum.WriteValue("m_hp", hitpointComponent.InternalGetHp());
-                checksum.WriteValue("m_maxHP", hitpointComponent.InternalGetMaxHp());
+                checksum.WriteValue("type", this.GetGameObjectType());
+                checksum.WriteValue("globalID", this._globalId);
+                checksum.WriteValue("dataGlobalID", this._data.GetGlobalID());
+                checksum.WriteValue("x", this.GetX());
+                checksum.WriteValue("y", this.GetY());
+                checksum.WriteValue("seed", this._seed);
+
+                if (this.GetHitpointComponent() != null)
+                {
+                    LogicHitpointComponent hitpointComponent = this.GetHitpointComponent();
+
+                    checksum.WriteValue("m_hp", hitpointComponent.InternalGetHp());
+                    checksum.WriteValue("m_maxHP", hitpointComponent.InternalGetMaxHp());
+                }
+
+                checksum.EndObject();
             }
-
-            checksum.EndObject();
         }
 
         /// <summary>
