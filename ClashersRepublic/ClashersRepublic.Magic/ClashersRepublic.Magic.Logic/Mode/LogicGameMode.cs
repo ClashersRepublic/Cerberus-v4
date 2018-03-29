@@ -21,6 +21,7 @@
         private int _shieldTime;
         private int _guardTime;
         private int _maintenanceTime;
+        private int _seed;
 
         private LogicTimer _battleTimer;
         private LogicLevel _level;
@@ -194,6 +195,14 @@
         }
 
         /// <summary>
+        ///     Gets the logic seed.
+        /// </summary>
+        public int GetLogicSeed()
+        {
+            return this._seed;
+        }
+
+        /// <summary>
         ///     Saves this instance to json.
         /// </summary>
         public void SaveToJSON(LogicJSONObject jsonObject)
@@ -273,12 +282,14 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
         {
             if (home != null)
             {
                 this._state = 1;
+                this._seed = seed;
                 this._currentTimestamp = currentTimestamp;
+                this._configuration.Load((LogicJSONObject) LogicJSONParser.Parse(home.GetGlobalJSON()));
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 
                 if (this._battleTimer != null)
@@ -301,7 +312,7 @@
         /// <summary>
         ///     Loads the npc attack state.
         /// </summary>
-        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
         {
             if (this._state == 1)
             {
@@ -310,6 +321,7 @@
             else
             {
                 this._state = 2;
+                this._seed = seed;
                 this._currentTimestamp = currentTimestamp;
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 
@@ -344,7 +356,7 @@
         /// <summary>
         ///     Loads the npc duel state.
         /// </summary>
-        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
         {
         }
     }

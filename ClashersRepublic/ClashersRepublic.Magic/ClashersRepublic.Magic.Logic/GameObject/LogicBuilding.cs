@@ -172,6 +172,31 @@
         }
 
         /// <summary>
+        ///     Gets the max fast forward time.
+        /// </summary>
+        public override int GetMaxFastForwardTime()
+        {
+            if (this._constructionTimer != null && !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
+            {
+                return LogicMath.Max(this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()), 1);
+            }
+            else
+            {
+                if (this.GetComponent(15) != null)
+                {
+                    // TODO: Implement this.
+                }
+
+                if (this.GetComponent(3) != null)
+                {
+                    // TODO: Implement this.
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicBuilding"/> instance is in construction.
         /// </summary>
         public bool IsConstructing()

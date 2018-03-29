@@ -38,23 +38,7 @@
         {
             this._seed = value;
         }
-
-        /// <summary>
-        ///     Iterates the specified random seed.
-        /// </summary>
-        public int IterateRandomSeed(int seed)
-        {
-            if (seed == 0)
-            {
-                seed = -1;
-            }
-            
-            int tmp = seed ^ (seed << 13);
-            int tmp2 = tmp ^ (tmp >> 17);
-            
-            return tmp2 ^ 32 * tmp2;
-        }
-
+        
         /// <summary>
         ///     Returns a random int between 0 and Max.
         /// </summary>
@@ -62,27 +46,28 @@
         {
             if (max > 0)
             {
-                this._seed = this.IterateRandomSeed(this._seed);
+                int seed = this._seed;
 
-                if (this._seed < 0)
+                if (seed == 0)
                 {
-                    return -this._seed % max;
+                    seed = -1;
                 }
 
-                return this._seed % max;
+                int tmp = seed ^ (seed << 13) ^ ((seed ^ (seed << 13)) >> 17);
+                int tmp2 = tmp ^ 32 * tmp;
+                this._seed = tmp2;
+
+                if (tmp2 < 0)
+                {
+                    tmp2 = -tmp2;
+                }
+
+                return tmp2 % max;
             }
 
             return 0;
         }
-
-        /// <summary>
-        ///     Returns a random int between 0 and Max.
-        /// </summary>
-        public int Rand()
-        {
-            return this._seed = this.IterateRandomSeed(this._seed);
-        }
-
+        
         /// <summary>
         ///     Decodes this instance.
         /// </summary>

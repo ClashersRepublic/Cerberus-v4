@@ -6,6 +6,7 @@
 
     public class OwnHomeDataMessage : PiranhaMessage
     {
+        private int _randomSeed;
         private int _currentTimestamp;
         private int _secondsSinceLastSave;
 
@@ -149,6 +150,22 @@
         public void SetSecondsSinceLastSave(int value)
         {
             this._secondsSinceLastSave = value;
+        }
+
+        /// <summary>
+        ///     Gets the random seed
+        /// </summary>
+        public int GetRandomSeed()
+        {
+            return this._randomSeed;
+        }
+
+        /// <summary>
+        ///     Sets the random seed.
+        /// </summary>
+        public void SetRandomSeed(int value)
+        {
+            this._randomSeed = value;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject
 {
+    using System;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.GameObject.Listener;
@@ -23,7 +24,7 @@
         private LogicUnitProduction _spellProduction;
         private LogicGameObjectManagerListener _listener;
         private LogicRandom _obstacleRespawnRandom;
-        private LogicRandom _tileGrassRespawnRandom;
+        private LogicRandom _tallGrassRespawnRandom;
         private readonly LogicComponentManager _componentManager;
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
         private readonly LogicArrayList<LogicBuilding> _barracks;
@@ -41,16 +42,16 @@
         private LogicVillageObject _shipyard;
         private LogicVillageObject _rowBoat;
         private LogicVillageObject _clanGate;
-        private LogicObstacleData _gemBoxData;
-        private LogicData _specialObstacleData;
-
-        private int _fastForwardRespawnSecs;
-        private int _specialObstacleDropTime;
+        private LogicObstacleData _bonusGemboxData;
+        private LogicObstacleData _specialObstacleData;
+        
+        private int _secondsFromLastRespawn;
+        private int _secondsFromLastTallGrassRespawn;
+        private int _specialObstacleDropSecs;
+        private int _specialObstaclePeriodSecs;
         private int _obstacleClearCounter;
         private int _gemBoxDropSecs;
         private int _gemBoxPeriodSecs;
-        private int _passedRespawnSecs;
-        private int _passedTimeGrassRespawnSecs;
         private int _unitProductionCount;
 
         /// <summary>
@@ -72,11 +73,11 @@
 
             this._barracks = new LogicArrayList<LogicBuilding>();
             this._darkBarracks = new LogicArrayList<LogicBuilding>();
-            this._gemBoxData = LogicDataTables.GetObstacleByName("Bonus Gembox");
+            this._bonusGemboxData = LogicDataTables.GetObstacleByName("Bonus Gembox");
             this._componentManager = new LogicComponentManager(level);
             this._listener = new LogicGameObjectManagerListener();
             this._obstacleRespawnRandom = new LogicRandom();
-            this._tileGrassRespawnRandom = new LogicRandom();
+            this._tallGrassRespawnRandom = new LogicRandom();
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
@@ -132,7 +133,7 @@
 
             this._listener = null;
             this._obstacleRespawnRandom = null;
-            this._tileGrassRespawnRandom = null;
+            this._tallGrassRespawnRandom = null;
             this._level = null;
             this._tileMap = null;
             this._allianceCastle = null;
@@ -145,7 +146,7 @@
             this._shipyard = null;
             this._rowBoat = null;
             this._clanGate = null;
-            this._gemBoxData = null;
+            this._bonusGemboxData = null;
             this._specialObstacleData = null;
         }
 
@@ -172,7 +173,7 @@
 
             if (globalId == -1)
             {
-                gameObject.SetGlobalID(this.GenerateGameObjectGlobalID(gameObject));
+                globalId = this.GenerateGameObjectGlobalID(gameObject);
             }
             else
             {
@@ -194,6 +195,14 @@
                     this._gameObjectIds[gameObjectType] = idx + 1;
                 }
             }
+
+            gameObject.SetGlobalID(globalId);
+
+            LogicRandom random = new LogicRandom(this._level.GetGameMode().GetLogicSeed() + globalId);
+            random.Rand(0x7fffffff);
+            random.Rand(0x7fffffff);
+            random.Rand(0x7fffffff);
+            gameObject.SetSeed(random.Rand(0x7fffffff));
 
             if (gameObjectType == 0)
             {
@@ -640,25 +649,336 @@
         /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
-        public void FastForwardTime(int totalSecs)
+        public void FastForwardTime(int secs)
         {
-            if (totalSecs > 0)
+            this._secondsFromLastRespawn += secs;
+            this._secondsFromLastTallGrassRespawn += secs;
+            this._gemBoxDropSecs -= secs;
+            this._specialObstacleDropSecs -= secs;
+
+            if (secs > 0)
             {
-                Debugger.Log("LogicGameObjectManager::fastForward: " + totalSecs);
 
-                this._passedRespawnSecs += totalSecs;
-                this._passedTimeGrassRespawnSecs += totalSecs;
+                int idx = 0;
 
-                for (int i = 0; i < 9; i++)
+                do
                 {
-                    LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+                    int maxSecs = secs;
 
-                    for (int j = 0; j < gameObjects.Count; j++)
+                    if (idx == 999)
                     {
-                        gameObjects[j].FastForwardTime(totalSecs);
+                        Debugger.Warning("LogicGameObjectManager::fastForwardTime - Pass limit reached");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 9; i++)
+                        {
+                            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                            for (int j = 0; j < gameObjects.Count; j++)
+                            {
+                                int maxFastForwardTime = gameObjects[j].GetMaxFastForwardTime();
+
+                                if (maxFastForwardTime >= 0)
+                                {
+                                    maxSecs = LogicMath.Min(maxFastForwardTime, maxSecs);
+                                }
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < 9; i++)
+                    {
+                        LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                        for (int j = 0; j < gameObjects.Count; j++)
+                        {
+                            gameObjects[j].FastForwardTime(maxSecs);
+                        }
+                    }
+
+                    if (LogicDataTables.GetGlobals().UseNewTraining())
+                    {
+
+                    }
+
+                    secs -= maxSecs;
+                } while (secs > 0);
+            }
+
+            this.RespawnObstacles();
+        }
+
+        /// <summary>
+        ///     Generates the next gembox drop time.
+        /// </summary>
+        public void GenerateNextGemboxDropTime(bool clamp)
+        {
+            int random = this._obstacleRespawnRandom.Rand(this._bonusGemboxData.AppearancePeriodHours);
+            int timeToGemboxDrop = this._gemBoxPeriodSecs + 3600 * random;
+
+            if (clamp)
+            {
+                int minTime = 3600 * this._bonusGemboxData.MinRespawnTimeHours;
+
+                if (timeToGemboxDrop < minTime)
+                {
+                    timeToGemboxDrop = minTime;
+                }
+            }
+
+            this._gemBoxDropSecs = timeToGemboxDrop;
+            this._gemBoxPeriodSecs = 3600 * (this._bonusGemboxData.AppearancePeriodHours - random);
+        }
+
+        /// <summary>
+        ///     Respawnes obstacles.
+        /// </summary>
+        public void RespawnObstacles()
+        {
+            int villageType = this._level.GetVillageType();
+
+            if (villageType == this._villageType && this._level.GetMatchType() != 3)
+            {
+                if (villageType == 0)
+                {
+                    if (this._level.GetMatchType() == 0)
+                    {
+                        this.RespawnVillage1Obstacle();
+
+                        if (this._bonusGemboxData != null && this._gemBoxDropSecs <= 0 && this._bonusGemboxData.LootCount > 0)
+                        {
+                            this.CreateSpecialObstacle(this._bonusGemboxData, true);
+                            this.GenerateNextGemboxDropTime(true);
+                        }
+
+                        if (this._specialObstacleData != null && this._specialObstacleDropSecs <= 0 && this._specialObstacleData.LootCount > 0)
+                        {
+                            this.CreateSpecialObstacle(this._specialObstacleData, false);
+
+                            int rnd = this._obstacleRespawnRandom.Rand(this._specialObstacleData.AppearancePeriodHours);
+
+                            this._specialObstacleDropSecs = 3600 * rnd + this._specialObstaclePeriodSecs;
+                            this._specialObstaclePeriodSecs = 3600 * (this._specialObstaclePeriodSecs - rnd);
+                        }
+                    }
+                }
+                else if (villageType == 1 && this._level.GetMatchType() != 5)
+                {
+                    this.RespawnVillage2Obstacles();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Respawn obstacles of village 1.
+        /// </summary>
+        public void RespawnVillage1Obstacle()
+        {
+            if (this._villageType == 0 && this._level.GetVillageType() == 0)
+            {
+                int obstacleRespawnTime = LogicDataTables.GetGlobals().GetObstacleRespawnSecs();
+                int obstacleMaxCount = LogicDataTables.GetGlobals().GetObstacleMaxCount();
+
+                int tombStoneCount = this._level.GetTombStoneCount();
+                int tallGrassCount = this._level.GetTallGrassCount();
+
+                if (this._secondsFromLastRespawn > obstacleRespawnTime)
+                {
+                    int ignoreCount = tombStoneCount + tallGrassCount;
+
+                    do
+                    {
+                        int count = this._gameObjects[3].Count - ignoreCount;
+
+                        if (count >= obstacleMaxCount)
+                        {
+                            this._secondsFromLastRespawn = 0;
+                            break;
+                        }
+
+                        this.CreateVillage1Obstacle();
+                        this._secondsFromLastRespawn -= obstacleRespawnTime;
+                    } while (this._secondsFromLastRespawn > obstacleRespawnTime);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Respawn obstacles of village 2.
+        /// </summary>
+        public void RespawnVillage2Obstacles()
+        {
+
+        }
+
+        /// <summary>
+        ///     Respawn the bonus gembox.
+        /// </summary>
+        public bool CreateSpecialObstacle(LogicObstacleData data, bool oneOnly)
+        {
+            if (oneOnly && this._gameObjects[3].Count > 0)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[3];
+
+                for (int i = 0; i < gameObjects.Count; i++)
+                {
+                    if (gameObjects[i].GetData() == data)
+                    {
+                        return false;
                     }
                 }
             }
+
+            bool created = this.RandomlyPlaceObstacle(data);
+
+            if (!created)
+            {
+                created = this.RandomlyPlaceSpecialObstacle(data, data.Width, data.Height);
+            }
+
+            return created;
+        }
+
+        /// <summary>
+        ///     Creates a new obstacle.
+        /// </summary>
+        public void CreateVillage1Obstacle()
+        {
+            if (this._villageType != 0)
+            {
+                Debugger.Warning("invalid village type home!");
+            }
+
+            if (this._level.GetVillageType() != 0)
+            {
+                Debugger.Warning("invalid village type home (2)!");
+            }
+
+            LogicDataTable table = LogicDataTables.GetTable(7);
+            Int32 respawnWeights = 0;
+
+            for (int i = 0; i < table.GetItemCount(); i++)
+            {
+                LogicObstacleData obstacleData = (LogicObstacleData) table.GetItemAt(i);
+
+                if (obstacleData.GetVillageType() == this._villageType)
+                {
+                    respawnWeights += obstacleData.RespawnWeight;
+                }
+            }
+
+            Int32 rnd = this._obstacleRespawnRandom.Rand(respawnWeights);
+            LogicObstacleData respawnObstacleData = null;
+
+            for (int i = 0, weights = 0; i < table.GetItemCount(); i++)
+            {
+                LogicObstacleData obstacleData = (LogicObstacleData)table.GetItemAt(i);
+
+                if (obstacleData.GetVillageType() == this._villageType)
+                {
+                    weights += obstacleData.RespawnWeight;
+
+                    if (weights > rnd)
+                    {
+                        respawnObstacleData = obstacleData;
+                        break;
+                    }
+                }
+            }
+
+            if (respawnObstacleData != null)
+            {
+                if (respawnObstacleData.GetVillageType() == this._villageType)
+                {
+                    this.RandomlyPlaceObstacle(respawnObstacleData);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Places randomly the obstacle.
+        /// </summary>
+        public bool RandomlyPlaceObstacle(LogicObstacleData data)
+        {
+            if (data.GetVillageType() == this._villageType)
+            {
+                if (this._level.GetVillageType() != this._villageType && data.LootDefensePercentage == 0)
+                {
+                    Debugger.Warning("invalid village type for randomlyPlaceObstacle");
+                }
+
+                for (int i = 0; i < 20; i++)
+                {
+                    int widthInTiles = this._level.GetWidthInTiles();
+                    int heightInTiles = this._level.GetHeightInTiles();
+                    int x = this._obstacleRespawnRandom.Rand(widthInTiles - data.Width + 1);
+                    int y = this._obstacleRespawnRandom.Rand(heightInTiles - data.Height + 1);
+
+                    if (this._level.IsValidPlaceForObstacle(x, y, data.Width, data.Height, true, true))
+                    {
+                        LogicObstacle obstacle = (LogicObstacle) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
+
+                        if (data.LootCount > 0)
+                        {
+                            obstacle.SetLootMultiplyVersion(2);
+                        }
+
+                        obstacle.SetInitialPosition(x << 9, y << 9);
+                        
+                        this.AddGameObject(obstacle);
+
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                Debugger.Warning("randomlyPlaceObstacle; trying to place obstacle in wrong village");
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Places randomly the obstacle.
+        /// </summary>
+        public bool RandomlyPlaceSpecialObstacle(LogicObstacleData data, int width, int height)
+        {
+            int levelWidth = this._level.GetWidthInTiles();
+            int levelHeight = this._level.GetHeightInTiles();
+            int possibility = levelWidth * levelHeight;
+            int x = this._obstacleRespawnRandom.Rand(levelWidth);
+            int y = this._obstacleRespawnRandom.Rand(levelHeight);
+
+            if (possibility > 0)
+            {
+                do
+                {
+                    if (!this._level.IsValidPlaceForObstacle(x, y, levelWidth, levelHeight, false, true))
+                    {
+                        if (++x + width > levelWidth)
+                        {
+                            if (++y + height > levelHeight)
+                            {
+                                y = 0;
+                            }
+
+                            x = 0;
+                        }
+                    }
+                    else
+                    {
+                        LogicObstacle obstacle = (LogicObstacle) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
+                        obstacle.SetInitialPosition(x << 9, y << 9);
+                        this.AddGameObject(obstacle);
+
+                        return true;
+                    }
+                } while (--possibility > 1);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -747,6 +1067,8 @@
         /// </summary>
         public void Load(LogicJSONObject jsonObject, bool ignoreRespawnVars, bool loadObstacle)
         {
+            this._specialObstacleData = this._level.GetGameMode().GetConfiguration().GetSpecialObstacleData();
+
             for (int i = 0; i < 9; i++)
             {
                 if (this._gameObjects[i].Count != 0)
@@ -795,11 +1117,44 @@
 
                 if (!ignoreRespawnVars)
                 {
-                    jsonObject.GetJSONNumber("v2rs");
-                    jsonObject.GetJSONNumber("v2rseed");
-                    jsonObject.GetJSONNumber("v2ccounter");
-                    jsonObject.GetJSONNumber("tgsec");
-                    jsonObject.GetJSONNumber("tgseed");
+                    LogicJSONNumber respawnSecondsObject = jsonObject.GetJSONNumber("v2rs");
+
+                    if (respawnSecondsObject != null)
+                    {
+                        this._secondsFromLastRespawn = respawnSecondsObject.GetIntValue();
+                    }
+
+                    LogicJSONNumber respawnSeedObject = jsonObject.GetJSONNumber("v2rseed");
+
+                    if (respawnSeedObject != null)
+                    {
+                        this._obstacleRespawnRandom.SetIteratedRandomSeed(respawnSeedObject.GetIntValue());
+                    }
+                    else
+                    {
+                        this._obstacleRespawnRandom.SetIteratedRandomSeed(112);
+                    }
+
+                    LogicJSONNumber respawnClearCounterObject = jsonObject.GetJSONNumber("v2ccounter");
+
+                    if (respawnClearCounterObject != null)
+                    {
+                        this._obstacleClearCounter = respawnClearCounterObject.GetIntValue();
+                    }
+
+                    LogicJSONNumber respawnTallGrassSecondsObject = jsonObject.GetJSONNumber("tgsec");
+
+                    if (respawnTallGrassSecondsObject != null)
+                    {
+                        this._secondsFromLastTallGrassRespawn = respawnTallGrassSecondsObject.GetIntValue();
+                    }
+
+                    LogicJSONNumber respawnTallGrassSeedObject = jsonObject.GetJSONNumber("tgseed");
+
+                    if (respawnTallGrassSeedObject != null)
+                    {
+                        this._tallGrassRespawnRandom.SetIteratedRandomSeed(respawnTallGrassSeedObject.GetIntValue());
+                    }
                 }
             }
             else
@@ -849,21 +1204,76 @@
 
                     if (respawnVarsObject != null)
                     {
-                        respawnVarsObject.GetJSONNumber("secondsFromLastRespawn");
-                        respawnVarsObject.GetJSONNumber("respawnSeed");
-                        respawnVarsObject.GetJSONNumber("obstacleClearCounter");
-                        respawnVarsObject.GetJSONNumber("time_to_gembox_drop");
-                        respawnVarsObject.GetJSONNumber("time_in_gembox_period");
+                        this._secondsFromLastRespawn = respawnVarsObject.GetJSONNumber("secondsFromLastRespawn").GetIntValue();
+                        this._obstacleRespawnRandom.SetIteratedRandomSeed(respawnVarsObject.GetJSONNumber("respawnSeed").GetIntValue());
+                        this._obstacleClearCounter = respawnVarsObject.GetJSONNumber("obstacleClearCounter").GetIntValue();
+
+                        LogicJSONNumber timeToGemboxDropObject = respawnVarsObject.GetJSONNumber("time_to_gembox_drop");
+
+                        if (timeToGemboxDropObject != null)
+                        {
+                            this._gemBoxDropSecs = timeToGemboxDropObject.GetIntValue();
+                        }
+                        else
+                        {
+                            if (this._bonusGemboxData != null)
+                            {
+                                int random = this._obstacleRespawnRandom.Rand(this._bonusGemboxData.AppearancePeriodHours);
+
+                                this._gemBoxDropSecs = 3600 * random + this._gemBoxPeriodSecs;
+                                this._gemBoxPeriodSecs = 3600 * (this._bonusGemboxData.AppearancePeriodHours - random);
+                            }
+                        }
+
+                        LogicJSONNumber timeToGemboxPeriodObject = respawnVarsObject.GetJSONNumber("time_in_gembox_period");
+
+                        if (timeToGemboxPeriodObject != null)
+                        {
+                            this._gemBoxPeriodSecs = timeToGemboxPeriodObject.GetIntValue();
+                        }
 
                         if (this._specialObstacleData != null)
                         {
-                            respawnVarsObject.GetJSONNumber("time_to_special_drop");
-                            respawnVarsObject.GetJSONNumber("time_to_special_period");
+                            LogicJSONNumber timeToSpecialDropObject = respawnVarsObject.GetJSONNumber("time_to_special_drop");
+
+                            if (timeToSpecialDropObject != null)
+                            {
+                                this._specialObstacleDropSecs = timeToSpecialDropObject.GetIntValue();
+                            }
+                            else
+                            {
+                                int random = this._obstacleRespawnRandom.Rand(this._specialObstacleData.AppearancePeriodHours);
+
+                                this._specialObstacleDropSecs = 3600 * random + this._specialObstaclePeriodSecs;
+                                this._specialObstaclePeriodSecs = 3600 * (this._specialObstacleData.AppearancePeriodHours - random);
+                            }
+
+                            LogicJSONNumber timeToSpecialPeriodObject = respawnVarsObject.GetJSONNumber("time_to_special_period");
+
+                            if (timeToSpecialPeriodObject != null)
+                            {
+                                this._specialObstaclePeriodSecs = timeToSpecialPeriodObject.GetIntValue();
+                            }
                         }
                     }
                     else
                     {
                         Debugger.Warning("Can't find respawn variables");
+
+                        this._obstacleRespawnRandom.SetIteratedRandomSeed(112);
+                        this._gemBoxDropSecs = 604800;
+
+                        if (this._bonusGemboxData != null)
+                        {
+                            this._gemBoxDropSecs = 3600 * this._bonusGemboxData.AppearancePeriodHours;
+                        }
+
+                        this._specialObstacleDropSecs = 604800;
+
+                        if (this._specialObstacleData != null)
+                        {
+                            this._specialObstacleDropSecs = 3600 * this._specialObstacleData.AppearancePeriodHours;
+                        }
                     }
                 }
 
@@ -877,7 +1287,7 @@
                         this._unitProduction.Load(unitsObject);
                     }
 
-                    if (unitsObject != null)
+                    if (spellsObjects != null)
                     {
                         this._spellProduction.Load(spellsObjects);
                     }
@@ -971,11 +1381,13 @@
                         jsonObject.Put("vobjs2", this.SaveGameObjects(8));
                     }
 
-                    jsonObject.Put("v2rs", new LogicJSONNumber(LogicTime.GetTicksInSeconds(this._passedRespawnSecs) + this._fastForwardRespawnSecs));
+                    int passedSecs = LogicTime.GetTicksInSeconds(this._level.GetLogicTime());
+
+                    jsonObject.Put("v2rs", new LogicJSONNumber(passedSecs + this._secondsFromLastRespawn));
                     jsonObject.Put("v2rseed", new LogicJSONNumber(this._obstacleRespawnRandom.GetIteratedRandomSeed()));
                     jsonObject.Put("v2ccounter", new LogicJSONNumber(this._obstacleClearCounter));
-                    jsonObject.Put("tgsec", new LogicJSONNumber(LogicTime.GetTicksInSeconds(this._passedTimeGrassRespawnSecs)));
-                    jsonObject.Put("tgseed", new LogicJSONNumber(this._tileGrassRespawnRandom.GetIteratedRandomSeed()));
+                    jsonObject.Put("tgsec", new LogicJSONNumber(this._secondsFromLastTallGrassRespawn));
+                    jsonObject.Put("tgseed", new LogicJSONNumber(this._tallGrassRespawnRandom.GetIteratedRandomSeed()));
                 }
             }
             else
@@ -994,13 +1406,13 @@
 
                     LogicJSONObject respawnObject = new LogicJSONObject();
 
-                    int passedRespawnTime = LogicTime.GetTicksInSeconds(this._passedRespawnSecs);
+                    int passedSecs = LogicTime.GetTicksInSeconds(this._level.GetLogicTime());
 
-                    respawnObject.Put("secondsFromLastRespawn", new LogicJSONNumber(passedRespawnTime + this._fastForwardRespawnSecs));
+                    respawnObject.Put("secondsFromLastRespawn", new LogicJSONNumber(passedSecs + this._secondsFromLastRespawn));
                     respawnObject.Put("respawnSeed", new LogicJSONNumber(this._obstacleRespawnRandom.GetIteratedRandomSeed()));
                     respawnObject.Put("obstacleClearCounter", new LogicJSONNumber(this._obstacleClearCounter));
 
-                    int maxGemBoxRespawnSecs = this._gemBoxData != null ? 7200 * this._gemBoxData.AppearancePeriodHours : 1209600;
+                    int maxGemBoxRespawnSecs = this._bonusGemboxData != null ? 7200 * this._bonusGemboxData.AppearancePeriodHours : 1209600;
 
                     if (this._gemBoxDropSecs > maxGemBoxRespawnSecs)
                     {
@@ -1008,8 +1420,8 @@
                         this._gemBoxPeriodSecs = 0;
                     }
 
-                    respawnObject.Put("time_to_gembox_drop", new LogicJSONNumber(this._gemBoxDropSecs - passedRespawnTime));
-                    respawnObject.Put("time_in_gembox_period", new LogicJSONNumber(this._gemBoxPeriodSecs - passedRespawnTime));
+                    respawnObject.Put("time_to_gembox_drop", new LogicJSONNumber(this._gemBoxDropSecs - passedSecs));
+                    respawnObject.Put("time_in_gembox_period", new LogicJSONNumber(this._gemBoxPeriodSecs - passedSecs));
 
                     jsonObject.Put("respawnVars", respawnObject);
 

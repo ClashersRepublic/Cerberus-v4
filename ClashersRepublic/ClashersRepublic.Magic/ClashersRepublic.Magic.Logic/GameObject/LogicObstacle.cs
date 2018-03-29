@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject
 {
-    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
@@ -273,6 +272,22 @@
         public int GetFadeTime()
         {
             return this._fadeTime;
+        }
+
+        /// <summary>
+        ///     Gets the loot multiply version.
+        /// </summary>
+        public int GetLootMultiplyVersion()
+        {
+            return this._lootMultiplyVersion;
+        }
+
+        /// <summary>
+        ///     Sets the loot multiply version.
+        /// </summary>
+        public void SetLootMultiplyVersion(int version)
+        {
+            this._lootMultiplyVersion = version;
         }
 
         /// <summary>

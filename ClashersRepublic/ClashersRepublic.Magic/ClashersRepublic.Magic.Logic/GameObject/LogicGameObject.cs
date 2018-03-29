@@ -298,6 +298,14 @@
         }
 
         /// <summary>
+        ///     Sets the seed.
+        /// </summary>
+        public void SetSeed(int seed)
+        {
+            this._seed = seed;
+        }
+
+        /// <summary>
         ///     Sets the gameobject listener.
         /// </summary>
         public void SetListener(LogicGameObjectListener listener)

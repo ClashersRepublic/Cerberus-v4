@@ -42,8 +42,6 @@
         private int _liveReplayFrequencySecs;
         private int _challengeBaseSaveCooldown;
         private int _allianceCreateCost;
-        private int _resourceProductionBoostMultiplier;
-        private int _clockTowerBoostMultiplier;
         private int _clockTowerBoostCooldownSecs;
         private int _clampLongTimeStampsToDays;
         private int _workerCostSecondBuildCost;
@@ -51,6 +49,11 @@
         private int _workerCostFourthBuildCost;
         private int _workerCostFifthBuildCost;
         private int _challengeBaseCooldownEnabledOnTh;
+        private int _obstacleRespawnSecs;
+        private int _obstacleMaxCount;
+
+        private int _clockTowerBoostMultiplier;
+        private int _resourceProductionBoostMultiplier;
         private int _spellTrainingCostMultiplier;
         private int _spellSpeedUpCostMultiplier;
         private int _heroHealthSpeedUpCostMultipler;
@@ -125,8 +128,6 @@
             this._liveReplayFrequencySecs = this.GetIntValue("LIVE_REPLAY_UPDATE_FREQUENCY_SECONDS");
             this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
             this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
-            this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
-            this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
             this._clockTowerBoostCooldownSecs = 60 * this.GetIntValue("CLOCK_TOWER_BOOST_COOLDOWN_MINS");
             this._clampLongTimeStampsToDays = this.GetIntValue("CLAMP_LONG_TIME_STAMPS_TO_DAYS");
             this._workerCostSecondBuildCost = this.GetIntValue("WORKER_COST_2ND");
@@ -134,6 +135,11 @@
             this._workerCostFourthBuildCost = this.GetIntValue("WORKER_COST_4TH");
             this._workerCostFifthBuildCost = this.GetIntValue("WORKER_COST_5TH");
             this._challengeBaseCooldownEnabledOnTh = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
+            this._obstacleRespawnSecs = this.GetIntValue("OBSTACLE_RESPAWN_SECONDS");
+            this._obstacleMaxCount = this.GetIntValue("OBSTACLE_COUNT_MAX");
+
+            this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
+            this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
             this._spellTrainingCostMultiplier = this.GetIntValue("SPELL_TRAINING_COST_MULTIPLIER");
             this._spellSpeedUpCostMultiplier = this.GetIntValue("SPELL_SPEED_UP_COST_MULTIPLIER");
             this._heroHealthSpeedUpCostMultipler = this.GetIntValue("HERO_HEALTH_SPEED_UP_COST_MULTIPLIER");
@@ -292,6 +298,22 @@
         public int GetClampLongTimeStampsToDays()
         {
             return this._clampLongTimeStampsToDays;
+        }
+
+        /// <summary>
+        ///     Gets the obstacle respawn time.
+        /// </summary>
+        public int GetObstacleRespawnSecs()
+        {
+            return this._obstacleRespawnSecs;
+        }
+
+        /// <summary>
+        ///     Gets the obstacle max count.
+        /// </summary>
+        public int GetObstacleMaxCount()
+        {
+            return this._obstacleMaxCount;
         }
 
         /// <summary>

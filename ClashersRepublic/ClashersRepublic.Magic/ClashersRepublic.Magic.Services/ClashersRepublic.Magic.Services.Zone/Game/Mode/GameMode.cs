@@ -154,7 +154,7 @@
             }
 
             compressibleCalendarJSON.Set("{}");
-            compressibleGlobalJSON.Set("{}");
+            compressibleGlobalJSON.Set(HomeResourceManager.GetGlobalJSON());
 
             CompressibleStringHelper.Compress(compressibleCalendarJSON);
             CompressibleStringHelper.Compress(compressibleGlobalJSON);
@@ -167,7 +167,7 @@
             ownHomeDataMessage.SetLogicClientHome(clientHome);
             ownHomeDataMessage.Encode();
 
-            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, 0, GAME.HOME_STATE);
+            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, -1, 0, GAME.HOME_STATE);
             this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, ownHomeDataMessage);
         }
 
@@ -202,14 +202,14 @@
             npcDataMessage.SetLogicClientAvatar(visitorAvatar);
             npcDataMessage.Encode();
 
-            this.SetGameMode(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, 0, 0, GAME.ATTACK_STATE);
+            this.SetGameMode(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, 0, -1, 0, GAME.ATTACK_STATE);
             this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, npcDataMessage);
         }
 
         /// <summary>
         ///     Sets the gamemode.
         /// </summary>
-        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int state, GAME mode)
+        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed, int state, GAME mode)
         {
             if (this._logicGameMode != null)
             {
@@ -245,7 +245,7 @@
                 switch (mode)
                 {
                     case GAME.HOME_STATE:
-                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave);
+                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, seed);
                         break;
                     case GAME.ATTACK_STATE:
                         if (homeOwnerAvatar.IsNpcAvatar())
@@ -253,10 +253,10 @@
                             switch (state)
                             {
                                 case 8:
-                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
+                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, seed);
                                     break;
                                 default:
-                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
+                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, seed);
                                     break;
                             }
                         }
@@ -464,7 +464,7 @@
                             this.Save();
                         }
 
-                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
+                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} server checksum: {2}", subTick, checksum, this._logicGameMode.CalculateChecksum(1)));
                     }
                     else
                     {

@@ -401,6 +401,44 @@
         }
 
         /// <summary>
+        ///     Gets the number of tomb stones.
+        /// </summary>
+        public int GetTombStoneCount()
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[this._villageType].GetGameObjects(3);
+            int cnt = 0;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (((LogicObstacle) gameObjects[i]).GetObstacleData().IsTombstone)
+                {
+                    ++cnt;
+                }
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
+        ///     Gets the number of tall grass.
+        /// </summary>
+        public int GetTallGrassCount()
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[this._villageType].GetGameObjects(3);
+            int cnt = 0;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (((LogicObstacle)gameObjects[i]).GetObstacleData().TallGrass)
+                {
+                    ++cnt;
+                }
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
         ///     Called when the defense state is ended.
         /// </summary>
         public void DefenseStateEnded()
@@ -1534,6 +1572,51 @@
                         for (int j = 0; j < height; j++)
                         {
                             if (!this._tileMap.GetTile(x + j, y + i).IsBuildable(gameObject))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets if the specified place is valid for obstacle.
+        /// </summary>
+        public bool IsValidPlaceForObstacle(int x, int y, int width, int height, bool edge, bool ignoreTallGrass)
+        {
+            if (x >= 0 && y >= 0)
+            {
+                if (width + x <= 50 && height + y <= 50)
+                {
+                    if (edge)
+                    {
+                        x -= 1;
+                        y -= 1;
+                        width += 2;
+                        height += 2;
+                    }
+
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            LogicTile tile = this._tileMap.GetTile(x + i, y + j);
+
+                            if (!ignoreTallGrass)
+                            {
+                                if (tile.GetTallGrass() != null)
+                                {
+                                    return false;
+                                }
+                            }
+
+                            if (tile != null && !tile.IsBuildable(null))
                             {
                                 return false;
                             }
