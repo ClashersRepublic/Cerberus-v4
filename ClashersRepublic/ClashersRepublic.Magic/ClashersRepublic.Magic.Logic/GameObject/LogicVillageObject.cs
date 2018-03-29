@@ -196,8 +196,8 @@
 
             base.Load(jsonObject);
 
-            this.SetPositionXY((this.GetVillageObjectData().TileX100 << 9) / 100,
-                               (this.GetVillageObjectData().TileY100 << 9) / 100);
+            this.SetInitialPosition((this.GetVillageObjectData().TileX100 << 9) / 100,
+                                    (this.GetVillageObjectData().TileY100 << 9) / 100);
         }
 
         /// <summary>

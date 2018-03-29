@@ -1793,6 +1793,18 @@
         }
 
         /// <summary>
+        ///     Loads the base village objects.
+        /// </summary>
+        public void LoadVillageObjects()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].LoadVillageObjects();
+            }
+        }
+
+
+        /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
         public void FastForwardTime(int totalSecs)

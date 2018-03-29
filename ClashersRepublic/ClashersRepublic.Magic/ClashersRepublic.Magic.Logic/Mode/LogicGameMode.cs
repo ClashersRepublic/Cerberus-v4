@@ -319,6 +319,11 @@
                 this._shieldTime = LogicTime.GetSecondsInTicks(home.GetShieldDurationSeconds());
                 this._guardTime = LogicTime.GetSecondsInTicks(home.GetGuardDurationSeconds());
                 this._maintenanceTime = LogicTime.GetSecondsInTicks(home.GetNextMaintenanceSeconds());
+
+                if (LogicDataTables.GetGlobals().UseVillageObjects())
+                {
+                    this._level.LoadVillageObjects();
+                }
             }
         }
 

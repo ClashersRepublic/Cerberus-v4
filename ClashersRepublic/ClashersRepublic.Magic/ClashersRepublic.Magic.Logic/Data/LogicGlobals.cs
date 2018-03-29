@@ -65,6 +65,7 @@
         private int _clockTowerSpeedUpMultiplier;
 
         private bool _useNewTraining;
+        private bool _useVillageObjects;
         private bool _moreAccurateTime;
         private bool _dragInTraining;
         private bool _dragInTrainingFix;
@@ -154,6 +155,7 @@
             this._clockTowerSpeedUpMultiplier = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
+            this._useVillageObjects = this.GetBoolValue("USE_VILLAGE_OBJECTS");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
             this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
@@ -446,6 +448,11 @@
         public bool UseNewTraining()
         {
             return this._useNewTraining;
+        }
+
+        public bool UseVillageObjects()
+        {
+            return this._useVillageObjects;
         }
 
         public bool UseDragInTraining()

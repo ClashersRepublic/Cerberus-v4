@@ -282,7 +282,7 @@
 
                 this._position.Set(x, y);
 
-                if (this._globalId != 0)
+                if (this._globalId != -1)
                 {
                     this._level.GetTileMap().GameObjectMoved(this, oldX, oldY);
                 }

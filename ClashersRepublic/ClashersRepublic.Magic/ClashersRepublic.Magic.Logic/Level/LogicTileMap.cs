@@ -122,7 +122,12 @@
                         {
                             for (int j = 0; j < sizeX; j++)
                             {
-                                this.GetTile(tileX + j, tileY + i).AddGameObject(gameObject);
+                                LogicTile tileMap = this.GetTile(tileX + j, tileY + i);
+
+                                if (tileMap != null)
+                                {
+                                    tileMap.AddGameObject(gameObject);
+                                }
                             }
                         }
 

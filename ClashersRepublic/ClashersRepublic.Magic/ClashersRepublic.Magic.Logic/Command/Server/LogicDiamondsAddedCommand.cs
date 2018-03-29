@@ -95,6 +95,10 @@
                             playerAvatar.SetFreeDiamonds(freeDiamonds + this._diamondsCount);
                         }
                     }
+                    else
+                    {
+                        playerAvatar.SetFreeDiamonds(freeDiamonds + this._diamondsCount);
+                    }
                 }
                 else
                 {

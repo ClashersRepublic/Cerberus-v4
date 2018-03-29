@@ -127,7 +127,7 @@
             checksumHelper.WriteValue("m_score", this._score);
             checksumHelper.WriteValue("m_duelScore", this._duelScore);
 
-            if (this._allianceId != null)
+            if (this.IsInAlliance())
             {
                 checksumHelper.WriteValue("isInAlliance", 13);
             }

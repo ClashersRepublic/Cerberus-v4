@@ -639,6 +639,26 @@
         }
 
         /// <summary>
+        ///     Loads village objects.
+        /// </summary>
+        public void LoadVillageObjects()
+        {
+            LogicDataTable dataTable = LogicDataTables.GetTable(38);
+
+            for (int i = 0; i < dataTable.GetItemCount(); i++)
+            {
+                LogicVillageObjectData data = (LogicVillageObjectData) dataTable.GetItemAt(i);
+
+                if (data.GetVillageType() == this._villageType && !data.Disabled && this.GetGameObjectCountByData(data) == 0)
+                {
+                    LogicVillageObject villageObject = (LogicVillageObject) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
+                    villageObject.SetInitialPosition((data.TileX100 << 9) / 100, (data.TileY100 << 9) / 100);
+                    this.AddGameObject(villageObject);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Called when the loading is finished.
         /// </summary>
         public void LoadingFinished()

@@ -279,7 +279,16 @@
 
             if (currentServerCommandId == -1)
             {
-                newServerCommandId = this._bufferedServerCommands.IndexOf(null);
+                newServerCommandId = -1;
+
+                for (int i = 0; i < this._bufferedServerCommands.Count; i++)
+                {
+                    if (this._bufferedServerCommands[i] == null)
+                    {
+                        newServerCommandId = i;
+                        break;
+                    }
+                }
 
                 if (newServerCommandId != -1)
                 {
