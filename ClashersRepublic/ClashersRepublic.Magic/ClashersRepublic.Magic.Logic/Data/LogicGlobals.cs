@@ -632,24 +632,29 @@
 
                 if (count >= 1)
                 {
-                    if (count >= 1000)
+                    if (count >= 100)
                     {
-                        if (count >= 10000)
+                        if (count >= 1000)
                         {
-                            if (count >= 100000)
+                            if (count >= 10000)
                             {
-                                if (count >= 1000000)
+                                if (count >= 100000)
                                 {
-                                    return resourceDiamondCost1000000 + ((resourceDiamondCost10000000 - resourceDiamondCost1000000) * (count / 1000 - 1000) + 4500) / 9000;
+                                    if (count >= 1000000)
+                                    {
+                                        return resourceDiamondCost1000000 + ((resourceDiamondCost10000000 - resourceDiamondCost1000000) * (count / 1000 - 1000) + 4500) / 9000;
+                                    }
+
+                                    return resourceDiamondCost100000 + ((resourceDiamondCost1000000 - resourceDiamondCost100000) * (count / 100 - 1000) + 4500) / 9000;
                                 }
 
-                                return resourceDiamondCost100000 + ((resourceDiamondCost1000000 - resourceDiamondCost100000) * (count / 100 - 1000) + 4500) / 9000;
+                                return resourceDiamondCost10000 + ((resourceDiamondCost100000 - resourceDiamondCost10000) * (count / 10 - 1000) + 4500) / 9000;
                             }
 
-                            return resourceDiamondCost10000 + ((resourceDiamondCost100000 - resourceDiamondCost10000) * (count / 10 - 1000) + 4500) / 9000;
+                            return resourceDiamondCost1000 + ((resourceDiamondCost10000 - resourceDiamondCost1000) * (count - 1000) + 4500) / 9000;
                         }
 
-                        return resourceDiamondCost1000 + ((resourceDiamondCost10000 - resourceDiamondCost1000) * (count - 1000) + 4500) / 9000;
+                        return resourceDiamondCost100 + ((resourceDiamondCost1000 - resourceDiamondCost100) * (count - 100) + 4500) / 9000;
                     }
 
                     return resourceDiamondCost100;

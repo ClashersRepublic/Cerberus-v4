@@ -286,6 +286,10 @@
 
                         this._availableLoot = this.GetResourceCount() * resourceProductionLootPercentage / 100;
                     }
+                    else
+                    {
+                        this._availableLoot = 0;
+                    }
                 }
                 else
                 {
