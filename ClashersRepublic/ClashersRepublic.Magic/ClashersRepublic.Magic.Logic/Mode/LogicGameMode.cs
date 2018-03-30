@@ -300,6 +300,33 @@
             if (home != null)
             {
                 this._state = 1;
+
+                if (LogicDataTables.GetGlobals().StartInLastUsedVillage())
+                {
+                    int lastUsedVillage = homeOwnerAvatar.GetVillageToGoTo();
+
+                    if (!this._level.GetMissionManager().HasTravel(homeOwnerAvatar))
+                    {
+                        lastUsedVillage = 0;
+                    }
+
+                    if (lastUsedVillage < 0)
+                    {
+                        Debugger.Warning("VillageToGoTo<0");
+                    }
+                    else
+                    {
+                        if (lastUsedVillage > 1)
+                        {
+                            Debugger.Warning("VillageToGoTo too big");
+                        }
+                        else
+                        {
+                            this._level.SetVillageType(lastUsedVillage);
+                        }
+                    }
+                }
+
                 this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
                 this._configuration.Load((LogicJSONObject) LogicJSONParser.Parse(home.GetGlobalJSON()));
@@ -314,6 +341,9 @@
                 this._level.SetHome(home, true);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
+
+                homeOwnerAvatar.SetLevel(this._level);
+
                 this._level.LoadingFinished();
 
                 this._shieldTime = LogicTime.GetSecondsInTicks(home.GetShieldDurationSeconds());

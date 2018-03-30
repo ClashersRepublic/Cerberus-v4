@@ -136,5 +136,28 @@
         {
             return this._openMissions.Count == 0;
         }
+
+        /// <summary>
+        ///     Gets if the player has travel.
+        /// </summary>
+        public bool HasTravel(LogicAvatar playerAvatar)
+        {
+            LogicDataTable missionTable = LogicDataTables.GetTable(20);
+
+            for (int i = 0; i < missionTable.GetItemCount(); i++)
+            {
+                LogicMissionData missionData = (LogicMissionData)missionTable.GetItemAt(i);
+
+                if (missionData.GetMissionType() == 23)
+                {
+                    if (playerAvatar.IsMissionCompleted(missionData))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -573,6 +573,14 @@
         }
 
         /// <summary>
+        ///     Gets the star bonus counter.
+        /// </summary>
+        public int GetVillageToGoTo()
+        {
+            return this.GetVariableByName("VillageToGoTo");
+        }
+
+        /// <summary>
         ///     Gets the unused resource cap.
         /// </summary>
         public int GetUnusedResourceCap(LogicResourceData data)

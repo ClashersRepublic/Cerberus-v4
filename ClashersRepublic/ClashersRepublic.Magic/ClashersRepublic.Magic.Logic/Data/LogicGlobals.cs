@@ -80,11 +80,14 @@
         private bool _stopBoostPauseWhenBoostTimeZeroOnLoad;
         private bool _fixMergeOldBarrackBoostPausing;
         private bool _saveVillageObjects;
+        private bool _startInLastUsedVillage;
         private bool _workerForZeroBuildingTime;
         private bool _adjustEndSubtickUseCurrentTime;
         private bool _collectAllResourcesAtOnce;
         private bool _useSwapBuildings;
         private bool _treasurySizeBasedOnTawnHall;
+        private bool _useTeslaTriggerCommand;
+        private bool _useTrapTriggerCommand;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
@@ -176,6 +179,9 @@
             this._collectAllResourcesAtOnce = this.GetBoolValue("COLLECT_ALL_RESOURCES_AT_ONCE");
             this._useSwapBuildings = this.GetBoolValue("USE_SWAP_BUILDINGS");
             this._treasurySizeBasedOnTawnHall = this.GetBoolValue("TREASURY_SIZE_BASED_ON_TH");
+            this._startInLastUsedVillage = this.GetBoolValue("START_IN_LAST_USED_VILLAGE");
+            this._useTeslaTriggerCommand = this.GetBoolValue("USE_TESLA_TRIGGER_CMD");
+            this._useTrapTriggerCommand = this.GetBoolValue("USE_TRAP_TRIGGER_CMD");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -522,6 +528,11 @@
             return this._saveVillageObjects;
         }
 
+        public bool StartInLastUsedVillage()
+        {
+            return this._startInLastUsedVillage;
+        }
+
         public bool WorkerForZeroBuilTime()
         {
             return this._workerForZeroBuildingTime;
@@ -545,6 +556,16 @@
         public bool TreasurySizeBasedOnTownHall()
         {
             return this._treasurySizeBasedOnTawnHall;
+        }
+
+        public bool UseTeslaTriggerCommand()
+        {
+            return this._useTeslaTriggerCommand;
+        }
+
+        public bool UseTrapTriggerCommand()
+        {
+            return this._useTrapTriggerCommand;
         }
 
         /// <summary>

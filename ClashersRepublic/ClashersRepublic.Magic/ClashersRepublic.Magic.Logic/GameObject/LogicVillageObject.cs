@@ -222,6 +222,22 @@
         }
 
         /// <summary>
+        ///     Gets the width of gameobject in tiles.
+        /// </summary>
+        public override int GetWidthInTiles()
+        {
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the height of gameobject in tiles.
+        /// </summary>
+        public override int GetHeightInTiles()
+        {
+            return 0;
+        }
+
+        /// <summary>
         ///     Gets the upgrade level.
         /// </summary>
         public int GetUpgradeLevel()

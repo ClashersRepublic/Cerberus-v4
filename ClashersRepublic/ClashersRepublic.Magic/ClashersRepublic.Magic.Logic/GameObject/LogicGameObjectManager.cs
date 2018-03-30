@@ -639,6 +639,14 @@
         }
 
         /// <summary>
+        ///     Called when the town hall of the village 2 is fixed.
+        /// </summary>
+        public void Village2TownHallFixed()
+        {
+
+        }
+
+        /// <summary>
         ///     Loads village objects.
         /// </summary>
         public void LoadVillageObjects()
@@ -996,6 +1004,47 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///     Enables the gameobject manager.
+        /// </summary>
+        public void ChangeVillageType(bool isEnabled)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                for (int j = 0; j < gameObjects.Count; j++)
+                {
+                    LogicGameObject gameObject = gameObjects[j];
+
+                    if (isEnabled)
+                    {
+                        this._tileMap.AddGameObject(gameObject);
+
+                        if (LogicDataTables.GetGlobals().UseTeslaTriggerCommand())
+                        {
+                            if (gameObject.GetGameObjectType() == 0)
+                            {
+                                // TODO: Implement this.
+                            }
+                        }
+
+                        if (LogicDataTables.GetGlobals().UseTrapTriggerCommand())
+                        {
+                            if (gameObject.GetGameObjectType() == 4)
+                            {
+                                // TODO: Implement this.
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this._tileMap.RemoveGameObject(gameObject);
+                    }
+                }
+            }
         }
 
         /// <summary>

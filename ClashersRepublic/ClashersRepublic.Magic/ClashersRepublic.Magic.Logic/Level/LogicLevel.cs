@@ -551,6 +551,20 @@
         }
 
         /// <summary>
+        ///     Sets the village type.
+        /// </summary>
+        public void SetVillageType(int villageType)
+        {
+            this._villageType = villageType;
+            this._battleLog.SetVillageType(villageType);
+
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].ChangeVillageType(i == villageType);
+            }
+        }
+
+        /// <summary>
         ///     Gets the battle log.
         /// </summary>
         public LogicBattleLog GetBattleLog()
@@ -1812,7 +1826,6 @@
                 this._gameObjectManagers[i].LoadVillageObjects();
             }
         }
-
 
         /// <summary>
         ///     Creates a fast forward of time.
