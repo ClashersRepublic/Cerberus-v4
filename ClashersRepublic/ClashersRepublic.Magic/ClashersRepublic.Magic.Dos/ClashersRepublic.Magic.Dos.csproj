@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colorful.Console">
-      <HintPath>..\..\packages\Colorful.Console.1.2.2\lib\net461\Colorful.Console.dll</HintPath>
+    <Reference Include="Colorful.Console, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Colorful.Console.1.2.6\lib\net461\Colorful.Console.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
