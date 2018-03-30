@@ -84,6 +84,7 @@
         private bool _adjustEndSubtickUseCurrentTime;
         private bool _collectAllResourcesAtOnce;
         private bool _useSwapBuildings;
+        private bool _treasurySizeBasedOnTawnHall;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
@@ -174,6 +175,7 @@
             this._adjustEndSubtickUseCurrentTime = this.GetBoolValue("ADJUST_END_SUBTICK_USE_CURRENT_TIME");
             this._collectAllResourcesAtOnce = this.GetBoolValue("COLLECT_ALL_RESOURCES_AT_ONCE");
             this._useSwapBuildings = this.GetBoolValue("USE_SWAP_BUILDINGS");
+            this._treasurySizeBasedOnTawnHall = this.GetBoolValue("TREASURY_SIZE_BASED_ON_TH");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -538,6 +540,11 @@
         public bool UseSwapBuildings()
         {
             return this._useSwapBuildings;
+        }
+
+        public bool TreasurySizeBasedOnTownHall()
+        {
+            return this._treasurySizeBasedOnTawnHall;
         }
 
         /// <summary>

@@ -4,7 +4,7 @@
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
-    public sealed class LogicResourceStorageComponent : LogicComponent
+    public class LogicResourceStorageComponent : LogicComponent
     {
         private LogicArrayList<int> _resourceCount;
         private LogicArrayList<int> _maxResourceCount;

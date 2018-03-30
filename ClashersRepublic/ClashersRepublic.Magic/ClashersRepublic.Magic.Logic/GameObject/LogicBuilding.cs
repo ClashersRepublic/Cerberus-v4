@@ -99,7 +99,7 @@
             {
                 if (buildingData.IsAllianceCastle())
                 {
-                    // TODO: Implement LogicBunkerResourceStorageComponent.
+                    this.AddComponent(new LogicWarResourceStorageComponent(this));
                 }
                 else
                 {
@@ -957,11 +957,25 @@
                     if (!this._isLocked)
                     {
                         this._level.GetHomeOwnerAvatar().SetAllianceCastleLevel(this._upgLevel);
+
+                        LogicBuilding building = this._level.GetGameObjectManagerAt(0).GetAllianceCastle();
+
+                        if (building != null)
+                        {
+                            building.SetTreasurySize();
+                        }
                     }
                 }
                 else if (buildingData.IsTownHall())
                 {
                     this._level.GetHomeOwnerAvatar().SetTownHallLevel(this._upgLevel);
+
+                    LogicBuilding building = this._level.GetGameObjectManagerAt(0).GetAllianceCastle();
+
+                    if (building != null)
+                    {
+                        building.SetTreasurySize();
+                    }
                 }
                 else if (buildingData.IsTownHallVillage2())
                 {
@@ -1021,6 +1035,36 @@
                     resourceStorageComponent.SetMaxArray(buildingData.GetMaxStoredResourceCounts(this._upgLevel));
                     resourceStorageComponent.SetMaxPercentageArray(buildingData.GetMaxPercentageStoredResourceCounts(this._upgLevel));
                 }
+
+                this.SetTreasurySize();
+            }
+        }
+
+        /// <summary>
+        ///     Sets the treasury size.
+        /// </summary>
+        public void SetTreasurySize()
+        {
+            LogicBuildingData data = this.GetBuildingData();
+
+            if (data.IsAllianceCastle() && LogicDataTables.GetGlobals().TreasurySizeBasedOnTownHall())
+            {
+                LogicTownhallLevelData townhallLevelData = LogicDataTables.GetTownHallLevel(this._level.GetTownHallLevel(0));
+
+                if (townhallLevelData != null)
+                {
+                    LogicWarResourceStorageComponent warResourceStorageComponent = (LogicWarResourceStorageComponent) this.GetComponent(11);
+                    warResourceStorageComponent.SetMaxArray(townhallLevelData.GetTreasuryCaps());
+
+                    return;
+                }
+            }
+
+            LogicWarResourceStorageComponent component = (LogicWarResourceStorageComponent)this.GetComponent(11);
+
+            if (component != null)
+            {
+                component.SetMaxArray(data.GetMaxStoredResourceCounts(this._upgLevel));
             }
         }
 

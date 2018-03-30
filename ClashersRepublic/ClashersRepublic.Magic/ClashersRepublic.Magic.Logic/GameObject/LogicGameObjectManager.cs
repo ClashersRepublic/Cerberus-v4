@@ -44,7 +44,7 @@
         private LogicVillageObject _clanGate;
         private LogicObstacleData _bonusGemboxData;
         private LogicObstacleData _specialObstacleData;
-        
+
         private int _secondsFromLastRespawn;
         private int _secondsFromLastTallGrassRespawn;
         private int _specialObstacleDropSecs;
@@ -381,7 +381,7 @@
                         }
                     }
                 }
-                
+
                 if (this._allianceCastle == gameObject)
                 {
                     this._allianceCastle = null;
@@ -678,7 +678,6 @@
 
             if (secs > 0)
             {
-
                 int idx = 0;
 
                 do
@@ -719,7 +718,6 @@
 
                     if (LogicDataTables.GetGlobals().UseNewTraining())
                     {
-
                     }
 
                     secs -= maxSecs;
@@ -829,7 +827,6 @@
         /// </summary>
         public void RespawnVillage2Obstacles()
         {
-
         }
 
         /// <summary>
@@ -893,7 +890,7 @@
 
             for (int i = 0, weights = 0; i < table.GetItemCount(); i++)
             {
-                LogicObstacleData obstacleData = (LogicObstacleData)table.GetItemAt(i);
+                LogicObstacleData obstacleData = (LogicObstacleData) table.GetItemAt(i);
 
                 if (obstacleData.GetVillageType() == this._villageType)
                 {
@@ -945,7 +942,7 @@
                         }
 
                         obstacle.SetInitialPosition(x << 9, y << 9);
-                        
+
                         this.AddGameObject(obstacle);
 
                         return true;
@@ -1479,9 +1476,20 @@
             return jsonArray;
         }
 
+        /// <summary>
+        ///     Gets the clock tower.
+        /// </summary>
         public LogicBuilding GetClockTower()
         {
-            return _clockTower;
+            return this._clockTower;
+        }
+
+        /// <summary>
+        ///     Gets the alliance castle.
+        /// </summary>
+        public LogicBuilding GetAllianceCastle()
+        {
+            return this._allianceCastle;
         }
     }
 }

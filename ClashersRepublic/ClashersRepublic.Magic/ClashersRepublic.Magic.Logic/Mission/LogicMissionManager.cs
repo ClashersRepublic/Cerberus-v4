@@ -128,5 +128,13 @@
 
             return null;
         }
+
+        /// <summary>
+        ///     Gets if the tutorial is finished.
+        /// </summary>
+        public bool IsTutorialFinished()
+        {
+            return this._openMissions.Count == 0;
+        }
     }
 }

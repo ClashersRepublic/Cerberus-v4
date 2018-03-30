@@ -188,5 +188,13 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this._trapCaps[data.GetInstanceID()];
         }
+
+        /// <summary>
+        ///     Gets the treasury caps.
+        /// </summary>
+        public LogicArrayList<int> GetTreasuryCaps()
+        {
+            return this._treasuryCaps;
+        }
     }
 }

@@ -1291,7 +1291,17 @@
                         {
                             if (data.GetWarResourceReferenceData() != null)
                             {
-                                // TODO: Implement this.
+                                LogicArrayList<LogicComponent> components = this._gameObjectManagers[j].GetComponentManager().GetComponents(11);
+
+                                for (int k = 0; k < components.Count; k++)
+                                {
+                                    LogicWarResourceStorageComponent resourceWarStorageComponent = (LogicWarResourceStorageComponent) components[k];
+
+                                    if (resourceWarStorageComponent.IsEnabled())
+                                    {
+                                        cnt += resourceWarStorageComponent.GetMax(i);
+                                    }
+                                }
                             }
                             else
                             {

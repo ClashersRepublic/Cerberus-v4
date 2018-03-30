@@ -472,8 +472,22 @@
                         }
 
                         int serverChecksum = this._logicGameMode.CalculateChecksum(false);
-                        
-                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1} server checksum: {2}", subTick, checksum, serverChecksum));
+
+                        if (this._logicGameMode.GetState() == 1)
+                        {
+                            if (serverChecksum != checksum)
+                            {
+                                OutOfSyncMessage outOfSyncMessage = new OutOfSyncMessage();
+                                outOfSyncMessage.SetClientChecksum(checksum);
+                                outOfSyncMessage.SetClientChecksum(serverChecksum);
+                                this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
+
+                                Logging.Debug(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
+                                return;
+                            }
+                        }
+
+                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
                     }
                     else
                     {
