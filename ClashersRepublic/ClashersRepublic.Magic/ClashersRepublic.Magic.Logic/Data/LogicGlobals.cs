@@ -654,7 +654,7 @@
                             return resourceDiamondCost1000 + ((resourceDiamondCost10000 - resourceDiamondCost1000) * (count - 1000) + 4500) / 9000;
                         }
 
-                        return resourceDiamondCost100 + ((resourceDiamondCost1000 - resourceDiamondCost100) * (count - 100) + 4500) / 9000;
+                        return resourceDiamondCost100 + ((resourceDiamondCost1000 - resourceDiamondCost100) * (count - 100) + 450) / 900;
                     }
 
                     return resourceDiamondCost100;
