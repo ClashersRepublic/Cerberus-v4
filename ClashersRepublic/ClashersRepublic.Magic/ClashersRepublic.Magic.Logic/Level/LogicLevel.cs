@@ -1081,7 +1081,7 @@
             LogicDataTable trapTable = LogicDataTables.GetTable(11);
             LogicDataTable decoTable = LogicDataTables.GetTable(17);
 
-            int townHallLevelVillage2 = this._homeOwnerAvatar.GetTownHallVillage2Level();
+            int townHallLevelVillage2 = this._homeOwnerAvatar.GetVillage2TownHallLevel();
             int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
             int expLevel = this._homeOwnerAvatar.GetExpLevel();
 
@@ -1152,7 +1152,7 @@
                 LogicDataTable trapTable = LogicDataTables.GetTable(11);
                 LogicDataTable decoTable = LogicDataTables.GetTable(17);
 
-                int townHallLevelVillage2 = this._homeOwnerAvatar.GetTownHallVillage2Level();
+                int townHallLevelVillage2 = this._homeOwnerAvatar.GetVillage2TownHallLevel();
                 int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
                 int expLevel = this._homeOwnerAvatar.GetExpLevel();
 
@@ -1280,6 +1280,52 @@
                     if (shopUnlockCount > 0)
                     {
                         this._newShopDecos[i] += shopUnlockCount;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Refreshes the new shop unlocks with town hall.
+        /// </summary>
+        public void RefreshNewShopUnlocksTH()
+        {
+            LogicBuilding building = this._gameObjectManagers[this._villageType].GetTownHall();
+
+            if (building != null)
+            {
+                int upgradeLevel = building.GetUpgradeLevel();
+
+                if (upgradeLevel > 0)
+                {
+                    LogicDataTable buildingTable = LogicDataTables.GetTable(0);
+
+                    for (int i = 0; i < this._newShopBuildings.Count; i++)
+                    {
+                        LogicData data = buildingTable.GetItemAt(i);
+
+                        int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
+                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+
+                        if (shopUnlockCount > 0)
+                        {
+                            this._newShopBuildings[i] += shopUnlockCount;
+                        }
+                    }
+
+                    LogicDataTable obstacleData = LogicDataTables.GetTable(7);
+
+                    for (int i = 0; i < this._newShopTraps.Count; i++)
+                    {
+                        LogicData data = obstacleData.GetItemAt(i);
+
+                        int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
+                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+
+                        if (shopUnlockCount > 0)
+                        {
+                            this._newShopTraps[i] += shopUnlockCount;
+                        }
                     }
                 }
             }
@@ -1814,6 +1860,14 @@
             }
 
             this._achievementManager.RefreshStatus();
+
+            if (LogicDataTables.GetGlobals().ValidateTroopUpgradeLevels())
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    this._gameObjectManagers[i].GetComponentManager().ValidTroopUpgradeLevels();
+                }
+            }
         }
 
         /// <summary>

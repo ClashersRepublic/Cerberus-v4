@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+
     using ClashersRepublic.Magic.Titan.Util;
+
     using Couchbase.Configuration.Client;
 
     public static class DatabaseManager

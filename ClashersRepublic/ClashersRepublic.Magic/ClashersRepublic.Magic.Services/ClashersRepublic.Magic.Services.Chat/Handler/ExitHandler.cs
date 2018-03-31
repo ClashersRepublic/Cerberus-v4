@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Handler
+﻿namespace ClashersRepublic.Magic.Services.Chat.Handler
 {
     using System;
     using System.Runtime.InteropServices;

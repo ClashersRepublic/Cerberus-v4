@@ -103,7 +103,7 @@
             lock (ClientManager._lock)
             {
                 Client client = new Client();
-                client.ConnectToLocalServer();
+                client.ConnectToPrivateServer();
                 ClientManager._clients.Add(client);
             }
         }
@@ -117,7 +117,12 @@
             {
                 for (int i = 0; i < ClientManager._clients.Count; i++)
                 {
-                    action(ClientManager._clients[i]);
+                    Client client = ClientManager._clients[i];
+
+                    if (client.MessageManager.GetState() == 6)
+                    {
+                        action(ClientManager._clients[i]);
+                    }
                 }
             }
         }

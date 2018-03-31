@@ -92,7 +92,7 @@
 #endif
                 }
 
-                DatabaseManager.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
+                DatabaseManagerNew.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
             }
             else
             {
@@ -405,7 +405,7 @@
             if (subTick > -1)
             {
                 int currentTimestamp = LogicTimeUtil.GetTimestamp();
-                int calculateTimestamp = this._logicGameMode.GetActiveTimestamp();
+                int calculateTimestamp = this._logicGameMode.GetCurrentTimestamp() + LogicTime.GetTicksInSeconds(subTick);
 
                 if (currentTimestamp >= calculateTimestamp)
                 {
@@ -475,15 +475,17 @@
 
                         if (this._logicGameMode.GetState() == 1)
                         {
-                            if (serverChecksum != checksum)
+                            if (this._logicGameMode.GetLevel().GetHomeOwnerAvatar().IsMissionCompleted((LogicMissionData) LogicDataTables.GetTable(20).GetItemAt(2)))
                             {
-                                /*OutOfSyncMessage outOfSyncMessage = new OutOfSyncMessage();
-                                outOfSyncMessage.SetClientChecksum(checksum);
-                                outOfSyncMessage.SetClientChecksum(serverChecksum);
-                                this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);*/
+                                if (serverChecksum != checksum)
+                                {
+                                    OutOfSyncMessage outOfSyncMessage = new OutOfSyncMessage();
+                                    outOfSyncMessage.SetClientChecksum(checksum);
+                                    outOfSyncMessage.SetClientChecksum(serverChecksum);
+                                    this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
 
-                                Logging.Debug(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
-                                return;
+                                    return;
+                                }
                             }
                         }
 

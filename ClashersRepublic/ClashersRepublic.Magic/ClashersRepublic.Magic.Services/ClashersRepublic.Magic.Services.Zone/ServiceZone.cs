@@ -53,6 +53,7 @@
         {
             LogicDataTables.Initialize();
             DatabaseManager.Initialize("magic-zone");
+            DatabaseManagerNew.Initialize(1, 1);
             HomeResourceManager.Initialize();
         }
 

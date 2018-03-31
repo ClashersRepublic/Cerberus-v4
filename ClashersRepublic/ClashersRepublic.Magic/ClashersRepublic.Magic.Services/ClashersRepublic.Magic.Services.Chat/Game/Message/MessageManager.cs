@@ -1,9 +1,9 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Game.Message
+﻿namespace ClashersRepublic.Magic.Services.Chat.Game.Message
 {
     using System;
     using ClashersRepublic.Magic.Logic.Message.Chat;
     using ClashersRepublic.Magic.Services.Core.Message.Admin;
-    using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
+    using ClashersRepublic.Magic.Services.Chat.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Message;
 

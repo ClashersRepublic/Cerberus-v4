@@ -1,9 +1,9 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Network.Session
+﻿namespace ClashersRepublic.Magic.Services.Chat.Network.Session
 {
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Network.Session;
-    using ClashersRepublic.Magic.Services.GlobalChat.Game;
-    using ClashersRepublic.Magic.Services.GlobalChat.Game.Message;
+    using ClashersRepublic.Magic.Services.Chat.Game;
+    using ClashersRepublic.Magic.Services.Chat.Game.Message;
     
     internal class NetGlobalChatSession : NetSession
     {
@@ -46,7 +46,7 @@
 
             if (this.Room != null)
             {
-                this.Room.RemoveSession(this);
+                RoomManager.LeaveRoom(this);
                 this.Room = null;
             }
 

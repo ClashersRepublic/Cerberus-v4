@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Network.Message
+﻿namespace ClashersRepublic.Magic.Services.Chat.Network.Message
 {
     using System;
 
@@ -8,12 +8,12 @@
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
    
-    using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
+    using ClashersRepublic.Magic.Services.Chat.Network.Session;
 
     using ClashersRepublic.Magic.Services.Core.Database;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Utils;
-    using ClashersRepublic.Magic.Services.GlobalChat.Game;
+    using ClashersRepublic.Magic.Services.Chat.Game;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;

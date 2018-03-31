@@ -1,23 +1,35 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Game
+﻿namespace ClashersRepublic.Magic.Services.Chat.Game
 {
     using ClashersRepublic.Magic.Logic.Message.Chat;
 
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Utils;
-    using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
+    using ClashersRepublic.Magic.Services.Chat.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Util;
 
     internal class Room
     {
         private readonly LogicArrayList<NetGlobalChatSession> _sessions;
+        private readonly int _roomId;
+
+        /// <summary>
+        ///     Gets the room id.
+        /// </summary>
+        internal int RoomId
+        {
+            get
+            {
+                return this._roomId;
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Room"/> class.
         /// </summary>
-        internal Room()
+        internal Room(int id)
         {
-            this._sessions = new LogicArrayList<NetGlobalChatSession>(64);
+            this._sessions = new LogicArrayList<NetGlobalChatSession>(32);
         }
         
         /// <summary>
@@ -41,7 +53,16 @@
         /// </summary>
         internal void RemoveSession(NetGlobalChatSession session)
         {
-            int index = this._sessions.IndexOf(session);
+            int index = -1;
+
+            for (int i = 0; i < this._sessions.Count; i++)
+            {
+                if (this._sessions[i] == session)
+                {
+                    index = i;
+                    break;
+                }
+            }
 
             if (index != -1)
             {

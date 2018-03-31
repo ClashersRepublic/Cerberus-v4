@@ -5,6 +5,7 @@ namespace ClashersRepublic.Magic.Logic.Data
     public class LogicCharacterData : LogicCombatItemData
     {
         private int _unlockedBarrackLevel;
+        private int[] _upgradeLevelByThownHall;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicCharacterData" /> class.
@@ -136,6 +137,14 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             base.CreateReferences();
             this._unlockedBarrackLevel = this.GetIntegerValue("BarrackLevel", 0) - 1;
+        }
+
+        /// <summary>
+        ///     Gets the required barrack level.
+        /// </summary>
+        public override int GetRequiredProductionLevel()
+        {
+            return this._unlockedBarrackLevel;
         }
 
         public int GetHitpoints(int index)

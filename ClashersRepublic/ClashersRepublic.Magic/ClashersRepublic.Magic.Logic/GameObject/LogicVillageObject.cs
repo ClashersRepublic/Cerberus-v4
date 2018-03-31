@@ -244,5 +244,13 @@
         {
             return this._upgLevel;
         }
+
+        /// <summary>
+        ///     Gets if the village object is constructing.
+        /// </summary>
+        public bool IsConstructing()
+        {
+            return this._constructionTimer != null;
+        }
     }
 }

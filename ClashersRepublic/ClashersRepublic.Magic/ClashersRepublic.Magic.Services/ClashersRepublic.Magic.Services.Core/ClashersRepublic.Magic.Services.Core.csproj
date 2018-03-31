@@ -72,6 +72,7 @@
     <Compile Include="ConsoleOut.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Database\CouchbaseDatabase.cs" />
+    <Compile Include="Database\DatabaseManagerNew.cs" />
     <Compile Include="Database\DatabaseManager.cs" />
     <Compile Include="Exception\AssertionException.cs" />
     <Compile Include="Game\Avatar\Change\AvatarChangeFactory.cs" />

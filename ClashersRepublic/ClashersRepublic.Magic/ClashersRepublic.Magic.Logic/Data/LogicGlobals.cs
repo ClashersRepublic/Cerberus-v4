@@ -88,10 +88,13 @@
         private bool _treasurySizeBasedOnTawnHall;
         private bool _useTeslaTriggerCommand;
         private bool _useTrapTriggerCommand;
+        private bool _validateTroopUpgradeLevels;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
         private int[] _lootMultiplierByTownHallDifference;
+        private int[] _barrackReduceTrainingDivisor;
+        private int[] _darkBarrackReduceTrainingDivisor;
 
         private LogicResourceData _allianceCreateResourceData;
 
@@ -182,6 +185,7 @@
             this._startInLastUsedVillage = this.GetBoolValue("START_IN_LAST_USED_VILLAGE");
             this._useTeslaTriggerCommand = this.GetBoolValue("USE_TESLA_TRIGGER_CMD");
             this._useTrapTriggerCommand = this.GetBoolValue("USE_TRAP_TRIGGER_CMD");
+            this._validateTroopUpgradeLevels = this.GetBoolValue("VALIDATE_TROOP_UPGRADE_LEVELS");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -210,6 +214,24 @@
             for (int i = 0; i < this._lootMultiplierByTownHallDifference.Length; i++)
             {
                 this._lootMultiplierByTownHallDifference[i] = lootMultiplierByTownHallDifferenceObject.GetNumberArray(i);
+            }
+
+            LogicGlobalData barrackReduceTrainingDivisorObject = this.GetGlobalData("BARRACK_REDUCE_TRAINING_DIVISOR");
+
+            this._barrackReduceTrainingDivisor = new int[barrackReduceTrainingDivisorObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._barrackReduceTrainingDivisor.Length; i++)
+            {
+                this._barrackReduceTrainingDivisor[i] = barrackReduceTrainingDivisorObject.GetNumberArray(i);
+            }
+
+            LogicGlobalData darkBarrackReduceTrainingDivisorObject = this.GetGlobalData("DARK_BARRACK_REDUCE_TRAINING_DIVISOR");
+
+            this._darkBarrackReduceTrainingDivisor = new int[darkBarrackReduceTrainingDivisorObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._darkBarrackReduceTrainingDivisor.Length; i++)
+            {
+                this._darkBarrackReduceTrainingDivisor[i] = darkBarrackReduceTrainingDivisorObject.GetNumberArray(i);
             }
         }
 
@@ -359,6 +381,22 @@
         public int GetLootMultiplierByTownHallDiff(int townHallLevel1, int townHallLevel2)
         {
             return this._lootMultiplierByTownHallDifference[LogicMath.Clamp(townHallLevel1 + 4 - townHallLevel2, 0, this._lootMultiplierByTownHallDifference.Length - 1)];
+        }
+
+        /// <summary>
+        ///     Gets the reduce barrack training divisor.
+        /// </summary>
+        public int[] GetBarrackReduceTrainingDevisor()
+        {
+            return this._barrackReduceTrainingDivisor;
+        }
+
+        /// <summary>
+        ///     Gets the reduce dark barrack training divisor.
+        /// </summary>
+        public int[] GetDarkBarrackReduceTrainingDevisor()
+        {
+            return this._darkBarrackReduceTrainingDivisor;
         }
 
         /// <summary>
@@ -566,6 +604,11 @@
         public bool UseTrapTriggerCommand()
         {
             return this._useTrapTriggerCommand;
+        }
+
+        public bool ValidateTroopUpgradeLevels()
+        {
+            return this._validateTroopUpgradeLevels;
         }
 
         /// <summary>

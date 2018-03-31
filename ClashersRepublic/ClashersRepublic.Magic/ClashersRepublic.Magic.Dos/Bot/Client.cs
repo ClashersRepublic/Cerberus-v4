@@ -6,6 +6,7 @@
     using ClashersRepublic.Magic.Logic;
     using ClashersRepublic.Magic.Logic.Message;
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Security;
     using ClashersRepublic.Magic.Titan;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
@@ -95,7 +96,7 @@
                 AccountId = new LogicLong(),
                 ClientMajorVersion = LogicVersion.MajorVersion,
                 ClientBuildVersion = LogicVersion.BuildVersion,
-                ResourceSha = "f4e97369bfe07c3923d63c0c5ec89925e9b5ae2a"
+                ResourceSha = "de7eb7684e08fece56a23abb3da256363597f85c"
             };
 
             this.SendMessage(loginMessage);
@@ -132,7 +133,7 @@
                     }
 
                     PiranhaMessage message = LogicMagicMessageFactory.Instance.CreateMessageByType(messageType);
-             
+
                     if (message != null)
                     {
                         message.SetMessageVersion((short) messageVersion);
@@ -140,8 +141,47 @@
 
                         try
                         {
-                            // message.Decode();
-                            this.MessageManager.ReceiveMessage(message);
+                            message.Decode();
+
+                            if (message.GetMessageType() == 20000)
+                            {
+                                ExtendedSetEncryptionMessage extendedSetEncryptionMessage = (ExtendedSetEncryptionMessage) message;
+                                LogicMersenneTwisterRandom scrambler = new LogicMersenneTwisterRandom(0);
+
+                                byte byte100 = 0;
+
+                                for (int i = 0; i < 100; i++)
+                                {
+                                    byte100 = (byte) scrambler.NextInt();
+                                }
+
+                                byte[] nonce = extendedSetEncryptionMessage.RemoveNonce();
+                                string scrambledNonce = null;
+
+                                for (int i = 0; i < nonce.Length; i++)
+                                {
+                                    scrambledNonce += (char) (nonce[i] ^ (byte) (scrambler.NextInt() & byte100));
+                                }
+
+                                if (this._receiveEncrypter != null)
+                                {
+                                    this._receiveEncrypter.Destruct();
+                                    this._receiveEncrypter = null;
+                                }
+
+                                if (this._sendEncrypter != null)
+                                {
+                                    this._sendEncrypter.Destruct();
+                                    this._sendEncrypter = null;
+                                }
+
+                                this._receiveEncrypter = new RC4Encrypter(LogicMessagingConstants.RC4_KEY, scrambledNonce);
+                                this._sendEncrypter = new RC4Encrypter(LogicMessagingConstants.RC4_KEY, scrambledNonce);
+                            }
+                            else
+                            {
+                                this.MessageManager.ReceiveMessage(message);
+                            }
                         }
                         catch (Exception exception)
                         {

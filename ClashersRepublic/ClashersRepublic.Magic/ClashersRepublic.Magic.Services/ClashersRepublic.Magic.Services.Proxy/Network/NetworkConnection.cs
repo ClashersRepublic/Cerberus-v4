@@ -31,6 +31,7 @@
         {
             this.Socket = socket;
             this.ReadEvent = readEvent;
+
             this._buffer = new NetworkBuffer();
             this.Messaging = new NetworkMessaging(this);
         }
@@ -56,7 +57,7 @@
 
             if (this.Socket != null)
             {
-                this.Socket.Close(200);
+                this.Socket.Close();
             }
 
             this.ReadEvent = null;

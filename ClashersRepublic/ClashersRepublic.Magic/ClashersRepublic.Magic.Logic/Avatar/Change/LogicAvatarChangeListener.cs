@@ -48,5 +48,9 @@
         public virtual void SetTownHallLevel(int count)
         {
         }
+
+        public virtual void SetVillage2TownHallLevel(int count)
+        {
+        }
     }
 }

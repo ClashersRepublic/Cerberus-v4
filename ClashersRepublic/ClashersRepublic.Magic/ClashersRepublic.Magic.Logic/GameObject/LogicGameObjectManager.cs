@@ -531,6 +531,48 @@
         }
 
         /// <summary>
+        ///     Gets the barrack count.
+        /// </summary>
+        public int GetBarrackCount()
+        {
+            if (this._barracks != null)
+            {
+                return this._barracks.Count;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the barrack count.
+        /// </summary>
+        public int GetDarkBarrackCount()
+        {
+            if (this._darkBarracks != null)
+            {
+                return this._darkBarracks.Count;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the barrack at specified index.
+        /// </summary>
+        public LogicGameObject GetBarrack(int idx)
+        {
+            return this._barracks[idx];
+        }
+
+        /// <summary>
+        ///     Gets the dark barrack at specified index.
+        /// </summary>
+        public LogicGameObject GetDarkBarrack(int idx)
+        {
+            return this._barracks[idx];
+        }
+
+        /// <summary>
         ///     Gets the highest building level.
         /// </summary>
         public int GetHighestBuildingLevel(LogicBuildingData data, bool includeConstruction)
@@ -643,7 +685,25 @@
         /// </summary>
         public void Village2TownHallFixed()
         {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
 
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                LogicBuilding building = (LogicBuilding) gameObjects[i];
+
+                if (building.IsLocked())
+                {
+                    if (building.GetBuildingData().GetRequiredTownHallLevel(0) <= 1)
+                    {
+                        building.FinishConstruction(true);
+
+                        if (building.GetComponent(15) != null)
+                        {
+                            LogicVillage2UnitComponent village2UnitComponent = (LogicVillage2UnitComponent) building.GetComponent(15);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -671,7 +731,62 @@
         /// </summary>
         public void LoadingFinished()
         {
-            // TODO: Implement LogicGameObjectManager::loadingFinished();
+            this.RespawnObstacles();
+
+            if (this._gameObjects[0].Count > 0)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
+
+                for (int i = 0; i < gameObjects.Count; i++)
+                {
+                    gameObjects[i].LoadingFinished();
+                }
+            }
+
+            if (this._gameObjects[1].Count > 0)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[1];
+
+                for (int i = 0; i < gameObjects.Count; i++)
+                {
+                    gameObjects[i].LoadingFinished();
+                }
+            }
+
+            if (this._gameObjects[2].Count > 0)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[2];
+
+                for (int i = 0; i < gameObjects.Count; i++)
+                {
+                    gameObjects[i].LoadingFinished();
+                }
+            }
+
+            if (this._gameObjects[4].Count > 0)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[4];
+
+                for (int i = 0; i < gameObjects.Count; i++)
+                {
+                    gameObjects[i].LoadingFinished();
+                }
+            }
+
+            if (this._gameObjects[6].Count > 0)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[6];
+
+                for (int i = 0; i < gameObjects.Count; i++)
+                {
+                    gameObjects[i].LoadingFinished();
+                }
+            }
+
+            if (LogicDataTables.GetGlobals().UseNewTraining())
+            {
+                
+            }
         }
 
         /// <summary>
@@ -726,6 +841,8 @@
 
                     if (LogicDataTables.GetGlobals().UseNewTraining())
                     {
+                        this._unitProduction.FastForwardTime(maxSecs);
+                        this._spellProduction.FastForwardTime(maxSecs);
                     }
 
                     secs -= maxSecs;
@@ -770,7 +887,7 @@
                 {
                     if (this._level.GetMatchType() == 0)
                     {
-                        this.RespawnVillage1Obstacle();
+                        this.Village1RespawnObstacle();
 
                         if (this._bonusGemboxData != null && this._gemBoxDropSecs <= 0 && this._bonusGemboxData.LootCount > 0)
                         {
@@ -791,7 +908,7 @@
                 }
                 else if (villageType == 1 && this._level.GetMatchType() != 5)
                 {
-                    this.RespawnVillage2Obstacles();
+                    this.Village2RespawnObstacles();
                 }
             }
         }
@@ -799,7 +916,7 @@
         /// <summary>
         ///     Respawn obstacles of village 1.
         /// </summary>
-        public void RespawnVillage1Obstacle()
+        public void Village1RespawnObstacle()
         {
             if (this._villageType == 0 && this._level.GetVillageType() == 0)
             {
@@ -833,7 +950,7 @@
         /// <summary>
         ///     Respawn obstacles of village 2.
         /// </summary>
-        public void RespawnVillage2Obstacles()
+        public void Village2RespawnObstacles()
         {
         }
 
@@ -1539,6 +1656,23 @@
         public LogicBuilding GetAllianceCastle()
         {
             return this._allianceCastle;
+        }
+
+        /// <summary>
+        ///     Gets the shipyard.
+        /// </summary>
+        public LogicVillageObject GetShipyard()
+        {
+            return this._shipyard;
+        }
+
+        /// <summary>
+        ///     Gets the laboratory.
+        /// </summary>
+        /// <returns></returns>
+        public LogicBuilding GetLaboratory()
+        {
+            return this._laboratory;
         }
     }
 }

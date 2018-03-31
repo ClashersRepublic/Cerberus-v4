@@ -1,13 +1,13 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat
+﻿namespace ClashersRepublic.Magic.Services.Chat
 {
     using System;
     using System.Drawing;
     using System.Reflection;
     
     using ClashersRepublic.Magic.Services.Core;
-    using ClashersRepublic.Magic.Services.GlobalChat.Game;
-    using ClashersRepublic.Magic.Services.GlobalChat.Handler;
-    using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
+    using ClashersRepublic.Magic.Services.Chat.Game;
+    using ClashersRepublic.Magic.Services.Chat.Handler;
+    using ClashersRepublic.Magic.Services.Chat.Network.Session;
 
     internal class Program
     {

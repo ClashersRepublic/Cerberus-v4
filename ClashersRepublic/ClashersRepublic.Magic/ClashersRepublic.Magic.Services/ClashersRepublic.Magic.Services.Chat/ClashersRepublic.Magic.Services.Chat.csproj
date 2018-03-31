@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BD1569C6-D1CD-42D0-85BD-DF3ACB2637F9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ClashersRepublic.Magic.Services.GlobalChat</RootNamespace>
-    <AssemblyName>ClashersRepublic.Magic.Services.GlobalChat</AssemblyName>
+    <RootNamespace>ClashersRepublic.Magic.Services.Chat</RootNamespace>
+    <AssemblyName>ClashersRepublic.Magic.Services.Chat</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>ClashersRepublic.Magic.Services.GlobalChat.Program</StartupObject>
+    <StartupObject>ClashersRepublic.Magic.Services.Chat.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -63,15 +63,15 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClashersRepublic.Magic\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
       <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
       <Name>ClashersRepublic.Magic.Logic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Core\ClashersRepublic.Magic.Services.Core.csproj">
+    <ProjectReference Include="..\ClashersRepublic.Magic.Services.Core\ClashersRepublic.Magic.Services.Core.csproj">
       <Project>{b65255b6-7aab-4260-bdef-523b7e7eadf0}</Project>
       <Name>ClashersRepublic.Magic.Services.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClashersRepublic.Magic\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
       <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
       <Name>ClashersRepublic.Magic.Titan</Name>
     </ProjectReference>

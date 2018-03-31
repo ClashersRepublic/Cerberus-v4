@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat
+﻿namespace ClashersRepublic.Magic.Services.Chat
 {
     using System.Text.RegularExpressions;
     using System.Timers;
@@ -7,10 +7,10 @@
 
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Utils;
-    using ClashersRepublic.Magic.Services.GlobalChat.Game;
-    using ClashersRepublic.Magic.Services.GlobalChat.Handler;
-    using ClashersRepublic.Magic.Services.GlobalChat.Network.Message;
-    using ClashersRepublic.Magic.Services.GlobalChat.Network.Session;
+    using ClashersRepublic.Magic.Services.Chat.Game;
+    using ClashersRepublic.Magic.Services.Chat.Handler;
+    using ClashersRepublic.Magic.Services.Chat.Network.Message;
+    using ClashersRepublic.Magic.Services.Chat.Network.Session;
 
     internal static class ServiceGlobalChat
     {

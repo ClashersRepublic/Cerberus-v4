@@ -239,6 +239,22 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicComponentManager"/> instance.
+        /// </summary>
+        public LogicComponentManager GetComponentManager()
+        {
+            return this._level.GetComponentManagerAt(this._villageType);
+        }
+
+        /// <summary>
+        ///     Gets the <see cref="LogicGameObjectManager"/> instance.
+        /// </summary>
+        public LogicGameObjectManager GetGameObjectManager()
+        {
+            return this._level.GetGameObjectManagerAt(this._villageType);
+        }
+
+        /// <summary>
         ///     Refreshes passable of tilemap.
         /// </summary>
         public void RefreshPassable()

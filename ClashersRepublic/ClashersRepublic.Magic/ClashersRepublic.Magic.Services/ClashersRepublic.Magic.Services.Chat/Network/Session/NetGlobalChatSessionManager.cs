@@ -1,4 +1,4 @@
-﻿namespace ClashersRepublic.Magic.Services.GlobalChat.Network.Session
+﻿namespace ClashersRepublic.Magic.Services.Chat.Network.Session
 {
     using System.Collections.Generic;
 

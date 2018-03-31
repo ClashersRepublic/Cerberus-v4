@@ -129,6 +129,7 @@
             }
 
             this.SendMessage(loginFailedMessage);
+            this._client.State = -1;
         }
 
         /// <summary>

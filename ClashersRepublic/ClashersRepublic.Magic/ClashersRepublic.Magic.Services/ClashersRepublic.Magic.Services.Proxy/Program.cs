@@ -39,7 +39,9 @@
         /// </summary>
         internal static void UpdateConsoleTitle()
         {
-            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name + " - ServerID: " + ServiceCore.ServiceNodeId + " - Connections: " + NetworkMessagingManager.TotalMessagings;
+            Console.Title = "Clashers Republic - " + Assembly.GetExecutingAssembly().GetName().Name +
+                            " - ServerID: " + ServiceCore.ServiceNodeId +
+                            " - Connections: " + NetworkMessagingManager.TotalMessagings;
         }
     }
 }

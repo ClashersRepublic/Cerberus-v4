@@ -10,8 +10,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Utils;
-
-    using ClashersRepublic.Magic.Services.Proxy.Network.ServerSocket;
+    
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Message;
@@ -199,7 +198,7 @@
 
                     if (message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY || message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER)
                     {
-                        NetworkTcpServerGateway.Disconnect(session.Client.Messaging.Connection);
+                        NetworkMessagingManager.DisconnectMessaging(session.Client.Messaging);
                     }
                 }
             }

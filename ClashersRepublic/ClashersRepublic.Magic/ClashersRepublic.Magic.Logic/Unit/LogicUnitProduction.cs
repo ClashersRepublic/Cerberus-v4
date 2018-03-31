@@ -42,6 +42,14 @@
         }
 
         /// <summary>
+        ///     Creates a fast forward of time.
+        /// </summary>
+        public void FastForwardTime(int secs)
+        {
+            // FastForwardTime.
+        }
+
+        /// <summary>
         ///     Loads this instance to json.
         /// </summary>
         public void Load(LogicJSONObject root)

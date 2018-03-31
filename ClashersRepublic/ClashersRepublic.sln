@@ -33,9 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Console", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Console\ClashersRepublic.Magic.Services.Console.csproj", "{327E0FEE-D4CA-496C-9967-7E925DEC138D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Avatar", "ClashersRepublic.Magic.Services.Avatar\ClashersRepublic.Magic.Services.Avatar.csproj", "{A2B90C57-4230-4878-A545-D63623A22E05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Avatar", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Avatar\ClashersRepublic.Magic.Services.Avatar.csproj", "{A2B90C57-4230-4878-A545-D63623A22E05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.GlobalChat", "ClashersRepublic.Magic.Services.GlobalChat\ClashersRepublic.Magic.Services.GlobalChat.csproj", "{BD1569C6-D1CD-42D0-85BD-DF3ACB2637F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashersRepublic.Magic.Services.Chat", "ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Chat\ClashersRepublic.Magic.Services.Chat.csproj", "{BD1569C6-D1CD-42D0-85BD-DF3ACB2637F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

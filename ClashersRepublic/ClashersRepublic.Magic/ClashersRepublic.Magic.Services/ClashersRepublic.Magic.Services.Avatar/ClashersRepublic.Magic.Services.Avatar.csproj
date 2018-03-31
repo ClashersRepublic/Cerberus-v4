@@ -65,15 +65,15 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClashersRepublic.Magic\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
       <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
       <Name>ClashersRepublic.Magic.Logic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClashersRepublic.Magic\ClashersRepublic.Magic.Services\ClashersRepublic.Magic.Services.Core\ClashersRepublic.Magic.Services.Core.csproj">
+    <ProjectReference Include="..\ClashersRepublic.Magic.Services.Core\ClashersRepublic.Magic.Services.Core.csproj">
       <Project>{b65255b6-7aab-4260-bdef-523b7e7eadf0}</Project>
       <Name>ClashersRepublic.Magic.Services.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClashersRepublic.Magic\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
+    <ProjectReference Include="..\..\ClashersRepublic.Magic.Titan\ClashersRepublic.Magic.Titan.csproj">
       <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
       <Name>ClashersRepublic.Magic.Titan</Name>
     </ProjectReference>
