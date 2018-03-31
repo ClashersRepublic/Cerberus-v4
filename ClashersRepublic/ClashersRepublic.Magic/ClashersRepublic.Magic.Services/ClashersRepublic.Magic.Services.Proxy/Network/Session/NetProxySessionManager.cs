@@ -42,7 +42,7 @@
             {
                 if (i % 4 == 0)
                 {
-                    random = NetProxySessionManager._random.Rand();
+                    random = NetProxySessionManager._random.Rand(0x7fffffff);
                 }
 
                 sessionId[i] = (byte) (random >>= 8);

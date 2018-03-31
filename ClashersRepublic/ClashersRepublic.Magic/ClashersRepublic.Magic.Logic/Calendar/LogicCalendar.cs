@@ -1,6 +1,8 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Calendar
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Util;
@@ -94,5 +96,41 @@
                 }
             }
         }
+
+        /// <summary>
+        ///     Sets the calendar data.
+        /// </summary>
+        public void SetCalendarData(int activeTimestamp, LogicAvatar homeOwnerAvatar, LogicLevel level)
+        {
+            Debugger.DoAssert(activeTimestamp != -1, "You must set a valid time for calendar.");
+
+            if (this._activeTimestamp != activeTimestamp)
+            {
+                this._activeTimestamp = activeTimestamp;
+
+                /*
+                if ( sub_294F78(a1, *(_DWORD **)(a1 + 4), a2, a2) )
+                {
+                   v4 = sub_2950F4(a1, a2, a2);
+                   v5 = *(void ***)(a1 + 4);
+                   if ( v5 )
+                   {
+                       v7 = v4;
+                       if ( *v5 )
+                       operator delete[](*v5);
+                       operator delete(v5);
+                       v4 = v7;
+                   }
+                   *(_DWORD *)(a1 + 4) = v4;
+                   if ( a3 && a4 )
+                        sub_295186(a1, a3, a4);
+                   v6 = *(_DWORD *)(a1 + 8);
+                   if ( v6 )
+                        (*(void (__cdecl **)(_DWORD))(*(_DWORD *)v6 + 12))(*(_DWORD *)(a1 + 8));
+                }
+                */
+            }
+        }
     }
 }
+ 

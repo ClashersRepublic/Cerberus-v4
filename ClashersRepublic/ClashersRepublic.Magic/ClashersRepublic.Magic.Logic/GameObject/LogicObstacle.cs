@@ -1,6 +1,5 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject
 {
-    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Helper;
     using ClashersRepublic.Magic.Logic.Level;
@@ -226,15 +225,7 @@
                 this._listener.LoadedFromJSON();
             }
         }
-
-        /// <summary>
-        ///     Gets the checksum of this <see cref="LogicObstacle"/> instance.
-        /// </summary>
-        public override void GetChecksum(ChecksumHelper checksum)
-        {
-            base.GetChecksum(checksum);
-        }
-
+        
         /// <summary>
         ///     Gets the <see cref="LogicGameObject"/> type.
         /// </summary>
@@ -273,6 +264,22 @@
         public int GetFadeTime()
         {
             return this._fadeTime;
+        }
+
+        /// <summary>
+        ///     Gets the loot multiply version.
+        /// </summary>
+        public int GetLootMultiplyVersion()
+        {
+            return this._lootMultiplyVersion;
+        }
+
+        /// <summary>
+        ///     Sets the loot multiply version.
+        /// </summary>
+        public void SetLootMultiplyVersion(int version)
+        {
+            this._lootMultiplyVersion = version;
         }
 
         /// <summary>

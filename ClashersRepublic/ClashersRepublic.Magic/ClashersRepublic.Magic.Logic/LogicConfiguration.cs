@@ -14,9 +14,10 @@
         private LogicArrayList<int> _milestoneStrengthRangeForScore;
         private LogicArrayList<int> _percentageStrengthRangeForScore;
 
+        private bool _battleWaitForDieDamage;
+        private bool _battleWaitForProjectileDestruction;
+
         private int _maxTownHallLevel;
-        private int _battleWaitForDieDamage;
-        private int _battleWaitForProjectileDestruction;
         private int _duelLootLimitCooldownInMinutes;
         private int _duelBonusLimitWinsPerDay;
         private int _duelBonusPercentWin;
@@ -121,8 +122,8 @@
                 LogicJSONObject killSwitchesObject = jsonObject.GetJSONObject("KillSwitches");
                 Debugger.DoAssert(killSwitchesObject != null, "pKillSwitches = NULL!");
 
-                this._battleWaitForProjectileDestruction = LogicJSONHelper.GetJSONNumber(killSwitchesObject, "BattleWaitForProjectileDestruction");
-                this._battleWaitForDieDamage = LogicJSONHelper.GetJSONNumber(killSwitchesObject, "BattleWaitForDieDamage");
+                this._battleWaitForProjectileDestruction = LogicJSONHelper.GetJSONBoolean(killSwitchesObject, "BattleWaitForProjectileDestruction");
+                this._battleWaitForDieDamage = LogicJSONHelper.GetJSONBoolean(killSwitchesObject, "BattleWaitForDieDamage");
 
                 LogicJSONObject globalsObject = jsonObject.GetJSONObject("Globals");
                 Debugger.DoAssert(globalsObject != null, "pGlobals = NULL!");

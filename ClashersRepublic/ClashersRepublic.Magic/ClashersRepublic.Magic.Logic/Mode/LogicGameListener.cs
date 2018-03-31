@@ -64,5 +64,9 @@
         public virtual void AchievementProgress(LogicAchievementData data)
         {
         }
+
+        public virtual void DiamondsBought()
+        {
+        }
     }
 }

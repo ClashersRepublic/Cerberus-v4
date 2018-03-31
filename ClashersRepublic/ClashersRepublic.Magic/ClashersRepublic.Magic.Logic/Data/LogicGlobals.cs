@@ -15,6 +15,25 @@
         private int _speedUpDiamondCostPerDayVillage2;
         private int _speedUpDiamondCostPerWeekVillage2;
 
+        private int _resourceDiamondCost100;
+        private int _resourceDiamondCost1000;
+        private int _resourceDiamondCost10000;
+        private int _resourceDiamondCost100000;
+        private int _resourceDiamondCost1000000;
+        private int _resourceDiamondCost10000000;
+        private int _village2ResourceDiamondCost100;
+        private int _village2ResourceDiamondCost1000;
+        private int _village2ResourceDiamondCost10000;
+        private int _village2resourceDiamondCost100000;
+        private int _village2resourceDiamondCost1000000;
+        private int _village2ResourceDiamondCost10000000;
+        private int _darkElixirDiamondCost1;
+        private int _darkElixirDiamondCost10;
+        private int _darkElixirDiamondCost100;
+        private int _darkElixirDiamondCost1000;
+        private int _darkElixirDiamondCost10000;
+        private int _darkElixirDiamondCost100000;
+
         private int _startingDiamonds;
         private int _startingElixir;
         private int _startingElixir2;
@@ -23,8 +42,6 @@
         private int _liveReplayFrequencySecs;
         private int _challengeBaseSaveCooldown;
         private int _allianceCreateCost;
-        private int _resourceProductionBoostMultiplier;
-        private int _clockTowerBoostMultiplier;
         private int _clockTowerBoostCooldownSecs;
         private int _clampLongTimeStampsToDays;
         private int _workerCostSecondBuildCost;
@@ -32,6 +49,13 @@
         private int _workerCostFourthBuildCost;
         private int _workerCostFifthBuildCost;
         private int _challengeBaseCooldownEnabledOnTh;
+        private int _obstacleRespawnSecs;
+        private int _obstacleMaxCount;
+        private int _resourceProductionLootPercentage;
+        private int _darkElixirProductionLootPercentage;
+
+        private int _clockTowerBoostMultiplier;
+        private int _resourceProductionBoostMultiplier;
         private int _spellTrainingCostMultiplier;
         private int _spellSpeedUpCostMultiplier;
         private int _heroHealthSpeedUpCostMultipler;
@@ -41,6 +65,7 @@
         private int _clockTowerSpeedUpMultiplier;
 
         private bool _useNewTraining;
+        private bool _useVillageObjects;
         private bool _moreAccurateTime;
         private bool _dragInTraining;
         private bool _dragInTrainingFix;
@@ -55,12 +80,21 @@
         private bool _stopBoostPauseWhenBoostTimeZeroOnLoad;
         private bool _fixMergeOldBarrackBoostPausing;
         private bool _saveVillageObjects;
+        private bool _startInLastUsedVillage;
         private bool _workerForZeroBuildingTime;
         private bool _adjustEndSubtickUseCurrentTime;
         private bool _collectAllResourcesAtOnce;
-        
+        private bool _useSwapBuildings;
+        private bool _treasurySizeBasedOnTawnHall;
+        private bool _useTeslaTriggerCommand;
+        private bool _useTrapTriggerCommand;
+        private bool _validateTroopUpgradeLevels;
+
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
+        private int[] _lootMultiplierByTownHallDifference;
+        private int[] _barrackReduceTrainingDivisor;
+        private int[] _darkBarrackReduceTrainingDivisor;
 
         private LogicResourceData _allianceCreateResourceData;
 
@@ -78,6 +112,25 @@
             this._speedUpDiamondCostPerDayVillage2 = this.GetIntValue("VILLAGE2_SPEED_UP_DIAMOND_COST_24_HOURS");
             this._speedUpDiamondCostPerWeekVillage2 = this.GetIntValue("VILLAGE2_SPEED_UP_DIAMOND_COST_1_WEEK");
 
+            this._resourceDiamondCost100 = this.GetIntValue("RESOURCE_DIAMOND_COST_100");
+            this._resourceDiamondCost1000 = this.GetIntValue("RESOURCE_DIAMOND_COST_1000");
+            this._resourceDiamondCost10000 = this.GetIntValue("RESOURCE_DIAMOND_COST_10000");
+            this._resourceDiamondCost100000 = this.GetIntValue("RESOURCE_DIAMOND_COST_100000");
+            this._resourceDiamondCost1000000 = this.GetIntValue("RESOURCE_DIAMOND_COST_1000000");
+            this._resourceDiamondCost10000000 = this.GetIntValue("RESOURCE_DIAMOND_COST_10000000");
+            this._village2ResourceDiamondCost100 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_100");
+            this._village2ResourceDiamondCost1000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_1000");
+            this._village2ResourceDiamondCost10000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_10000");
+            this._village2resourceDiamondCost100000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_100000");
+            this._village2resourceDiamondCost1000000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_1000000");
+            this._village2ResourceDiamondCost10000000 = this.GetIntValue("VILLAGE2_RESOURCE_DIAMOND_COST_10000000");
+            this._darkElixirDiamondCost1 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_1");
+            this._darkElixirDiamondCost10 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_10");
+            this._darkElixirDiamondCost100 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_100");
+            this._darkElixirDiamondCost1000 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_1000");
+            this._darkElixirDiamondCost10000 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_10000");
+            this._darkElixirDiamondCost100000 = this.GetIntValue("DARK_ELIXIR_DIAMOND_COST_100000");
+
             this._startingDiamonds = this.GetIntValue("STARTING_DIAMONDS");
             this._startingGold = this.GetIntValue("STARTING_GOLD");
             this._startingElixir = this.GetIntValue("STARTING_ELIXIR");
@@ -86,8 +139,6 @@
             this._liveReplayFrequencySecs = this.GetIntValue("LIVE_REPLAY_UPDATE_FREQUENCY_SECONDS");
             this._challengeBaseSaveCooldown = this.GetIntValue("CHALLENGE_BASE_SAVE_COOLDOWN");
             this._allianceCreateCost = this.GetIntValue("ALLIANCE_CREATE_COST");
-            this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
-            this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
             this._clockTowerBoostCooldownSecs = 60 * this.GetIntValue("CLOCK_TOWER_BOOST_COOLDOWN_MINS");
             this._clampLongTimeStampsToDays = this.GetIntValue("CLAMP_LONG_TIME_STAMPS_TO_DAYS");
             this._workerCostSecondBuildCost = this.GetIntValue("WORKER_COST_2ND");
@@ -95,6 +146,13 @@
             this._workerCostFourthBuildCost = this.GetIntValue("WORKER_COST_4TH");
             this._workerCostFifthBuildCost = this.GetIntValue("WORKER_COST_5TH");
             this._challengeBaseCooldownEnabledOnTh = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
+            this._obstacleRespawnSecs = this.GetIntValue("OBSTACLE_RESPAWN_SECONDS");
+            this._obstacleMaxCount = this.GetIntValue("OBSTACLE_COUNT_MAX");
+            this._resourceProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE");
+            this._darkElixirProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE_DARK_ELIXIR");
+
+            this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
+            this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
             this._spellTrainingCostMultiplier = this.GetIntValue("SPELL_TRAINING_COST_MULTIPLIER");
             this._spellSpeedUpCostMultiplier = this.GetIntValue("SPELL_SPEED_UP_COST_MULTIPLIER");
             this._heroHealthSpeedUpCostMultipler = this.GetIntValue("HERO_HEALTH_SPEED_UP_COST_MULTIPLIER");
@@ -104,6 +162,7 @@
             this._clockTowerSpeedUpMultiplier = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
+            this._useVillageObjects = this.GetBoolValue("USE_VILLAGE_OBJECTS");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
             this._dragInTraining = this.GetBoolValue("DRAG_IN_TRAINING");
@@ -121,6 +180,12 @@
             this._workerForZeroBuildingTime = this.GetBoolValue("WORKER_FOR_ZERO_BUILD_TIME");
             this._adjustEndSubtickUseCurrentTime = this.GetBoolValue("ADJUST_END_SUBTICK_USE_CURRENT_TIME");
             this._collectAllResourcesAtOnce = this.GetBoolValue("COLLECT_ALL_RESOURCES_AT_ONCE");
+            this._useSwapBuildings = this.GetBoolValue("USE_SWAP_BUILDINGS");
+            this._treasurySizeBasedOnTawnHall = this.GetBoolValue("TREASURY_SIZE_BASED_ON_TH");
+            this._startInLastUsedVillage = this.GetBoolValue("START_IN_LAST_USED_VILLAGE");
+            this._useTeslaTriggerCommand = this.GetBoolValue("USE_TESLA_TRIGGER_CMD");
+            this._useTrapTriggerCommand = this.GetBoolValue("USE_TRAP_TRIGGER_CMD");
+            this._validateTroopUpgradeLevels = this.GetBoolValue("VALIDATE_TROOP_UPGRADE_LEVELS");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -140,6 +205,33 @@
             for (int i = 0; i < this._village2TroopHousingBuildTimeSecs.Length; i++)
             {
                 this._village2TroopHousingBuildTimeSecs[i] = village2TroopHousingBuildTimeSecsData.GetNumberArray(i);
+            }
+
+            LogicGlobalData lootMultiplierByTownHallDifferenceObject = this.GetGlobalData("LOOT_MULTIPLIER_BY_TH_DIFF");
+
+            this._lootMultiplierByTownHallDifference = new int[lootMultiplierByTownHallDifferenceObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._lootMultiplierByTownHallDifference.Length; i++)
+            {
+                this._lootMultiplierByTownHallDifference[i] = lootMultiplierByTownHallDifferenceObject.GetNumberArray(i);
+            }
+
+            LogicGlobalData barrackReduceTrainingDivisorObject = this.GetGlobalData("BARRACK_REDUCE_TRAINING_DIVISOR");
+
+            this._barrackReduceTrainingDivisor = new int[barrackReduceTrainingDivisorObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._barrackReduceTrainingDivisor.Length; i++)
+            {
+                this._barrackReduceTrainingDivisor[i] = barrackReduceTrainingDivisorObject.GetNumberArray(i);
+            }
+
+            LogicGlobalData darkBarrackReduceTrainingDivisorObject = this.GetGlobalData("DARK_BARRACK_REDUCE_TRAINING_DIVISOR");
+
+            this._darkBarrackReduceTrainingDivisor = new int[darkBarrackReduceTrainingDivisorObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._darkBarrackReduceTrainingDivisor.Length; i++)
+            {
+                this._darkBarrackReduceTrainingDivisor[i] = darkBarrackReduceTrainingDivisorObject.GetNumberArray(i);
             }
         }
 
@@ -255,6 +347,59 @@
         }
 
         /// <summary>
+        ///     Gets the obstacle respawn time.
+        /// </summary>
+        public int GetObstacleRespawnSecs()
+        {
+            return this._obstacleRespawnSecs;
+        }
+
+        /// <summary>
+        ///     Gets the obstacle max count.
+        /// </summary>
+        public int GetObstacleMaxCount()
+        {
+            return this._obstacleMaxCount;
+        }
+
+        /// <summary>
+        ///     Gets the resource production loot percentage.
+        /// </summary>
+        public int GetResourceProductionLootPercentage(LogicResourceData data)
+        {
+            if (LogicDataTables.GetDarkElixirData() == data)
+            {
+                return this._darkElixirProductionLootPercentage;
+            }
+
+            return this._resourceProductionLootPercentage;
+        }
+
+        /// <summary>
+        ///     Gets the loot multiplier by townhall difference.
+        /// </summary>
+        public int GetLootMultiplierByTownHallDiff(int townHallLevel1, int townHallLevel2)
+        {
+            return this._lootMultiplierByTownHallDifference[LogicMath.Clamp(townHallLevel1 + 4 - townHallLevel2, 0, this._lootMultiplierByTownHallDifference.Length - 1)];
+        }
+
+        /// <summary>
+        ///     Gets the reduce barrack training divisor.
+        /// </summary>
+        public int[] GetBarrackReduceTrainingDevisor()
+        {
+            return this._barrackReduceTrainingDivisor;
+        }
+
+        /// <summary>
+        ///     Gets the reduce dark barrack training divisor.
+        /// </summary>
+        public int[] GetDarkBarrackReduceTrainingDevisor()
+        {
+            return this._darkBarrackReduceTrainingDivisor;
+        }
+
+        /// <summary>
         ///     Gets the worker cost.
         /// </summary>
         public int GetWorkerCost(LogicLevel level)
@@ -351,6 +496,11 @@
             return this._useNewTraining;
         }
 
+        public bool UseVillageObjects()
+        {
+            return this._useVillageObjects;
+        }
+
         public bool UseDragInTraining()
         {
             return this._dragInTraining;
@@ -416,6 +566,11 @@
             return this._saveVillageObjects;
         }
 
+        public bool StartInLastUsedVillage()
+        {
+            return this._startInLastUsedVillage;
+        }
+
         public bool WorkerForZeroBuilTime()
         {
             return this._workerForZeroBuildingTime;
@@ -429,6 +584,31 @@
         public bool CollectAllResourcesAtOnce()
         {
             return this._collectAllResourcesAtOnce;
+        }
+
+        public bool UseSwapBuildings()
+        {
+            return this._useSwapBuildings;
+        }
+
+        public bool TreasurySizeBasedOnTownHall()
+        {
+            return this._treasurySizeBasedOnTawnHall;
+        }
+
+        public bool UseTeslaTriggerCommand()
+        {
+            return this._useTeslaTriggerCommand;
+        }
+
+        public bool UseTrapTriggerCommand()
+        {
+            return this._useTrapTriggerCommand;
+        }
+
+        public bool ValidateTroopUpgradeLevels()
+        {
+            return this._validateTroopUpgradeLevels;
         }
 
         /// <summary>
@@ -449,8 +629,8 @@
             if (data != null)
             {
                 return this._village2TroopHousingBuildCost[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data),
-                                                           0,
-                                                           this._village2TroopHousingBuildCost.Length - 1)];
+                    0,
+                    this._village2TroopHousingBuildCost.Length - 1)];
             }
             else
             {
@@ -470,12 +650,116 @@
             if (data != null)
             {
                 return this._village2TroopHousingBuildTimeSecs[LogicMath.Clamp(level.GetGameObjectManagerAt(1).GetGameObjectCountByData(data) - ignoreBuildingCnt,
-                                                               0, 
-                                                               this._village2TroopHousingBuildTimeSecs.Length - 1)];
+                    0,
+                    this._village2TroopHousingBuildTimeSecs.Length - 1)];
             }
             else
             {
                 Debugger.Error("Could not find Troop Housing2 data");
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the resource diamond cost.
+        /// </summary>
+        public int GetResourceDiamondCost(int count, LogicResourceData data)
+        {
+            if (LogicDataTables.GetDarkElixirData() != data)
+            {
+                int resourceDiamondCost100;
+                int resourceDiamondCost1000;
+                int resourceDiamondCost10000;
+                int resourceDiamondCost100000;
+                int resourceDiamondCost1000000;
+                int resourceDiamondCost10000000;
+
+                if (data.GetVillageType() == 1)
+                {
+                    resourceDiamondCost100 = this._village2ResourceDiamondCost100;
+                    resourceDiamondCost1000 = this._village2ResourceDiamondCost1000;
+                    resourceDiamondCost10000 = this._village2ResourceDiamondCost10000;
+                    resourceDiamondCost100000 = this._village2resourceDiamondCost100000;
+                    resourceDiamondCost1000000 = this._village2resourceDiamondCost1000000;
+                    resourceDiamondCost10000000 = this._village2ResourceDiamondCost10000000;
+                }
+                else
+                {
+                    resourceDiamondCost100 = this._resourceDiamondCost100;
+                    resourceDiamondCost1000 = this._resourceDiamondCost1000;
+                    resourceDiamondCost10000 = this._resourceDiamondCost10000;
+                    resourceDiamondCost100000 = this._resourceDiamondCost100000;
+                    resourceDiamondCost1000000 = this._resourceDiamondCost1000000;
+                    resourceDiamondCost10000000 = this._resourceDiamondCost10000000;
+                }
+
+                if (count >= 1)
+                {
+                    if (count >= 100)
+                    {
+                        if (count >= 1000)
+                        {
+                            if (count >= 10000)
+                            {
+                                if (count >= 100000)
+                                {
+                                    if (count >= 1000000)
+                                    {
+                                        return resourceDiamondCost1000000 + ((resourceDiamondCost10000000 - resourceDiamondCost1000000) * (count / 1000 - 1000) + 4500) / 9000;
+                                    }
+
+                                    return resourceDiamondCost100000 + ((resourceDiamondCost1000000 - resourceDiamondCost100000) * (count / 100 - 1000) + 4500) / 9000;
+                                }
+
+                                return resourceDiamondCost10000 + ((resourceDiamondCost100000 - resourceDiamondCost10000) * (count / 10 - 1000) + 4500) / 9000;
+                            }
+
+                            return resourceDiamondCost1000 + ((resourceDiamondCost10000 - resourceDiamondCost1000) * (count - 1000) + 4500) / 9000;
+                        }
+
+                        return resourceDiamondCost100 + ((resourceDiamondCost1000 - resourceDiamondCost100) * (count - 100) + 450) / 900;
+                    }
+
+                    return resourceDiamondCost100;
+                }
+
+                return 0;
+            }
+            else
+            {
+                return this.GetDarkElixirDiamondCost(count);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the dark elixir diamond cost.
+        /// </summary>
+        public int GetDarkElixirDiamondCost(int count)
+        {
+            if (count >= 1)
+            {
+                if (count >= 10)
+                {
+                    if (count >= 100)
+                    {
+                        if (count >= 1000)
+                        {
+                            if (count >= 10000)
+                            {
+                                return this._darkElixirDiamondCost10000 + ((this._darkElixirDiamondCost100000 - this._darkElixirDiamondCost10000) * (count - 10000) + 45000) / 90000;
+                            }
+
+                            return this._darkElixirDiamondCost1000 + ((this._darkElixirDiamondCost10000 - this._darkElixirDiamondCost1000) * (count - 1000) + 4500) / 9000;
+                        }
+
+                        return this._darkElixirDiamondCost100 + ((this._darkElixirDiamondCost1000 - this._darkElixirDiamondCost100) * (count - 100) + 450) / 900;
+                    }
+
+                    return this._darkElixirDiamondCost10 + ((this._darkElixirDiamondCost100 - this._darkElixirDiamondCost10) * (count - 10) + 45) / 90;
+                }
+
+                return this._darkElixirDiamondCost1 + ((this._darkElixirDiamondCost10 - this._darkElixirDiamondCost1) * (count - 1) + 4) / 9;
             }
 
             return 0;

@@ -196,8 +196,8 @@
 
             base.Load(jsonObject);
 
-            this.SetPositionXY((this.GetVillageObjectData().TileX100 << 9) / 100,
-                               (this.GetVillageObjectData().TileY100 << 9) / 100);
+            this.SetInitialPosition((this.GetVillageObjectData().TileX100 << 9) / 100,
+                                    (this.GetVillageObjectData().TileY100 << 9) / 100);
         }
 
         /// <summary>
@@ -212,15 +212,7 @@
                 this._listener.LoadedFromJSON();
             }
         }
-
-        /// <summary>
-        ///     Gets the checksum of this <see cref="LogicObstacle"/> instance.
-        /// </summary>
-        public override void GetChecksum(ChecksumHelper checksum)
-        {
-            base.GetChecksum(checksum);
-        }
-
+        
         /// <summary>
         ///     Gets the <see cref="LogicGameObject"/> type.
         /// </summary>
@@ -230,11 +222,35 @@
         }
 
         /// <summary>
+        ///     Gets the width of gameobject in tiles.
+        /// </summary>
+        public override int GetWidthInTiles()
+        {
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the height of gameobject in tiles.
+        /// </summary>
+        public override int GetHeightInTiles()
+        {
+            return 0;
+        }
+
+        /// <summary>
         ///     Gets the upgrade level.
         /// </summary>
         public int GetUpgradeLevel()
         {
             return this._upgLevel;
+        }
+
+        /// <summary>
+        ///     Gets if the village object is constructing.
+        /// </summary>
+        public bool IsConstructing()
+        {
+            return this._constructionTimer != null;
         }
     }
 }

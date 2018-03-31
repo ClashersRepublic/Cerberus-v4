@@ -238,7 +238,7 @@
 
             for (int i = 0; i < 24; i += 4)
             {
-                int rnd = ServiceProxy.Random.Rand();
+                int rnd = ServiceProxy.Random.Rand(0x7fffffff);
 
                 nonce[i] = (byte) (rnd);
                 nonce[i + 1] = (byte) (rnd >> 8);

@@ -2,7 +2,9 @@
 {
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Message.Home;
+
     using ClashersRepublic.Magic.Services.Zone.Game.Mode;
+
     using ClashersRepublic.Magic.Titan.Message;
 
     internal class MessageManager

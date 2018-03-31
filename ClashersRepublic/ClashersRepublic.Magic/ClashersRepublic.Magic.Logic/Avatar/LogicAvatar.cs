@@ -22,6 +22,7 @@
         protected int _allianceCastleUsedSpellCapacity;
         protected int _allianceUnitVisitCapacity;
         protected int _allianceUnitSpellVisitCapacity;
+        protected int _defensePercentage;
         protected int _badgeId;
         protected int _leagueType;
 
@@ -404,7 +405,24 @@
                 case 3:
                     if (commodityType == 0)
                     {
-                        this.SetUnitCount((LogicCombatItemData)data, LogicMath.Max(this.GetUnitCount((LogicCombatItemData)data) + count, 0));
+                        int newCount = LogicMath.Max(this.GetUnitCount((LogicCombatItemData) data) + count, 0);
+
+                        this.SetUnitCount((LogicCombatItemData) data, newCount);
+                        this._listener.CommodityCountChanged(0, data, newCount);
+                    }
+                    else if (commodityType == 7)
+                    {
+                        int newCount = LogicMath.Max(this.GetUnitCountVillage2((LogicCombatItemData) data) + count, 0);
+
+                        this.SetUnitCountVillage2((LogicCombatItemData) data, newCount);
+                        this._listener.CommodityCountChanged(7, data, newCount);
+                    }
+                    else if (commodityType == 8)
+                    {
+                        int newCount = LogicMath.Max(this.GetUnitCountNewVillage2((LogicCombatItemData) data) + count, 0);
+
+                        this.SetUnitCountNewVillage2((LogicCombatItemData) data, newCount);
+                        this._listener.CommodityCountChanged(8, data, newCount);
                     }
 
                     break;
@@ -572,6 +590,14 @@
         }
 
         /// <summary>
+        ///     Gets the star bonus counter.
+        /// </summary>
+        public int GetVillageToGoTo()
+        {
+            return this.GetVariableByName("VillageToGoTo");
+        }
+
+        /// <summary>
         ///     Gets the unused resource cap.
         /// </summary>
         public int GetUnusedResourceCap(LogicResourceData data)
@@ -724,7 +750,7 @@
 
             for (int i = 0; i < this._unitCount.Count; i++)
             {
-                cnt += ((LogicCombatItemData) this._unitCount[i].GetData()).HousingSpace * this._unitCount[i].GetCount();
+                cnt += ((LogicCombatItemData) this._unitCount[i].GetData()).GetHousingSpace() * this._unitCount[i].GetCount();
             }
 
             return cnt;
@@ -781,17 +807,17 @@
         }
 
         /// <summary>
-        ///     Gets the unit upgrade level.
+        ///     Gets the unit count village 2.
         /// </summary>
-        public int GetUnitUpgradeLevel(LogicCombatItemData data)
+        public int GetUnitCountVillage2(LogicCombatItemData data)
         {
             if (data.GetCombatItemType() == 0)
             {
                 int index = -1;
 
-                for (int i = 0; i < this._unitUpgrade.Count; i++)
+                for (int i = 0; i < this._unitCountNewVillage2.Count; i++)
                 {
-                    if (this._unitUpgrade[i].GetData() == data)
+                    if (this._unitCountVillage2[i].GetData() == data)
                     {
                         index = i;
                         break;
@@ -800,50 +826,167 @@
 
                 if (index != -1)
                 {
-                    return this._unitUpgrade[index].GetCount();
-                }
-            }
-            else
-            {
-                if (data.GetCombatItemType() == 1)
-                {
-                    int index = -1;
-
-                    for (int i = 0; i < this._spellUpgrade.Count; i++)
-                    {
-                        if (this._spellUpgrade[i].GetData() == data)
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
-
-                    if (index != -1)
-                    {
-                        return this._spellUpgrade[index].GetCount();
-                    }
-                }
-                else
-                {
-                    int index = -1;
-
-                    for (int i = 0; i < this._heroUpgrade.Count; i++)
-                    {
-                        if (this._heroUpgrade[i].GetData() == data)
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
-
-                    if (index != -1)
-                    {
-                        return this._heroUpgrade[index].GetCount();
-                    }
+                    return this._unitCountVillage2[index].GetCount();
                 }
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Sets the unit count village 2.
+        /// </summary>
+        public void SetUnitCountVillage2(LogicCombatItemData data, int count)
+        {
+            if (data.GetCombatItemType() == 0)
+            {
+                int index = -1;
+
+                for (int i = 0; i < this._unitCountNewVillage2.Count; i++)
+                {
+                    if (this._unitCountVillage2[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    this._unitCountVillage2[index].SetCount(count);
+                }
+                else
+                {
+                    this._unitCountVillage2.Add(new LogicDataSlot(data, count));
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the new unit count village 2.
+        /// </summary>
+        public int GetUnitCountNewVillage2(LogicCombatItemData data)
+        {
+            if (data.GetCombatItemType() == 0)
+            {
+                int index = -1;
+
+                for (int i = 0; i < this._unitCountNewVillage2.Count; i++)
+                {
+                    if (this._unitCountNewVillage2[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    return this._unitCountNewVillage2[index].GetCount();
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Sets the new unit count village 2.
+        /// </summary>
+        public void SetUnitCountNewVillage2(LogicCombatItemData data, int count)
+        {
+            if (data.GetCombatItemType() == 0)
+            {
+                int index = -1;
+
+                for (int i = 0; i < this._unitCountNewVillage2.Count; i++)
+                {
+                    if (this._unitCountNewVillage2[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    this._unitCountNewVillage2[index].SetCount(count);
+                }
+                else
+                {
+                    this._unitCountNewVillage2.Add(new LogicDataSlot(data, count));
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the unit upgrade level.
+        /// </summary>
+        public int GetUnitUpgradeLevel(LogicCombatItemData data)
+        {
+            if (!data.UseUpgradeLevelByTownHall())
+            {
+                if (data.GetCombatItemType() == 0)
+                {
+                    int index = -1;
+
+                    for (int i = 0; i < this._unitUpgrade.Count; i++)
+                    {
+                        if (this._unitUpgrade[i].GetData() == data)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
+                    {
+                        return this._unitUpgrade[index].GetCount();
+                    }
+                }
+                else
+                {
+                    if (data.GetCombatItemType() == 1)
+                    {
+                        int index = -1;
+
+                        for (int i = 0; i < this._spellUpgrade.Count; i++)
+                        {
+                            if (this._spellUpgrade[i].GetData() == data)
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if (index != -1)
+                        {
+                            return this._spellUpgrade[index].GetCount();
+                        }
+                    }
+                    else
+                    {
+                        int index = -1;
+
+                        for (int i = 0; i < this._heroUpgrade.Count; i++)
+                        {
+                            if (this._heroUpgrade[i].GetData() == data)
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if (index != -1)
+                        {
+                            return this._heroUpgrade[index].GetCount();
+                        }
+                    }
+                }
+
+                return 0;
+            }
+
+            return data.GetUpgradeLevelByTownHall(data.GetVillageType() == 1 ? this._townHallLevelVillage2 : this._townHallLevel);
         }
 
         /// <summary>
@@ -854,16 +997,16 @@
             int combatItemType = data.GetCombatItemType();
             int upgradeCount = data.GetUpgradeLevelCount();
 
-            if (upgradeCount <= count)
-            {
-                Debugger.Warning("LogicAvatar::setUnitUpgradeLevel - Level is out of bounds!");
-                count = upgradeCount - 1;
-            }
-
             if (combatItemType > 0)
             {
                 if (combatItemType == 2)
                 {
+                    if (upgradeCount <= count)
+                    {
+                        Debugger.Warning("LogicAvatar::setUnitUpgradeLevel - Level is out of bounds!");
+                        count = upgradeCount - 1;
+                    }
+
                     int index = -1;
 
                     for (int i = 0; i < this._heroUpgrade.Count; i++)
@@ -886,6 +1029,12 @@
                 }
                 else
                 {
+                    if (upgradeCount <= count)
+                    {
+                        Debugger.Warning("LogicAvatar::setSpellUpgradeLevel - Level is out of bounds!");
+                        count = upgradeCount - 1;
+                    }
+
                     int index = -1;
 
                     for (int i = 0; i < this._spellUpgrade.Count; i++)
@@ -909,6 +1058,12 @@
             }
             else
             {
+                if (upgradeCount <= count)
+                {
+                    Debugger.Warning("LogicAvatar::setUnitUpgradeLevel - Level is out of bounds!");
+                    count = upgradeCount - 1;
+                }
+
                 int index = -1;
 
                 for (int i = 0; i < this._unitUpgrade.Count; i++)
@@ -1324,7 +1479,7 @@
         /// <summary>
         ///     Gets the town hall village 2 level.
         /// </summary>
-        public int GetTownHallVillage2Level()
+        public int GetVillage2TownHallLevel()
         {
             return this._townHallLevelVillage2;
         }
@@ -1332,7 +1487,7 @@
         /// <summary>
         ///     Sets the town hall village 2 level.
         /// </summary>
-        public void SetTownHallVillage2Level(int level)
+        public void SetVillage2TownHallLevel(int level)
         {
             this._townHallLevelVillage2 = level;
         }

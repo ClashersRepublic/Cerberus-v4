@@ -80,10 +80,6 @@
       <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
       <Name>ClashersRepublic.Magic.Titan</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ClashersRepublic.Magic.Tools\ClashersRepublic.Magic.Tools.Patcher\ClashersRepublic.Magic.Tools.Patcher.csproj">
-      <Project>{1df27a9e-2324-4ee7-9211-3f85f61e1a55}</Project>
-      <Name>ClashersRepublic.Magic.Tools.Patcher</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />

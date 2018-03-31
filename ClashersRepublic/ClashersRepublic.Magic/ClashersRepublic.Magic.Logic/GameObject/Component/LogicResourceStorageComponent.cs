@@ -4,7 +4,7 @@
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
-    public sealed class LogicResourceStorageComponent : LogicComponent
+    public class LogicResourceStorageComponent : LogicComponent
     {
         private LogicArrayList<int> _resourceCount;
         private LogicArrayList<int> _maxResourceCount;
@@ -139,6 +139,14 @@
             {
                 this._maxPercentageResourceCount[i] = max[i];
             }
+        }
+
+        /// <summary>
+        ///     Recalculate the available loot.
+        /// </summary>
+        public void RecalculateAvailableLoot()
+        {
+
         }
 
         /// <summary>

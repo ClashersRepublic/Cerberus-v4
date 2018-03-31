@@ -239,6 +239,10 @@
                     case 3:
                         command = new LogicChangeAvatarNameCommand();
                         break;
+                    case 7:
+                        command = new LogicDiamondsAddedCommand();
+                        break;
+
                     default:
                     {
                         Debugger.Error("LogicCommandManager::createCommand() - Unknown command type: " + type);
@@ -286,9 +290,27 @@
                         break;
                     }
 
+                    case 518:
+                    {
+                        command = new LogicBuyResourcesCommand();
+                        break;
+                    }
+
                     case 519:
                     {
                         command = new LogicMissionProgressCommand();
+                        break;
+                    }
+
+                    case 520:
+                    {
+                        command = new LogicUnlockBuildingCommand();
+                        break;
+                    }
+
+                    case 521:
+                    {
+                        command = new LogicFreeWorkerCommand();
                         break;
                     }
 
@@ -304,15 +326,39 @@
                         break;
                     }
 
+                    case 533:
+                    {
+                        command = new LogicMoveMultipleBuildingCommand();
+                        break;
+                    }
+
                     case 539:
                     {
                         command = new LogicNewsSeenCommand();
                         break;
                     }
 
+                    case 544:
+                    {
+                        command = new LogicEditModeShownCommand();
+                        break;
+                    }
+
+                    case 549:
+                    {
+                        command = new LogicUpgradeMultipleBuildingCommand();
+                        break;
+                    }
+
                     case 550:
                     {
                         command = new LogicRemoveUnitsCommand();
+                        break;
+                    }
+
+                    case 577:
+                    {
+                        command = new LogicSwapBuildingCommand();
                         break;
                     }
 

@@ -21,6 +21,7 @@
         private int _shieldTime;
         private int _guardTime;
         private int _maintenanceTime;
+        private int _elapsedSecs;
 
         private LogicTimer _battleTimer;
         private LogicLevel _level;
@@ -76,7 +77,7 @@
         /// <summary>
         ///     Calculates the checksum of this instance.
         /// </summary>
-        public ChecksumHelper CalculateChecksum(int mode)
+        public ChecksumHelper CalculateChecksum(bool includeGameObjects)
         {
             ChecksumHelper checksum = new ChecksumHelper();
 
@@ -99,7 +100,7 @@
                 checksum.EndObject();
             }
 
-            this._level.GetGameObjectManager().GetChecksum(checksum, mode);
+            this._level.GetGameObjectManager().GetChecksum(checksum, includeGameObjects);
 
             if (this._calendar != null)
             {
@@ -141,7 +142,7 @@
         /// <summary>
         ///     Gets the current time.
         /// </summary>
-        public int GetCurrentTime()
+        public int GetActiveTimestamp()
         {
             return (int) (16L * this._level.GetLogicTime() / 1000 + this._currentTimestamp);
         }
@@ -152,6 +153,14 @@
         public int GetCurrentTimestamp()
         {
             return this._currentTimestamp;
+        }
+
+        /// <summary>
+        ///     Gets the elapsed seconds.
+        /// </summary>
+        public int GetElapsedSeconds()
+        {
+            return this._elapsedSecs;
         }
 
         /// <summary>
@@ -192,13 +201,27 @@
         {
             return LogicMath.Max(LogicTime.GetTicksInSeconds(this._maintenanceTime - this._level.GetLogicTime()), 0);
         }
-
+        
         /// <summary>
         ///     Saves this instance to json.
         /// </summary>
         public void SaveToJSON(LogicJSONObject jsonObject)
         {
             this._level.SaveToJSON(jsonObject);
+        }
+
+        /// <summary>
+        ///     Sub ticks this instance.
+        /// </summary>
+        public void SubTick()
+        {
+            if (this._state == 1)
+            {
+                this._calendar.SetCalendarData(this.GetActiveTimestamp(), this._level.GetHomeOwnerAvatar(), this._level);
+            }
+
+            this._commandManager.SubTick();
+            this._level.SubTick();
         }
 
         /// <summary>
@@ -210,8 +233,7 @@
 
             if (this._state != 2 || !this._battleOver)
             {
-                this._commandManager.SubTick();
-                this._level.SubTick();
+                this.SubTick();
 
                 // if (this._replay != null)
                 // {
@@ -273,12 +295,41 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
         {
             if (home != null)
             {
                 this._state = 1;
+
+                if (LogicDataTables.GetGlobals().StartInLastUsedVillage())
+                {
+                    int lastUsedVillage = homeOwnerAvatar.GetVillageToGoTo();
+
+                    if (!this._level.GetMissionManager().HasTravel(homeOwnerAvatar))
+                    {
+                        lastUsedVillage = 0;
+                    }
+
+                    if (lastUsedVillage < 0)
+                    {
+                        Debugger.Warning("VillageToGoTo<0");
+                    }
+                    else
+                    {
+                        if (lastUsedVillage > 1)
+                        {
+                            Debugger.Warning("VillageToGoTo too big");
+                        }
+                        else
+                        {
+                            this._level.SetVillageType(lastUsedVillage);
+                        }
+                    }
+                }
+
+                this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
+                this._configuration.Load((LogicJSONObject) LogicJSONParser.Parse(home.GetGlobalJSON()));
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 
                 if (this._battleTimer != null)
@@ -290,18 +341,26 @@
                 this._level.SetHome(home, true);
                 this._level.SetHomeOwnerAvatar(homeOwnerAvatar);
                 this._level.FastForwardTime(secondsSinceLastSave);
+
+                homeOwnerAvatar.SetLevel(this._level);
+
                 this._level.LoadingFinished();
 
                 this._shieldTime = LogicTime.GetSecondsInTicks(home.GetShieldDurationSeconds());
                 this._guardTime = LogicTime.GetSecondsInTicks(home.GetGuardDurationSeconds());
                 this._maintenanceTime = LogicTime.GetSecondsInTicks(home.GetNextMaintenanceSeconds());
+
+                if (LogicDataTables.GetGlobals().UseVillageObjects())
+                {
+                    this._level.LoadVillageObjects();
+                }
             }
         }
 
         /// <summary>
         ///     Loads the npc attack state.
         /// </summary>
-        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
         {
             if (this._state == 1)
             {
@@ -310,6 +369,7 @@
             else
             {
                 this._state = 2;
+                this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 
@@ -344,7 +404,7 @@
         /// <summary>
         ///     Loads the npc duel state.
         /// </summary>
-        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
+        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
         {
         }
     }

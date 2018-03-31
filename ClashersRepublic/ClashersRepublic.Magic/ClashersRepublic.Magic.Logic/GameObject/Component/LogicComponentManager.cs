@@ -1,6 +1,10 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject.Component
 {
+    using System;
+    using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.Level;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -32,11 +36,142 @@
         }
 
         /// <summary>
+        ///     Valides all troop upgrade levels.
+        /// </summary>
+        public void ValidTroopUpgradeLevels()
+        {
+            LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+            if (homeOwnerAvatar != null)
+            {
+                if (homeOwnerAvatar.IsClientAvatar())
+                {
+                    int[] laboratoryLevel = new int[2];
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        LogicBuilding laboratory = this._level.GetGameObjectManagerAt(i).GetLaboratory();
+
+                        if (laboratory != null)
+                        {
+                            laboratoryLevel[i] = laboratory.GetUpgradeLevel();
+                        }
+                    }
+
+                    LogicDataTable characterTable = LogicDataTables.GetTable(3);
+
+                    if (characterTable.GetItemCount() > 0)
+                    {
+                        int idx = 0;
+
+                        do
+                        {
+                            LogicCharacterData characterData = (LogicCharacterData) characterTable.GetItemAt(idx);
+
+                            int upgradeLevel = homeOwnerAvatar.GetUnitUpgradeLevel(characterData);
+                            int villageType = characterData.GetVillageType();
+                            int newUpgradeLevel = upgradeLevel;
+
+                            if (upgradeLevel >= characterData.GetUpgradeLevelCount())
+                            {
+                                newUpgradeLevel = characterData.GetUpgradeLevelCount() - 1;
+                            }
+
+                            int requireLaboratoryLevel;
+
+                            do
+                            {
+                                requireLaboratoryLevel = characterData.GetRequiredLaboratoryLevel(newUpgradeLevel--);
+                            } while (newUpgradeLevel > 0 && requireLaboratoryLevel > laboratoryLevel[villageType]);
+
+                            newUpgradeLevel += 1;
+
+                            if (upgradeLevel > newUpgradeLevel)
+                            {
+                                homeOwnerAvatar.SetUnitUpgradeLevel(characterData, newUpgradeLevel);
+                                homeOwnerAvatar.GetChangeListener().CommodityCountChanged(1, characterData, newUpgradeLevel);
+                            }
+
+                        } while (++idx != characterTable.GetItemCount());
+                    }
+
+                    LogicDataTable spellTable = LogicDataTables.GetTable(25);
+
+                    if (spellTable.GetItemCount() > 0)
+                    {
+                        int idx = 0;
+
+                        do
+                        {
+                            LogicSpellData spellData = (LogicSpellData) spellTable.GetItemAt(idx);
+
+                            int upgradeLevel = homeOwnerAvatar.GetUnitUpgradeLevel(spellData);
+                            int villageType = spellData.GetVillageType();
+                            int newUpgradeLevel = upgradeLevel;
+
+                            if (upgradeLevel >= spellData.GetUpgradeLevelCount())
+                            {
+                                newUpgradeLevel = spellData.GetUpgradeLevelCount() - 1;
+                            }
+
+                            int requireLaboratoryLevel;
+
+                            do
+                            {
+                                requireLaboratoryLevel = spellData.GetRequiredLaboratoryLevel(newUpgradeLevel--);
+                            } while (newUpgradeLevel > 0 && requireLaboratoryLevel > laboratoryLevel[villageType]);
+
+                            newUpgradeLevel += 1;
+
+                            if (upgradeLevel > newUpgradeLevel)
+                            {
+                                homeOwnerAvatar.SetUnitUpgradeLevel(spellData, newUpgradeLevel);
+                                homeOwnerAvatar.GetChangeListener().CommodityCountChanged(1, spellData, newUpgradeLevel);
+                            }
+
+                        } while (++idx != spellTable.GetItemCount());
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Calculates the loot.
         /// </summary>
-        public void CalculateLoot(bool unk)
+        public void CalculateLoot(bool includeStorage)
         {
-            // TODO: Implement LogicComponentManager::calculateLoot();
+            if (this._components[6].Count > 0)
+            {
+                if (includeStorage)
+                {
+                    LogicArrayList<LogicComponent> components = this._components[6];
+
+                    for (int i = 0; i < components.Count; i++)
+                    {
+                        ((LogicResourceStorageComponent) components[i]).RecalculateAvailableLoot();
+                    }
+                }
+            }
+
+            if (this._components[5].Count > 0)
+            {
+                LogicArrayList<LogicComponent> components = this._components[5];
+
+                for (int i = 0; i < components.Count; i++)
+                {
+                    ((LogicResourceProductionComponent) components[i]).RecalculateAvailableLoot();
+                }
+            }
+
+            if (this._components[11].Count > 0)
+            {
+                LogicArrayList<LogicComponent> components = this._components[11];
+                Debugger.DoAssert(components.Count < 2, "Too many war storage components");
+
+                for (int i = 0; i < components.Count; i++)
+                {
+                }
+            }
         }
 
         /// <summary>

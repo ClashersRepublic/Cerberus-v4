@@ -128,5 +128,62 @@
 
             return null;
         }
+
+        /// <summary>
+        ///     Gets if the tutorial is finished.
+        /// </summary>
+        public bool IsTutorialFinished()
+        {
+            return this._openMissions.Count == 0;
+        }
+
+        /// <summary>
+        ///     Gets if the village 2 tutorial is open.
+        /// </summary>
+        public bool IsVillage2TutorialOpen()
+        {
+            int openMissionCount = 0;
+
+            for (int i = 0; i < this._openMissions.Count; i++)
+            {
+                if (this._openMissions[i].GetMissionData().GetMissionCategory() == 2)
+                {
+                    if (this._openMissions[i].IsOpenTutorialMission())
+                    {
+                        openMissionCount += 1;
+                    }
+                }
+            }
+
+            if (this._level.GetGameObjectManagerAt(0).GetShipyard() == null)
+            {
+                return false;
+            }
+
+            return this._level.GetGameObjectManagerAt(0).GetShipyard().IsConstructing() || openMissionCount > 0;
+        }
+
+        /// <summary>
+        ///     Gets if the player has travel.
+        /// </summary>
+        public bool HasTravel(LogicAvatar playerAvatar)
+        {
+            LogicDataTable missionTable = LogicDataTables.GetTable(20);
+
+            for (int i = 0; i < missionTable.GetItemCount(); i++)
+            {
+                LogicMissionData missionData = (LogicMissionData)missionTable.GetItemAt(i);
+
+                if (missionData.GetMissionType() == 23)
+                {
+                    if (playerAvatar.IsMissionCompleted(missionData))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

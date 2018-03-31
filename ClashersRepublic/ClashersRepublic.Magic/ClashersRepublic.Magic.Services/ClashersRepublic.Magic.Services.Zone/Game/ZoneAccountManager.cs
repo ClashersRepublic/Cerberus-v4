@@ -97,7 +97,7 @@
                 ZoneAccountManager._zones.Add(homeId, update);
             }
 
-            DatabaseManager.Update(0, homeId, LogicJSONParser.CreateJSONString(update.Save()));
+            DatabaseManagerNew.Update(0, homeId, LogicJSONParser.CreateJSONString(update.Save()));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@
         {
             ZoneAccount home = new ZoneAccount(homeId);
             ZoneAccountManager._zones.Add(homeId, home);
-            DatabaseManager.Insert(0, homeId, LogicJSONParser.CreateJSONString(home.Save()));
+            DatabaseManagerNew.Insert(0, homeId, LogicJSONParser.CreateJSONString(home.Save()));
             
             return home;
         }

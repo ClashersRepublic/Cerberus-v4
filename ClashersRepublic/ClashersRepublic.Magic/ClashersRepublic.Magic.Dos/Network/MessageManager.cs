@@ -1,11 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Dos.Network
 {
     using System;
-
+    using System.Threading;
     using ClashersRepublic.Magic.Dos.Bot;
     using ClashersRepublic.Magic.Dos.Debug;
-
     using ClashersRepublic.Magic.Logic.Message.Account;
+    using ClashersRepublic.Magic.Logic.Message.Chat;
     using ClashersRepublic.Magic.Logic.Message.Home;
     using ClashersRepublic.Magic.Titan.Message;
     using ClashersRepublic.Magic.Titan.Util;
@@ -16,13 +16,17 @@
         private DateTime _keepAliveSendTime;
         private LogicArrayList<int> _pings;
 
+        private int _state;
         private int _subTick;
-        
+
+        private static int _counter;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="MessageManager"/> class.
         /// </summary>
         internal MessageManager(Client client)
         {
+            this._state = 1;
             this._client = client;
             this._pings = new LogicArrayList<int>();
         }
@@ -49,6 +53,14 @@
         }
 
         /// <summary>
+        ///     Gets the client state.
+        /// </summary>
+        internal int GetState()
+        {
+            return this._state;
+        }
+
+        /// <summary>
         ///     Receives the specified message.
         /// </summary>
         internal void ReceiveMessage(PiranhaMessage message)
@@ -60,6 +72,12 @@
                 case 20103:
                 {
                     this.LoginFailedMessageReceived((LoginFailedMessage) message);
+                    break;
+                }
+
+                case 20104:
+                {
+                    this.LoginOkMessageReceived((LoginOkMessage) message);
                     break;
                 }
 
@@ -86,6 +104,14 @@
         }
 
         /// <summary>
+        ///     Called when a <see cref="LoginOkMessage"/> has been received.
+        /// </summary>
+        internal void LoginOkMessageReceived(LoginOkMessage message)
+        {
+            this._state = 6;
+        }
+
+        /// <summary>
         ///     Called when a <see cref="KeepAliveServerMessage"/> has been received.
         /// </summary>
         internal void KeepAliveServerReceived(KeepAliveServerMessage message)
@@ -98,14 +124,14 @@
         /// </summary>
         internal void Update(float time)
         {
-            this._subTick += (int) (time * 62.5d);
-
-            // if (this._timeSinceLastKeepAlive > 5f)
+            if (this._state == 6)
             {
-                this.SendKeepAliveMessage();
-            }
+                this._subTick += (int) (time * 62.5d);
 
-            this.SendClientTurn();
+                this.SendClientTurn();
+                this.SendKeepAliveMessage();
+                this.SendGlobalChatLineMessage("messageID: " + Interlocked.Increment(ref MessageManager._counter));
+            }
         }
 
         /// <summary>
@@ -115,6 +141,16 @@
         {
             this._keepAliveSendTime = DateTime.UtcNow;
             this._client.SendMessage(new KeepAliveMessage());
+        }
+
+        /// <summary>
+        ///     Sends a <see cref="GlobalChatLineMessage"/> to server.
+        /// </summary>
+        internal void SendGlobalChatLineMessage(string message)
+        {
+            SendGlobalChatLineMessage sendGlobalChatLineMessage = new SendGlobalChatLineMessage();
+            sendGlobalChatLineMessage.SetMessage(message);
+            this._client.SendMessage(sendGlobalChatLineMessage);
         }
 
         /// <summary>

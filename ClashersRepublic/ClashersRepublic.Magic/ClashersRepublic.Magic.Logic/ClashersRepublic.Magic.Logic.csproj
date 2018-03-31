@@ -62,12 +62,19 @@
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicEditModeShownCommand.cs" />
+    <Compile Include="Command\Home\LogicSwapBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicUnlockBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicFreeWorkerCommand.cs" />
+    <Compile Include="Command\Home\LogicBuyResourcesCommand.cs" />
+    <Compile Include="Command\Home\LogicMoveMultipleBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicRemoveUnitsCommand.cs" />
     <Compile Include="Command\Home\LogicSeenBuilderMenuCommand.cs" />
     <Compile Include="Command\Home\LogicClaimAchievementRewardCommand.cs" />
     <Compile Include="Command\Home\LogicSpeedUpConstructionCommand.cs" />
     <Compile Include="Command\Home\LogicCollectResourcesCommand.cs" />
     <Compile Include="Command\Home\LogicMoveBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicUpgradeMultipleBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicUpgradeBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicNewShopItemsSeenCommand.cs" />
     <Compile Include="Command\Home\LogicBuyBuildingCommand.cs" />
@@ -77,6 +84,7 @@
     <Compile Include="Command\Listener\LogicCommandManagerListener.cs" />
     <Compile Include="Command\LogicCommand.cs" />
     <Compile Include="Command\LogicCommandManager.cs" />
+    <Compile Include="Command\Server\LogicDiamondsAddedCommand.cs" />
     <Compile Include="Command\Server\LogicChangeAvatarNameCommand.cs" />
     <Compile Include="Command\Server\LogicLeaveAllianceCommand.cs" />
     <Compile Include="Command\Server\LogicJoinAllianceCommand.cs" />
@@ -140,6 +148,7 @@
     <Compile Include="GameObject\Component\LogicComponentFilter.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
+    <Compile Include="GameObject\Component\LogicWarResourceStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicResourceStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicBunkerComponent.cs" />

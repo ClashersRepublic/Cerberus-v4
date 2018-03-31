@@ -19,6 +19,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         private int[] _constructionTimes;
         private int[] _townHallLevel;
         private int[] _townHallVillage2Level;
+        private int[] _wallBlockX;
+        private int[] _wallBlockY;
         private int _upgradeLevelCount;
         private bool _isClockTower;
         private bool _isFlamer;
@@ -178,8 +180,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int DieDamageDelay { get; protected set; }
         public bool IsRed { get; protected set; }
         public int VillageType { get; protected set; }
-        public string WallBlockX { get; protected set; }
-        public string WallBlockY { get; protected set; }
         public int RedMul { get; protected set; }
         public int GreenMul { get; protected set; }
         public int BlueMul { get; protected set; }
@@ -258,9 +258,31 @@ namespace ClashersRepublic.Magic.Logic.Data
                 this._heroData = LogicDataTables.GetHeroByName(heroType);
             }
 
+            string wallBlockX = this.GetValue("WallBlockX", 0);
+
+            if (wallBlockX.Length > 0)
+            {
+                this.LoadWallBlock(wallBlockX, out this._wallBlockX);
+                this.LoadWallBlock(this.GetValue("WallBlockY", 0), out this._wallBlockY);
+            }
+
             this._isClockTower = this.GetName().Equals("Clock Tower");
             this._isFlamer = this.GetName().Equals("Flamer");
             this._isBarrackVillage2 = this.GetName().Equals("Barrack2");
+        }
+
+        /// <summary>
+        ///     Loads the wall block.
+        /// </summary>
+        public void LoadWallBlock(string value, out int[] wallBlock)
+        {
+            string[] tmp = value.Split(',');
+            wallBlock = new int[tmp.Length];
+
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                wallBlock[i] = int.Parse(tmp[i]);
+            }
         }
 
         /// <summary>
@@ -659,6 +681,21 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetGearUpTime(int index)
         {
             return this.GearUpTime[index];
+        }
+
+        public int GetWallBlockX(int index)
+        {
+            return this._wallBlockX[index];
+        }
+
+        public int GetWallBlockY(int index)
+        {
+            return this._wallBlockY[index];
+        }
+
+        public int GetWallBlockCount()
+        {
+            return this._wallBlockX.Length;
         }
 
         public override int GetVillageType()

@@ -110,7 +110,7 @@
                 LogicUnitSlot unitSlot = this._slots[i];
                 LogicCombatItemData combatItemData = (LogicCombatItemData) unitSlot.GetData();
 
-                usedCapacity += combatItemData.HousingSpace * unitSlot.GetCount();
+                usedCapacity += combatItemData.GetHousingSpace() * unitSlot.GetCount();
             }
 
             return usedCapacity;
@@ -129,7 +129,7 @@
                 {
                     if (this._storageType == data.GetCombatItemType())
                     {
-                        return this._maxCapacity >= data.HousingSpace + this.GetUsedCapacity();
+                        return this._maxCapacity >= data.GetHousingSpace() + this.GetUsedCapacity();
                     }
                 }
                 else

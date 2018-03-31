@@ -14,6 +14,7 @@
         private int _attackerAllianceBadgeId;
         private int _defenserAllianceBadgeId;
         private int _attackerStars;
+        private int _villageType;
 
         private string _attackerAllianceName;
         private string _defenserAllianceName;
@@ -44,6 +45,22 @@
             this._defenserHomeId = null;
             this._attackerAllianceId = null;
             this._defenserAllianceId = null;
+        }
+
+        /// <summary>
+        ///     Gets the village type.
+        /// </summary>
+        public int GetVillageType()
+        {
+            return this._villageType;
+        }
+
+        /// <summary>
+        ///     Sets the village type.
+        /// </summary>
+        public void SetVillageType(int value)
+        {
+            this._villageType = value;
         }
 
         /// <summary>

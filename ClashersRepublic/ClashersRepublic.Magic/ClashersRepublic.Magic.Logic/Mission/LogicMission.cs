@@ -253,6 +253,50 @@
         }
 
         /// <summary>
+        ///     Gets if this mission is a open tutorial mission.
+        /// </summary>
+        public bool IsOpenTutorialMission()
+        {
+            if (this._data.GetVillageType() == this._level.GetVillageType())
+            {
+                if (this._data.GetMissionCategory() == 2)
+                {
+                    LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+                    if (homeOwnerAvatar == null || !homeOwnerAvatar.IsNpcAvatar() || this._level.GetVillageType() != -1)
+                    {
+                        LogicGameObjectManager gameObjectManager = this._level.GetGameObjectManagerAt(0);
+
+                        if (gameObjectManager.GetShipyard() == null || gameObjectManager.GetShipyard().GetUpgradeLevel() != 0)
+                        {
+                            int missionType = this._data.GetMissionType();
+
+                            if ((missionType == 16 || missionType == 14) && this._level.GetState() == 1 && this._level.GetVillageType() == 0)
+                            {
+                                if (gameObjectManager.GetShipyard().IsConstructing())
+                                {
+                                    return false;
+                                }
+                            }
+
+                            return this._data.GetMissionCategory() != 1;
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return this._data.GetMissionCategory() != 1;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         ///     Ticks this instance.
         /// </summary>
         public void Tick()

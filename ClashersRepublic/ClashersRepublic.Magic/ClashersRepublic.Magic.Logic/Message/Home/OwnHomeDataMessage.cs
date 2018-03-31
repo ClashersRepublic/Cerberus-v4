@@ -6,6 +6,7 @@
 
     public class OwnHomeDataMessage : PiranhaMessage
     {
+        private int _elapsedSeconds;
         private int _currentTimestamp;
         private int _secondsSinceLastSave;
 
@@ -36,7 +37,7 @@
             base.Decode();
 
             this._secondsSinceLastSave = this.Stream.ReadInt();
-            this.Stream.ReadInt();
+            this._elapsedSeconds = this.Stream.ReadInt();
             this._currentTimestamp = this.Stream.ReadInt();
 
             this._logicClientHome = new LogicClientHome();
@@ -71,7 +72,7 @@
             base.Encode();
 
             this.Stream.WriteInt(this._secondsSinceLastSave);
-            this.Stream.WriteInt(-1);
+            this.Stream.WriteInt(this._elapsedSeconds);
             this.Stream.WriteInt(this._currentTimestamp);
 
             this._logicClientHome.Encode(this.Stream);
@@ -149,6 +150,22 @@
         public void SetSecondsSinceLastSave(int value)
         {
             this._secondsSinceLastSave = value;
+        }
+
+        /// <summary>
+        ///     Gets the random seed
+        /// </summary>
+        public int GetElapsedSecs()
+        {
+            return this._elapsedSeconds;
+        }
+
+        /// <summary>
+        ///     Sets the elapsed secs.
+        /// </summary>
+        public void SetElapsedSecs(int value)
+        {
+            this._elapsedSeconds = value;
         }
 
         /// <summary>

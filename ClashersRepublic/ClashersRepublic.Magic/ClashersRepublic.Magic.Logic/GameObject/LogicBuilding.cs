@@ -18,7 +18,7 @@
         private int _wallIndex;
         private int _wallX;
         private bool _wallPosition;
-        private bool _isLocked;
+        private bool _locked;
         private bool _isHidden;
         private bool _gearing;
         private bool _upgrading;
@@ -35,7 +35,7 @@
         {
             LogicBuildingData buildingData = this.GetBuildingData();
 
-            this._isLocked = buildingData.IsLocked();
+            this._locked = buildingData.IsLocked();
 
             if (buildingData.GetHitpoints(0) > 0)
             {
@@ -99,7 +99,7 @@
             {
                 if (buildingData.IsAllianceCastle())
                 {
-                    // TODO: Implement LogicBunkerResourceStorageComponent.
+                    this.AddComponent(new LogicWarResourceStorageComponent(this));
                 }
                 else
                 {
@@ -172,6 +172,31 @@
         }
 
         /// <summary>
+        ///     Gets the max fast forward time.
+        /// </summary>
+        public override int GetMaxFastForwardTime()
+        {
+            if (this._constructionTimer != null && !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome())
+            {
+                return LogicMath.Max(this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()), 1);
+            }
+            else
+            {
+                if (this.GetComponent(15) != null)
+                {
+                    // TODO: Implement this.
+                }
+
+                if (this.GetComponent(3) != null)
+                {
+                    // TODO: Implement this.
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicBuilding"/> instance is in construction.
         /// </summary>
         public bool IsConstructing()
@@ -192,7 +217,7 @@
         /// </summary>
         public bool IsLocked()
         {
-            return this._isLocked;
+            return this._locked;
         }
 
         /// <summary>
@@ -364,7 +389,7 @@
                 }
             }
 
-            if (this._isLocked)
+            if (this._locked)
             {
                 jsonObject.Put("locked", new LogicJSONBoolean(true));
             }
@@ -450,7 +475,11 @@
 
             if (lockedObject != null)
             {
-                this._isLocked = lockedObject.IsTrue();
+                this._locked = lockedObject.IsTrue();
+            }
+            else
+            {
+                this._locked = false;
             }
 
             LogicJSONNumber constTimeObject = jsonObject.GetJSONNumber("const_t");
@@ -690,6 +719,26 @@
         }
 
         /// <summary>
+        ///     Gets the required townhall level for unlock.
+        /// </summary>
+        public bool CanUnlock(bool canCallListener)
+        {
+            if (this._constructionTimer != null || this._upgLevel != 0 || !this._locked)
+            {
+                return false;
+            }
+
+            bool canUnlock = this._level.GetTownHallLevel(this._villageType) >= this.GetBuildingData().GetRequiredTownHallLevel(0);
+
+            if (!canUnlock)
+            {
+                this._level.GetGameListener().TownHallLevelTooLow(this.GetRequiredTownHallLevelForUpgrade());
+            }
+
+            return canUnlock;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicBuilding"/> can be upgraded.
         /// </summary>
         public bool CanUpgrade(bool canCallListener)
@@ -750,12 +799,12 @@
             else
             {
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetActiveTimestamp());
 
                 this._level.GetWorkerManagerAt(this.GetBuildingData().GetVillageType()).AllocateWorker(this);
             }
 
-            if (this._villageType == 1 && this._isLocked)
+            if (this._villageType == 1 && this._locked)
             {
                 // this._level.GetGameListener.???
             }
@@ -803,7 +852,7 @@
                 this.EnableComponent(9, false);
 
                 this._constructionTimer = new LogicTimer();
-                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetCurrentTime());
+                this._constructionTimer.StartTimer(constructionTime, this._level.GetLogicTime(), true, this._level.GetGameMode().GetActiveTimestamp());
             }
         }
 
@@ -829,7 +878,7 @@
                         }
 
                         this._level.GetWorkerManagerAt(this._gearing ? 1 : this.GetBuildingData().VillageType).DeallocateWorker(this);
-                        this._isLocked = false;
+                        this._locked = false;
 
                         if (this._gearing)
                         {
@@ -884,6 +933,18 @@
                             this._level.GetAchievementManager().RefreshStatus();
                         }
 
+                        LogicBuildingClassData buildingClassData = this.GetBuildingData().GetBuildingClass();
+
+                        if (buildingClassData.IsTownHall() || buildingClassData.IsTownHall2())
+                        {
+                            this._level.RefreshNewShopUnlocksTH();
+
+                            if (buildingClassData.IsTownHall2())
+                            {
+                                this._level.GetGameObjectManagerAt(this._villageType).Village2TownHallFixed();
+                            }
+                        }
+
                         return;
                     }
                 }
@@ -903,20 +964,34 @@
 
             if (this._level.GetHomeOwnerAvatar() != null)
             {
-                if (buildingData.IsAllianceCastle())
+                if (buildingData.IsAllianceCastle() && !this._locked)
                 {
-                    if (!this._isLocked)
+                    this._level.GetHomeOwnerAvatar().GetChangeListener().SetAllianceCastleLevel(this._upgLevel);
+                    this._level.GetHomeOwnerAvatar().SetAllianceCastleLevel(this._upgLevel);
+
+                    LogicBuilding building = this._level.GetGameObjectManagerAt(0).GetAllianceCastle();
+
+                    if (building != null)
                     {
-                        this._level.GetHomeOwnerAvatar().SetAllianceCastleLevel(this._upgLevel);
+                        building.SetTreasurySize();
                     }
                 }
                 else if (buildingData.IsTownHall())
                 {
+                    this._level.GetHomeOwnerAvatar().GetChangeListener().SetTownHallLevel(this._upgLevel);
                     this._level.GetHomeOwnerAvatar().SetTownHallLevel(this._upgLevel);
+
+                    LogicBuilding building = this._level.GetGameObjectManagerAt(0).GetAllianceCastle();
+
+                    if (building != null)
+                    {
+                        building.SetTreasurySize();
+                    }
                 }
                 else if (buildingData.IsTownHallVillage2())
                 {
-                    this._level.GetHomeOwnerAvatar().SetTownHallVillage2Level(this._upgLevel);
+                    this._level.GetHomeOwnerAvatar().GetChangeListener().SetVillage2TownHallLevel(this._upgLevel);
+                    this._level.GetHomeOwnerAvatar().SetVillage2TownHallLevel(this._upgLevel);
                 }
             }
 
@@ -946,7 +1021,7 @@
                 {
                     LogicHitpointComponent hitpointComponent = this.GetHitpointComponent();
 
-                    if (this._isLocked)
+                    if (this._locked)
                     {
                         hitpointComponent.SetMaxHitpoints(0);
                         hitpointComponent.SetHitpoints(0);
@@ -972,17 +1047,101 @@
                     resourceStorageComponent.SetMaxArray(buildingData.GetMaxStoredResourceCounts(this._upgLevel));
                     resourceStorageComponent.SetMaxPercentageArray(buildingData.GetMaxPercentageStoredResourceCounts(this._upgLevel));
                 }
+
+                this.SetTreasurySize();
+            }
+        }
+
+        /// <summary>
+        ///     Sets the treasury size.
+        /// </summary>
+        public void SetTreasurySize()
+        {
+            LogicBuildingData data = this.GetBuildingData();
+
+            if (data.IsAllianceCastle() && LogicDataTables.GetGlobals().TreasurySizeBasedOnTownHall())
+            {
+                LogicTownhallLevelData townhallLevelData = LogicDataTables.GetTownHallLevel(this._level.GetTownHallLevel(0));
+
+                if (townhallLevelData != null)
+                {
+                    LogicWarResourceStorageComponent warResourceStorageComponent = (LogicWarResourceStorageComponent) this.GetComponent(11);
+                    warResourceStorageComponent.SetMaxArray(townhallLevelData.GetTreasuryCaps());
+
+                    return;
+                }
+            }
+
+            LogicWarResourceStorageComponent component = (LogicWarResourceStorageComponent) this.GetComponent(11);
+
+            if (component != null)
+            {
+                component.SetMaxArray(data.GetMaxStoredResourceCounts(this._upgLevel));
+            }
+        }
+
+        /// <summary>
+        ///     Called when the loading of this <see cref="LogicBuilding"/> instance is finished.
+        /// </summary>
+        public override void LoadingFinished()
+        {
+            base.LoadingFinished();
+
+            LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+            if (homeOwnerAvatar != null)
+            {
+                LogicBuildingData buildingData = this.GetBuildingData();
+
+                if (buildingData.IsAllianceCastle() && !this._locked)
+                {
+                    if (homeOwnerAvatar.GetAllianceCastleLevel() != this._upgLevel)
+                    {
+                        this._level.GetHomeOwnerAvatar().GetChangeListener().SetAllianceCastleLevel(this._upgLevel);
+                        this._level.GetHomeOwnerAvatar().SetAllianceCastleLevel(this._upgLevel);
+
+                        LogicBuilding building = this._level.GetGameObjectManagerAt(0).GetAllianceCastle();
+
+                        if (building != null)
+                        {
+                            building.SetTreasurySize();
+                        }
+                    }
+                }
+                else if (buildingData.IsTownHall())
+                {
+                    if (homeOwnerAvatar.GetTownHallLevel() != this._upgLevel)
+                    {
+                        this._level.GetHomeOwnerAvatar().GetChangeListener().SetTownHallLevel(this._upgLevel);
+                        this._level.GetHomeOwnerAvatar().SetTownHallLevel(this._upgLevel);
+
+                        LogicBuilding building = this._level.GetGameObjectManagerAt(0).GetAllianceCastle();
+
+                        if (building != null)
+                        {
+                            building.SetTreasurySize();
+                        }
+                    }
+                }
+                else if (buildingData.IsTownHallVillage2())
+                {
+                    if (homeOwnerAvatar.GetVillage2TownHallLevel() != this._upgLevel)
+                    {
+                        this._level.GetHomeOwnerAvatar().GetChangeListener().SetVillage2TownHallLevel(this._upgLevel);
+                        this._level.GetHomeOwnerAvatar().SetVillage2TownHallLevel(this._upgLevel);
+                    }
+                }
             }
         }
 
         /// <summary>
         ///     Gets the checksum of this instance.
         /// </summary>
-        public override void GetChecksum(ChecksumHelper checksum)
+        public override void GetChecksum(ChecksumHelper checksum, bool includeGameObjects)
         {
             checksum.StartObject("LogicBuilding");
 
-            base.GetChecksum(checksum);
+            base.GetChecksum(checksum, includeGameObjects);
 
             if (this.GetComponent(6) != null)
             {

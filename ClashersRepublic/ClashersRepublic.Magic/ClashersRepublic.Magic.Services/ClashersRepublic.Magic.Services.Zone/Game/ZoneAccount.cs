@@ -76,6 +76,14 @@
         }
 
         /// <summary>
+        ///     Sets the save timestamp.
+        /// </summary>
+        internal void SetSaveTimestamp(int timestamp)
+        {
+            this.SaveTimestamp = timestamp;
+        }
+
+        /// <summary>
         ///     Sets the <see cref="LogicClientAvatar"/> instance.
         /// </summary>
         internal void SetClientAvatar(LogicClientAvatar instance)
@@ -106,8 +114,6 @@
         /// </summary>
         internal LogicJSONObject Save()
         {
-            this.SaveTimestamp = LogicTimeUtil.GetTimestamp();
-
             LogicJSONObject jsonObject = new LogicJSONObject();
 
             jsonObject.Put("id_hi", new LogicJSONNumber(this.Id.GetHigherInt()));

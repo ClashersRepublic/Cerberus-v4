@@ -98,15 +98,15 @@
         /// <summary>
         ///     Gets a value indicating whether the specified gameobject is buildable on this tile.
         /// </summary>
-        public bool IsBuildableWithIgnoreList(LogicGameObject[] gameObjects)
+        public bool IsBuildableWithIgnoreList(LogicGameObject[] gameObjects, int count)
         {
-            if (this._gameObjects.Count > 0)
+            if (count > 0)
             {
                 for (int i = 0, index = -1; i < this._gameObjects.Count; i++, index = -1)
                 {
                     LogicGameObject tmp = this._gameObjects[i];
 
-                    for (int j = 0; j < gameObjects.Length; j++)
+                    for (int j = 0; j < count; j++)
                     {
                         if (gameObjects[j] == tmp)
                         {

@@ -236,6 +236,22 @@
         }
 
         /// <summary>
+        ///     Gets if the edit mode is shown.
+        /// </summary>
+        public bool IsEditModeShown()
+        {
+            return this._editModeShown;
+        }
+
+        /// <summary>
+        ///     Sets if the dit mode is shown.
+        /// </summary>
+        public void SetEditModeShown()
+        {
+            this._editModeShown = true;
+        }
+
+        /// <summary>
         ///     Gets the state.
         /// </summary>
         public int GetState()
@@ -278,6 +294,33 @@
         public int GetRemainingClockTowerBoostTime()
         {
             return this._remainingClockTowerBoostTime;
+        }
+
+        /// <summary>
+        ///     Gets the active layout.
+        /// </summary>
+        public int GetActiveLayout(int villageType)
+        {
+            return villageType == 0 ? this._activeLayout : this._activeLayoutVillage2;
+        }
+
+        /// <summary>
+        ///     Sets the layout cooldown.
+        /// </summary>
+        public void SetLayoutCooldownSecs(int index, int secs)
+        {
+            if (index < 6 && this._villageType == 0)
+            {
+                this._layoutCooldown[index] = 15 * secs;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the layout cooldown.
+        /// </summary>
+        public int GetLayoutCooldown(int index)
+        {
+            return this._layoutCooldown[index];
         }
 
         /// <summary>
@@ -351,6 +394,44 @@
                             }
                         }
                     }
+                }
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
+        ///     Gets the number of tomb stones.
+        /// </summary>
+        public int GetTombStoneCount()
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[this._villageType].GetGameObjects(3);
+            int cnt = 0;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (((LogicObstacle) gameObjects[i]).GetObstacleData().IsTombstone)
+                {
+                    ++cnt;
+                }
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
+        ///     Gets the number of tall grass.
+        /// </summary>
+        public int GetTallGrassCount()
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[this._villageType].GetGameObjects(3);
+            int cnt = 0;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (((LogicObstacle)gameObjects[i]).GetObstacleData().TallGrass)
+                {
+                    ++cnt;
                 }
             }
 
@@ -467,6 +548,20 @@
         public int GetVillageType()
         {
             return this._villageType;
+        }
+
+        /// <summary>
+        ///     Sets the village type.
+        /// </summary>
+        public void SetVillageType(int villageType)
+        {
+            this._villageType = villageType;
+            this._battleLog.SetVillageType(villageType);
+
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].ChangeVillageType(i == villageType);
+            }
         }
 
         /// <summary>
@@ -949,6 +1044,15 @@
 
                 jsonObject.Put("army_names", armyNameArray);
 
+                int accountFlags = 0;
+
+                if (this._editModeShown)
+                {
+                    accountFlags |= 2;
+                }
+
+                jsonObject.Put("account_flags", new LogicJSONNumber(accountFlags));
+
                 if (this._unplacedObjects != null)
                 {
                     if (this._unplacedObjects.Count > 0)
@@ -977,7 +1081,7 @@
             LogicDataTable trapTable = LogicDataTables.GetTable(11);
             LogicDataTable decoTable = LogicDataTables.GetTable(17);
 
-            int townHallLevelVillage2 = this._homeOwnerAvatar.GetTownHallVillage2Level();
+            int townHallLevelVillage2 = this._homeOwnerAvatar.GetVillage2TownHallLevel();
             int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
             int expLevel = this._homeOwnerAvatar.GetExpLevel();
 
@@ -1048,7 +1152,7 @@
                 LogicDataTable trapTable = LogicDataTables.GetTable(11);
                 LogicDataTable decoTable = LogicDataTables.GetTable(17);
 
-                int townHallLevelVillage2 = this._homeOwnerAvatar.GetTownHallVillage2Level();
+                int townHallLevelVillage2 = this._homeOwnerAvatar.GetVillage2TownHallLevel();
                 int townHallLevel = this._homeOwnerAvatar.GetTownHallLevel();
                 int expLevel = this._homeOwnerAvatar.GetExpLevel();
 
@@ -1182,6 +1286,52 @@
         }
 
         /// <summary>
+        ///     Refreshes the new shop unlocks with town hall.
+        /// </summary>
+        public void RefreshNewShopUnlocksTH()
+        {
+            LogicBuilding building = this._gameObjectManagers[this._villageType].GetTownHall();
+
+            if (building != null)
+            {
+                int upgradeLevel = building.GetUpgradeLevel();
+
+                if (upgradeLevel > 0)
+                {
+                    LogicDataTable buildingTable = LogicDataTables.GetTable(0);
+
+                    for (int i = 0; i < this._newShopBuildings.Count; i++)
+                    {
+                        LogicData data = buildingTable.GetItemAt(i);
+
+                        int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
+                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+
+                        if (shopUnlockCount > 0)
+                        {
+                            this._newShopBuildings[i] += shopUnlockCount;
+                        }
+                    }
+
+                    LogicDataTable obstacleData = LogicDataTables.GetTable(7);
+
+                    for (int i = 0; i < this._newShopTraps.Count; i++)
+                    {
+                        LogicData data = obstacleData.GetItemAt(i);
+
+                        int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
+                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+
+                        if (shopUnlockCount > 0)
+                        {
+                            this._newShopTraps[i] += shopUnlockCount;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Refreshes resource caps.
         /// </summary>
         public void RefreshResourceCaps()
@@ -1201,7 +1351,17 @@
                         {
                             if (data.GetWarResourceReferenceData() != null)
                             {
-                                // TODO: Implement this.
+                                LogicArrayList<LogicComponent> components = this._gameObjectManagers[j].GetComponentManager().GetComponents(11);
+
+                                for (int k = 0; k < components.Count; k++)
+                                {
+                                    LogicWarResourceStorageComponent resourceWarStorageComponent = (LogicWarResourceStorageComponent) components[k];
+
+                                    if (resourceWarStorageComponent.IsEnabled())
+                                    {
+                                        cnt += resourceWarStorageComponent.GetMax(i);
+                                    }
+                                }
                             }
                             else
                             {
@@ -1473,6 +1633,78 @@
         /// </summary>
         public bool IsValidPlaceForBuilding(int x, int y, int width, int height, LogicGameObject gameObject)
         {
+            if (x >= 0 && y >= 0)
+            {
+                if (width + x <= 50 && height + y <= 50)
+                {
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            if (!this._tileMap.GetTile(x + j, y + i).IsBuildable(gameObject))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets if the specified place is valid for obstacle.
+        /// </summary>
+        public bool IsValidPlaceForObstacle(int x, int y, int width, int height, bool edge, bool ignoreTallGrass)
+        {
+            if (x >= 0 && y >= 0)
+            {
+                if (width + x <= 50 && height + y <= 50)
+                {
+                    if (edge)
+                    {
+                        x -= 1;
+                        y -= 1;
+                        width += 2;
+                        height += 2;
+                    }
+
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            LogicTile tile = this._tileMap.GetTile(x + i, y + j);
+
+                            if (!ignoreTallGrass)
+                            {
+                                if (tile.GetTallGrass() != null)
+                                {
+                                    return false;
+                                }
+                            }
+
+                            if (tile != null && !tile.IsBuildable(null))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets if the specified place is valid for building.
+        /// </summary>
+        public bool IsValidPlaceForBuildingWithIgnoreList(int x, int y, int width, int height, LogicGameObject[] gameObjects, int count)
+        {
             if (this._playArea.InInside(x, y))
             {
                 if (this._playArea.InInside(x + width, y + height))
@@ -1481,7 +1713,7 @@
                     {
                         for (int j = 0; j < height; j++)
                         {
-                            if (!this._tileMap.GetTile(x + j, y + i).IsBuildable(gameObject))
+                            if (!this._tileMap.GetTile(x + j, y + i).IsBuildableWithIgnoreList(gameObjects, count))
                             {
                                 return false;
                             }
@@ -1526,7 +1758,7 @@
             }
 
             this.RefreshResourceCaps();
-
+            
             for (int i = 0; i < 2; i++)
             {
                 this._gameObjectManagers[i].GetComponentManager().CalculateLoot(true);
@@ -1563,6 +1795,15 @@
                 this._lastLeagueRank = 0;
                 this._lastAllianceLevel = 1;
 
+                LogicJSONNumber accountFlagObject = this._levelJSON.GetJSONNumber("account_flags");
+
+                if (accountFlagObject != null)
+                {
+                    int value = accountFlagObject.GetIntValue();
+
+                    this._editModeShown = ((value >> 1) & 1) != 0;
+                }
+
                 LogicJSONNumber lastLeagueRankObject = this._levelJSON.GetJSONNumber("last_league_rank");
 
                 if (lastLeagueRankObject != null)
@@ -1586,7 +1827,6 @@
 
                 this._lastSeasonSeen = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_season_seen");
                 this._lastSeenNews = LogicJSONHelper.GetJSONNumber(this._levelJSON, "last_news_seen");
-                this._editModeShown = LogicJSONHelper.GetJSONBoolean(this._levelJSON, "edit_mode_shown");
 
                 LogicJSONString troopRequestObject = this._levelJSON.GetJSONString("troop_req_msg");
 
@@ -1620,6 +1860,25 @@
             }
 
             this._achievementManager.RefreshStatus();
+
+            if (LogicDataTables.GetGlobals().ValidateTroopUpgradeLevels())
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    this._gameObjectManagers[i].GetComponentManager().ValidTroopUpgradeLevels();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Loads the base village objects.
+        /// </summary>
+        public void LoadVillageObjects()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].LoadVillageObjects();
+            }
         }
 
         /// <summary>
