@@ -38,7 +38,11 @@
         /// </summary>
         internal void Destruct()
         {
-            this._message = null;
+            if (this._message != null)
+            {
+                this._message.Destruct();
+                this._message = null;
+            }
         }
 
         /// <summary>

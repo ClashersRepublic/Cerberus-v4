@@ -2,18 +2,20 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
 
     public class NetClient
     {
         private bool _connectState;
+        private bool _connected;
+
         private string _host;
         private int _port;
-
+        
         private readonly Socket _socket;
         private readonly ConcurrentQueue<byte[]> _queue;
-        private readonly ConcurrentQueue<byte[]> _sendFailedQueue;
         
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetClient"/> class.
@@ -24,8 +26,8 @@
             this._port = port;
 
             this._queue = new ConcurrentQueue<byte[]>();
-            this._sendFailedQueue = new ConcurrentQueue<byte[]>();
             this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this._socket.NoDelay = true;
             
             this.Init();
         }
@@ -59,12 +61,14 @@
         /// </summary>
         private void ConnectCompleted(object sender, SocketAsyncEventArgs socketAsyncEventArgs)
         {
+            this._connectState = false;
+
             if (socketAsyncEventArgs.SocketError == SocketError.Success)
             {
+                this._connected = true;
                 this.Wakeup();
             }
 
-            this._connectState = false;
             socketAsyncEventArgs.Dispose();
         }
 
@@ -108,53 +112,38 @@
         /// </summary>
         public void Wakeup()
         {
-            if (!this._socket.Connected)
+            if (!this._socket.Connected || !this._connected)
             {
                 if (!this._connectState)
                 {
                     this.Init();
                 }
-
-                return;
             }
-
-            if (this._queue.TryDequeue(out byte[] buffer))
+            else
             {
-                SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
+                int count = this._queue.Count;
 
-                sendEvent.SetBuffer(buffer, 0, buffer.Length);
-                sendEvent.Completed += this.SendCompleted;
-
-                try
+                for (int i = 0; i < count; i++)
                 {
-                    if (!this._socket.SendAsync(sendEvent))
+                    if (this._queue.TryDequeue(out byte[] buffer))
                     {
-                        this.SendCompleted(null, sendEvent);
+                        SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
+
+                        sendEvent.SetBuffer(buffer, 0, buffer.Length);
+                        sendEvent.Completed += this.SendCompleted;
+
+                        try
+                        {
+                            if (!this._socket.SendAsync(sendEvent))
+                            {
+                                this.SendCompleted(null, sendEvent);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            this._queue.Enqueue(buffer);
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    this._queue.Enqueue(buffer);
-                }
-            }
-
-            if (this._sendFailedQueue.TryDequeue(out byte[] buffer2))
-            {
-                SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
-
-                sendEvent.SetBuffer(buffer2, 0, buffer2.Length);
-                sendEvent.Completed += this.SendCompleted;
-
-                try
-                {
-                    if (!this._socket.SendAsync(sendEvent))
-                    {
-                        this.SendCompleted(null, sendEvent);
-                    }
-                }
-                catch (Exception)
-                {
-                    this._queue.Enqueue(buffer2);
                 }
             }
         }
@@ -166,7 +155,10 @@
         {
             if (socketAsyncEventArgs.SocketError != SocketError.Success)
             {
-                this._sendFailedQueue.Enqueue(socketAsyncEventArgs.Buffer);
+                this._queue.Enqueue(socketAsyncEventArgs.Buffer);
+                this._socket.Disconnect(true);
+
+                this._connected = false;
             }
 
             socketAsyncEventArgs.Dispose();

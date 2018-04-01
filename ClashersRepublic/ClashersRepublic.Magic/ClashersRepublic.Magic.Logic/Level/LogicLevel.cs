@@ -2100,10 +2100,15 @@
                 }
             }
 
+            if (this._homeOwnerAvatar != null)
+            {
+                this._homeOwnerAvatar.SetLevel(null);
+                this._homeOwnerAvatar = null;
+            }
+
             this._levelJSON = null;
             this._gameMode = null;
             this._clientHome = null;
-            this._homeOwnerAvatar = null;
             this._visitorAvatar = null;
             this._revengeId = null;
         }

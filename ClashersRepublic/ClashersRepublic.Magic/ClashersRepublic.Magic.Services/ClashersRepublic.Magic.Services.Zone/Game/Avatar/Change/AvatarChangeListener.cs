@@ -20,7 +20,6 @@
         /// </summary>
         public override void ExpLevelGained(int count)
         {
-            
         }
 
         /// <summary>
@@ -28,7 +27,6 @@
         /// </summary>
         public void SendAvatarChange(LogicAvatarChange entry)
         {
-
         }
     }
 }

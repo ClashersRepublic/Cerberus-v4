@@ -13,7 +13,12 @@
         public override void Destruct()
         {
             base.Destruct();
-            this._message = null;
+
+            if (this._message != null)
+            {
+                this._message.Destruct();
+                this._message = null;
+            }
         }
 
         /// <summary>

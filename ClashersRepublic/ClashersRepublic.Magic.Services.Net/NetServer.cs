@@ -30,6 +30,7 @@
         public void StartAccept()
         {
             SocketAsyncEventArgs acceptEvent = new SocketAsyncEventArgs();
+
             acceptEvent.Completed += this.OnAcceptCompleted;
             acceptEvent.DisconnectReuseSocket = true;
 
