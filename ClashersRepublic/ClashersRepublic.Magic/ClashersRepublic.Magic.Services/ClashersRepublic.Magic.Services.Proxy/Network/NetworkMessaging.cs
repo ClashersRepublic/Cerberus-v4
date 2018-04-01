@@ -313,7 +313,7 @@
         /// </summary>
         internal void InternalSend(PiranhaMessage message)
         {
-            if (message.GetEncodingLength() == 0)
+            if (message.GetServiceNodeType() == 1)
             {
                 message.Encode();
             }

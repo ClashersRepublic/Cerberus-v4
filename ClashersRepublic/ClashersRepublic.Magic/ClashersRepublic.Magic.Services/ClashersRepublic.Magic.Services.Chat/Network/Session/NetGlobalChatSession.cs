@@ -47,7 +47,6 @@
             if (this.Room != null)
             {
                 RoomManager.LeaveRoom(this);
-                this.Room = null;
             }
 
             this.AvatarEntry = null;

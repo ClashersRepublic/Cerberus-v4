@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Chat.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Services.Core.Network;
 
     internal static class CmdHandler
     {
@@ -25,6 +26,9 @@
                             case "close":
                             case "quit":
                                 CmdHandler.Close();
+                                break;
+                            case "queue":
+                                Console.WriteLine("Queues: " + NetMessaging.GetHandler());
                                 break;
                             case "test":
                                 break;

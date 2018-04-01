@@ -33,7 +33,20 @@
             this._avatarId = new LogicLong();
             this._homeId = new LogicLong();
         }
-        
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public void Destruct()
+        {
+            this._avatarId = null;
+            this._homeId = null;
+            this._avatarName = null;
+            this._facebookId = null;
+            this._allianceId = null;
+            this._allianceName = null;
+        }
+
         /// <summary>
         ///     Sets the data.
         /// </summary>
@@ -311,7 +324,7 @@
         /// </summary>
         public LogicJSONObject Save()
         {
-            LogicJSONObject jsonObject  = new LogicJSONObject();
+            LogicJSONObject jsonObject = new LogicJSONObject();
 
             jsonObject.Put("avatar_id_hi", new LogicJSONNumber(this._avatarId.GetHigherInt()));
             jsonObject.Put("avatar_id_lo", new LogicJSONNumber(this._avatarId.GetLowerInt()));

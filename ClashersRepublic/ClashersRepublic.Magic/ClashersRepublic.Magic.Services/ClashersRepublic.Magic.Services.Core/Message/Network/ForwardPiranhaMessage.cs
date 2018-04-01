@@ -13,12 +13,7 @@
         public override void Destruct()
         {
             base.Destruct();
-
-            if (this._message != null)
-            {
-                this._message.Destruct();
-                this._message = null;
-            }
+            this._message = null;
         }
 
         /// <summary>
@@ -27,6 +22,7 @@
         public override void Encode()
         {
             base.Encode();
+
             this.Stream.WriteVInt(this._message.GetMessageType());
             this.Stream.WriteVInt(this._message.GetEncodingLength());
             this.Stream.WriteBytesWithoutLength(this._message.GetMessageBytes(), this._message.GetEncodingLength());

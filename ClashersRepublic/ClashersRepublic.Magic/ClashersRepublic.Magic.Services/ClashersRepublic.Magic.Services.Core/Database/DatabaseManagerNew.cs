@@ -34,6 +34,8 @@
                         Thread.Sleep(1);
                     }
                 });
+
+                DatabaseManagerNew._insertThreads[i].Start();
             }
 
             for (int i = 0; i < DatabaseManagerNew._updateThreads.Length; i++)
@@ -50,6 +52,8 @@
                         Thread.Sleep(1);
                     }
                 });
+
+                DatabaseManagerNew._updateThreads[i].Start();
             }
         }
 

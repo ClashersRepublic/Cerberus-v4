@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Services.Chat.Game
 {
+    using System.Collections.Generic;
     using ClashersRepublic.Magic.Logic.Message.Chat;
 
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
@@ -29,15 +30,41 @@
         /// </summary>
         internal Room(int id)
         {
-            this._sessions = new LogicArrayList<NetGlobalChatSession>(32);
+            this._roomId = id;
+            this._sessions = new LogicArrayList<NetGlobalChatSession>(this.GetCapacity());
         }
-        
+
+        /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        internal void Destruct()
+        {
+            if (this._sessions != null)
+            {
+                if (this._sessions.Count != 0)
+                {
+                    do
+                    {
+                        this._sessions.Remove(0);
+                    } while (this._sessions.Count != 0);
+                }
+            }
+        }
+
         /// <summary>
         ///     Gets the number of clients.
         /// </summary>
         internal int GetClients()
         {
             return this._sessions.Count;
+        }
+
+        /// <summary>
+        ///     Gets the room capacity.
+        /// </summary>
+        internal int GetCapacity()
+        {
+            return 128;
         }
 
         /// <summary>
@@ -101,6 +128,8 @@
                 {
                     this._sessions[i].SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, globalChatLineMessage);
                 }
+
+                globalChatLineMessage.Destruct();
             }
         }
     }

@@ -7,6 +7,7 @@
     public static class NetManager
     {
         private static int[] _scrambler;
+
         private static NetGateway _gateway;
         private static Thread _wakeupThread;
         private static LogicArrayList<NetSocket>[] _endPoints;

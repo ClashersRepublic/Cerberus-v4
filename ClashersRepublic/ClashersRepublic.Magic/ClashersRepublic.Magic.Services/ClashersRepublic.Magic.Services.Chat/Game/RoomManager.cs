@@ -19,6 +19,24 @@
         }
 
         /// <summary>
+        ///     Gets the total sessions in room.
+        /// </summary>
+        internal static int InRoomSessions
+        {
+            get
+            {
+                int count = 0;
+
+                for (int i = 0; i < RoomManager._rooms.Count; i++)
+                {
+                    count += RoomManager._rooms.Count;
+                }
+
+                return count;
+            }
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         internal static void Initialize()
@@ -35,7 +53,7 @@
             {
                 Room room = RoomManager._rooms[i];
 
-                if (room.GetClients() < 32)
+                if (room.GetClients() < room.GetCapacity())
                 {
                     room.AddSession(session);
                     session.SetRoom(room);
@@ -45,8 +63,10 @@
             }
 
             Room newRoom = new Room(RoomManager._rooms.Count);
+
             newRoom.AddSession(session);
             session.SetRoom(newRoom);
+
             RoomManager._rooms.Add(newRoom);
         }
 
@@ -55,12 +75,10 @@
         /// </summary>
         internal static void LeaveRoom(NetGlobalChatSession session)
         {
-            session.Room.RemoveSession(session);
+            Room room = session.Room;
 
-            if (session.Room.GetClients() == 0)
-            {
-                RoomManager._rooms.Remove(session.Room.RoomId);
-            }
+            session.SetRoom(null);
+            room.RemoveSession(session);
         }
     }
 }

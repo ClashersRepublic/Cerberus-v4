@@ -41,11 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NetClient.cs" />
-    <Compile Include="NetServer.cs" />
+    <Compile Include="ClientSocket\NetTcpClientSocket.cs" />
+    <Compile Include="NetConnection.cs" />
     <Compile Include="NetBuffer.cs" />
-    <Compile Include="NetServerListener.cs" />
+    <Compile Include="NetListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerSocket\NetTcpServerSocket.cs" />
+    <Compile Include="ServerSocket\NetUdpServerSocket.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

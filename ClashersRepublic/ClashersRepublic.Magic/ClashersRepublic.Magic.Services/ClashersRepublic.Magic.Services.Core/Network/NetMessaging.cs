@@ -60,6 +60,14 @@
 
             NetMessaging._messageHandler.Send(destinationSocket, new NetPacket(message));
         }
+
+        /// <summary>
+        ///     Gets the message manager.
+        /// </summary>
+        public static NetHandler GetHandler()
+        {
+            return NetMessaging._messageHandler;
+        }
         
         /// <summary>
         ///     Sets the <see cref="NetMessageManager" /> instance.

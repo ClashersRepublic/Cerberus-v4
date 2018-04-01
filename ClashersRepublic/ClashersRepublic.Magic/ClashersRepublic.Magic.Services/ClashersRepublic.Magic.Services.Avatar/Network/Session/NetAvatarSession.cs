@@ -4,6 +4,7 @@
 
     using ClashersRepublic.Magic.Services.Avatar.Game;
     using ClashersRepublic.Magic.Services.Avatar.Game.Message;
+
     using ClashersRepublic.Magic.Services.Core;
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Message.Session;

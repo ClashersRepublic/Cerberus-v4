@@ -102,6 +102,14 @@
             this._messageManager = manager;
         }
 
+        /// <summary>
+        ///     Converts to string this instance.
+        /// </summary>
+        public override string ToString()
+        {
+            return this._receiveQueue.Count + "/" + this._sendQueue.Count;
+        }
+
         private struct SendItem
         {
             /// <summary>

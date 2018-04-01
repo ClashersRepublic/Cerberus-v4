@@ -59,6 +59,8 @@
         {
             if (this._logicGameMode != null)
             {
+                this.Save();
+
                 this._logicGameMode.Destruct();
                 this._logicGameMode = null;
             }
@@ -84,9 +86,7 @@
                     this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
                     this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
                     this._zoneAccount.ClientHome.SetNextMaintenanceSeconds(this._logicGameMode.GetMaintenanceRemainingSeconds());
-
-                    this.SendAvatarEntryMessage();
-
+                    
 #if !DEBUG
                     CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
 #endif
@@ -117,7 +117,7 @@
             else
             {
                 this.SetHomeState();
-                this.Save();
+                this.SendAvatarEntryMessage();
             }
         }
 
@@ -468,7 +468,7 @@
 
                         if (commandExecuted)
                         {
-                            this.Save();
+                            this.SendAvatarEntryMessage();
                         }
 
                         int serverChecksum = this._logicGameMode.CalculateChecksum(false);

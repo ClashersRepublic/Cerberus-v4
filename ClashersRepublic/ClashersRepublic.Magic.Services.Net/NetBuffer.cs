@@ -4,6 +4,7 @@
 
     internal class NetBuffer
     {
+        private bool _destructed;
         private byte[] _buffer;
         private int _length;
         private int _capacity;
@@ -13,7 +14,7 @@
         /// </summary>
         internal NetBuffer()
         {
-            this._capacity = 4096;
+            this._capacity = 8192;
             this._buffer = new byte[this._capacity];
         }
 
