@@ -1,9 +1,11 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core
 {
     using System.IO;
+
     using ClashersRepublic.Magic.Services.Core.Message;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Web;
+
     using ClashersRepublic.Magic.Titan.Json;
 
     public static class ServiceCore
@@ -25,7 +27,7 @@
         ///     Gets the service environment.
         /// </summary>
         public static string ServiceEnvironment { get; private set; }
-
+        
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
@@ -76,8 +78,8 @@
             {
                 return;
             }
-
-            NetGateway.Start();
+            
+            NetManager.Start();
         }
 
         /// <summary>
@@ -102,7 +104,6 @@
         /// </summary>
         private static void InitNet(NetMessageManager messageManager)
         {
-            NetGateway.Initialize();
             NetManager.Initialize();
             NetMessaging.Initialize();
             NetMessaging.SetMessageManager(messageManager);

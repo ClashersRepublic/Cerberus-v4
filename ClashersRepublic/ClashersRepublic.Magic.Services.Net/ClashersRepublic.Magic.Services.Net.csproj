@@ -44,6 +44,7 @@
     <Compile Include="NetClient.cs" />
     <Compile Include="NetServer.cs" />
     <Compile Include="NetBuffer.cs" />
+    <Compile Include="NetServerListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

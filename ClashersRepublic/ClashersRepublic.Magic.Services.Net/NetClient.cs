@@ -13,6 +13,7 @@
 
         private readonly Socket _socket;
         private readonly ConcurrentQueue<byte[]> _queue;
+        private readonly ConcurrentQueue<byte[]> _sendFailedQueue;
         
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetClient"/> class.
@@ -23,6 +24,7 @@
             this._port = port;
 
             this._queue = new ConcurrentQueue<byte[]>();
+            this._sendFailedQueue = new ConcurrentQueue<byte[]>();
             this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
             this.Init();
@@ -59,18 +61,11 @@
         {
             if (socketAsyncEventArgs.SocketError == SocketError.Success)
             {
-                socketAsyncEventArgs.Dispose();
-
-                this._connectState = false;
                 this.Wakeup();
             }
-            else
-            {
-                if (!this._socket.ConnectAsync(socketAsyncEventArgs))
-                {
-                    this.ConnectCompleted(this, socketAsyncEventArgs);
-                }
-            }
+
+            this._connectState = false;
+            socketAsyncEventArgs.Dispose();
         }
 
         /// <summary>
@@ -87,8 +82,32 @@
 
             Array.Copy(packet, 0, tmp, 4, length);
 
-            this._queue.Enqueue(tmp);
+            if (this._queue.TryDequeue(out byte[] firstPacket))
+            {
+                if (firstPacket.Length <= 0xffffff)
+                {
+                    byte[] nextPacket = new byte[tmp.Length + firstPacket.Length];
+                    Array.Copy(firstPacket, 0, nextPacket, 0, firstPacket.Length);
+                    Array.Copy(tmp, 0, nextPacket, firstPacket.Length, tmp.Length);
+                    this._queue.Enqueue(nextPacket);
+                }
+                else
+                {
+                    this._queue.Enqueue(firstPacket);
+                    this._queue.Enqueue(tmp);
+                }
+            }
+            else
+            {
+                this._queue.Enqueue(tmp);
+            }
+        }
 
+        /// <summary>
+        ///     Sends all queue.
+        /// </summary>
+        public void Wakeup()
+        {
             if (!this._socket.Connected)
             {
                 if (!this._connectState)
@@ -99,49 +118,44 @@
                 return;
             }
 
-            this.Wakeup();
-        }
-
-        /// <summary>
-        ///     Sends all queue.
-        /// </summary>
-        internal void Wakeup()
-        {
-            int count = this._queue.Count;
-            int offset = 0;
-
-            byte[] packet = new byte[2048 * count];
-
-            while (this._queue.TryDequeue(out byte[] buffer))
+            if (this._queue.TryDequeue(out byte[] buffer))
             {
-                int length = buffer.Length;
+                SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
 
-                if (offset + length > packet.Length)
+                sendEvent.SetBuffer(buffer, 0, buffer.Length);
+                sendEvent.Completed += this.SendCompleted;
+
+                try
                 {
-                    byte[] tmp = packet;
-                    packet = new byte[(tmp.Length + buffer.Length) << 1];
-                    Array.Copy(packet, tmp, offset);
+                    if (!this._socket.SendAsync(sendEvent))
+                    {
+                        this.SendCompleted(null, sendEvent);
+                    }
                 }
-
-                Array.Copy(buffer, 0, packet, offset, length);
-                offset += length;
-            }
-
-            SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
-
-            sendEvent.SetBuffer(packet, 0, offset);
-            sendEvent.Completed += this.SendCompleted;
-
-            try
-            {
-                if (!this._socket.SendAsync(sendEvent))
+                catch (Exception)
                 {
-                    this.SendCompleted(null, sendEvent);
+                    this._queue.Enqueue(buffer);
                 }
             }
-            catch (Exception)
+
+            if (this._sendFailedQueue.TryDequeue(out byte[] buffer2))
             {
-                this._queue.Enqueue(packet);
+                SocketAsyncEventArgs sendEvent = new SocketAsyncEventArgs();
+
+                sendEvent.SetBuffer(buffer2, 0, buffer2.Length);
+                sendEvent.Completed += this.SendCompleted;
+
+                try
+                {
+                    if (!this._socket.SendAsync(sendEvent))
+                    {
+                        this.SendCompleted(null, sendEvent);
+                    }
+                }
+                catch (Exception)
+                {
+                    this._queue.Enqueue(buffer2);
+                }
             }
         }
 
@@ -152,7 +166,7 @@
         {
             if (socketAsyncEventArgs.SocketError != SocketError.Success)
             {
-                this._queue.Enqueue(socketAsyncEventArgs.Buffer);
+                this._sendFailedQueue.Enqueue(socketAsyncEventArgs.Buffer);
             }
 
             socketAsyncEventArgs.Dispose();

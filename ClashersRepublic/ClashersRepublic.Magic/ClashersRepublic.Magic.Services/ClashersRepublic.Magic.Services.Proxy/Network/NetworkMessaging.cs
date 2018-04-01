@@ -7,8 +7,11 @@
     using ClashersRepublic.Magic.Logic.Message.Security;
 
     using ClashersRepublic.Magic.Services.Core;
+    using ClashersRepublic.Magic.Services.Core.Message;
+    using ClashersRepublic.Magic.Services.Core.Message.Network;
+    using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Proxy.Network.Message;
-
+    using ClashersRepublic.Magic.Services.Proxy.Network.Session;
     using ClashersRepublic.Magic.Titan;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Message;
@@ -172,11 +175,33 @@
 
                         try
                         {
-                            message.Decode();
-
-                            if (!message.IsServerToClientMessage())
+                            if (message.GetServiceNodeType() == 1)
                             {
-                                this._receiveMessageQueue.Enqueue(message);
+                                message.Decode();
+
+                                if (!message.IsServerToClientMessage())
+                                {
+                                    this._receiveMessageQueue.Enqueue(message);
+                                }
+                            }
+                            else if (this.Client.State == 6)
+                            {
+                                if (message.GetServiceNodeType() != ServiceCore.ServiceNodeType)
+                                {
+                                    NetProxySession session = this.Client.GetSession();
+                                    NetSocket socket = session.GetServiceNodeEndPoint(message.GetServiceNodeType());
+
+                                    if (socket != null)
+                                    {
+                                        ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
+                                        forwardPiranhaMessage.SetPiranhaMessage(message);
+                                        NetMessageManager.SendMessage(socket, session.SessionId, forwardPiranhaMessage);
+                                    }
+                                    else
+                                    {
+                                        Logging.Debug("MessageManager::receiveMessage no server for service " + message.GetServiceNodeType());
+                                    }
+                                }
                             }
                         }
                         catch (Exception exception)

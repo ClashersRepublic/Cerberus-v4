@@ -43,7 +43,7 @@
 
             NetworkMessagingManager._receiveOption = new ParallelOptions
             {
-                MaxDegreeOfParallelism = 4
+                MaxDegreeOfParallelism = 2
             };
 
             NetworkMessagingManager._messagings = new ConcurrentDictionary<long, NetworkMessaging>();
@@ -96,7 +96,7 @@
         {
             while (true)
             {
-                Parallel.ForEach(NetworkMessagingManager._messagings.Values, NetworkMessagingManager._sendOption, messaging =>
+                Parallel.ForEach(NetworkMessagingManager._messagings.Values, NetworkMessagingManager._receiveOption, messaging =>
                 {
                     while (messaging.NextMessage(out PiranhaMessage message))
                     {

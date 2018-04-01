@@ -1,35 +1,47 @@
 ﻿namespace ClashersRepublic.Magic.Services.Net
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
 
     using System.Net;
     using System.Net.Sockets;
-    using System.Threading;
 
     public class NetServer
     {
-        private Socket _listener;
-        private List<Client> _clients;
+        private readonly Socket _socket;
+        private readonly List<Client> _clients;
 
-        private int _count;
-
+        private NetServerListener _listener;
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetServer"/> class.
         /// </summary>
         public NetServer(int port)
         {
             this._clients = new List<Client>();
-            this._listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            this._listener.Bind(new IPEndPoint(IPAddress.Any, port));
-            this._listener.Listen(150);
+            this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this._socket.Bind(new IPEndPoint(IPAddress.Any, port));
+            this._socket.Listen(150);
+        }
 
+        /// <summary>
+        ///     Starts the accept.
+        /// </summary>
+        public void StartAccept()
+        {
             SocketAsyncEventArgs acceptEvent = new SocketAsyncEventArgs();
             acceptEvent.Completed += this.OnAcceptCompleted;
             acceptEvent.DisconnectReuseSocket = true;
 
             this.StartAccept(acceptEvent);
+        }
+
+        /// <summary>
+        ///     Sets the listener.
+        /// </summary>
+        public void SetListener(NetServerListener listener)
+        {
+            this._listener = listener;
         }
 
         /// <summary>
@@ -40,7 +52,7 @@
         {
             acceptEvent.AcceptSocket = null;
 
-            if (!this._listener.AcceptAsync(acceptEvent))
+            if (!this._socket.AcceptAsync(acceptEvent))
             {
                 this.OnAcceptCompleted(null, acceptEvent);
             }
@@ -68,7 +80,7 @@
             {
                 Socket socket = asyncEvent.AcceptSocket;
                 SocketAsyncEventArgs readEvent = new SocketAsyncEventArgs();
-                Client client = new Client(socket);
+                Client client = new Client(socket, this._listener);
 
                 readEvent.SetBuffer(new byte[2048], 0, 2048);
                 readEvent.Completed += this.OnReceiveCompleted;
@@ -128,47 +140,23 @@
                 }
             }
         }
-
-        /// <summary>
-        ///     Reads available bytes.
-        /// </summary>
-        public bool Read(ref Queue<byte[]> messages)
-        {
-            for (int i = 0, count = this._clients.Count; i < count; i++)
-            {
-                Client client = this._clients[i];
-
-                while (true)
-                {
-                    byte[] message = client.RemoveMessages();
-
-                    if (message == null)
-                    {
-                        break;
-                    }
-                    
-                    messages.Enqueue(message);
-                }
-            }
-
-            return messages.Count != 0;
-        }
-
+        
         private class Client
         {
             internal Socket Socket { get; }
 
             private readonly NetBuffer _buffer;
-            private readonly ConcurrentQueue<byte[]> _messages;
-            
+            private readonly NetServerListener _listener;
+
             /// <summary>
             ///     Initializes a new instance of the <see cref="Client"/> class.
             /// </summary>
-            internal Client(Socket socket)
+            internal Client(Socket socket, NetServerListener listener)
             {
                 this.Socket = socket;
+                this._listener = listener;
+
                 this._buffer = new NetBuffer();
-                this._messages = new ConcurrentQueue<byte[]>();
             }
 
             /// <summary>
@@ -196,7 +184,7 @@
 
                         Array.Copy(tmp, 4, messageBytes, 0, messageLength);
 
-                        this._messages.Enqueue(messageBytes);
+                        this._listener.OnReceive(messageBytes, messageLength);
                         this._buffer.Remove(4 + messageLength);
 
                         if (this._buffer.GetLength() >= 4)
@@ -205,15 +193,6 @@
                         }
                     }
                 }
-            }
-
-            /// <summary>
-            ///     Removes the first available message.
-            /// </summary>
-            internal byte[] RemoveMessages()
-            {
-                this._messages.TryDequeue(out byte[] buffer);
-                return buffer;
             }
         }
     }

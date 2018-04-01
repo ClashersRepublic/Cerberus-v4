@@ -6,54 +6,33 @@
     using ClashersRepublic.Magic.Services.Core.Utils;
     using ClashersRepublic.Magic.Services.Net;
 
-    public static class NetGateway
+    public class NetGateway : NetServerListener
     {
-        private static NetServer _listener;
-        private static Thread _receiveThread;
-
+        private NetServer _serverSocket;
+        
         /// <summary>
-        ///     Initializes this instance.
+        ///     Initializes a new instance of the <see cref="NetGateway"/> class.
         /// </summary>
-        public static void Initialize()
+        public NetGateway()
         {
-            NetGateway._listener = new NetServer(NetUtils.GetNetPort(ServiceCore.ServiceNodeType, ServiceCore.ServiceNodeId));
-            NetGateway._receiveThread = new Thread(NetGateway.Receive);
+            this._serverSocket = new NetServer(NetUtils.GetNetPort(ServiceCore.ServiceNodeType, ServiceCore.ServiceNodeId));
+            this._serverSocket.SetListener(this);
         }
 
         /// <summary>
-        ///     Starts the receive thread.
+        ///     Starts the gateway.
         /// </summary>
-        public static void Start()
+        public void Start()
         {
-            NetGateway._receiveThread.Start();
+            this._serverSocket.StartAccept();
         }
 
         /// <summary>
-        ///     Receives packets from socket.
+        ///     Called when a packet is received.
         /// </summary>
-        private static void Receive()
+        public override void OnReceive(byte[] buffer, int length)
         {
-            Queue<byte[]> messages = new Queue<byte[]>();
-
-            while (true)
-            {
-                if (NetGateway._listener.Read(ref messages))
-                {
-                    while (messages.Count != 0)
-                    {
-                        byte[] message = messages.Dequeue();
-
-                        if (message == null)
-                        {
-                            break;
-                        }
-
-                        NetMessaging.OnReceive(message, message.Length);
-                    }
-                }
-
-                Thread.Sleep(1);
-            }
+            NetMessaging.OnReceive(buffer, length);
         }
     }
 }
