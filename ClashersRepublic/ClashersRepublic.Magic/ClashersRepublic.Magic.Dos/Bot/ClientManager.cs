@@ -103,7 +103,7 @@
             lock (ClientManager._lock)
             {
                 Client client = new Client();
-                client.ConnectToPrivateServer();
+                client.ConnectToLocalServer();
                 ClientManager._clients.Add(client);
             }
         }

@@ -1,9 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
-    using System.Threading;
-    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
-    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
     using ClashersRepublic.Magic.Services.Core.Utils;
+    using ClashersRepublic.Magic.Services.Net;
 
     public class NetSocket
     {
@@ -20,17 +18,17 @@
         /// <summary>
         ///     Gets the service node socket.
         /// </summary>
-        public NetMQSocket Socket { get; }
+        public NetClient Socket { get; }
         
         /// <summary>
         ///     Initializes a new instance of the <see cref="NetSocket" /> class.
         /// </summary>
-        public NetSocket(int type, int id, string socket)
+        public NetSocket(int type, int id, string host)
         {
             this.Type = type;
             this.Id = id;
 
-            this.Socket = new DealerSocket(">tcp://" + socket + ":" + NetUtils.GetNetPort(type, id));
+            this.Socket = new NetClient(host, NetUtils.GetNetPort(type, id));
         }
         
         /// <summary>
@@ -38,10 +36,7 @@
         /// </summary>
         public void Send(byte[] buffer, int length)
         {
-            while (!this.Socket.TrySendFrame(buffer, length))
-            {
-                Thread.Sleep(2);
-            }
+            this.Socket.Send(buffer, length);
         }
     }
 }

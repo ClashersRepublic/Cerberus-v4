@@ -303,6 +303,10 @@
     <Compile Include="Web\WebManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ClashersRepublic.Magic.Services.Net\ClashersRepublic.Magic.Services.Net.csproj">
+      <Project>{ed4dad00-7846-44e8-beeb-fd47173ca019}</Project>
+      <Name>ClashersRepublic.Magic.Services.Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ClashersRepublic.Magic.Logic\ClashersRepublic.Magic.Logic.csproj">
       <Project>{2c270700-8c61-4caf-aecb-e7ec5facebda}</Project>
       <Name>ClashersRepublic.Magic.Logic</Name>

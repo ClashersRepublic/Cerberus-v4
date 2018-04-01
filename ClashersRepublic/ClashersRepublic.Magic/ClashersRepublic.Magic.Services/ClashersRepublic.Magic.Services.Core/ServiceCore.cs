@@ -77,7 +77,7 @@
                 return;
             }
 
-            NetGateway.Initialize();
+            NetGateway.Start();
         }
 
         /// <summary>
@@ -102,6 +102,7 @@
         /// </summary>
         private static void InitNet(NetMessageManager messageManager)
         {
+            NetGateway.Initialize();
             NetManager.Initialize();
             NetMessaging.Initialize();
             NetMessaging.SetMessageManager(messageManager);

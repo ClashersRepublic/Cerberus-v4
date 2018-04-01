@@ -74,6 +74,8 @@
                     this._writeStream.SetOffset(0);
                 }
 
+
+
                 Thread.Sleep(5);
             }
         }

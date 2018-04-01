@@ -63,6 +63,7 @@
                     if (this._message == null)
                     {
                         Logging.Error("NetPacket::decode unknown message received, type: " + messageType);
+                        return;
                     }
 
                     this._message.GetByteStream().SetByteArray(messageBytes, messageLength);
