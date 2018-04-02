@@ -124,6 +124,9 @@
                         session.Client.Messaging.Send(loginOkMessage);
                         session.Client.State = 6;
 
+                        session.BindServer(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER,
+                                           NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, loginOkMessage.AccountId));
+
                         if (message.GetChatAccountBanSeconds() != 0)
                         {
                             ChatAccountBanStatusMessage chatAccountBanStatusMessage = new ChatAccountBanStatusMessage();
@@ -132,10 +135,9 @@
                         }
                         else
                         {
-                            session.BindServer(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER, NetManager.GetRandomEndPoint(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER).Id);
+                            session.BindServer(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER,
+                                               NetManager.GetRandomEndPoint(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER).Id);
                         }
-
-                        session.BindServer(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, loginOkMessage.AccountId));
                     }
                 }
             }

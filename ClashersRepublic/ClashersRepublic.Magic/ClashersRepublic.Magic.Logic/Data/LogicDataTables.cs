@@ -280,6 +280,14 @@
         }
 
         /// <summary>
+        ///     Gets the experience level count.
+        /// </summary>
+        public static int GetExperienceLevelCount()
+        {
+            return LogicDataTables._dataTables[10].GetItemCount();
+        }
+
+        /// <summary>
         ///     Gets the town hall level data by index.
         /// </summary>
         public static LogicTownhallLevelData GetTownHallLevel(int levelIndex)

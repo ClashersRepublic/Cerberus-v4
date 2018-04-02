@@ -165,7 +165,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         {
             return this.DPS[index];
         }
-
+        
         public int GetDamageRadius(int index)
         {
             return this.DamageRadius[index];

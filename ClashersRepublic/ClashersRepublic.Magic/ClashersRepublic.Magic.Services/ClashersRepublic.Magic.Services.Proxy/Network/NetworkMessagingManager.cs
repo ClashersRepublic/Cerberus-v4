@@ -82,7 +82,7 @@
         /// </summary>
         private static void ReceiveLoop()
         {
-            ParallelOptions option = new ParallelOptions {MaxDegreeOfParallelism = 3};
+            ParallelOptions option = new ParallelOptions { MaxDegreeOfParallelism = 3 };
 
             while (true)
             {

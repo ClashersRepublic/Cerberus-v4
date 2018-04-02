@@ -27,6 +27,33 @@
         }
 
         /// <summary>
+        ///     Called when a obstacle is cleared.
+        /// </summary>
+        public void ObstacleCleared()
+        {
+            LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+            LogicDataTable dataTable = LogicDataTables.GetTable(22);
+
+            if (homeOwnerAvatar != null)
+            {
+                if (homeOwnerAvatar.IsClientAvatar())
+                {
+                    LogicClientAvatar clientAvatar = (LogicClientAvatar) homeOwnerAvatar;
+
+                    for (int i = 0; i < dataTable.GetItemCount(); i++)
+                    {
+                        LogicAchievementData achievementData = (LogicAchievementData)dataTable.GetItemAt(i);
+
+                        if (achievementData.GetActionType() == 4)
+                        {
+                            this.RefreshAchievementProgress(clientAvatar, achievementData, clientAvatar.GetAchievementProgress(achievementData) + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Refreshes status of all achievements.
         /// </summary>
         public void RefreshStatus()

@@ -2,6 +2,7 @@
 {
     using ClashersRepublic.Magic.Logic.Achievement;
     using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Avatar.Change;
     using ClashersRepublic.Magic.Logic.Battle;
     using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Cooldown;
@@ -49,6 +50,7 @@
         private readonly LogicArrayList<int> _layoutCooldown;
         private readonly LogicArrayList<int> _layoutStateVillage2;
         private readonly LogicArrayList<string> _armyNames;
+        private LogicArrayList<LogicHeroData> _placedHeroes;
         private LogicArrayList<LogicDataSlot> _unplacedObjects;
 
         private LogicArrayList<int> _newShopBuildings;
@@ -466,7 +468,7 @@
             }
 
             this._npcAttack = new LogicNpcAttack(this);
-            this._aliveBuildingCount = this.GetBuildingCount(true, false);
+            this._aliveBuildingCount = this.GetBuildingCount(false, true);
             this._destructibleBuildingCount = this.GetBuildingCount(true, false);
 
             if (this._battleLog != null)
@@ -815,7 +817,7 @@
                 }
             }
 
-            LogicJSONArray layoutCooldownArray = this._levelJSON.GetJSONArray("layout_state2");
+            LogicJSONArray layoutCooldownArray = this._levelJSON.GetJSONArray("layout_cooldown");
 
             if (layoutCooldownArray != null)
             {
@@ -911,19 +913,18 @@
                         } while (++this._experienceVersion <= 0);
                     }
                 }
-
-                if (false)
-                {
-                }
-
-                for (int i = 0; i < 2; i++)
-                {
-                    this._gameObjectManagers[i].Load(this._levelJSON);
-                }
-
-                this._cooldownManager.Load(this._levelJSON);
-                this._offerManager.Load(this._levelJSON);
             }
+
+            this._aliveBuildingCount = this.GetBuildingCount(false, true);
+            this._destructibleBuildingCount = this.GetBuildingCount(true, false);
+
+            for (int i = 0; i < 2; i++)
+            {
+                this._gameObjectManagers[i].Load(this._levelJSON);
+            }
+
+            this._cooldownManager.Load(this._levelJSON);
+            this._offerManager.Load(this._levelJSON);
         }
 
         /// <summary>
@@ -1531,6 +1532,7 @@
 
             if (this._matchType == 4 && !LogicDataTables.GetGlobals().RemoveRevengeWhenBattleIsLoaded())
             {
+                this.GetPlayerAvatar().GetChangeListener().RevengeUsed(this._revengeId);
             }
 
             if (this.GetState() != 5)
@@ -1546,6 +1548,13 @@
                     else if (this._matchType == 5 ||
                              this._matchType == 8)
                     {
+                        LogicClientAvatar playerAvatar = this.GetPlayerAvatar();
+                        LogicAvatarChangeListener listener = playerAvatar.GetChangeListener();
+
+                        if (listener != null)
+                        {
+                            // ?
+                        }
                     }
                 }
             }
@@ -1766,7 +1775,7 @@
 
             if (this._battleLog != null)
             {
-                // TODO: LogicBattleLog::calculateAvailableResources(this, this._matchType);
+                this._battleLog.CalculateAvailableResources(this, this._matchType);
                 // TODO: LogicLevel::setOwnerInformationToBattleLog();
             }
 
@@ -1935,6 +1944,79 @@
             {
                 this._npcAttack.Tick();
             }
+        }
+
+        /// <summary>
+        ///     Updates the battle status.
+        /// </summary>
+        public void UpdateBattleStatus()
+        {
+            int state = this._gameMode.GetState();
+            Debugger.DoAssert(state == 2 || state == 5, "updateBattleStatus in non combat state.");
+            int aliveBuildingCount = this.GetBuildingCount(false, true);
+
+            if (state == 2 || state == 5)
+            {
+                if (aliveBuildingCount < this._aliveBuildingCount)
+                {
+                    this._battleLog.SetDestructionPercentage(100 - 100 * aliveBuildingCount / this._destructibleBuildingCount);
+                }
+            }
+
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjectManagers[this._villageType].GetGameObjects(1);
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                LogicCharacter character = (LogicCharacter) gameObjects[i];
+                LogicHitpointComponent hitpointComponent = character.GetHitpointComponent();
+
+                if (hitpointComponent != null)
+                {
+                    if (hitpointComponent.GetTeam() == 0)
+                    {
+                        LogicCharacterData characterData = character.GetCharacterData();
+                        // ??
+                    }
+                }
+            }
+
+            int availableUnitCount = 0;
+
+            if (this._villageType == 1)
+            {
+                availableUnitCount = this._visitorAvatar.GetUnitsTotalVillage2();
+                LogicDataTable dataTable = LogicDataTables.GetTable(27);
+
+                for (int i = 0; i < dataTable.GetItemCount(); i++)
+                {
+                    LogicData data = dataTable.GetItemAt(i);
+
+                    if (data.GetVillageType() == this._villageType && 
+                        this._visitorAvatar.GetUnitUpgradeLevel((LogicCombatItemData) data) != 0)
+                    {
+                        if (this._placedHeroes != null)
+                        {
+                            int count = this._placedHeroes.Count;
+
+                            while (count > 0)
+                            {
+                                if (this._placedHeroes[--count] == data)
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+
+                    availableUnitCount += 1;
+                }
+            }
+            else
+            {
+                availableUnitCount = this._visitorAvatar.GetUnitsTotal();
+            }
+
+            // TODO: Finish this.
         }
 
         /// <summary>

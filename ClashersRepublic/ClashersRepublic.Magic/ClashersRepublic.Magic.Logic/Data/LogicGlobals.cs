@@ -53,6 +53,7 @@
         private int _obstacleMaxCount;
         private int _resourceProductionLootPercentage;
         private int _darkElixirProductionLootPercentage;
+        private int _village2MinTownHallLevelForDestructObstacle;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -150,6 +151,7 @@
             this._obstacleMaxCount = this.GetIntValue("OBSTACLE_COUNT_MAX");
             this._resourceProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE");
             this._darkElixirProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE_DARK_ELIXIR");
+            this._village2MinTownHallLevelForDestructObstacle = this.GetIntValue("VILLAGE2_DO_NOT_ALLOW_CLEAR_OBSTACLE_TH");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -478,6 +480,15 @@
         public int GetClockTowerSpeedUpMultiplier()
         {
             return this._clockTowerSpeedUpMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the minimum village 2 town hall level for destruct obstacle.
+        /// </summary>
+        /// <returns></returns>
+        public int GetMinVillage2TownHallLevelForDestructObstacle()
+        {
+            return this._village2MinTownHallLevelForDestructObstacle;
         }
 
         /// <summary>

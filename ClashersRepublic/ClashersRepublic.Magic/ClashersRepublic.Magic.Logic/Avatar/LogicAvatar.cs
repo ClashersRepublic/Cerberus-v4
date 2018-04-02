@@ -501,6 +501,14 @@
         }
 
         /// <summary>
+        ///     Gets if the exp level has reached the limit.
+        /// </summary>
+        public bool IsInExpLevelCap()
+        {
+            return this.GetExpLevel() >= LogicDataTables.GetExperienceLevelCount();
+        }
+
+        /// <summary>
         ///     Gets the variable value.
         /// </summary>
         public int GetVariable(LogicVariableData data)
@@ -754,6 +762,36 @@
             }
 
             return cnt;
+        }
+
+        /// <summary>
+        ///     Gets the all unit count.
+        /// </summary>
+        public int GetUnitsTotal()
+        {
+            int count = 0;
+
+            for (int i = 0; i < this._unitCount.Count; i++)
+            {
+                count += this._unitCount[i].GetCount();
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        ///     Gets the all village 2 unit count.
+        /// </summary>
+        public int GetUnitsTotalVillage2()
+        {
+            int count = 0;
+
+            for (int i = 0; i < this._unitCountVillage2.Count; i++)
+            {
+                count += this._unitCountVillage2[i].GetCount();
+            }
+            
+            return count;
         }
 
         /// <summary>

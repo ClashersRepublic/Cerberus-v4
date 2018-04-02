@@ -1,10 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
-    using ClashersRepublic.Magic.Logic.Helper;
+    using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Time;
     using ClashersRepublic.Magic.Logic.Util;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
 
@@ -259,6 +261,22 @@
         }
 
         /// <summary>
+        ///     Gets if this <see cref="LogicObstacle"/> is a tombstone.
+        /// </summary>
+        public bool IsTombstone()
+        {
+            return this.GetObstacleData().IsTombstone;
+        }
+
+        /// <summary>
+        ///     Gets the group of tomb.
+        /// </summary>
+        public int GetTombGroup()
+        {
+            return this.GetObstacleData().TombGroup;
+        }
+
+        /// <summary>
         ///     Gets the fade time.
         /// </summary>
         public int GetFadeTime()
@@ -309,6 +327,14 @@
         }
 
         /// <summary>
+        ///     Gets if this <see cref="LogicObstacle"/> instance can start clearing.
+        /// </summary>
+        public bool CanStartClearing()
+        {
+            return this._clearTimer == null && this._fadeTime == 0;
+        }
+
+        /// <summary>
         ///     Gets if this <see cref="LogicObstacle"/> instance is clearing on going.
         /// </summary>
         public bool IsClearingOnGoing()
@@ -317,11 +343,128 @@
         }
 
         /// <summary>
+        ///     Starts the clearing of obstacle.
+        /// </summary>
+        public void StartClearing()
+        {
+            if (this._clearTimer == null && this._fadeTime == 0)
+            {
+                if (this.GetObstacleData().GetClearTime() != 0)
+                {
+                    this._level.GetWorkerManagerAt(this._villageType).AllocateWorker(this);
+                    this._clearTimer = new LogicTimer();
+                    this._clearTimer.StartTimer(this.GetObstacleData().GetClearTime(), this._level.GetLogicTime(), false, -1);
+
+                    if (this._listener != null)
+                    {
+                        // Listener.
+                    }
+                }
+                else
+                {
+                    this.ClearingFinished(false);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Called when the clearing of this <see cref="LogicObstacle"/> instance is finished.
         /// </summary>
-        public void ClearingFinished(bool clearedWithFastForward)
+        public void ClearingFinished(bool ignoreState)
         {
-            // TODO: Implement LogicObstacle::clearingFinished(bool).
+            int state = this._level.GetState();
+
+            if (state == 1 || !LogicDataTables.GetGlobals().CompleteConstructionOnlyHome() && ignoreState)
+            {
+                if (this._level.GetHomeOwnerAvatar().IsClientAvatar())
+                {
+                    LogicClientAvatar homeOwnerAvatar = (LogicClientAvatar) this._level.GetHomeOwnerAvatar();
+                    LogicObstacleData obstacleData = this.GetObstacleData();
+                    LogicResourceData lootResourceData = obstacleData.GetLootResourceData();
+                    int lootCount = obstacleData.GetLootCount();
+
+                    if (obstacleData.IsLootCart())
+                    {
+                        LogicComponent component = this.GetComponent(14);
+                        LogicDataTable resourceTable = LogicDataTables.GetTable(2);
+
+                        if (component != null && resourceTable.GetItemCount() > 0)
+                        {
+                            for (int i = 0; i < resourceTable.GetItemCount(); i++)
+                            {
+                                // TODO: Implement LootCart.
+                            }
+                        }
+                    }
+
+                    if (!obstacleData.IsTombstone && !obstacleData.IsLootCart())
+                    {
+                        this._level.GetAchievementManager().ObstacleCleared();
+                    }
+
+                    this.XpGainHelper(LogicGamePlayUtil.TimeToExp(obstacleData.GetClearTime()), homeOwnerAvatar, ignoreState || state == 1);
+
+                    if (lootResourceData != null && lootCount > 0)
+                    {
+                        if (homeOwnerAvatar != null)
+                        {
+                            if (lootResourceData.PremiumCurrency)
+                            {
+                                int lootMultipler = 1;
+
+                                if (this._lootMultiplyVersion >= 2)
+                                {
+                                    lootMultipler = this._lootMultiplyVersion;
+                                }
+
+                                int diamondsCount = 0;
+
+                                if (obstacleData.GetName().Equals("Bonus Gembox"))
+                                {
+                                    diamondsCount = lootCount * lootMultipler;
+                                }
+                                else
+                                {
+                                    diamondsCount = this._level.GetGameObjectManagerAt(this._villageType).IncreaseObstacleClearCounter(lootMultipler);
+                                }
+
+                                if (diamondsCount > 0)
+                                {
+                                    homeOwnerAvatar.SetDiamonds(homeOwnerAvatar.GetDiamonds() + diamondsCount);
+                                    homeOwnerAvatar.SetFreeDiamonds(homeOwnerAvatar.GetFreeDiamonds() + diamondsCount);
+                                    homeOwnerAvatar.GetChangeListener().FreeDiamondsAdded(diamondsCount);
+                                }
+                            }
+                            else
+                            {
+                                int gainCount = LogicMath.Min(homeOwnerAvatar.GetUnusedResourceCap(lootResourceData), lootCount);
+
+                                if (gainCount > 0)
+                                {
+                                    homeOwnerAvatar.CommodityCountChangeHelper(0, lootResourceData, gainCount);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debugger.Error("LogicObstacle::clearingFinished - Home owner avatar is NULL!");
+                        }
+                    }
+
+                    if (obstacleData.GetVillageType() == this._level.GetVillageType())
+                    {
+                        // ?
+                    }
+
+                    if (this._clearTimer != null)
+                    {
+                        this._clearTimer.Destruct();
+                        this._clearTimer = null;
+                    }
+
+                    this._fadeTime = 1;
+                }
+            }
         }
 
         /// <summary>

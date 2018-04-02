@@ -284,6 +284,12 @@
                         break;
                     }
 
+                    case 507:
+                    {
+                        command = new LogicClearObstacleCommand();
+                        break;
+                    }
+
                     case 508:
                     {
                         command = new LogicTrainUnitCommand();

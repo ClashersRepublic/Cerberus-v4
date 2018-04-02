@@ -25,6 +25,10 @@
         {
         }
 
+        public virtual void RevengeUsed(LogicLong id)
+        {
+        }
+
         public virtual void ExpPointsGained(int count)
         {
         }

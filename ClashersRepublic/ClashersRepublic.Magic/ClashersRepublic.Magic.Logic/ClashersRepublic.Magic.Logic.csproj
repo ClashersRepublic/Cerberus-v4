@@ -74,6 +74,7 @@
     <Compile Include="Command\Home\LogicSpeedUpConstructionCommand.cs" />
     <Compile Include="Command\Home\LogicCollectResourcesCommand.cs" />
     <Compile Include="Command\Home\LogicMoveBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicClearObstacleCommand.cs" />
     <Compile Include="Command\Home\LogicUpgradeMultipleBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicUpgradeBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicNewShopItemsSeenCommand.cs" />

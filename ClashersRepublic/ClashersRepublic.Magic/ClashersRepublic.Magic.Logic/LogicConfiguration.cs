@@ -36,6 +36,14 @@
         }
 
         /// <summary>
+        ///     Gets if the battle wait for projectile destruction.
+        /// </summary>
+        public bool GetBatteWaitForProjectileDestruction()
+        {
+            return this._battleWaitForProjectileDestruction;
+        }
+
+        /// <summary>
         ///     Gets the max town hall level.
         /// </summary>
         public int GetMaxTownHallLevel()

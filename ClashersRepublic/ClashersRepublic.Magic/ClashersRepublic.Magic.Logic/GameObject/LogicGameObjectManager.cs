@@ -29,6 +29,8 @@
         private readonly LogicArrayList<LogicGameObject>[] _gameObjects;
         private readonly LogicArrayList<LogicBuilding> _barracks;
         private readonly LogicArrayList<LogicBuilding> _darkBarracks;
+        private readonly LogicArrayList<int> _obstacleDiamondsReward;
+        private readonly LogicArrayList<int> _obstacleDiamondsRewardVillage2;
 
         private LogicBuilding _allianceCastle;
         private LogicBuilding _clockTower;
@@ -70,6 +72,36 @@
             {
                 this._gameObjects[i] = new LogicArrayList<LogicGameObject>(32);
             }
+
+            this._obstacleDiamondsReward = new LogicArrayList<int>(20);
+            this._obstacleDiamondsRewardVillage2 = new LogicArrayList<int>(20);
+
+            for (int i = 0; i < 20; i++)
+            {
+                this._obstacleDiamondsReward.Add(0);
+                this._obstacleDiamondsRewardVillage2.Add(0);
+            }
+
+            this._obstacleDiamondsReward[1] = 3;
+            this._obstacleDiamondsReward[3] = 1;
+            this._obstacleDiamondsReward[4] = 2;
+            this._obstacleDiamondsReward[6] = 1;
+            this._obstacleDiamondsReward[7] = 1;
+            this._obstacleDiamondsReward[10] = 3;
+            this._obstacleDiamondsReward[11] = 1;
+            this._obstacleDiamondsReward[13] = 2;
+            this._obstacleDiamondsReward[14] = 2;
+            this._obstacleDiamondsReward[17] = 3;
+            this._obstacleDiamondsReward[19] = 1;
+            this._obstacleDiamondsRewardVillage2[17] = -1;
+            this._obstacleDiamondsRewardVillage2[10] = -1;
+            this._obstacleDiamondsRewardVillage2[11] = -1;
+            this._obstacleDiamondsRewardVillage2[3] = 2;
+            this._obstacleDiamondsRewardVillage2[4] = 1;
+            this._obstacleDiamondsRewardVillage2[5] = 1;
+            this._obstacleDiamondsRewardVillage2[6] = 1;
+            this._obstacleDiamondsRewardVillage2[13] = -1;
+            this._obstacleDiamondsRewardVillage2[19] = -1;
 
             this._barracks = new LogicArrayList<LogicBuilding>();
             this._darkBarracks = new LogicArrayList<LogicBuilding>();
@@ -853,6 +885,22 @@
         }
 
         /// <summary>
+        ///     Increases the obstacle clear counter.
+        /// </summary>
+        public int IncreaseObstacleClearCounter(int lootMultiplier)
+        {
+            this._obstacleClearCounter = (this._obstacleClearCounter + 1) % this._obstacleDiamondsReward.Count;
+            int diamondsReward = this._obstacleDiamondsReward[this._obstacleClearCounter];
+
+            if (lootMultiplier >= 2)
+            {
+                diamondsReward = this._obstacleDiamondsRewardVillage2[this._obstacleClearCounter] + lootMultiplier * diamondsReward;
+            }
+
+            return diamondsReward;
+        }
+
+        /// <summary>
         ///     Generates the next gembox drop time.
         /// </summary>
         public void GenerateNextGemboxDropTime(bool clamp)
@@ -889,13 +937,13 @@
                     {
                         this.Village1RespawnObstacle();
 
-                        if (this._bonusGemboxData != null && this._gemBoxDropSecs <= 0 && this._bonusGemboxData.LootCount > 0)
+                        if (this._bonusGemboxData != null && this._gemBoxDropSecs <= 0 && this._bonusGemboxData.GetLootCount() > 0)
                         {
                             this.CreateSpecialObstacle(this._bonusGemboxData, true);
                             this.GenerateNextGemboxDropTime(true);
                         }
 
-                        if (this._specialObstacleData != null && this._specialObstacleDropSecs <= 0 && this._specialObstacleData.LootCount > 0)
+                        if (this._specialObstacleData != null && this._specialObstacleDropSecs <= 0 && this._specialObstacleData.GetLootCount() > 0)
                         {
                             this.CreateSpecialObstacle(this._specialObstacleData, false);
 
@@ -1006,7 +1054,7 @@
 
                 if (obstacleData.GetVillageType() == this._villageType)
                 {
-                    respawnWeights += obstacleData.RespawnWeight;
+                    respawnWeights += obstacleData.GetRespawnWeight();
                 }
             }
 
@@ -1019,7 +1067,7 @@
 
                 if (obstacleData.GetVillageType() == this._villageType)
                 {
-                    weights += obstacleData.RespawnWeight;
+                    weights += obstacleData.GetRespawnWeight();
 
                     if (weights > rnd)
                     {
@@ -1061,7 +1109,7 @@
                     {
                         LogicObstacle obstacle = (LogicObstacle) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
 
-                        if (data.LootCount > 0)
+                        if (data.GetLootCount() > 0)
                         {
                             obstacle.SetLootMultiplyVersion(2);
                         }
@@ -1169,7 +1217,52 @@
         /// </summary>
         public void DoDestucting()
         {
-            // TODO Implement LogicGameObjectManager::doDestructing.
+            bool projectileDestructed = false;
+
+            for (int type = 0; type < 9; type++)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[type];
+
+                if (gameObjects.Count > 0)
+                {
+                    int idx = 0;
+
+                    do
+                    {
+
+                        LogicGameObject gameObject = gameObjects[idx];
+
+                        if (gameObject.ShouldDestruct())
+                        {
+                            gameObjects.Remove(idx--);
+
+                            this.RemoveGameObjectReferences(gameObject);
+                            this._componentManager.RemoveGameObjectReferences(gameObject);
+
+                            if (gameObject != null)
+                            {
+                                gameObject.Destruct();
+                            }
+
+                            if (type == 2)
+                            {
+                                projectileDestructed = true;
+                            }
+                        }
+                    } while (++idx < gameObjects.Count);
+                }
+            }
+
+            if (this._level.GetGameMode().GetConfiguration().GetBatteWaitForProjectileDestruction())
+            {
+                if (projectileDestructed)
+                {
+                    if (this._gameObjects[2].Count == 0)
+                    {
+                        this._level.UpdateBattleStatus();
+                    }
+                }
+            }
         }
 
         /// <summary>

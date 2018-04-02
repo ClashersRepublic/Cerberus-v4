@@ -1,5 +1,6 @@
 ﻿namespace ClashersRepublic.Magic.Logic.GameObject
 {
+    using ClashersRepublic.Magic.Logic.Avatar;
     using ClashersRepublic.Magic.Logic.Data;
     using ClashersRepublic.Magic.Logic.GameObject.Component;
     using ClashersRepublic.Magic.Logic.GameObject.Listener;
@@ -327,6 +328,27 @@
         public void SetListener(LogicGameObjectListener listener)
         {
             this._listener = listener;
+        }
+
+        /// <summary>
+        ///     Helper for the xp gain.
+        /// </summary>
+        public void XpGainHelper(int xp, LogicAvatar homeOwnerAvatar, bool inHomeState)
+        {
+            LogicClientAvatar playerAvatar = this._level.GetPlayerAvatar();
+
+            if (!homeOwnerAvatar.IsInExpLevelCap())
+            {
+                if (homeOwnerAvatar == playerAvatar && this._level.GetState() == 1 && inHomeState)
+                {
+                    if (this._listener != null)
+                    {
+                        this._listener.XpGained(xp);
+                    }
+                }
+            }
+
+            homeOwnerAvatar.XpGainHelper(xp);
         }
 
         /// <summary>

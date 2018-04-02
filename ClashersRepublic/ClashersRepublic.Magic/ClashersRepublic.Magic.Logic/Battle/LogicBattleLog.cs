@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Battle
 {
     using ClashersRepublic.Magic.Logic.Level;
+    using ClashersRepublic.Magic.Titan.Debug;
     using ClashersRepublic.Magic.Titan.Math;
 
     public class LogicBattleLog
@@ -15,6 +16,7 @@
         private int _defenserAllianceBadgeId;
         private int _attackerStars;
         private int _villageType;
+        private int _destructionPercentage;
 
         private string _attackerAllianceName;
         private string _defenserAllianceName;
@@ -173,6 +175,21 @@
         public void CalculateAvailableResources(LogicLevel level, int matchType)
         {
             // TODO: Implement LogicBattleLog::calculateAvailableResources.
+        }
+
+        /// <summary>
+        ///     Sets the destruction percentage.
+        /// </summary>
+        public void SetDestructionPercentage(int percentage)
+        {
+            if (this._destructionPercentage <= percentage)
+            {
+                this._destructionPercentage = percentage;
+            }
+            else
+            {
+                Debugger.Warning("LogicBattleLog: m_destructionPercentage decreases");
+            }
         }
     }
 }
