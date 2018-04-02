@@ -8,6 +8,7 @@
 
     public class LogicConfiguration
     {
+        private LogicJSONObject _json;
         private LogicObstacleData _specialObstacle;
         private LogicArrayList<int> _milestoneScoreChangeForLosing;
         private LogicArrayList<int> _percentageScoreChangeForLosing;
@@ -33,6 +34,14 @@
         public LogicConfiguration()
         {
             this._maxTownHallLevel = 8;
+        }
+
+        /// <summary>
+        ///     Gets the configuration json.
+        /// </summary>
+        public LogicJSONObject GetJson()
+        {
+            return this._json;
         }
 
         /// <summary>
@@ -64,6 +73,8 @@
         /// </summary>
         public void Load(LogicJSONObject jsonObject)
         {
+            this._json = jsonObject;
+
             if (jsonObject != null)
             {
                 LogicJSONObject village1Object = jsonObject.GetJSONObject("Village1");

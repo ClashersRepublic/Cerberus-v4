@@ -296,6 +296,27 @@
         }
 
         /// <summary>
+        ///     Gets if the specified position is passable by path finder.
+        /// </summary>
+        public bool IsPassablePathFinder(int x, int y)
+        {
+            if (this._sizeX > x / 2 && this._sizeY > y / 2)
+            {
+                if (x / 2 + y / 2 >= 0)
+                {
+                    LogicTile tile = this.GetTile(x / 2, y / 2);
+
+                    if (tile != null)
+                    {
+                        return tile.IsPassablePathFinder(x % 2, y % 2);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Gets if the specified position is a valid attack position.
         /// </summary>
         public bool IsValidAttackPos(int x, int y)
@@ -318,8 +339,10 @@
 
                                     if (!gameObject.IsPassable())
                                     {
-                                        if (gameObject is LogicBuilding building)
+                                        if (gameObject.GetGameObjectType() == 0)
                                         {
+                                            LogicBuilding building = (LogicBuilding) gameObject;
+
                                             if (!building.GetBuildingData().Hidden)
                                             {
                                                 return false;

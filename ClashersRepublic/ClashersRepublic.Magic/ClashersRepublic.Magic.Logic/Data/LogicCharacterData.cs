@@ -4,6 +4,10 @@ namespace ClashersRepublic.Magic.Logic.Data
 
     public class LogicCharacterData : LogicCombatItemData
     {
+        private bool _healerTrigger;
+        private bool _isUnderground;
+
+        private int _speed;
         private int _unlockedBarrackLevel;
         private int[] _upgradeLevelByThownHall;
 
@@ -17,7 +21,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
         public string SWF { get; protected set; }
-        public int Speed { get; protected set; }
         protected int[] Hitpoints { get; set; }
         protected int[] AttackRange { get; set; }
         protected int[] AttackSpeed { get; set; }
@@ -98,7 +101,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int HealthReductionPerSecond { get; protected set; }
         public int AutoMergeDistance { get; protected set; }
         public int AutoMergeGroupSize { get; protected set; }
-        public bool IsUnderground { get; protected set; }
         public int ProjectileBounces { get; protected set; }
         public int FriendlyGroupWeight { get; protected set; }
         public int EnemyGroupWeight { get; protected set; }
@@ -135,7 +137,10 @@ namespace ClashersRepublic.Magic.Logic.Data
         public override void CreateReferences()
         {
             base.CreateReferences();
+            this._speed = this.GetIntegerValue("Speed", 0);
             this._unlockedBarrackLevel = this.GetIntegerValue("BarrackLevel", 0) - 1;
+            this._healerTrigger = this.GetBooleanValue("HealerTrigger", 0);
+            this._isUnderground = this.GetBooleanValue("IsUnderground", 0);
         }
 
         /// <summary>
@@ -144,6 +149,22 @@ namespace ClashersRepublic.Magic.Logic.Data
         public override int GetRequiredProductionLevel()
         {
             return this._unlockedBarrackLevel;
+        }
+
+        /// <summary>
+        ///     Gets if the character is underground.
+        /// </summary>
+        public bool IsUnderground()
+        {
+            return this._isUnderground;
+        }
+
+        /// <summary>
+        ///     Gets if the character is a healer trigger.
+        /// </summary>
+        public bool IsHealerTrigger()
+        {
+            return this._healerTrigger;
         }
 
         public int GetHitpoints(int index)
@@ -159,6 +180,14 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetAttackSpeed(int index)
         {
             return this.AttackSpeed[index];
+        }
+
+        /// <summary>
+        ///     Gets the character speed.
+        /// </summary>
+        public int GetSpeed()
+        {
+            return this._speed;
         }
 
         public int GetDPS(int index)

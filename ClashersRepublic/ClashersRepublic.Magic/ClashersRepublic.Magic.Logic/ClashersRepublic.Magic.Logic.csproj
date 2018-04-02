@@ -57,6 +57,7 @@
     <Compile Include="Avatar\LogicClientAvatar.cs" />
     <Compile Include="Avatar\LogicNpcAvatar.cs" />
     <Compile Include="Battle\LogicBattleLog.cs" />
+    <Compile Include="Battle\LogicReplay.cs" />
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="GameObject\Component\LogicComponentFilter.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
+    <Compile Include="GameObject\Component\LogicMovementComponent.cs" />
     <Compile Include="GameObject\Component\LogicWarResourceStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicResourceStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicUnitStorageComponent.cs" />
@@ -237,6 +239,7 @@
     <Compile Include="Util\LogicCompressibleString.cs" />
     <Compile Include="Util\LogicDataSlot.cs" />
     <Compile Include="Util\LogicGamePlayUtil.cs" />
+    <Compile Include="Util\LogicMovementSystem.cs" />
     <Compile Include="Util\LogicPathFinderOld.cs" />
     <Compile Include="Util\LogicPathFinderNew.cs" />
     <Compile Include="Util\LogicPathFinder.cs" />

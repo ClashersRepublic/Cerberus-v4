@@ -120,9 +120,29 @@
         {
             for (int i = 0; i < this._openMissions.Count; i++)
             {
-                if (this._openMissions[i].GetMissionData() == data)
+                LogicMission mission = this._openMissions[i];
+
+                if (mission.GetMissionData() == data)
                 {
-                    return this._openMissions[i];
+                    return mission;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the mission by category.
+        /// </summary>
+        public LogicMission GetMissionByCategory(int category)
+        {
+            for (int i = 0; i < this._openMissions.Count; i++)
+            {
+                LogicMission mission = this._openMissions[i];
+
+                if (mission.GetMissionData().GetMissionCategory() == category)
+                {
+                    return mission;
                 }
             }
 

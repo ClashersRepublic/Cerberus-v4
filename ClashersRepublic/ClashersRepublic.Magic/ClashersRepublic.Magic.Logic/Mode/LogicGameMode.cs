@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Logic.Mode
 {
     using ClashersRepublic.Magic.Logic.Avatar;
+    using ClashersRepublic.Magic.Logic.Battle;
     using ClashersRepublic.Magic.Logic.Calendar;
     using ClashersRepublic.Magic.Logic.Command;
     using ClashersRepublic.Magic.Logic.Data;
@@ -22,6 +23,7 @@
         private int _guardTime;
         private int _maintenanceTime;
         private int _elapsedSecs;
+        private int _skipPrepationSecs;
 
         private LogicTimer _battleTimer;
         private LogicLevel _level;
@@ -29,6 +31,7 @@
         private LogicGameListener _gameListener;
         private LogicCalendar _calendar;
         private LogicConfiguration _configuration;
+        private LogicReplay _replay;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicGameMode" /> class.
@@ -69,6 +72,12 @@
             {
                 this._battleTimer.Destruct();
                 this._battleTimer = null;
+            }
+
+            if (this._replay != null)
+            {
+                this._replay.Destruct();
+                this._replay = null;
             }
 
             this._configuration = null;
@@ -137,6 +146,14 @@
         public LogicConfiguration GetConfiguration()
         {
             return this._configuration;
+        }
+
+        /// <summary>
+        ///     Gets the calendar instance.
+        /// </summary>
+        public LogicCalendar GetCalendar()
+        {
+            return this._calendar;
         }
 
         /// <summary>
@@ -290,6 +307,70 @@
             {
                 Debugger.Error("endDefendState called from invalid state");
             }
+        }
+
+        /// <summary>
+        ///     Ends the attack preparation.
+        /// </summary>
+        public void EndAttackPreparation()
+        {
+            if (this._battleTimer != null)
+            {
+                int attackLength = LogicDataTables.GetGlobals().GetAttackLengthSecs();
+                int battleRemainingSecs = this._battleTimer.GetRemainingSeconds(this._level.GetLogicTime());
+
+                if (battleRemainingSecs > attackLength)
+                {
+                    int remainingPrepSecs = battleRemainingSecs - attackLength;
+
+                    if (this._replay != null)
+                    {
+                        this._replay.RecordPreparationSkipTime(remainingPrepSecs);
+                    }
+
+                    this._skipPrepationSecs = remainingPrepSecs;
+                    this._battleTimer.StartTimer(attackLength, this._level.GetLogicTime(), false, -1);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets if the attacker is in attack preparation mode.
+        /// </summary>
+        public bool IsInAttackPreparationMode()
+        {
+            if (this._state == 2 || this._state == 5)
+            {
+                LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+                if (homeOwnerAvatar.IsClientAvatar())
+                {
+                    return this.GetRemainingAttackSeconds() > LogicDataTables.GetGlobals().GetAttackLengthSecs();
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the remaining attack seconds.
+        /// </summary>
+        public int GetRemainingAttackSeconds()
+        {
+            if ((this._state == 2 || this._state == 5) && !this._battleOver)
+            {
+                if (!this._level.InvulnerabilityEnabled())
+                {
+                    if (this._battleTimer != null)
+                    {
+                        return LogicMath.Max(this._battleTimer.GetRemainingSeconds(this._level.GetLogicTime()), 1);
+                    }
+                }
+
+                return 1;
+            }
+
+            return 0;
         }
 
         /// <summary>

@@ -74,6 +74,14 @@
         }
 
         /// <summary>
+        ///     Gets if the specified position is passable by path finder.
+        /// </summary>
+        public bool IsPassablePathFinder(int x, int y)
+        {
+            return x + y <= 1 && ((1 << (x + 2 * y)) & this._passableFlag) == 0;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the specified gameobject is buildable on this tile.
         /// </summary>
         public bool IsBuildable(LogicGameObject gameObject)

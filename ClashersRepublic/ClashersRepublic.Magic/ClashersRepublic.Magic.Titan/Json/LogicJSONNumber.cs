@@ -4,7 +4,15 @@
 
     public class LogicJSONNumber : LogicJSONNode
     {
-        private readonly int _value;
+        private int _value;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LogicJSONNumber" /> class.
+        /// </summary>
+        public LogicJSONNumber()
+        {
+            this._value = 0;
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicJSONNumber" /> class.
@@ -20,6 +28,14 @@
         public int GetIntValue()
         {
             return this._value;
+        }
+
+        /// <summary>
+        ///     Sets the integer value.
+        /// </summary>
+        public void SetIntValue(int value)
+        {
+            this._value = value;
         }
 
         /// <summary>

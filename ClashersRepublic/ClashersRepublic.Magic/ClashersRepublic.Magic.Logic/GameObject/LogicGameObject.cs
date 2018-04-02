@@ -228,6 +228,15 @@
         }
 
         /// <summary>
+        ///     Gets the movement component.
+        /// </summary>
+        /// <returns></returns>
+        public LogicMovementComponent GetMovementComponent()
+        {
+            return (LogicMovementComponent) this._components[4];
+        }
+
+        /// <summary>
         ///     Removes the specified component.
         /// </summary>
         public void RemoveComponent(int componentType)
@@ -261,14 +270,6 @@
         public void RefreshPassable()
         {
             this._level.GetTileMap().RefreshPassable(this);
-        }
-
-        /// <summary>
-        ///     Sets the initial position.
-        /// </summary>
-        public void SetInitialPosition(int x, int y)
-        {
-            this._position.Set(x, y);
         }
 
         /// <summary>
@@ -349,6 +350,14 @@
             }
 
             homeOwnerAvatar.XpGainHelper(xp);
+        }
+
+        /// <summary>
+        ///     Sets the initial position.
+        /// </summary>
+        public virtual void SetInitialPosition(int x, int y)
+        {
+            this._position.Set(x, y);
         }
 
         /// <summary>

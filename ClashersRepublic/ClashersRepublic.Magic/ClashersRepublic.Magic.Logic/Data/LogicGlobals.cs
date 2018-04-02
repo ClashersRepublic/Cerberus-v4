@@ -54,6 +54,10 @@
         private int _resourceProductionLootPercentage;
         private int _darkElixirProductionLootPercentage;
         private int _village2MinTownHallLevelForDestructObstacle;
+        private int _attackVillage2PreparationLengthSecs;
+        private int _attackPreparationLengthSecs;
+        private int _attackLengthSecs;
+        private int _village2StartUnitLevel;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -152,6 +156,10 @@
             this._resourceProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE");
             this._darkElixirProductionLootPercentage = this.GetIntValue("RESOURCE_PRODUCTION_LOOT_PERCENTAGE_DARK_ELIXIR");
             this._village2MinTownHallLevelForDestructObstacle = this.GetIntValue("VILLAGE2_DO_NOT_ALLOW_CLEAR_OBSTACLE_TH");
+            this._attackVillage2PreparationLengthSecs = this.GetIntValue("ATTACK_PREPARATION_LENGTH_VILLAGE2_SEC");
+            this._attackPreparationLengthSecs = this.GetIntValue("ATTACK_PREPARATION_LENGTH_SEC");
+            this._attackLengthSecs = this.GetIntValue("ATTACK_LENGTH_SEC");
+            this._village2StartUnitLevel = this.GetIntValue("VILLAGE2_START_UNIT_LEVEL");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -485,10 +493,41 @@
         /// <summary>
         ///     Gets the minimum village 2 town hall level for destruct obstacle.
         /// </summary>
-        /// <returns></returns>
         public int GetMinVillage2TownHallLevelForDestructObstacle()
         {
             return this._village2MinTownHallLevelForDestructObstacle;
+        }
+
+        /// <summary>
+        ///     Gets the length of attack preparation.
+        /// </summary>
+        public int GetAttackPreparationLengthSecs()
+        {
+            return this._attackPreparationLengthSecs;
+        }
+
+        /// <summary>
+        ///     Gets the length of attack village 2 preparation.
+        /// </summary>
+        public int GetAttackVillage2PreparationLengthSecs()
+        {
+            return this._attackVillage2PreparationLengthSecs;
+        }
+
+        /// <summary>
+        ///     Gets the attack length.
+        /// </summary>
+        public int GetAttackLengthSecs()
+        {
+            return this._attackLengthSecs;
+        }
+
+        /// <summary>
+        ///     Gets the village 2 start unit level.
+        /// </summary>
+        public int GetVillage2StartUnitLevel()
+        {
+            return this._village2StartUnitLevel;
         }
 
         /// <summary>

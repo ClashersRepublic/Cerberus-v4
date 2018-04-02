@@ -6,6 +6,7 @@
     using ClashersRepublic.Magic.Logic.Level;
     using ClashersRepublic.Magic.Logic.Util;
     using ClashersRepublic.Magic.Titan.Debug;
+    using ClashersRepublic.Magic.Titan.Json;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -799,20 +800,41 @@
         /// </summary>
         public int GetUnitCount(LogicCombatItemData data)
         {
-            int index = -1;
-
-            for (int i = 0; i < this._unitCount.Count; i++)
+            if (data.GetCombatItemType() != 0)
             {
-                if (this._unitCount[i].GetData() == data)
+                int index = -1;
+
+                for (int i = 0; i < this._spellCount.Count; i++)
                 {
-                    index = i;
-                    break;
+                    if (this._spellCount[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    return this._spellCount[index].GetCount();
                 }
             }
-
-            if (index != -1)
+            else
             {
-                return this._unitCount[index].GetCount();
+                int index = -1;
+
+                for (int i = 0; i < this._unitCount.Count; i++)
+                {
+                    if (this._unitCount[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    return this._unitCount[index].GetCount();
+                }
             }
 
             return 0;
@@ -823,24 +845,49 @@
         /// </summary>
         public void SetUnitCount(LogicCombatItemData data, int count)
         {
-            int index = -1;
-
-            for (int i = 0; i < this._unitCount.Count; i++)
+            if (data.GetCombatItemType() != 0)
             {
-                if (this._unitCount[i].GetData() == data)
+                int index = -1;
+
+                for (int i = 0; i < this._spellCount.Count; i++)
                 {
-                    index = i;
-                    break;
+                    if (this._spellCount[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
                 }
-            }
 
-            if (index != -1)
-            {
-                this._unitCount[index].SetCount(count);
+                if (index != -1)
+                {
+                    this._spellCount[index].SetCount(count);
+                }
+                else
+                {
+                    this._spellCount.Add(new LogicDataSlot(data, count));
+                }
             }
             else
             {
-                this._unitCount.Add(new LogicDataSlot(data, count));
+                int index = -1;
+
+                for (int i = 0; i < this._unitCount.Count; i++)
+                {
+                    if (this._unitCount[i].GetData() == data)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1)
+                {
+                    this._unitCount[index].SetCount(count);
+                }
+                else
+                {
+                    this._unitCount.Add(new LogicDataSlot(data, count));
+                }
             }
         }
 
@@ -1613,6 +1660,22 @@
         public int GetAllianceCastleFreeSpellCapacity()
         {
             return this._allianceCastleTotalSpellCapacity - this._allianceCastleUsedSpellCapacity;
+        }
+
+        /// <summary>
+        ///     Saves this instance to replay.
+        /// </summary>
+        public virtual void SaveToReplay(LogicJSONObject jsonObject)
+        {
+            // SaveToReplay.
+        }
+
+        /// <summary>
+        ///     Loads this instance for replay.
+        /// </summary>
+        public virtual void LoadForReplay(LogicJSONObject jsonObject)
+        {
+            // LoadForReplay.
         }
     }
 }
