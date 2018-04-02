@@ -1,16 +1,12 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
-    using System.Threading;
-    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
     public static class NetManager
     {
         private static int[] _scrambler;
-
-        private static NetGateway _gateway;
-        private static Thread _wakeupThread;
+        
         private static LogicArrayList<NetSocket>[] _endPoints;
 
         /// <summary>
@@ -19,9 +15,7 @@
         public static void Initialize()
         {
             NetManager._scrambler = new int[28];
-            NetManager._gateway = new NetGateway();
             NetManager._endPoints = new LogicArrayList<NetSocket>[28];
-            NetManager._wakeupThread = new Thread(NetManager.WakeupLoop);
 
             for (int i = 0; i < 28; i++)
             {
@@ -46,31 +40,7 @@
         /// </summary>
         public static void Start()
         {
-            NetManager._wakeupThread.Start();
-            NetManager._gateway.Start();
-        }
-
-        /// <summary>
-        ///     Task for the wakeup thread.
-        /// </summary>
-        private static void WakeupLoop()
-        {
-            ParallelOptions option = new ParallelOptions {MaxDegreeOfParallelism = 2};
-            
-            while (true)
-            {
-                Parallel.For(0, 28, option, i =>
-                {
-                    LogicArrayList<NetSocket> sockets = NetManager._endPoints[i];
-
-                    for (int j = 0; j < sockets.Count; j++)
-                    {
-                        sockets[j].Socket.Wakeup();
-                    }
-                });
-
-                Thread.Sleep(1);
-            }
+            NetGateway.Initialize();
         }
         
         /// <summary>

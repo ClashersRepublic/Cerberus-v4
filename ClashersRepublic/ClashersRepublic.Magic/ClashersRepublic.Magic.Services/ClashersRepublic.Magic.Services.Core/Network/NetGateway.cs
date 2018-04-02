@@ -1,52 +1,46 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
-    using System;
+    using System.Threading;
+
+    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ;
+    using ClashersRepublic.Magic.Services.Core.Libs.NetMQ.Sockets;
     using ClashersRepublic.Magic.Services.Core.Utils;
 
-    using ClashersRepublic.Magic.Services.Net;
-    using ClashersRepublic.Magic.Services.Net.ServerSocket;
-
-    public class NetGateway : NetListener
+    public static class NetGateway
     {
-        private readonly NetTcpServerGateway _serverSocket;
-        
+        private static NetMQSocket _listener;
+        private static Thread _receiveThread;
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NetGateway"/> class.
+        ///     Initializes this instance.
         /// </summary>
-        public NetGateway()
+        public static void Initialize()
         {
-            this._serverSocket = new NetTcpServerGateway(this, NetUtils.GetNetPort(ServiceCore.ServiceNodeType, ServiceCore.ServiceNodeId));
+            NetGateway._listener = new DealerSocket("@tcp://*:" + NetUtils.GetNetPort(ServiceCore.ServiceNodeType, ServiceCore.ServiceNodeId));
+            NetGateway._receiveThread = new Thread(NetGateway.Receive);
+            NetGateway._receiveThread.Start();
         }
 
         /// <summary>
-        ///     Starts the server socket.
+        ///     Receives packets from socket.
         /// </summary>
-        public void Start()
+        private static void Receive()
         {
-            this._serverSocket.StartAccept();
-        }
-
-        /// <summary>
-        ///     Called when a packet is received.
-        /// </summary>
-        public override int OnReceive(byte[] buffer, int length)
-        {
-            if (length >= 4)
+            while (true)
             {
-                int messageLength = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
-
-                if (length - 4 >= messageLength)
-                {
-                    byte[] messageBytes = new byte[length - 4];
-
-                    Array.Copy(buffer, 4, messageBytes, 0, messageLength);
-                    NetMessaging.OnReceive(messageBytes, messageLength);
-
-                    return 4 + messageLength;
-                }
+                NetGateway.ProcessReceive(NetGateway._listener.ReceiveFrameBytes());
             }
+        }
 
-            return 0;
+        /// <summary>
+        ///     Processes the received packet.
+        /// </summary>
+        private static void ProcessReceive(byte[] buffer)
+        {
+            if (buffer != null)
+            {
+                NetMessaging.OnReceive(buffer, buffer.Length);
+            }
         }
     }
 }
