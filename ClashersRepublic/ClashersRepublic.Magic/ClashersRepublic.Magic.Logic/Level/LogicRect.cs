@@ -51,7 +51,7 @@
             {
                 if (this._startY <= y)
                 {
-                    return this._endX > x && this._endY > y;
+                    return this._endX >= x && this._endY >= y;
                 }
             }
 

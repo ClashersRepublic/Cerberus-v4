@@ -2024,18 +2024,6 @@
         /// </summary>
         public void Destruct()
         {
-            if (this._tileMap != null)
-            {
-                this._tileMap.Destruct();
-                this._tileMap = null;
-            }
-
-            if (this._playArea != null)
-            {
-                this._playArea.Destruct();
-                this._playArea = null;
-            }
-
             for (int i = 0; i < 2; i++)
             {
                 if (this._gameObjectManagers[i] != null)
@@ -2049,6 +2037,18 @@
                     this._workerManagers[i].Destruct();
                     this._workerManagers[i] = null;
                 }
+            }
+
+            if (this._tileMap != null)
+            {
+                this._tileMap.Destruct();
+                this._tileMap = null;
+            }
+
+            if (this._playArea != null)
+            {
+                this._playArea.Destruct();
+                this._playArea = null;
             }
 
             if (this._offerManager != null)

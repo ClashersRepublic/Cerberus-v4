@@ -50,7 +50,7 @@
         /// </summary>
         public virtual void Destruct()
         {
-            // LogicTileMap::removeGameObject(this);
+            this._level.GetTileMap().RemoveGameObject(this);
 
             for (int i = 0; i < this._components.Count; i++)
             {

@@ -191,7 +191,7 @@
                         {
                             for (int j = 0; j < sizeX; j++)
                             {
-                                this.GetTile(tileX + j, tileY + i).AddGameObject(gameObject);
+                                this.GetTile(tileX + j, tileY + i).RemoveGameObject(gameObject);
                             }
                         }
 
