@@ -656,7 +656,7 @@
                 {
                     if (this._data.GetVillageType() == this._villageType)
                     {
-                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() + 60 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() * LogicMath.Min(secs, maxClockTowerFastForward) - 1);
+                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() + 60 * LogicMath.Min(secs, maxClockTowerFastForward) * (LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 1));
                     }
                 }
 
@@ -823,7 +823,7 @@
 
             int constructionTime;
 
-            if (this._gearing)
+            if (gearup)
             {
                 constructionTime = this.GetBuildingData().GetGearUpTime(this._upgLevel);
                 this._gearing = true;
