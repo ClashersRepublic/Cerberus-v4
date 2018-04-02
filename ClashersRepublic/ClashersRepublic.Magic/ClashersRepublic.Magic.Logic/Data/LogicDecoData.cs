@@ -27,7 +27,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         protected int BaseGfx { get; set; }
         protected string ExportNameBase { get; set; }
         protected bool IsRed { get; set; }
-        public int VillageType { get; set; }
         protected int RedMul { get; set; }
         protected int GreenMul { get; set; }
         protected int BlueMul { get; set; }
@@ -41,6 +40,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
+            base.CreateVillageReferences();
+            
             this._inShop = !this.GetBooleanValue("NotInShop", 0);
             this._buildResourceData = LogicDataTables.GetResourceByName(this.GetValue("BuildingResource", 0));
         }
@@ -75,11 +76,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetSellPrice()
         {
             return this.BuildCost / 10;
-        }
-
-        public override int GetVillageType()
-        {
-            return this.VillageType;
         }
     }
 }

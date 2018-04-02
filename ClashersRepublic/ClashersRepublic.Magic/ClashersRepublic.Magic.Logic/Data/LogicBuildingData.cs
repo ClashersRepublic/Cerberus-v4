@@ -179,7 +179,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public string DieDamageEffect { get; protected set; }
         public int DieDamageDelay { get; protected set; }
         public bool IsRed { get; protected set; }
-        public int VillageType { get; protected set; }
         public int RedMul { get; protected set; }
         public int GreenMul { get; protected set; }
         public int BlueMul { get; protected set; }
@@ -204,6 +203,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
+            base.CreateVillageReferences();
+
             this._upgradeLevelCount = this._row.GetBiggestArraySize();
             this._buildingClass = LogicDataTables.GetBuildingClassByName(this.BuildingClass);
 
@@ -696,11 +697,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetWallBlockCount()
         {
             return this._wallBlockX.Length;
-        }
-
-        public override int GetVillageType()
-        {
-            return this.VillageType;
         }
     }
 }

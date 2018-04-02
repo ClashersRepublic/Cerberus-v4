@@ -38,7 +38,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int AnimDir { get; protected set; }
         public int AnimVisibilityOdds { get; protected set; }
         public bool HasInfoScreen { get; protected set; }
-        public int VillageType { get; protected set; }
         public int UnitHousing { get; protected set; }
         public bool HousesUnits { get; protected set; }
 
@@ -47,6 +46,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
+            base.CreateVillageReferences();
+
             this._shipyard = string.Equals("Shipyard", this.GetName());
 
             if (!this._shipyard)
@@ -115,11 +116,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GetUpgradeLevelCount()
         {
             return this._upgradeLevelCount;
-        }
-
-        public override int GetVillageType()
-        {
-            return this.VillageType;
         }
     }
 }

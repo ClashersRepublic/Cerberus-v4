@@ -47,7 +47,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int GreenAdd { get; protected set; }
         public int BlueAdd { get; protected set; }
         public bool LightsOn { get; protected set; }
-        public int VillageType { get; protected set; }
         public int Village2RespawnCount { get; protected set; }
         public int VariationCount { get; protected set; }
         public bool TallGrass { get; protected set; }
@@ -60,15 +59,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
-            // CreateReferences.
-        }
-
-        /// <summary>
-        ///     Gets the village type.
-        /// </summary>
-        public override int GetVillageType()
-        {
-            return this.VillageType;
+            base.CreateVillageReferences();
         }
 
         public bool IsLootCart()
