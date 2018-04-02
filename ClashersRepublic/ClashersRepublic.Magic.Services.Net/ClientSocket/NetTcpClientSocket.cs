@@ -10,6 +10,7 @@
         protected readonly Socket _clientSocket;
         protected readonly IPEndPoint _remoteEndPoint;
         protected readonly ConcurrentQueue<SocketAsyncEventArgs> _sendQueue;
+        protected readonly ConcurrentQueue<SocketAsyncEventArgs> _sendFailedQueue;
 
         protected bool _connected;
         protected bool _waitConnectCallback;
@@ -24,6 +25,7 @@
 
             this._remoteEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
             this._sendQueue = new ConcurrentQueue<SocketAsyncEventArgs>();
+            this._sendFailedQueue = new ConcurrentQueue<SocketAsyncEventArgs>();
         }
 
         /// <summary>
@@ -31,16 +33,19 @@
         /// </summary>
         private void ConnectToServer()
         {
-            this._waitConnectCallback = true;
-
-            SocketAsyncEventArgs connectionEventArgs = new SocketAsyncEventArgs();
-
-            connectionEventArgs.RemoteEndPoint = this._remoteEndPoint;
-            connectionEventArgs.Completed += this.ConnectCompleted;
-
-            if (!this._clientSocket.ConnectAsync(connectionEventArgs))
+            if (!this._waitConnectCallback)
             {
-                this.ConnectCompleted(this, connectionEventArgs);
+                this._waitConnectCallback = true;
+
+                SocketAsyncEventArgs connectionEventArgs = new SocketAsyncEventArgs();
+
+                connectionEventArgs.RemoteEndPoint = this._remoteEndPoint;
+                connectionEventArgs.Completed += this.ConnectCompleted;
+
+                if (!this._clientSocket.ConnectAsync(connectionEventArgs))
+                {
+                    this.ConnectCompleted(this, connectionEventArgs);
+                }
             }
         }
 
@@ -50,12 +55,8 @@
         protected void ConnectCompleted(object sender, SocketAsyncEventArgs socketAsyncEventArgs)
         {
             this._waitConnectCallback = false;
-
-            if (socketAsyncEventArgs.SocketError == SocketError.Success)
-            {
-                this._connected = true;
-            }
-
+            this._connected = socketAsyncEventArgs.SocketError == SocketError.Success;
+            
             socketAsyncEventArgs.Dispose();
         }
 
@@ -79,13 +80,16 @@
         {
             if (this._connected)
             {
-                while (this._sendQueue.TryDequeue(out SocketAsyncEventArgs sendEventArgs))
+                do
                 {
-                    if (!this._connected)
+                    if (!this._sendFailedQueue.TryDequeue(out SocketAsyncEventArgs sendEventArgs))
                     {
-                        break;
+                        if (!this._sendQueue.TryDequeue(out sendEventArgs))
+                        {
+                            break;
+                        }
                     }
-                    
+
                     try
                     {
                         if (!this._clientSocket.SendAsync(sendEventArgs))
@@ -95,11 +99,12 @@
                     }
                     catch (Exception)
                     {
+                        this._sendFailedQueue.Enqueue(sendEventArgs);
                         break;
                     }
-                }
+                } while (this._connected);
             }
-            else if (!this._waitConnectCallback)
+            else
             {
                 this.ConnectToServer();
             }
@@ -112,7 +117,7 @@
         {
             if (socketAsyncEventArgs.SocketError != SocketError.Success)
             {
-                this._sendQueue.Enqueue(socketAsyncEventArgs);
+                this._sendFailedQueue.Enqueue(socketAsyncEventArgs);
 
                 if (this._connected)
                 {
@@ -130,13 +135,8 @@
         /// </summary>
         private void Disconnected()
         {
-            if (this._connected)
-            {
-                this._connected = false;
-
-                this._clientSocket.Disconnect(true);
-                this.ConnectToServer();
-            }
+            this._connected = false;
+            this._clientSocket.Disconnect(true);
         }
     }
 }

@@ -98,7 +98,6 @@
             {
                 NetConnection connection = (NetConnection) asyncEvent.UserToken;
 
-
                 if (!connection.IsDestructed())
                 {
                     if (connection.TryReceive())

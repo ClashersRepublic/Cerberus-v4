@@ -29,7 +29,7 @@
 
                 for (int i = 0; i < RoomManager._rooms.Count; i++)
                 {
-                    count += RoomManager._rooms.Count;
+                    count += RoomManager._rooms[i].GetClients();
                 }
 
                 return count;
