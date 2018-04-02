@@ -175,33 +175,11 @@
 
                         try
                         {
-                            if (message.GetServiceNodeType() == 1)
-                            {
-                                message.Decode();
+                            message.Decode();
 
-                                if (!message.IsServerToClientMessage())
-                                {
-                                    this._receiveMessageQueue.Enqueue(message);
-                                }
-                            }
-                            else if (this.Client.State == 6)
+                            if (!message.IsServerToClientMessage())
                             {
-                                if (message.GetServiceNodeType() != ServiceCore.ServiceNodeType)
-                                {
-                                    NetProxySession session = this.Client.GetSession();
-                                    NetSocket socket = session.GetServiceNodeEndPoint(message.GetServiceNodeType());
-
-                                    if (socket != null)
-                                    {
-                                        ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
-                                        forwardPiranhaMessage.SetPiranhaMessage(message);
-                                        NetMessageManager.SendMessage(socket, session.SessionId, forwardPiranhaMessage);
-                                    }
-                                    else
-                                    {
-                                        Logging.Debug("MessageManager::receiveMessage no server for service " + message.GetServiceNodeType());
-                                    }
-                                }
+                                this._receiveMessageQueue.Enqueue(message);
                             }
                         }
                         catch (Exception exception)

@@ -56,6 +56,30 @@
                         return;
                     }
                 }
+                else
+                {
+                    if (this._client.State == 6)
+                    {
+                        if (message.GetServiceNodeType() != ServiceCore.ServiceNodeType)
+                        {
+                            NetProxySession session = this._client.GetSession();
+                            NetSocket socket = session.GetServiceNodeEndPoint(message.GetServiceNodeType());
+
+                            if (socket != null)
+                            {
+                                ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
+                                forwardPiranhaMessage.SetPiranhaMessage(message);
+                                NetMessageManager.SendMessage(socket, session.SessionId, forwardPiranhaMessage);
+                            }
+                            else
+                            {
+                                Logging.Debug("MessageManager::receiveMessage no server for service " + message.GetServiceNodeType());
+                            }
+
+                            return;
+                        }
+                    }
+                }
             }
             else
             {

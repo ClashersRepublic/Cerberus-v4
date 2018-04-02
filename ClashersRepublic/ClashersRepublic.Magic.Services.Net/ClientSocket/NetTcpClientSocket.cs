@@ -10,7 +10,6 @@
         protected readonly Socket _clientSocket;
         protected readonly IPEndPoint _remoteEndPoint;
         protected readonly ConcurrentQueue<SocketAsyncEventArgs> _sendQueue;
-        protected readonly ConcurrentQueue<SocketAsyncEventArgs> _sendFailedQueue;
 
         protected bool _connected;
         protected bool _waitConnectCallback;
@@ -23,9 +22,8 @@
             this._clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this._clientSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
 
-            this._remoteEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
             this._sendQueue = new ConcurrentQueue<SocketAsyncEventArgs>();
-            this._sendFailedQueue = new ConcurrentQueue<SocketAsyncEventArgs>();
+            this._remoteEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
         }
 
         /// <summary>
@@ -82,12 +80,9 @@
             {
                 do
                 {
-                    if (!this._sendFailedQueue.TryDequeue(out SocketAsyncEventArgs sendEventArgs))
+                    if (!this._sendQueue.TryDequeue(out SocketAsyncEventArgs sendEventArgs))
                     {
-                        if (!this._sendQueue.TryDequeue(out sendEventArgs))
-                        {
-                            break;
-                        }
+                        break;
                     }
 
                     try
@@ -99,7 +94,6 @@
                     }
                     catch (Exception)
                     {
-                        this._sendFailedQueue.Enqueue(sendEventArgs);
                         break;
                     }
                 } while (this._connected);
@@ -109,7 +103,7 @@
                 this.ConnectToServer();
             }
         }
-
+        
         /// <summary>
         ///     Called when the send event is completed.
         /// </summary>
@@ -117,7 +111,7 @@
         {
             if (socketAsyncEventArgs.SocketError != SocketError.Success)
             {
-                this._sendFailedQueue.Enqueue(socketAsyncEventArgs);
+                Console.WriteLine("SEND FAILED");
 
                 if (this._connected)
                 {

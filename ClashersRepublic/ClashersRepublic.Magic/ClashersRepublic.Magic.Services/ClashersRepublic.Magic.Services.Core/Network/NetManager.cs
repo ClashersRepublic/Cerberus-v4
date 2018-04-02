@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Core.Network
 {
     using System.Threading;
+    using System.Threading.Tasks;
     using ClashersRepublic.Magic.Titan.Math;
     using ClashersRepublic.Magic.Titan.Util;
 
@@ -54,9 +55,11 @@
         /// </summary>
         private static void WakeupLoop()
         {
+            ParallelOptions option = new ParallelOptions {MaxDegreeOfParallelism = 2};
+            
             while (true)
             {
-                for (int i = 0; i < 28; i++)
+                Parallel.For(0, 28, option, i =>
                 {
                     LogicArrayList<NetSocket> sockets = NetManager._endPoints[i];
 
@@ -64,7 +67,7 @@
                     {
                         sockets[j].Socket.Wakeup();
                     }
-                }
+                });
 
                 Thread.Sleep(1);
             }

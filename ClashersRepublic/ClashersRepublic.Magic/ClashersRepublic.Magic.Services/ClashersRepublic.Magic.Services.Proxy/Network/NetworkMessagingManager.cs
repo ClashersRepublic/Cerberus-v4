@@ -17,8 +17,6 @@
         private static Thread _messagingThread;
         private static Thread _receiveThread;
         private static Thread _sendThread;
-        private static ParallelOptions _sendOption;
-        private static ParallelOptions _receiveOption;
         
         /// <summary>
         ///     Gets the total messagings.
@@ -36,16 +34,6 @@
         /// </summary>
         internal static void Initialize()
         {
-            NetworkMessagingManager._sendOption = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 2
-            };
-
-            NetworkMessagingManager._receiveOption = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 2
-            };
-
             NetworkMessagingManager._messagings = new ConcurrentDictionary<long, NetworkMessaging>();
             NetworkMessagingManager._sendThread = new Thread(NetworkMessagingManager.SendLoop);
             NetworkMessagingManager._receiveThread = new Thread(NetworkMessagingManager.ReceiveLoop);
@@ -94,9 +82,11 @@
         /// </summary>
         private static void ReceiveLoop()
         {
+            ParallelOptions option = new ParallelOptions {MaxDegreeOfParallelism = 3};
+
             while (true)
             {
-                Parallel.ForEach(NetworkMessagingManager._messagings.Values, NetworkMessagingManager._receiveOption, messaging =>
+                Parallel.ForEach(NetworkMessagingManager._messagings.Values, option, messaging =>
                 {
                     while (messaging.NextMessage(out PiranhaMessage message))
                     {
@@ -111,7 +101,7 @@
                     }
                 });
 
-                Thread.Sleep(1);
+                Thread.Sleep(2);
             }
         }
 
@@ -120,14 +110,16 @@
         /// </summary>
         private static void SendLoop()
         {
+            ParallelOptions option = new ParallelOptions { MaxDegreeOfParallelism = 3 };
+
             while (true)
             {
-                Parallel.ForEach(NetworkMessagingManager._messagings.Values, NetworkMessagingManager._sendOption, messaging =>
+                Parallel.ForEach(NetworkMessagingManager._messagings.Values, option, messaging =>
                 {
                     messaging.OnWakeup();
                 });
 
-                Thread.Sleep(1);
+                Thread.Sleep(2);
             }
         }
 
