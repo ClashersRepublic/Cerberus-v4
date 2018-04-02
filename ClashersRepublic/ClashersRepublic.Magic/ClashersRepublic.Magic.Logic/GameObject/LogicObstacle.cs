@@ -402,6 +402,7 @@
                         this._level.GetAchievementManager().ObstacleCleared();
                     }
 
+                    this._level.GetWorkerManagerAt(this._villageType).DeallocateWorker(this);
                     this.XpGainHelper(LogicGamePlayUtil.TimeToExp(obstacleData.GetClearTime()), homeOwnerAvatar, ignoreState || state == 1);
 
                     if (lootResourceData != null && lootCount > 0)

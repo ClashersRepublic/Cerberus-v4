@@ -126,7 +126,6 @@
             if (NetZoneSessionManager.TryRemove(sessionId, out NetZoneSession session))
             {
                 session.ZoneAccount.GameMode.DeInit();
-                session.ZoneAccount.SetSession(null);
                 session.Destruct();
             }
         }

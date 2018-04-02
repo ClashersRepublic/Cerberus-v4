@@ -39,7 +39,11 @@
                 this.PiranhaMessageManager = null;
             }
 
-            this.ZoneAccount = null;
+            if (this.ZoneAccount != null)
+            {
+                this.ZoneAccount.SetSession(null);
+                this.ZoneAccount = null;
+            }
         }
     }
 }

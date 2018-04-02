@@ -152,6 +152,7 @@
 
                 this.SendPiranhaMessage(serviceNodeType, message);
                 this.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
+                this.Destruct();
             }
         }
     }

@@ -482,6 +482,8 @@
                                     OutOfSyncMessage outOfSyncMessage = new OutOfSyncMessage();
                                     outOfSyncMessage.SetClientChecksum(checksum);
                                     outOfSyncMessage.SetClientChecksum(serverChecksum);
+
+                                    this.DeInit();
                                     this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
 
                                     Logging.Debug(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
