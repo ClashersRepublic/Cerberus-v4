@@ -29,8 +29,6 @@
         /// </summary>
         public void CreateVillageReferences()
         {
-            this.CreateReferences();
-
             int idx = this._row.GetColumnIndexByName("VillageType");
             if (idx >= 1)
             {
