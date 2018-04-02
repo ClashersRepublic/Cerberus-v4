@@ -303,7 +303,7 @@
 
             if (this._constructionTimer != null)
             {
-                if (this._level.GetRemainingClockTowerBoostTime() > 0 && this.GetBuildingData().VillageType == 1)
+                if (this._level.GetRemainingClockTowerBoostTime() > 0 && this.GetBuildingData().GetVillageType() == 1)
                 {
                     this._constructionTimer.SetFastForward(this._constructionTimer.GetFastForward() + 4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
                 }
@@ -654,9 +654,9 @@
 
                 if (maxClockTowerFastForward > 0 && !this._level.IsClockTowerBoostPaused())
                 {
-                    if (this._data.GetVillageType() == this._villageType)
+                    if (this._data.GetVillageType() == 1)
                     {
-                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() + 60 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() * LogicMath.Min(secs, maxClockTowerFastForward) - 1);
+                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() + 60 * LogicMath.Min(secs, maxClockTowerFastForward) * (LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 1));
                     }
                 }
 
@@ -823,7 +823,7 @@
 
             int constructionTime;
 
-            if (this._gearing)
+            if (gearup)
             {
                 constructionTime = this.GetBuildingData().GetGearUpTime(this._upgLevel);
                 this._gearing = true;
@@ -877,7 +877,7 @@
                             this._constructionTimer = null;
                         }
 
-                        this._level.GetWorkerManagerAt(this._gearing ? 1 : this.GetBuildingData().VillageType).DeallocateWorker(this);
+                        this._level.GetWorkerManagerAt(this._gearing ? 1 : this.GetBuildingData().GetVillageType()).DeallocateWorker(this);
                         this._locked = false;
 
                         if (this._gearing)

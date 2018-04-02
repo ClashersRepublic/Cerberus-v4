@@ -70,7 +70,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int TimeBetweenSpawnsMs { get; protected set; }
         public bool Disabled { get; protected set; }
         public int ThrowDistance { get; protected set; }
-        public int VillageType { get; protected set; }
         protected int[] Pushback { get; set; }
         protected bool[] DoNotScalePushByDamage { get; set; }
         public bool EnabledByCalendar { get; protected set; }
@@ -82,7 +81,7 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
-            // CreateReferences.
+            base.CreateVillageReferences();
         }
 
         public string GetExportName(int index)
@@ -193,11 +192,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public bool GetDoNotScalePushByDamage(int index)
         {
             return this.DoNotScalePushByDamage[index];
-        }
-
-        public override int GetVillageType()
-        {
-            return this.VillageType;
         }
     }
 }

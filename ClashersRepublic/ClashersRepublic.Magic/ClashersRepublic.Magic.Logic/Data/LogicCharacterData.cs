@@ -114,7 +114,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public int BoostDmgPerfect { get; protected set; }
         public int BoostAttackSpeed { get; protected set; }
         public string HideEffect { get; protected set; }
-        public int VillageType { get; protected set; }
         protected int[] UnitsInCamp { get; set; }
         protected int[] SpecialAbilityLevel { get; set; }
         public string SpecialAbilityName { get; protected set; }
@@ -275,11 +274,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public override int GetCombatItemType()
         {
             return 0;
-        }
-
-        public override int GetVillageType()
-        {
-            return this.VillageType;
         }
     }
 }

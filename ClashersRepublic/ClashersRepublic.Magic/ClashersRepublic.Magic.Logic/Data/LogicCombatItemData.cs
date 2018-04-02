@@ -40,6 +40,8 @@ namespace ClashersRepublic.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
+            base.CreateVillageReferences();
+
             int size = this._upgradeLevelCount = this._row.GetBiggestArraySize();
 
             this._upgradeLevelByTownHall = new int[size];

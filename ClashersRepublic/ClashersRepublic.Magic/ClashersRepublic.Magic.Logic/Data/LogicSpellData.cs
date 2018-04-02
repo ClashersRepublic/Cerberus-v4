@@ -77,7 +77,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         protected int[] SpawnFirstGroupSize { get; set; }
         public int DamageTHPercent { get; protected set; }
         public bool ScaleByTH { get; protected set; }
-        public int VillageType { get; protected set; }
         public int PauseCombatComponentsMs { get; protected set; }
 
         /// <summary>
@@ -251,11 +250,6 @@ namespace ClashersRepublic.Magic.Logic.Data
         public override int GetCombatItemType()
         {
             return 1;
-        }
-
-        public override int GetVillageType()
-        {
-            return this.VillageType;
         }
     }
 }

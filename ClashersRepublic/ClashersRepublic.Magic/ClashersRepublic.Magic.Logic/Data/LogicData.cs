@@ -9,6 +9,8 @@
     {
         protected readonly int _globalId;
 
+        protected int _villageType;
+
         protected readonly CSVRow _row;
         protected readonly LogicDataTable _table;
 
@@ -20,6 +22,23 @@
             this._row = row;
             this._table = table;
             this._globalId = GlobalID.CreateGlobalID(table.GetTableIndex() + 1, table.GetItemCount());
+        }
+
+        /// <summary>
+        ///     Called for create village references.
+        /// </summary>
+        public void CreateVillageReferences()
+        {
+            int idx = this._row.GetColumnIndexByName("VillageType");
+            if (idx >= 1)
+            {
+                this._villageType = this._row.GetIntegerValueAt(idx, 0);
+
+                if (this._villageType >= 2)
+                {
+                    Debugger.Error("invalid VillageType");
+                }
+            }
         }
 
         /// <summary>
@@ -226,7 +245,7 @@
         /// </summary>
         public virtual int GetVillageType()
         {
-            return 0;
+            return this._villageType;
         }
     }
 }
