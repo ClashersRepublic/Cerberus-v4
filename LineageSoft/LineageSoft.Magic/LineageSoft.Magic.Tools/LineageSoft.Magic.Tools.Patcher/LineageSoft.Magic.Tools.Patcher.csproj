@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1DF27A9E-2324-4EE7-9211-3F85F61E1A55}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>LineageSoft.Magic.Tools.Patcher</RootNamespace>
+    <AssemblyName>LineageSoft.Magic.Tools.Patcher</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Build\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Build\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>LineageSoft.Magic.Tools.Patcher.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="FileAsset.cs" />
+    <Compile Include="LZMA\Common\CommandLineParser.cs" />
+    <Compile Include="LZMA\Common\CRC.cs" />
+    <Compile Include="LZMA\Common\InBuffer.cs" />
+    <Compile Include="LZMA\Common\OutBuffer.cs" />
+    <Compile Include="LZMA\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="LZMA\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="LZMA\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="LZMA\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="LZMA\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="LZMA\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="LZMA\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="LZMA\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="LZMA\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="LZMA\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="LZMA\ICoder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LineageSoft.Magic.Titan\LineageSoft.Magic.Titan.csproj">
+      <Project>{43215ecc-9f60-49ff-81c3-cd801de09cf3}</Project>
+      <Name>ClashersRepublic.Magic.Titan</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd "$(TargetDir)"
+del /F /Q *.xml
+del /F /Q *.pdb
+move /Y *.dll "Library\"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>IF EXIST "$(TargetDir)Library\" RMDIR /S /Q "$(TargetDir)Library\"
+ 
+ MKDIR "$(TargetDir)Library\"</PreBuildEvent>
+  </PropertyGroup>
+</Project>

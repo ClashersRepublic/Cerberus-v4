@@ -1,9 +1,0 @@
-﻿<Application x:Class="ClashersRepublic.Magic.Services.Console.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ClashersRepublic.Magic.Services.Console"
-             StartupUri="MainEnvironment.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
-</Application>
