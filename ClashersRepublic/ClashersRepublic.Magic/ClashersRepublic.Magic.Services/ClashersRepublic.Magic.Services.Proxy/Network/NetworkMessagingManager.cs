@@ -73,7 +73,7 @@
                     }
                 }
 
-                Thread.Sleep(500);
+                Thread.Sleep(2500);
             }
         }
 
@@ -82,7 +82,7 @@
         /// </summary>
         private static void ReceiveLoop()
         {
-            ParallelOptions option = new ParallelOptions { MaxDegreeOfParallelism = 3 };
+            ParallelOptions option = new ParallelOptions { MaxDegreeOfParallelism = 2 };
 
             while (true)
             {
@@ -101,7 +101,7 @@
                     }
                 });
 
-                Thread.Sleep(2);
+                Thread.Sleep(1);
             }
         }
 
@@ -116,10 +116,13 @@
             {
                 Parallel.ForEach(NetworkMessagingManager._messagings.Values, option, messaging =>
                 {
-                    messaging.OnWakeup();
+                    if (!messaging.IsDestructed())
+                    {
+                        messaging.OnWakeup();
+                    }
                 });
 
-                Thread.Sleep(2);
+                Thread.Sleep(1);
             }
         }
 
@@ -137,8 +140,20 @@
         internal static bool TryRemove(NetworkMessaging messaging)
         {
             long id = messaging.MessagingId;
-            messaging.MessagingId = -1;
-            return NetworkMessagingManager._messagings.TryRemove(id, out _);
+
+            if (id != -1)
+            {
+                bool success = NetworkMessagingManager._messagings.TryRemove(id, out _);
+
+                if (success)
+                {
+                    messaging.MessagingId = -1;
+                }
+
+                return success;
+            }
+
+            return false;
         }
 
         /// <summary>

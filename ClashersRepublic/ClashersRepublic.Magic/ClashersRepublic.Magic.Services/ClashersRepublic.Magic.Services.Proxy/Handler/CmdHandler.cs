@@ -1,6 +1,7 @@
 ﻿namespace ClashersRepublic.Magic.Services.Proxy.Handler
 {
     using System;
+    using ClashersRepublic.Magic.Services.Proxy.Network;
 
     internal static class CmdHandler
     {
@@ -25,6 +26,9 @@
                             case "close":
                             case "quit":
                                 CmdHandler.Close();
+                                break;
+                            case "kill":
+                                NetworkMessagingManager.Destruct();
                                 break;
                             case "test":
                                 break;

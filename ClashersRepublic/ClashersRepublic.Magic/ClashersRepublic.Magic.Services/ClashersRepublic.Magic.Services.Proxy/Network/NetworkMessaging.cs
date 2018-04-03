@@ -81,12 +81,14 @@
                 this.Client = null;
             }
 
-            while (this._sendMessageQueue.TryDequeue(out _))
+            while (this._sendMessageQueue.TryDequeue(out PiranhaMessage message))
             {
+                message.Destruct();
             }
 
-            while (this._receiveMessageQueue.TryDequeue(out _))
+            while (this._receiveMessageQueue.TryDequeue(out PiranhaMessage message))
             {
+                message.Destruct();
             }
 
             this._messageFactory = null;
