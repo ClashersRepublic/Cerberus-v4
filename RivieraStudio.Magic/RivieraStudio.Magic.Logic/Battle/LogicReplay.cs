@@ -1,5 +1,6 @@
 ﻿namespace RivieraStudio.Magic.Logic.Battle
 {
+    using RivieraStudio.Magic.Logic.Command;
     using RivieraStudio.Magic.Logic.Level;
     using RivieraStudio.Magic.Titan.Json;
 
@@ -55,6 +56,26 @@
             {
                 this._replayObject.Put("globals", this._level.GetGameMode().GetConfiguration().GetJson());
             }
+        }
+
+        /// <summary>
+        ///     Sub ticks this instance.
+        /// </summary>
+        public void SubTick()
+        {
+            this._endTickNumber.SetIntValue(this._level.GetLogicTime() + 1);
+        }
+
+        /// <summary>
+        ///     Records the command.
+        /// </summary>
+        public void RecordCommand(LogicCommand command)
+        {
+            LogicJSONArray commandArray = this._replayObject.GetJSONArray("cmd");
+            LogicJSONObject commandObject = new LogicJSONObject();
+            LogicCommandManager.SaveCommandToJSON(commandObject, command);
+
+            commandArray.Add(commandObject);
         }
 
         /// <summary>

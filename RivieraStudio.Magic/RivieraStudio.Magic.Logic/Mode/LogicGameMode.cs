@@ -239,6 +239,11 @@
 
             this._commandManager.SubTick();
             this._level.SubTick();
+
+            if (this._replay != null)
+            {
+                this._replay.SubTick();
+            }
         }
 
         /// <summary>
@@ -251,11 +256,6 @@
             if (this._state != 2 || !this._battleOver)
             {
                 this.SubTick();
-
-                // if (this._replay != null)
-                // {
-                //     this._replay.SubTick();
-                // }
 
                 if (time.IsFullTick())
                 {
