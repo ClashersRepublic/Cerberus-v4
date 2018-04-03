@@ -15,6 +15,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Admin;
     using ClashersRepublic.Magic.Services.Core.Message.Avatar;
     using ClashersRepublic.Magic.Services.Core.Message.Home;
+    using ClashersRepublic.Magic.Services.Core.Network.Session;
     using ClashersRepublic.Magic.Services.Core.Utils;
 
     using ClashersRepublic.Magic.Titan.Json;
@@ -115,8 +116,16 @@
 
                 avatarAccount.SetSession(session);
 
-                session.BindServer(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, accountId));
-                session.BindServer(NetUtils.SERVICE_NODE_TYPE_PARTY_CONTAINER, NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_PARTY_CONTAINER, accountId));
+                AskForBindServerMessage askForBindServerMessage1 = new AskForBindServerMessage();
+                AskForBindServerMessage askForBindServerMessage2 = new AskForBindServerMessage();
+
+                askForBindServerMessage1.SetServerType(10);
+                askForBindServerMessage2.SetServerType(11);
+                askForBindServerMessage1.SetServerId(NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, accountId));
+                askForBindServerMessage2.SetServerId(NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_PARTY_CONTAINER, accountId));
+
+                session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, askForBindServerMessage1);
+                session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, askForBindServerMessage2);
             }
         }
 

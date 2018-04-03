@@ -10,7 +10,7 @@
     using ClashersRepublic.Magic.Services.Core.Message.Session;
     using ClashersRepublic.Magic.Services.Core.Network;
     using ClashersRepublic.Magic.Services.Core.Utils;
-    
+
     using ClashersRepublic.Magic.Services.Proxy.Network.Session;
 
     using ClashersRepublic.Magic.Titan.Message;
@@ -22,6 +22,12 @@
         /// </summary>
         public override void ReceiveMessage(NetMessage message)
         {
+            if (message.GetSessionId() == null)
+            {
+                Logging.Warning("NetProxyMessageManager::receiveMessage session id is not defined");
+                return;
+            }
+
             switch (message.GetMessageType())
             {
                 case 10303:
@@ -30,11 +36,14 @@
                 case 10304:
                     this.UnbindServerMessageReceived((UnbindServerMessage) message);
                     break;
+                case 10305:
+                    this.AskForBindServerMessageReceived((AskForBindServerMessage) message);
+                    break;
 
                 case 10400:
                     this.ForwardPiranhaMessageReceived((ForwardPiranhaMessage) message);
                     break;
-                    
+
                 case 20100:
                     this.LoginClientFailedMessageReceived((LoginClientFailedMessage) message);
                     break;
@@ -55,7 +64,7 @@
         {
             NetMessageManager.SendMessage(requestMessage.GetServiceNodeType(), requestMessage.GetServiceNodeId(), requestMessage.GetSessionId(), responseMessage);
         }
-        
+
         /// <summary>
         ///     Called when the <see cref="LoginClientFailedMessage"/> is received.
         /// </summary>
@@ -63,22 +72,19 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
             {
-                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
-                {
-                    Logging.Debug("loginClientFailedMessageReceived login failed, error code: " + message.GetErrorCode());
+                Logging.Debug("loginClientFailedMessageReceived login failed, error code: " + message.GetErrorCode());
 
-                    if (session.Client.State != 6 && session.Client.State != -1)
+                if (session.Client.State != 6 && session.Client.State != -1)
+                {
+                    if (message.GetErrorCode() == 1)
                     {
-                        if (message.GetErrorCode() == 1)
-                        {
-                            session.Client.Messaging.MessageManager.SendLoginFailedMessage(11, message.GetReason());
-                        }
-                        else
-                        {
-                            session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
-                        }
+                        session.Client.Messaging.MessageManager.SendLoginFailedMessage(11, message.GetReason());
+                    }
+                    else
+                    {
+                        session.Client.Messaging.MessageManager.SendLoginFailedMessage(1, "Internal server error");
                     }
                 }
             }
@@ -91,53 +97,50 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
             {
-                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+                if (session.Client.State == 1)
                 {
-                    if (session.Client.State == 1)
+                    LoginOkMessage loginOkMessage = new LoginOkMessage
                     {
-                        LoginOkMessage loginOkMessage = new LoginOkMessage
-                        {
-                            AccountId = message.RemoveAccountId(),
-                            HomeId = message.RemoveHomeId(),
-                            PassToken = message.RemovePassToken(),
-                            AccountCreatedDate = message.RemoveAccountCreatedDate(),
-                            FacebookId = message.RemoveFacebookId(),
-                            GamecenterId = message.RemoveGamecenterId(),
-                            GoogleServiceId = message.RemoveGoogleServiceId(),
-                            SessionCount = message.GetSessionCount(),
-                            PlayTimeSeconds = message.GetPlayTimeSeconds(),
-                            DaysSinceStartedPlaying = message.GetDaysSinceStartedPlaying(),
+                        AccountId = message.RemoveAccountId(),
+                        HomeId = message.RemoveHomeId(),
+                        PassToken = message.RemovePassToken(),
+                        AccountCreatedDate = message.RemoveAccountCreatedDate(),
+                        FacebookId = message.RemoveFacebookId(),
+                        GamecenterId = message.RemoveGamecenterId(),
+                        GoogleServiceId = message.RemoveGoogleServiceId(),
+                        SessionCount = message.GetSessionCount(),
+                        PlayTimeSeconds = message.GetPlayTimeSeconds(),
+                        DaysSinceStartedPlaying = message.GetDaysSinceStartedPlaying(),
 
-                            ServerMajorVersion = LogicVersion.MajorVersion,
-                            ServerBuildVersion = LogicVersion.BuildVersion,
-                            ContentVersion = ResourceManager.GetContentVersion(),
-                            ContentUrlList = ResourceManager.ContentUrlList,
-                            ChronosContentUrlList = ResourceManager.ChronosContentUrlList,
+                        ServerMajorVersion = LogicVersion.MajorVersion,
+                        ServerBuildVersion = LogicVersion.BuildVersion,
+                        ContentVersion = ResourceManager.GetContentVersion(),
+                        ContentUrlList = ResourceManager.ContentUrlList,
+                        ChronosContentUrlList = ResourceManager.ChronosContentUrlList,
 
-                            Region = "fr-FR"
-                        };
+                        Region = "fr-FR"
+                    };
 
 
-                        session.SetAccountId(loginOkMessage.AccountId);
-                        session.Client.Messaging.Send(loginOkMessage);
-                        session.Client.State = 6;
+                    session.SetAccountId(loginOkMessage.AccountId);
+                    session.Client.Messaging.Send(loginOkMessage);
+                    session.Client.State = 6;
 
-                        session.BindServer(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER,
-                                           NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, loginOkMessage.AccountId));
+                    session.BindServer(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER,
+                        NetManager.GetDocumentOwnerId(NetUtils.SERVICE_NODE_TYPE_AVATAR_CONTAINER, loginOkMessage.AccountId));
 
-                        if (message.GetChatAccountBanSeconds() != 0)
-                        {
-                            ChatAccountBanStatusMessage chatAccountBanStatusMessage = new ChatAccountBanStatusMessage();
-                            chatAccountBanStatusMessage.SetBanSeconds(message.GetChatAccountBanSeconds());
-                            session.Client.Messaging.Send(chatAccountBanStatusMessage);
-                        }
-                        else
-                        {
-                            session.BindServer(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER,
-                                               NetManager.GetRandomEndPoint(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER).Id);
-                        }
+                    if (message.GetChatAccountBanSeconds() != 0)
+                    {
+                        ChatAccountBanStatusMessage chatAccountBanStatusMessage = new ChatAccountBanStatusMessage();
+                        chatAccountBanStatusMessage.SetBanSeconds(message.GetChatAccountBanSeconds());
+                        session.Client.Messaging.Send(chatAccountBanStatusMessage);
+                    }
+                    else
+                    {
+                        session.BindServer(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER,
+                            NetManager.GetRandomEndPoint(NetUtils.SERVICE_NODE_TYPE_GLOBAL_CHAT_CONTAINER).Id);
                     }
                 }
             }
@@ -150,14 +153,11 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
             {
-                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+                if (message.GetServerType() != ServiceCore.ServiceNodeType)
                 {
-                    if (message.GetServerType() != ServiceCore.ServiceNodeType)
-                    {
-                        session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
-                    }
+                    session.SetServiceNodeId(message.GetServerType(), message.GetServerId());
                 }
             }
         }
@@ -169,18 +169,15 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+
+            if (piranhaMessage != null)
             {
-                PiranhaMessage piranhaMessage = message.RemovePiranhaMessage();
+                piranhaMessage.GetByteStream().SetOffset(piranhaMessage.GetByteStream().GetLength());
 
-                if (piranhaMessage != null)
+                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
                 {
-                    piranhaMessage.GetByteStream().SetOffset(piranhaMessage.GetByteStream().GetLength());
-
-                    if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
-                    {
-                        session.Client.Messaging.MessageManager.SendMessage(piranhaMessage);
-                    }
+                    session.Client.Messaging.MessageManager.SendMessage(piranhaMessage);
                 }
             }
         }
@@ -192,17 +189,27 @@
         {
             byte[] sessionId = message.RemoveSessionId();
 
-            if (sessionId != null)
+            if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
             {
-                if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
-                {
-                    session.UnbindServer(message.GetServiceNodeType(), false);
+                session.UnbindServer(message.GetServiceNodeType(), false);
 
-                    if (message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY || message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER)
-                    {
-                        NetworkMessagingManager.DisconnectMessaging(session.Client.Messaging);
-                    }
+                if (message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ACCOUNT_DIRECTORY || message.GetServiceNodeType() == NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER)
+                {
+                    NetworkMessagingManager.DisconnectMessaging(session.Client.Messaging);
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Called when the <see cref="AskForBindServerMessage"/> is received.
+        /// </summary>
+        internal void AskForBindServerMessageReceived(AskForBindServerMessage message)
+        {
+            byte[] sessionId = message.RemoveSessionId();
+
+            if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
+            {
+                session.BindServer(message.GetServerType(), message.GetServerId());
             }
         }
     }

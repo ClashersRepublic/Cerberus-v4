@@ -28,6 +28,7 @@
                     case 10302: return new ServerBoundMessage();
                     case 10303: return new UpdateServerEndPointMessage();
                     case 10304: return new UnbindServerMessage();
+                    case 10305: return new AskForBindServerMessage();
 
                     case 10400: return new ForwardPiranhaMessage();
 
