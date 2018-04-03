@@ -1,0 +1,13 @@
+cd %~dp0RivieraStudio.Magic\RivieraStudio.Magic.Services\RivieraStudio.Magic.Services.Account\Build\Debug
+start RivieraStudio.Magic.Services.Account.exe 
+cd %~dp0RivieraStudio.Magic\RivieraStudio.Magic.Services\RivieraStudio.Magic.Services.Avatar\Build\Debug
+start RivieraStudio.Magic.Services.Avatar.exe 
+cd %~dp0RivieraStudio.Magic\RivieraStudio.Magic.Services\RivieraStudio.Magic.Services.Chat\Build\Debug
+start RivieraStudio.Magic.Services.Chat.exe
+cd %~dp0RivieraStudio.Magic\RivieraStudio.Magic.Services\RivieraStudio.Magic.Services.Party\Build\Debug
+start RivieraStudio.Magic.Services.Party.exe 
+cd %~dp0RivieraStudio.Magic\RivieraStudio.Magic.Services\RivieraStudio.Magic.Services.Zone\Build\Debug
+start RivieraStudio.Magic.Services.Zone.exe 
+timeout 5
+cd %~dp0RivieraStudio.Magic\RivieraStudio.Magic.Services\RivieraStudio.Magic.Services.Proxy\Build\Debug
+start RivieraStudio.Magic.Services.Proxy.exe 
