@@ -1874,7 +1874,7 @@
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    this._gameObjectManagers[i].GetComponentManager().ValidTroopUpgradeLevels();
+                    this._gameObjectManagers[i].GetComponentManager().ValidateTroopUpgradeLevels();
                 }
             }
         }

@@ -137,7 +137,7 @@
             }
             else
             {
-                avatar.CommodityCountChangeHelper(0, characterData, -1);
+                // avatar.CommodityCountChangeHelper(0, characterData, -1);
             }
 
             LogicCharacter character = (LogicCharacter) LogicGameObjectFactory.CreateGameObject(characterData, level, level.GetVillageType());

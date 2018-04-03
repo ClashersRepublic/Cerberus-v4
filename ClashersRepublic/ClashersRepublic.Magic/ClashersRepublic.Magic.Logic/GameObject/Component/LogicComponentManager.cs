@@ -36,9 +36,9 @@
         }
 
         /// <summary>
-        ///     Valides all troop upgrade levels.
+        ///     Validates all troop upgrade levels.
         /// </summary>
-        public void ValidTroopUpgradeLevels()
+        public void ValidateTroopUpgradeLevels()
         {
             LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
 
@@ -46,7 +46,7 @@
             {
                 if (homeOwnerAvatar.IsClientAvatar())
                 {
-                    int[] laboratoryLevel = new int[2];
+                    int[] laboratoryLevels = new int[2];
 
                     for (int i = 0; i < 2; i++)
                     {
@@ -54,7 +54,7 @@
 
                         if (laboratory != null)
                         {
-                            laboratoryLevel[i] = laboratory.GetUpgradeLevel();
+                            laboratoryLevels[i] = laboratory.GetUpgradeLevel();
                         }
                     }
 
@@ -77,12 +77,13 @@
                                 newUpgradeLevel = characterData.GetUpgradeLevelCount() - 1;
                             }
 
+                            int laboratoryLevel = laboratoryLevels[villageType];
                             int requireLaboratoryLevel;
 
                             do
                             {
                                 requireLaboratoryLevel = characterData.GetRequiredLaboratoryLevel(newUpgradeLevel--);
-                            } while (newUpgradeLevel > 0 && requireLaboratoryLevel > laboratoryLevel[villageType]);
+                            } while (newUpgradeLevel >= 0 && requireLaboratoryLevel > laboratoryLevel);
 
                             newUpgradeLevel += 1;
 
@@ -114,12 +115,13 @@
                                 newUpgradeLevel = spellData.GetUpgradeLevelCount() - 1;
                             }
 
+                            int laboratoryLevel = laboratoryLevels[villageType];
                             int requireLaboratoryLevel;
 
                             do
                             {
                                 requireLaboratoryLevel = spellData.GetRequiredLaboratoryLevel(newUpgradeLevel--);
-                            } while (newUpgradeLevel > 0 && requireLaboratoryLevel > laboratoryLevel[villageType]);
+                            } while (newUpgradeLevel >= 0 && requireLaboratoryLevel > laboratoryLevel);
 
                             newUpgradeLevel += 1;
 
@@ -463,6 +465,17 @@
             }
 
             return -1;
+        }
+
+        /// <summary>
+        ///     Divides the avatar units to storages.
+        /// </summary>
+        public void DivideAvatarUnitsToStorages(int villageType)
+        {
+            if (this._level.GetHomeOwnerAvatar() != null)
+            {
+
+            }
         }
 
         /// <summary>
