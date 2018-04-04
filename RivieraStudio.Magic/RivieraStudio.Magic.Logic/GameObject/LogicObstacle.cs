@@ -415,20 +415,13 @@
 
                                 if (this._lootMultiplyVersion >= 2)
                                 {
-                                    lootMultipler = this._lootMultiplyVersion;
+                                    lootMultipler = obstacleData.GetLootMultiplierVersion2();
                                 }
 
-                                int diamondsCount = 0;
-
-                                if (obstacleData.GetName().Equals("Bonus Gembox"))
-                                {
-                                    diamondsCount = lootCount * lootMultipler;
-                                }
-                                else
-                                {
-                                    diamondsCount = this._level.GetGameObjectManagerAt(this._villageType).IncreaseObstacleClearCounter(lootMultipler);
-                                }
-
+                                int diamondsCount = obstacleData.GetName().Equals("Bonus Gembox")
+                                    ? lootCount * lootMultipler
+                                    : this._level.GetGameObjectManagerAt(this._villageType).IncreaseObstacleClearCounter(lootMultipler);
+                                
                                 if (diamondsCount > 0)
                                 {
                                     Debugger.Log("LogicObstacle::clearingFinished diamonds reward: " + diamondsCount);
