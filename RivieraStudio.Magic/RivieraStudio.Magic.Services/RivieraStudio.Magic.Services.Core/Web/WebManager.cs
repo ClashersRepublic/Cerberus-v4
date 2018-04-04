@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net;
+    using System.Threading.Tasks;
 
     public class WebManager
     {
@@ -32,9 +33,9 @@
         }
 
         /// <summary>
-        ///     Downloads the specified config file.
+        ///     Downloads the specified config string.
         /// </summary>
-        public static string DownloadFileFromConfigServer(string path)
+        public static string DownloadConfigString(string path)
         {
             if (path.Length > 0)
             {
@@ -44,13 +45,13 @@
                 }
             }
 
-            return WebManager.DownloadString(Constants.CONFIG_SERVER + "/" + ServiceCore.ServiceEnvironment + path);
+            return WebManager.DownloadString(ServiceCore.ConfigurationServer + "/" + ServiceCore.ServiceEnvironment + path);
         }
 
         /// <summary>
-        ///     Downloads the specified config file.
+        ///     Downloads the specified asset data.
         /// </summary>
-        public static byte[] DownloadDataFromConfigServer(string path)
+        public static byte[] DownloadAssetData(string sha, string path)
         {
             if (path.Length > 0)
             {
@@ -60,11 +61,27 @@
                 }
             }
 
-            return WebManager.DownloadData(Constants.CONFIG_SERVER + "/" + ServiceCore.ServiceEnvironment + path);
+            return WebManager.DownloadData(ServiceCore.ConfigurationServer + "/assets/" + sha + "/" + path);
         }
-
+        
         /// <summary>
-        ///     Downloads the string to the specified url.
+        ///     Downloads the specified asset string.
+        /// </summary>
+        public static string DownloadAssetString(string sha, string path)
+        {
+            if (path.Length > 0)
+            {
+                if (path[0] != '/')
+                {
+                    path = "/" + path;
+                }
+            }
+
+            return WebManager.DownloadString(ServiceCore.ConfigurationServer + "/assets/" + sha + "/" + path);
+        }
+        
+        /// <summary>
+        ///     Downloads the data to the specified url.
         /// </summary>
         public static byte[] DownloadData(string url)
         {

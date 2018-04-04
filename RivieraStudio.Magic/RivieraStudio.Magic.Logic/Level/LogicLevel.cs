@@ -1906,6 +1906,19 @@
         /// </summary>
         public void SubTick()
         {
+            if (this._gameObjectManagers[1].GetClockTower() != null)
+            {
+                LogicBuilding clockTower = this._gameObjectManagers[1].GetClockTower();
+
+                if (clockTower.IsBoostPaused())
+                {
+                    if (!clockTower.IsConstructing())
+                    {
+                        this._remainingClockTowerBoostTime = clockTower.GetRemainingBoostTime();
+                    }
+                }
+            }
+
             for (int i = 0; i < 2; i++)
             {
                 this._gameObjectManagers[i].SubTick();
