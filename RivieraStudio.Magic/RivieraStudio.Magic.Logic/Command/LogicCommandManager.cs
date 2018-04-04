@@ -36,6 +36,7 @@
                 {
                     do
                     {
+                        this._commandList[0].Destruct();
                         this._commandList.Remove(0);
                     } while (this._commandList.Count != 0);
                 }
@@ -64,7 +65,8 @@
             {
                 if (this._level.GetState() == 4)
                 {
-                    this._listener.CommandExecuted(command);
+                    command.Destruct();
+                    command = null;
                 }
                 else
                 {
@@ -82,6 +84,7 @@
             {
                 do
                 {
+                    this._commandList[0].Destruct();
                     this._commandList.Remove(0);
                 } while (this._commandList.Count != 0);
             }
@@ -163,46 +166,43 @@
             int subTick = this._level.GetLogicTime();
             int state = this._level.GetState();
 
-            if (state != 5)
+            for (int i = 0; i < this._commandList.Count; i++)
             {
-                for (int i = 0; i < this._commandList.Count; i++)
+                LogicCommand command = this._commandList[i];
+
+                if (command.GetExecuteSubTick() < subTick)
                 {
-                    LogicCommand command = this._commandList[i];
+                    Debugger.Error(string.Format("Execute command failed! Command should have been executed already. (type={0} server_tick={1} command_tick={2}",
+                        command.GetCommandType(),
+                        subTick,
+                        command.GetExecuteSubTick()));
+                }
 
-                    if (command.GetExecuteSubTick() < subTick)
+                if (command.GetExecuteSubTick() == subTick)
+                {
+                    if (this.IsCommandAllowedInCurrentState(command))
                     {
-                        Debugger.Error("Execute command failed! Command should have been executed already." +
-                                       " (type=" + command.GetCommandType() +
-                                       " server_tick=" + subTick +
-                                       " command_tick=" + command.GetExecuteSubTick() + ")");
-                    }
+                        int result = command.Execute(this._level);
 
-                    if (command.GetExecuteSubTick() == subTick)
-                    {
-                        if (this.IsCommandAllowedInCurrentState(command))
+                        if (result != 0)
                         {
-                            int result = command.Execute(this._level);
-
-#if DEBUG
-                            if (result != 0)
-                            {
-                                Debugger.Warning("Execute command failed, code: " + result);
-                            }
-#endif
-
+                            Debugger.Warning("Execute command failed, code: " + result);
+                        }
+                        else
+                        {
                             if (this._listener != null)
                             {
                                 this._listener.CommandExecuted(command);
                             }
+                        }
 
-                            this._commandList.Remove(i--);
-                        }
-                        else
-                        {
-                            Debugger.Error("Execute command failed! Command not allowed in current state." +
-                                           " (type=" + command.GetCommandType() +
-                                           " current_state=" + this._level.GetState() + ")");
-                        }
+                        this._commandList.Remove(i--);
+                    }
+                    else
+                    {
+                        Debugger.Error(string.Format("Execute command failed! Command not allowed in current state. (type={0} current_state={1}",
+                            command.GetCommandType(),
+                            this._level.GetState()));
                     }
                 }
             }
