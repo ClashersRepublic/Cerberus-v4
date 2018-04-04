@@ -113,8 +113,8 @@
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
-                this._unitProduction = new LogicUnitProduction(level, 2);
-                this._spellProduction = new LogicUnitProduction(level, 25);
+                this._unitProduction = new LogicUnitProduction(level, 2, this._villageType);
+                this._spellProduction = new LogicUnitProduction(level, 25, this._villageType);
             }
         }
 
@@ -508,6 +508,41 @@
         }
 
         /// <summary>
+        ///     Gets the gameobject by index.
+        /// </summary>
+        public LogicGameObject GetGameObjectByIndex(int idx)
+        {
+            for (int i = 0, sum = 0; i < 9; i++)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                if (sum + gameObjects.Count > idx)
+                {
+                    return gameObjects[idx - sum];
+                }
+
+                sum += gameObjects.Count;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the number of gameobjects.
+        /// </summary>
+        public int GetNumGameObjects()
+        {
+            int count = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                count += this._gameObjects[i].Count;
+            }
+
+            return count;
+        }
+
+        /// <summary>
         ///     Gets the gameobject count by data.
         /// </summary>
         public int GetGameObjectCountByData(LogicData data)
@@ -616,7 +651,7 @@
             {
                 if (gameObjects[i].GetData() == data)
                 {
-                    LogicBuilding building = (LogicBuilding) gameObjects[i];
+                    LogicBuilding building = (LogicBuilding)gameObjects[i];
 
                     if (building.IsConstructing())
                     {
@@ -641,6 +676,50 @@
             }
 
             return maxLevel;
+        }
+
+        /// <summary>
+        ///     Gets the highest building.
+        /// </summary>
+        public LogicBuilding GetHighestBuilding(LogicBuildingData data)
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
+            LogicBuilding highestBuilding = null;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (gameObjects[i].GetData() == data)
+                {
+                    LogicBuilding building = (LogicBuilding) gameObjects[i];
+
+                    if (building.IsConstructing())
+                    {
+                        if (building.IsUpgrading())
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!building.IsLocked())
+                    {
+                        int upgLevel = building.GetUpgradeLevel();
+
+                        if (highestBuilding != null)
+                        {
+                            if (upgLevel > highestBuilding.GetUpgradeLevel())
+                            {
+                                highestBuilding = building;
+                            }
+                        }
+                        else
+                        {
+                            highestBuilding = building;
+                        }
+                    }
+                }
+            }
+
+            return highestBuilding;
         }
 
         /// <summary>

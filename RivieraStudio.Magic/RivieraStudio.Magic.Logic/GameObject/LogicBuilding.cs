@@ -125,6 +125,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicUnitProductionComponent"/> instance.
+        /// </summary>
+        public LogicUnitProductionComponent GetUnitProductionComponent()
+        {
+            return (LogicUnitProductionComponent) this.GetComponent(3);
+        }
+
+        /// <summary>
         ///     Gets the remaining construction time.
         /// </summary>
         public int GetRemainingConstructionTime()
@@ -767,7 +775,7 @@
 
                 if (this._level.GetPlayerAvatar().HasEnoughDiamonds(speedUpCost, true, this._level))
                 {
-                    Debugger.Log("LogicBuilding::speedUpConstruction speedup cost: " + speedUpCost);
+                    Debugger.Print("LogicBuilding::speedUpConstruction speedup cost: " + speedUpCost);
 
                     this._level.GetPlayerAvatar().UseDiamonds(speedUpCost);
                     this.FinishConstruction(true);

@@ -88,7 +88,7 @@
 
                                 bool storageIsFull = baseAvailableResources > 0 && baseCollectedResources == 0;
 
-                                Debugger.Log("Collected: " + baseCollectedResources);
+                                Debugger.Print("Collected: " + baseCollectedResources);
 
                                 LogicArrayList<LogicComponent> components = level.GetComponentManager().GetComponents(resourceProductionComponent.GetComponentType());
 

@@ -133,7 +133,7 @@
                             playerAvatar.CommodityCountChangeHelper(0, this._resourceData, this._resourceCount);
                             playerAvatar.CommodityCountChangeHelper(0, this._resource2Data, this._resource2Count);
 
-                            Debugger.Log("LogicBuyResourcesCommand::execute buy resources: " + (resourceCost + resourceCost2));
+                            Debugger.Print("LogicBuyResourcesCommand::execute buy resources: " + (resourceCost + resourceCost2));
                             
                             if (this._command != null)
                             {
@@ -163,7 +163,7 @@
                             playerAvatar.UseDiamonds(resourceCost);
                             playerAvatar.CommodityCountChangeHelper(0, this._resourceData, this._resourceCount);
 
-                            Debugger.Log("LogicBuyResourcesCommand::execute buy resources: " + resourceCost);
+                            Debugger.Print("LogicBuyResourcesCommand::execute buy resources: " + resourceCost);
 
                             if (this._command != null)
                             {

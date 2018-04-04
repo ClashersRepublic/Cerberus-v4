@@ -1,14 +1,12 @@
 ﻿namespace RivieraStudio.Magic.Services.Core
 {
     using System;
-    using System.Diagnostics;
-    using System.IO;
     using System.Runtime.CompilerServices;
 
     using RivieraStudio.Magic.Services.Core.Exception;
     using RivieraStudio.Magic.Titan.Debug;
 
-    using CDebug = System.Diagnostics.Debug;
+    using MSDebug = System.Diagnostics.Debug;
     using LogicDebugger = RivieraStudio.Magic.Titan.Debug.Debugger;
 
     public static class Logging
@@ -18,83 +16,63 @@
         /// </summary>
         public static void Initialize()
         {
-            LogicDebugger.LogEvent += Logging.Log;
+            LogicDebugger.PrintEvent += Logging.Print;
             LogicDebugger.WarningEvent += Logging.Warning;
             LogicDebugger.ErrorEvent += Logging.Error;
         }
 
         /// <summary>
-        ///     Logs the specified message.
+        ///     Print the specified message.
         /// </summary>
-        private static void Log(object sender, DebugEventArgs args)
+        private static void Print(object sender, DebugEventArgs args)
         {
-            CDebug.WriteLine("[DEBUG] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
+            MSDebug.WriteLine("[DEBUG] " + args.Text);
         }
 
         /// <summary>
-        ///     Logs the specified message.
+        ///     Print the specified message.
         /// </summary>
-        private static void Warning(object sender, DebugEventArgs args)
+        public static void Print(string message)
         {
-            CDebug.WriteLine("[WARNING] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
-        }
-
-        /// <summary>
-        ///     Logs the specified message.
-        /// </summary>
-        private static void Error(object sender, DebugEventArgs args)
-        {
-            CDebug.WriteLine("[ERROR] {0}:{1}: {2}", args.FileName, args.Line, args.Text);
-        }
-
-        /// <summary>
-        ///     Logs the specified debug message.
-        /// </summary>
-        [Conditional("DEBUG")]
-        public static void Debug(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            CDebug.WriteLine("[DEBUG] {0}:{1}: {2}", Path.GetFileNameWithoutExtension(file), line, message);
-        }
-        
-        /// <summary>
-        ///     Logs the specified message.
-        /// </summary>
-        public static void Log(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            CDebug.WriteLine("[LOG] {0}:{1}: {2}", Path.GetFileNameWithoutExtension(file), line, message);
+            MSDebug.WriteLine("[DEBUG] " + message);
         }
         
         /// <summary>
         ///     Logs the specified warning message.
         /// </summary>
-        public static void Warning(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        private static void Warning(object sender, DebugEventArgs args)
         {
-            CDebug.WriteLine("[WARNING] {0}:{1}: {2}", Path.GetFileNameWithoutExtension(file), line, message);
-        }
-        
-        /// <summary>
-        ///     Logs the specified error message.
-        /// </summary>
-        public static void Error(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            CDebug.WriteLine("[ERROR] {0}:{1}: {2}", Path.GetFileNameWithoutExtension(file), line, message);
-        }
-        
-        /// <summary>
-        ///     Do assert the specified condition.
-        /// </summary>
-        public static void DoAssert(object sender, bool assertCondition, string assertionError, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            if (!assertCondition)
-            {
-                throw new AssertionException(file, line, assertionError);
-            }
+            MSDebug.WriteLine("[WARNING] " + args.Text);
         }
 
         /// <summary>
-        ///     Do assert the specified message.
+        ///     Logs the specified warning message.
         /// </summary>
-        internal static void DoAssert(Type sender, bool assertCondition, string assertionError, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public static void Warning(string message)
+        {
+            MSDebug.WriteLine("[WARNING] " + message);
+        }
+
+        /// <summary>
+        ///     Logs the specified error message.
+        /// </summary>
+        private static void Error(object sender, DebugEventArgs args)
+        {
+            MSDebug.WriteLine("[ERROR] " + args.Text);
+        }
+
+        /// <summary>
+        ///     Logs the specified error message.
+        /// </summary>
+        public static void Error(string message)
+        {
+            MSDebug.WriteLine("[ERROR] " + message);
+        }
+
+        /// <summary>
+        ///     Do assert the specified condition.
+        /// </summary>
+        public static void DoAssert(bool assertCondition, string assertionError, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (!assertCondition)
             {

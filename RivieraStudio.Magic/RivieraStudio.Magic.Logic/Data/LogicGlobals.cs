@@ -67,9 +67,14 @@
         private int _troopRequestSpeedUpCostMultiplier;
         private int _troopTrainingCostMultiplier;
         private int _speedUpBoostCooldownCostMultiplier;
+        private int _barracksBoostNewMultiplier;
+        private int _barracksBoostMultiplier;
+        private int _spellFactoryBoostNewMultiplier;
+        private int _spellFactoryBoostMultiplier;
         private int _clockTowerSpeedUpMultiplier;
 
         private bool _useNewTraining;
+        private bool _useTroopWalksOutFromTraining;
         private bool _useVillageObjects;
         private bool _moreAccurateTime;
         private bool _dragInTraining;
@@ -170,8 +175,13 @@
             this._troopTrainingCostMultiplier = this.GetIntValue("TROOP_TRAINING_COST_MULTIPLIER");
             this._speedUpBoostCooldownCostMultiplier = this.GetIntValue("SPEEDUP_BOOST_COOLDOWN_COST_MULTIPLIER");
             this._clockTowerSpeedUpMultiplier = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
+            this._barracksBoostMultiplier = this.GetIntValue("BARRACKS_BOOST_MULTIPLIER");
+            this._barracksBoostNewMultiplier = this.GetIntValue("BARRACKS_BOOST_MULTIPLIER_NEW");
+            this._spellFactoryBoostNewMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER_NEW");
+            this._spellFactoryBoostMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
+            this._useTroopWalksOutFromTraining = this.GetBoolValue("USE_TROOP_WALKS_OUT_FROM_TRAINING");
             this._useVillageObjects = this.GetBoolValue("USE_VILLAGE_OBJECTS");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
@@ -341,6 +351,38 @@
         public int GetResourceProductionBoostMultiplier()
         {
             return this._resourceProductionBoostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the spell factory boost multiplier.
+        /// </summary>
+        public int GetSpellFactoryBoostMultiplier()
+        {
+            return this._spellFactoryBoostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the spell factory boost new multiplier.
+        /// </summary>
+        public int GetSpellFactoryBoostNewMultiplier()
+        {
+            return this._spellFactoryBoostNewMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the barrack boost new multiplier.
+        /// </summary>
+        public int GetBarracksBoostNewMultiplier()
+        {
+            return this._barracksBoostNewMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the barrack boost multiplier.
+        /// </summary>
+        public int GetBarracksBoostMultiplier()
+        {
+            return this._barracksBoostMultiplier;
         }
 
         /// <summary>
@@ -544,6 +586,11 @@
         public bool UseNewTraining()
         {
             return this._useNewTraining;
+        }
+
+        public bool UseTroopWalksOutFromTraining()
+        {
+            return this._useTroopWalksOutFromTraining;
         }
 
         public bool UseVillageObjects()

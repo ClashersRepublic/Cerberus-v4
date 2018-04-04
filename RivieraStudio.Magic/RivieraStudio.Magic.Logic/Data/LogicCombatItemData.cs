@@ -159,9 +159,25 @@ namespace RivieraStudio.Magic.Logic.Data
         /// <summary>
         ///     Gets the required production level.
         /// </summary>
-        public virtual int GetRequiredProductionLevel()
+        public virtual int GetRequiredProductionHouseLevel()
         {
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets if the item is unlocked for the specified production house level.
+        /// </summary>
+        public virtual bool IsUnlockedForProductionHouseLevel(int level)
+        {
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the building production data.
+        /// </summary>
+        public virtual LogicBuildingData GetProductionHouseData()
+        {
+            return null;
         }
 
         /// <summary>
@@ -226,7 +242,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
                             if (barrackCount > 0)
                             {
-                                int productionLevel = this.GetRequiredProductionLevel();
+                                int productionLevel = this.GetRequiredProductionHouseLevel();
                                 int idx = 0;
 
                                 do
@@ -272,7 +288,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
                             if (barrackCount > 0)
                             {
-                                int productionLevel = this.GetRequiredProductionLevel();
+                                int productionLevel = this.GetRequiredProductionHouseLevel();
                                 int idx = 0;
 
                                 do

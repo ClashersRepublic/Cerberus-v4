@@ -424,7 +424,7 @@
                                 
                                 if (diamondsCount > 0)
                                 {
-                                    Debugger.Log("LogicObstacle::clearingFinished diamonds reward: " + diamondsCount);
+                                    Debugger.Print("LogicObstacle::clearingFinished diamonds reward: " + diamondsCount);
 
                                     homeOwnerAvatar.SetDiamonds(homeOwnerAvatar.GetDiamonds() + diamondsCount);
                                     homeOwnerAvatar.SetFreeDiamonds(homeOwnerAvatar.GetFreeDiamonds() + diamondsCount);

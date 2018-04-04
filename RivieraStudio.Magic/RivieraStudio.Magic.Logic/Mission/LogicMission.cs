@@ -229,7 +229,7 @@
 
             if (!playerAvatar.IsMissionCompleted(this._data))
             {
-                Debugger.Log("Mission " + this._data.GetName() + " finished");
+                Debugger.Print("Mission " + this._data.GetName() + " finished");
 
                 playerAvatar.SetMissionCompleted(this._data, true);
                 playerAvatar.GetChangeListener().CommodityCountChanged(0, this._data.GetRewardResourceData(), 1);

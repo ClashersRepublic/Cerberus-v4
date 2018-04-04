@@ -1783,11 +1783,11 @@
             {
                 if (this._matchType == 1)
                 {
-                    Debugger.Log("matchmaking");
+                    Debugger.Print("matchmaking");
                 }
                 else if (this._matchType == 8)
                 {
-                    Debugger.Log("matchmakingv2");
+                    Debugger.Print("matchmakingv2");
                 }
             }
 

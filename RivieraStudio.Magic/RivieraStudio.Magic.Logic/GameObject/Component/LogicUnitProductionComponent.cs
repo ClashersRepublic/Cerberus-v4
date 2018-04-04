@@ -1,7 +1,15 @@
 ﻿namespace RivieraStudio.Magic.Logic.GameObject.Component
 {
-    public sealed class LogicUnitProductionComponent : LogicComponent
+    using RivieraStudio.Magic.Logic.Time;
+    using RivieraStudio.Magic.Logic.Util;
+    using RivieraStudio.Magic.Titan.Util;
+
+    public class LogicUnitProductionComponent : LogicComponent
     {
+        protected LogicTimer _timer;
+        protected LogicTimer _boostTimer;
+        protected LogicArrayList<LogicUnitProductionSlot> _slots;
+
         private int _productionType;
 
         /// <summary>

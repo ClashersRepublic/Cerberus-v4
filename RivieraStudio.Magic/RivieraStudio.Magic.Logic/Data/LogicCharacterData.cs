@@ -146,9 +146,29 @@ namespace RivieraStudio.Magic.Logic.Data
         /// <summary>
         ///     Gets the required barrack level.
         /// </summary>
-        public override int GetRequiredProductionLevel()
+        public override int GetRequiredProductionHouseLevel()
         {
             return this._unlockedBarrackLevel;
+        }
+
+        /// <summary>
+        ///     Gets if the item is unlocked for the specified production house level.
+        /// </summary>
+        public override bool IsUnlockedForProductionHouseLevel(int level)
+        {
+            return this._unlockedBarrackLevel >= level;
+        }
+
+        /// <summary>
+        ///     Gets the building production data.
+        /// </summary>
+        public override LogicBuildingData GetProductionHouseData()
+        {
+            string buildingName = this.GetVillageType() == 1 ? 
+                this.GetUnitOfType() == 1 ? "Barrack2" : "Dark Elixir Barrack2" :
+                this.GetUnitOfType() == 1 ? "Barrack" : "Dark Elixir Barrack";
+
+            return LogicDataTables.GetBuildingByName(buildingName);
         }
 
         /// <summary>

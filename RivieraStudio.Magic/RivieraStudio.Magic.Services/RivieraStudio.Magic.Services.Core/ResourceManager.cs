@@ -113,7 +113,7 @@
 
             string shaFingerprint = LogicJSONHelper.GetJSONString(jsonObject, "sha");
 
-            Logging.Debug("Download " + shaFingerprint + " assets...");
+            Logging.Print("Download " + shaFingerprint + " assets...");
 
             Parallel.For(0, fileArray.Size(), new ParallelOptions {MaxDegreeOfParallelism = 4}, i =>
             {
@@ -149,7 +149,7 @@
 
                     if (data != null)
                     {
-                        Logging.Debug("file " + fileName + " downloaded");
+                        Logging.Print("file " + fileName + " downloaded");
 
                         switch (Path.GetExtension(fileName))
                         {
@@ -189,7 +189,7 @@
             });
 
             File.WriteAllText("Assets/fingerprint.json", fingerprint);
-            Logging.Debug("Download completed");
+            Logging.Print("Download completed");
         }
 
         /// <summary>

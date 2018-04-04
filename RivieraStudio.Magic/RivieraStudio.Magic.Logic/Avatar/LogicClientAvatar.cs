@@ -269,6 +269,14 @@
         }
 
         /// <summary>
+        ///     Gets the experience points.
+        /// </summary>
+        public int GetExpPoints()
+        {
+            return this._expPoints;
+        }
+
+        /// <summary>
         ///     Gets the id.
         /// </summary>
         public LogicLong GetId()

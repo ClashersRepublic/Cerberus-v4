@@ -164,7 +164,6 @@
         public void SubTick()
         {
             int subTick = this._level.GetLogicTime();
-            int state = this._level.GetState();
 
             for (int i = 0; i < this._commandList.Count; i++)
             {

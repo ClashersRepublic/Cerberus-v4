@@ -324,6 +324,24 @@
         }
 
         /// <summary>
+        ///     Gets a random number.
+        /// </summary>
+        public int Rand(int rnd)
+        {
+            int seed = this._seed + rnd;
+
+            if (seed == 0)
+            {
+                seed = -1;
+            }
+
+            int tmp1 = seed ^ (seed << 14) ^ ((seed ^ (seed << 14)) >> 16);
+            int tmp2 = (tmp1 ^ 32 * tmp1) & 0x7FFFFFFF;
+
+            return tmp2;
+        }
+
+        /// <summary>
         ///     Sets the gameobject listener.
         /// </summary>
         public void SetListener(LogicGameObjectListener listener)

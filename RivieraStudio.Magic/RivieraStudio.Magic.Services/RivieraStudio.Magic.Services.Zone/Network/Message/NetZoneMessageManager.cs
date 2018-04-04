@@ -157,7 +157,7 @@
             {
                 if (session.PiranhaMessageManager == null)
                 {
-                    Logging.Debug("NetZoneMessage::forwardPiranhaMessageReceived session disposed");
+                    Logging.Print("NetZoneMessage::forwardPiranhaMessageReceived session disposed");
                     return;
                 }
 
@@ -256,13 +256,13 @@
 
                             break;
                         default:
-                            Logging.Debug(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
+                            Logging.Print(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
                             break;
                     }
                 }
                 else
                 {
-                    Logging.Debug(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
+                    Logging.Print(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
                 }
             }
         }

@@ -244,6 +244,7 @@
     <Compile Include="Util\LogicPathFinderNew.cs" />
     <Compile Include="Util\LogicPathFinder.cs" />
     <Compile Include="Util\LogicSavedPath.cs" />
+    <Compile Include="Util\LogicUnitProductionSlot.cs" />
     <Compile Include="Util\LogicUnitSlot.cs" />
     <Compile Include="Worker\LogicWorkerManager.cs" />
   </ItemGroup>

@@ -73,7 +73,7 @@
         {
             if (this._logicGameMode != null)
             {
-                Logging.Debug("GameMode::save game saved");
+                Logging.Print("GameMode::save game saved");
 
                 if (this._logicGameMode.GetState() == 1 || this._logicGameMode.GetState() == 3)
                 {
@@ -96,7 +96,7 @@
             }
             else
             {
-                Logging.Debug("GameMode::save called when m_logicGameMode is NULL");
+                Logging.Print("GameMode::save called when m_logicGameMode is NULL");
             }
         }
 
@@ -145,7 +145,7 @@
             {
                 if (compressibleHomeJSON.Get() == null)
                 {
-                    Logging.Debug("GameMode::init level JSON is NULL, load default");
+                    Logging.Print("GameMode::init level JSON is NULL, load default");
                     compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
                 }
 
@@ -334,7 +334,7 @@
                         this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, availableServerCommand);
                     }
 
-                    Logging.Debug(string.Format("GameMode::addAvailableServerCommand cmd: {0} id: {1}", serverCommand.GetCommandType(), serverCommand.GetId()));
+                    Logging.Print(string.Format("GameMode::addAvailableServerCommand cmd: {0} id: {1}", serverCommand.GetCommandType(), serverCommand.GetId()));
                 }
             }
         }
@@ -357,7 +357,7 @@
                         return true;
                     }
 
-                    Logging.Debug("GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
+                    Logging.Print("GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
                 }
             }
 
@@ -486,14 +486,14 @@
                                     this.DeInit();
                                     this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
 
-                                    Logging.Debug(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
+                                    Logging.Print(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
 
                                     return;
                                 }
                             }
                         }
 
-                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
+                        Logging.Print(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
                     }
                     else
                     {
