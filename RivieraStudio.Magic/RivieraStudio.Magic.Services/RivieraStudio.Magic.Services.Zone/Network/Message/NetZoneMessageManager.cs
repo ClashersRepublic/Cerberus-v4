@@ -242,15 +242,19 @@
                             ZoneAccount account = session.ZoneAccount;
                             NetZoneSessionManager.Remove(sessionId);
 
-                            session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new OutOfSyncMessage());
+                            session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, new OutOfSyncMessage());
+                            session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
+
+                            NetZoneSessionManager.Remove(sessionId);
+
                             session.ZoneAccount.GameMode.DeInit();
-                            session.ZoneAccount.SetSession(null);
                             session.Destruct();
 
                             ZoneAccountManager.UpdateZoneAccount(account.Id, new ZoneAccount(account.Id));
                             break;
                         case 1001:
                             LogicDiamondsAddedCommand diamondsAddedCommand = new LogicDiamondsAddedCommand();
+
                             diamondsAddedCommand.SetData(true, 14000, -1, false, 0, null);
                             session.ZoneAccount.GameMode.AddAvailableServerCommand(diamondsAddedCommand);
 

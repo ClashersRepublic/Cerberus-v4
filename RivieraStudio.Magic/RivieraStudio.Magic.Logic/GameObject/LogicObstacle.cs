@@ -368,6 +368,20 @@
         }
 
         /// <summary>
+        ///     Cancels the clearing of obstacle.
+        /// </summary>
+        public void CancelClearing()
+        {
+            this._level.GetWorkerManagerAt(this._data.GetVillageType()).DeallocateWorker(this);
+
+            if (this._clearTimer != null)
+            {
+                this._clearTimer.Destruct();
+                this._clearTimer = null;
+            }
+        }
+
+        /// <summary>
         ///     Called when the clearing of this <see cref="LogicObstacle"/> instance is finished.
         /// </summary>
         public void ClearingFinished(bool ignoreState)

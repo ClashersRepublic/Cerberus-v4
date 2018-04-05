@@ -134,10 +134,8 @@
 
                             return 0;
                         }
-                        else
-                        {
-                            return -3;
-                        }
+
+                        return -3;
                     }
 
                     return -32;

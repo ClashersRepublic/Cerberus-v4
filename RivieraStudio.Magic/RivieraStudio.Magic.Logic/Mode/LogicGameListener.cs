@@ -33,6 +33,10 @@
         {
         }
 
+        public virtual void TrapCapReached(LogicTrapData data)
+        {
+        }
+
         public virtual void AllianceCreated()
         {
         }

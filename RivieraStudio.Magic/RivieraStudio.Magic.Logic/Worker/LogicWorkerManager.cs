@@ -168,6 +168,18 @@
                         }
 
                         break;
+                    case 4:
+                        LogicTrap trap = (LogicTrap) tmp;
+
+                        if (trap.IsConstructing())
+                        {
+                            tmpRemaining = trap.GetRemainingConstructionTime();
+                        }
+                        else
+                        {
+                            Debugger.Warning("LogicWorkerManager - Worker allocated to trap with remaining construction time 0");
+                        }
+                        break;
                     case 8:
 
                         break;
@@ -218,7 +230,13 @@
 
                         break;
                     case 4:
-                        // Trap.
+                        LogicTrap trap = (LogicTrap) gameObject;
+
+                        if (trap.IsConstructing())
+                        {
+                            return trap.SpeedUpConstruction();
+                        }
+
                         break;
                     case 8:
                         LogicVillageObject villageObject = (LogicVillageObject) gameObject;

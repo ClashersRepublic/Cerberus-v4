@@ -9,9 +9,10 @@ namespace RivieraStudio.Magic.Logic.Data
     public class LogicBuildingData : LogicData
     {
         private LogicBuildingClassData _buildingClass;
-        private LogicResourceData[] _buildResource;
-        private LogicResourceData[] _altBuildResource;
-        private LogicResourceData _produceResource;
+        private LogicResourceData[] _buildResourceData;
+        private LogicResourceData[] _altBuildResourceData;
+        private LogicResourceData _gearUpResourceData;
+        private LogicResourceData _produceResourceData;
         private LogicHeroData _heroData;
         private LogicArrayList<int>[] _storedResourceCounts;
         private LogicArrayList<int>[] _percentageStoredResourceCounts;
@@ -21,6 +22,8 @@ namespace RivieraStudio.Magic.Logic.Data
         private int[] _townHallVillage2Level;
         private int[] _wallBlockX;
         private int[] _wallBlockY;
+        private int[] _gearUpTime;
+        private int[] _gearUpCost;
         private int _upgradeLevelCount;
         private bool _isClockTower;
         private bool _isFlamer;
@@ -194,9 +197,6 @@ namespace RivieraStudio.Magic.Logic.Data
         public int NewTargetAttackDelay { get; protected set; }
         public string GearUpBuilding { get; protected set; }
         public int GearUpLevelRequirement { get; protected set; }
-        public string GearUpResource { get; protected set; }
-        protected int[] GearUpCost { get; set; }
-        protected int[] GearUpTime { get; set; }
 
         /// <summary>
         ///     Called when all instances has been loaded for initialized members in instance.
@@ -213,29 +213,24 @@ namespace RivieraStudio.Magic.Logic.Data
                 Debugger.Error("Building class is not defined for " + this.GetName());
             }
 
-            this._constructionTimes = new int[this._upgradeLevelCount];
-
-            for (int i = 0; i < this._upgradeLevelCount; i++)
-            {
-                this._constructionTimes[i] = 86400 * this.GetIntegerValue("BuildTimeD", i) +
-                                             3600 * this.GetIntegerValue("BuildTimeH", i) +
-                                             60 * this.GetIntegerValue("BuildTimeM", i) +
-                                             this.GetIntegerValue("BuildTimeS", i);
-            }
-
             int longestArraySize = this._row.GetBiggestArraySize();
 
-            this._buildResource = new LogicResourceData[longestArraySize];
-            this._altBuildResource = new LogicResourceData[longestArraySize];
+            this._buildResourceData = new LogicResourceData[longestArraySize];
+            this._altBuildResourceData = new LogicResourceData[longestArraySize];
             this._storedResourceCounts = new LogicArrayList<int>[longestArraySize];
             this._percentageStoredResourceCounts = new LogicArrayList<int>[longestArraySize];
             this._townHallLevel = new int[longestArraySize];
             this._townHallVillage2Level = new int[longestArraySize];
+            this._constructionTimes = new int[longestArraySize];
+            this._gearUpTime = new int[longestArraySize];
+            this._gearUpCost = new int[longestArraySize];
 
             for (int i = 0; i < longestArraySize; i++)
             {
-                this._buildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("BuildResource", i));
-                this._altBuildResource[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("AltBuildResource", i));
+                this._gearUpCost[i] = this.GetClampedIntegerValue("GearUpCost", i);
+                this._gearUpTime[i] = this.GetClampedIntegerValue("GearUpTime", i);
+                this._buildResourceData[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("BuildResource", i));
+                this._altBuildResourceData[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("AltBuildResource", i));
                 this._townHallLevel[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel", i) - 1, 0);
                 this._townHallVillage2Level[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel2", i) - 1, 0);
                 this._storedResourceCounts[i] = new LogicArrayList<int>();
@@ -248,9 +243,15 @@ namespace RivieraStudio.Magic.Logic.Data
                     this._storedResourceCounts[i].Add(this.GetIntegerValue("MaxStored" + table.GetItemAt(j).GetName(), i));
                     this._percentageStoredResourceCounts[i].Add(this.GetIntegerValue("PercentageStored" + table.GetItemAt(j).GetName(), i));
                 }
+
+                this._constructionTimes[i] = 86400 * this.GetIntegerValue("BuildTimeD", i) +
+                                             3600 * this.GetIntegerValue("BuildTimeH", i) +
+                                             60 * this.GetIntegerValue("BuildTimeM", i) +
+                                             this.GetIntegerValue("BuildTimeS", i);
             }
 
-            this._produceResource = LogicDataTables.GetResourceByName(this.GetValue("ProducesResource", 0));
+            this._produceResourceData = LogicDataTables.GetResourceByName(this.GetValue("ProducesResource", 0));
+            this._gearUpResourceData = LogicDataTables.GetResourceByName(this.GetClampedValue("GearUpResource", 0));
 
             string heroType = this.GetValue("HeroType", 0);
 
@@ -369,19 +370,27 @@ namespace RivieraStudio.Magic.Logic.Data
             return this.HousingSpaceAlt[level];
         }
 
+        /// <summary>
+        ///     Gets the gear up resource.
+        /// </summary>
+        public LogicResourceData GetGearUpResource()
+        {
+            return this._gearUpResourceData;
+        }
+
         public LogicResourceData GetBuildResource(int idx)
         {
-            return this._buildResource[idx];
+            return this._buildResourceData[idx];
         }
 
         public LogicResourceData GetAltBuildResource(int idx)
         {
-            return this._altBuildResource[idx];
+            return this._altBuildResourceData[idx];
         }
 
         public LogicResourceData GetProduceResource()
         {
-            return this._produceResource;
+            return this._produceResourceData;
         }
 
         public LogicHeroData GetHeroData()
@@ -676,12 +685,12 @@ namespace RivieraStudio.Magic.Logic.Data
 
         public int GetGearUpCost(int index)
         {
-            return this.GearUpCost[index];
+            return this._gearUpCost[index];
         }
 
         public int GetGearUpTime(int index)
         {
-            return this.GearUpTime[index];
+            return this._gearUpTime[index];
         }
 
         public int GetWallBlockX(int index)

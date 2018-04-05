@@ -193,9 +193,8 @@
         /// <summary>
         ///     Adds the specified gameobject to this instance.
         /// </summary>
-        public void AddGameObject(LogicGameObject gameObject)
+        public void AddGameObject(LogicGameObject gameObject, int globalId)
         {
-            int globalId = gameObject.GetGlobalID();
             int gameObjectType = gameObject.GetGameObjectType();
 
             if (gameObject.GetData().GetVillageType() != this._villageType)
@@ -832,7 +831,7 @@
                 {
                     LogicVillageObject villageObject = (LogicVillageObject) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
                     villageObject.SetInitialPosition((data.TileX100 << 9) / 100, (data.TileY100 << 9) / 100);
-                    this.AddGameObject(villageObject);
+                    this.AddGameObject(villageObject, -1);
                 }
             }
         }
@@ -946,6 +945,7 @@
 
                         for (int j = 0; j < gameObjects.Count; j++)
                         {
+                            gameObjects[j].FastForwardBoost(maxSecs);
                             gameObjects[j].FastForwardTime(maxSecs);
                         }
                     }
@@ -1195,7 +1195,7 @@
 
                         obstacle.SetInitialPosition(x << 9, y << 9);
 
-                        this.AddGameObject(obstacle);
+                        this.AddGameObject(obstacle, -1);
 
                         return true;
                     }
@@ -1240,7 +1240,7 @@
                     {
                         LogicObstacle obstacle = (LogicObstacle) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
                         obstacle.SetInitialPosition(x << 9, y << 9);
-                        this.AddGameObject(obstacle);
+                        this.AddGameObject(obstacle, -1);
 
                         return true;
                     }
@@ -1350,6 +1350,12 @@
         public void SubTick()
         {
             this._componentManager.SubTick();
+
+            if (LogicDataTables.GetGlobals().UseNewTraining())
+            {
+                this._unitProduction.SubTick();
+                this._spellProduction.SubTick();
+            }
 
             LogicArrayList<LogicGameObject> buildings = this._gameObjects[0];
             LogicArrayList<LogicGameObject> characters = this._gameObjects[1];
@@ -1665,11 +1671,11 @@
 
                 if (jsonObject != null)
                 {
-                    LogicJSONNumber jsonData = jsonObject.GetJSONNumber("data");
+                    LogicJSONNumber dataObject = jsonObject.GetJSONNumber("data");
 
-                    if (jsonData != null)
+                    if (dataObject != null)
                     {
-                        LogicData data = LogicDataTables.GetDataById(jsonData.GetIntValue());
+                        LogicData data = LogicDataTables.GetDataById(dataObject.GetIntValue());
 
                         if (data != null)
                         {
@@ -1688,16 +1694,17 @@
 
                             if (gameObject != null)
                             {
-                                LogicJSONNumber jsonId = jsonObject.GetJSONNumber("id");
+                                LogicJSONNumber idObject = jsonObject.GetJSONNumber("id");
+                                Int32 globalId = -1;
 
-                                if (jsonId != null)
+                                if (idObject != null)
                                 {
-                                    gameObject.SetGlobalID(jsonId.GetIntValue());
+                                    globalId = idObject.GetIntValue();
                                 }
 
                                 gameObject.Load(jsonObject);
 
-                                this.AddGameObject(gameObject);
+                                this.AddGameObject(gameObject, globalId);
                             }
                         }
                         else

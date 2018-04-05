@@ -91,5 +91,13 @@
         {
             // ExtraCharacterAdded.
         }
+
+        /// <summary>
+        ///     Called when a the construction was canceled.
+        /// </summary>
+        public virtual void CancelNotification()
+        {
+
+        }
     }
 }

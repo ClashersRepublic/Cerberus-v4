@@ -83,7 +83,7 @@
                         }
                         if (gameObject.GetGameObjectType() == 4)
                         {
-                            return -1;
+                            return ((LogicTrap) gameObject).SpeedUpConstruction() ? 0 : -1;
                         }
                         if (gameObject.GetGameObjectType() == 8)
                         {

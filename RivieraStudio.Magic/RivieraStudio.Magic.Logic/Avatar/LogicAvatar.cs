@@ -751,6 +751,24 @@
         }
 
         /// <summary>
+        ///     Gets the spell total capacity.
+        /// </summary>
+        public int GetSpellsTotalCapacity()
+        {
+            int cnt = 0;
+
+            for (int i = 0; i < this._spellCount.Count; i++)
+            {
+                LogicDataSlot slot = this._spellCount[i];
+                LogicCombatItemData data = (LogicCombatItemData) slot.GetData();
+
+                cnt += data.GetHousingSpace() * this._spellCount[i].GetCount();
+            }
+
+            return cnt;
+        }
+
+        /// <summary>
         ///     Gets the units total capacity.
         /// </summary>
         public int GetUnitsTotalCapacity()
@@ -759,7 +777,10 @@
 
             for (int i = 0; i < this._unitCount.Count; i++)
             {
-                cnt += ((LogicCombatItemData) this._unitCount[i].GetData()).GetHousingSpace() * this._unitCount[i].GetCount();
+                LogicDataSlot slot = this._unitCount[i];
+                LogicCombatItemData data = (LogicCombatItemData) slot.GetData();
+
+                cnt += data.GetHousingSpace() * this._spellCount[i].GetCount();
             }
 
             return cnt;

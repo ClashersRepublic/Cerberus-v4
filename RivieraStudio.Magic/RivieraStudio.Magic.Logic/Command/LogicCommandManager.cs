@@ -277,6 +277,12 @@
                         break;
                     }
 
+                    case 505:
+                    {
+                        command = new LogicCancelConstructionCommand();
+                        break;
+                    }
+
                     case 506:
                     {
                         command = new LogicCollectResourcesCommand();
@@ -292,6 +298,12 @@
                     case 508:
                     {
                         command = new LogicTrainUnitCommand();
+                        break;
+                    }
+
+                    case 510:
+                    {
+                        command = new LogicBuyTrapCommand();
                         break;
                     }
 
@@ -322,6 +334,12 @@
                     case 523:
                     {
                         command = new LogicClaimAchievementRewardCommand();
+                        break;
+                    }
+
+                    case 526:
+                    {
+                        command = new LogicBoostBuildingCommand();
                         break;
                     }
 

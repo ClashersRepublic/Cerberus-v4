@@ -16,6 +16,7 @@
     using RivieraStudio.Magic.Services.Core;
     using RivieraStudio.Magic.Services.Core.Database;
     using RivieraStudio.Magic.Services.Core.Message.Avatar;
+    using RivieraStudio.Magic.Services.Core.Message.Session;
     using RivieraStudio.Magic.Services.Core.Utils;
     using RivieraStudio.Magic.Services.Zone.Game.Command;
     using RivieraStudio.Magic.Services.Zone.Network.Session;
@@ -480,11 +481,17 @@
                                 if (serverChecksum != checksum)
                                 {
                                     OutOfSyncMessage outOfSyncMessage = new OutOfSyncMessage();
+
                                     outOfSyncMessage.SetClientChecksum(checksum);
                                     outOfSyncMessage.SetClientChecksum(serverChecksum);
 
+                                    this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
+                                    this.Session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
+
+                                    NetZoneSessionManager.Remove(this.Session.SessionId);
+
                                     this.DeInit();
-                                    this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
+                                    this.Session.Destruct();
 
                                     Logging.Print(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
 

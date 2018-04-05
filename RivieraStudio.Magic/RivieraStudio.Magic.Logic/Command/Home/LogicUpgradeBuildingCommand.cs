@@ -134,11 +134,44 @@
                 }
                 else if (gameObject.GetGameObjectType() == 4)
                 {
-                    // TODO: Implement upgrade trap.
+                    LogicTrap trap = (LogicTrap) gameObject;
+
+                    if (trap.CanUpgrade(true))
+                    {
+                        LogicTrapData data = trap.GetTrapData();
+                        LogicResourceData buildResourceData = data.GetBuildResource();
+                        LogicClientAvatar playerAvatar = level.GetPlayerAvatar();
+
+                        int buildCost = data.GetBuildCost(trap.GetUpgradeLevel() + 1);
+
+                        if (playerAvatar.HasEnoughResources(buildResourceData, buildCost, true, this, false))
+                        {
+                            int constructionTime = data.GetBuildTime(trap.GetUpgradeLevel() + 1);
+
+                            if (constructionTime != 0 || LogicDataTables.GetGlobals().WorkerForZeroBuilTime())
+                            {
+                                if (!level.HasFreeWorkers(this, -1))
+                                {
+                                    return -1;
+                                }
+
+                                playerAvatar.CommodityCountChangeHelper(0, buildResourceData, -buildCost);
+                                trap.StartUpgrading();
+
+                                return 0;
+                            }
+                        }
+                    }
                 }
                 else if (gameObject.GetGameObjectType() == 8)
                 {
-                    // TODO: Implement upgrade vObj.
+                    if (!this._useAltResources)
+                    {
+                        LogicVillageObject villageObject = (LogicVillageObject) gameObject;
+                        // TODO: Implement upgrade vObjs.
+                    }
+
+                    return -31;
                 }
             }
 

@@ -154,7 +154,15 @@
         /// </summary>
         public bool IsTutorialFinished()
         {
-            return this._openMissions.Count == 0;
+            for (int i = 0; i < this._openMissions.Count; i++)
+            {
+                if (this._openMissions[i].GetMissionData().GetMissionCategory() == 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

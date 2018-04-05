@@ -2,8 +2,7 @@
 {
     using RivieraStudio.Magic.Services.Core.Message;
     using RivieraStudio.Magic.Services.Core.Message.Network;
-    using RivieraStudio.Magic.Services.Core.Message.Session;
-    using RivieraStudio.Magic.Services.Core.Utils;
+
     using RivieraStudio.Magic.Titan.Message;
 
     public class NetSession
@@ -133,26 +132,6 @@
                 ForwardPiranhaMessage forwardPiranhaMessage = new ForwardPiranhaMessage();
                 forwardPiranhaMessage.SetPiranhaMessage(message);
                 NetMessageManager.SendMessage(socket, this.SessionId, forwardPiranhaMessage);
-            }
-        }
-
-        /// <summary>
-        ///     Forwards the specified <see cref="PiranhaMessage"/> to the service.
-        /// </summary>
-        public void SendErrorPiranhaMessage(int serviceNodeType, PiranhaMessage message)
-        {
-            NetSocket socket = this._serviceNodeSockets[serviceNodeType];
-
-            if (socket != null)
-            {
-                if (message.GetEncodingLength() == 0)
-                {
-                    message.Encode();
-                }
-
-                this.SendPiranhaMessage(serviceNodeType, message);
-                this.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
-                this.Destruct();
             }
         }
     }

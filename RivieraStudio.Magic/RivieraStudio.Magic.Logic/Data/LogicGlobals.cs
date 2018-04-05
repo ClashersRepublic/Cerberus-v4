@@ -58,6 +58,9 @@
         private int _attackPreparationLengthSecs;
         private int _attackLengthSecs;
         private int _village2StartUnitLevel;
+        private int _resourceProductionBoostSecs;
+        private int _barracksBoostSecs;
+        private int _spellFactoryBoostSecs;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -72,6 +75,7 @@
         private int _spellFactoryBoostNewMultiplier;
         private int _spellFactoryBoostMultiplier;
         private int _clockTowerSpeedUpMultiplier;
+        private int _buildCancelMultiplier;
 
         private bool _useNewTraining;
         private bool _useTroopWalksOutFromTraining;
@@ -99,12 +103,14 @@
         private bool _useTeslaTriggerCommand;
         private bool _useTrapTriggerCommand;
         private bool _validateTroopUpgradeLevels;
+        private bool _allowCancelBuildingConstruction;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
         private int[] _lootMultiplierByTownHallDifference;
         private int[] _barrackReduceTrainingDivisor;
         private int[] _darkBarrackReduceTrainingDivisor;
+        private int[] _clockTowerBoostSecs;
 
         private LogicResourceData _allianceCreateResourceData;
 
@@ -165,6 +171,9 @@
             this._attackPreparationLengthSecs = this.GetIntValue("ATTACK_PREPARATION_LENGTH_SEC");
             this._attackLengthSecs = this.GetIntValue("ATTACK_LENGTH_SEC");
             this._village2StartUnitLevel = this.GetIntValue("VILLAGE2_START_UNIT_LEVEL");
+            this._resourceProductionBoostSecs = 60 * this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MINS");
+            this._barracksBoostSecs = 60 * this.GetIntValue("BARRACKS_BOOST_MINS");
+            this._spellFactoryBoostSecs = 60 * this.GetIntValue("SPELL_FACTORY_BOOST_MINS");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -179,6 +188,7 @@
             this._barracksBoostNewMultiplier = this.GetIntValue("BARRACKS_BOOST_MULTIPLIER_NEW");
             this._spellFactoryBoostNewMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER_NEW");
             this._spellFactoryBoostMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER");
+            this._buildCancelMultiplier = this.GetIntValue("BUILD_CANCEL_MULTIPLIER");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._useTroopWalksOutFromTraining = this.GetBoolValue("USE_TROOP_WALKS_OUT_FROM_TRAINING");
@@ -206,6 +216,7 @@
             this._useTeslaTriggerCommand = this.GetBoolValue("USE_TESLA_TRIGGER_CMD");
             this._useTrapTriggerCommand = this.GetBoolValue("USE_TRAP_TRIGGER_CMD");
             this._validateTroopUpgradeLevels = this.GetBoolValue("VALIDATE_TROOP_UPGRADE_LEVELS");
+            this._allowCancelBuildingConstruction = this.GetBoolValue("ALLOW_CANCEL_BUILDING_CONSTRUCTION");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -252,6 +263,15 @@
             for (int i = 0; i < this._darkBarrackReduceTrainingDivisor.Length; i++)
             {
                 this._darkBarrackReduceTrainingDivisor[i] = darkBarrackReduceTrainingDivisorObject.GetNumberArray(i);
+            }
+
+            LogicGlobalData clockTowerBoostObject = this.GetGlobalData("CLOCK_TOWER_BOOST_MINS");
+
+            this._clockTowerBoostSecs = new int[clockTowerBoostObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._clockTowerBoostSecs.Length; i++)
+            {
+                this._clockTowerBoostSecs[i] = clockTowerBoostObject.GetNumberArray(i);
             }
         }
 
@@ -354,6 +374,14 @@
         }
 
         /// <summary>
+        ///     Gets the resource production boost time.
+        /// </summary>
+        public int GetResourceProductionBoostSecs()
+        {
+            return this._resourceProductionBoostSecs;
+        }
+
+        /// <summary>
         ///     Gets the spell factory boost multiplier.
         /// </summary>
         public int GetSpellFactoryBoostMultiplier()
@@ -370,6 +398,14 @@
         }
 
         /// <summary>
+        ///     Gets the spell factory boost time.
+        /// </summary>
+        public int GetSpellFactoryBoostSecs()
+        {
+            return this._spellFactoryBoostSecs;
+        }
+
+        /// <summary>
         ///     Gets the barrack boost new multiplier.
         /// </summary>
         public int GetBarracksBoostNewMultiplier()
@@ -383,6 +419,22 @@
         public int GetBarracksBoostMultiplier()
         {
             return this._barracksBoostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the build cancel multiplier.
+        /// </summary>
+        public int GetBuildCancelMultiplier()
+        {
+            return this._buildCancelMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the barrack boost time.
+        /// </summary>
+        public int GetBarracksBoostSecs()
+        {
+            return this._barracksBoostSecs;
         }
 
         /// <summary>
@@ -708,6 +760,11 @@
             return this._validateTroopUpgradeLevels;
         }
 
+        public bool AllowCancelBuildingConstruction()
+        {
+            return this._allowCancelBuildingConstruction;
+        }
+
         /// <summary>
         ///     Gets the alliance create <see cref="LogicResourceData" /> data.
         /// </summary>
@@ -756,6 +813,19 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets the clock tower boost time.
+        /// </summary>
+        public int GetClockTowerBoostSecs(int upgLevel)
+        {
+            if (this._clockTowerBoostSecs.Length > upgLevel)
+            {
+                return this._clockTowerBoostSecs[upgLevel];
+            }
+
+            return this._clockTowerBoostSecs[this._clockTowerBoostSecs.Length - 1];
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿namespace RivieraStudio.Magic.Logic.Calendar
 {
     using RivieraStudio.Magic.Logic.Avatar;
+    using RivieraStudio.Magic.Logic.Data;
+    using RivieraStudio.Magic.Logic.GameObject;
     using RivieraStudio.Magic.Logic.Helper;
     using RivieraStudio.Magic.Logic.Level;
     using RivieraStudio.Magic.Titan.Debug;
@@ -130,6 +132,14 @@
                 }
                 */
             }
+        }
+
+        /// <summary>
+        ///     Gets the building boost cost.
+        /// </summary>
+        public int GetBuildingBoostCost(LogicBuildingData data, int upgLevel)
+        {
+            return data.GetBoostCost(upgLevel); // TODO: Implement this.
         }
     }
 }

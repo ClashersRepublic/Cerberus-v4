@@ -301,5 +301,24 @@
                 this._availableLoot = 0;
             }
         }
+
+        /// <summary>
+        ///     Ticks for update this instance.
+        /// </summary>
+        public override void Tick()
+        {
+            if (this._parent.GetRemainingBoostTime() > 0 && !this._parent.GetBoostPaused())
+            {
+                this._resourceTimer.FastForwardSubticks(4 * LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() - 4);
+            }
+
+            if (this._parent.GetLevel().GetRemainingClockTowerBoostTime() > 0)
+            {
+                if (this._parent.GetData().GetVillageType() == 1)
+                {
+                    this._resourceTimer.FastForwardSubticks(4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
+                }
+            }
+        }
     }
 }
