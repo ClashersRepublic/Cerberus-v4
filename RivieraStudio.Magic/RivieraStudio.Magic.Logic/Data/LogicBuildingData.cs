@@ -24,6 +24,7 @@ namespace RivieraStudio.Magic.Logic.Data
         private int[] _wallBlockY;
         private int[] _gearUpTime;
         private int[] _gearUpCost;
+        private int[] _boostCost;
         private int _upgradeLevelCount;
         private bool _isClockTower;
         private bool _isFlamer;
@@ -64,7 +65,6 @@ namespace RivieraStudio.Magic.Logic.Data
         protected int[] UnitProduction { get; set; }
         public bool UpgradesUnits { get; protected set; }
         public int ProducesUnitsOfType { get; set; }
-        protected int[] BoostCost { get; set; }
         public bool FreeBoost { get; protected set; }
         protected int[] Hitpoints { get; set; }
         protected int[] RegenTime { get; set; }
@@ -224,11 +224,13 @@ namespace RivieraStudio.Magic.Logic.Data
             this._constructionTimes = new int[longestArraySize];
             this._gearUpTime = new int[longestArraySize];
             this._gearUpCost = new int[longestArraySize];
+            this._boostCost = new int[longestArraySize];
 
             for (int i = 0; i < longestArraySize; i++)
             {
                 this._gearUpCost[i] = this.GetClampedIntegerValue("GearUpCost", i);
                 this._gearUpTime[i] = this.GetClampedIntegerValue("GearUpTime", i);
+                this._boostCost[i] = this.GetClampedIntegerValue("BoostCost", i);
                 this._buildResourceData[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("BuildResource", i));
                 this._altBuildResourceData[i] = LogicDataTables.GetResourceByName(this.GetClampedValue("AltBuildResource", i));
                 this._townHallLevel[i] = LogicMath.Max(this.GetClampedIntegerValue("TownHallLevel", i) - 1, 0);
@@ -500,7 +502,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
         public int GetBoostCost(int index)
         {
-            return this.BoostCost[index];
+            return this._boostCost[index];
         }
 
         public int GetHitpoints(int index)
@@ -657,7 +659,7 @@ namespace RivieraStudio.Magic.Logic.Data
         {
             return this.StrengthWeight[index];
         }
-        
+
         public int GetShockwavePushStrength(int index)
         {
             return this.ShockwavePushStrength[index];
