@@ -427,6 +427,16 @@
                     }
 
                     break;
+                case 25:
+                    if (commodityType == 0)
+                    {
+                        int newCount = LogicMath.Max(this.GetUnitCount((LogicCombatItemData)data) + count, 0);
+
+                        this.SetUnitCount((LogicCombatItemData)data, newCount);
+                        this._listener.CommodityCountChanged(0, data, newCount);
+                    }
+
+                    break;
             }
         }
 
@@ -814,6 +824,73 @@
             }
             
             return count;
+        }
+
+        /// <summary>
+        ///     Gets the alliance unit count.
+        /// </summary>
+        public int GetAllianceUnitCount(LogicCombatItemData data, int upgLevel)
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._allianceUnitCount.Count; i++)
+            {
+                if (this._allianceUnitCount[i].GetData() == data && this._allianceUnitCount[i].GetLevel() == upgLevel)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                return this._allianceUnitCount[index].GetCount();
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Sets the alliance unit count.
+        /// </summary>
+        public void SetAllianceUnitCount(LogicCombatItemData data, int upgLevel, int count)
+        {
+            int index = -1;
+
+            for (int i = 0; i < this._allianceUnitCount.Count; i++)
+            {
+                if (this._allianceUnitCount[i].GetData() == data && this._allianceUnitCount[i].GetLevel() == upgLevel)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                this._allianceUnitCount[index].SetCount(count);
+            }
+            else
+            {
+                this._allianceUnitCount.Add(new LogicUnitSlot(data, upgLevel, count));
+            }
+        }
+
+        /// <summary>
+        ///     Removes the alliance unit.
+        /// </summary>
+        public void RemoveAllianceUnit(LogicCombatItemData data, int upgLevel)
+        {
+            int count = this.GetAllianceUnitCount(data, upgLevel);
+
+            if (count > 0)
+            {
+                this.SetAllianceUnitCount(data, upgLevel, count - 1);
+            }
+            else
+            {
+                Debugger.Warning("LogicClientAvatar::removeAllianceUnit called but unit count is already 0");
+            }
         }
 
         /// <summary>

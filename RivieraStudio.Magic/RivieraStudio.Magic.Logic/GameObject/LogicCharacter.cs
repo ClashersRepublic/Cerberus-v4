@@ -1,6 +1,5 @@
 ﻿namespace RivieraStudio.Magic.Logic.GameObject
 {
-    using System;
     using RivieraStudio.Magic.Logic.Data;
     using RivieraStudio.Magic.Logic.GameObject.Component;
     using RivieraStudio.Magic.Logic.Level;
@@ -10,7 +9,7 @@
         private int _upgradeLevel;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuilding" /> class.
+        ///     Initializes a new instance of the <see cref="LogicCharacter" /> class.
         /// </summary>
         public LogicCharacter(LogicData data, LogicLevel level, int villageType) : base(data, level, villageType)
         {

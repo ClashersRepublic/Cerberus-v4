@@ -61,6 +61,7 @@
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
+    <Compile Include="Command\Battle\LogicCastSpellCommand.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
     <Compile Include="Command\Home\LogicBuyTrapCommand.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectManagerListener.cs" />
+    <Compile Include="GameObject\LogicSpell.cs" />
     <Compile Include="GameObject\LogicCharacter.cs" />
     <Compile Include="GameObject\LogicGameObjectFilter.cs" />
     <Compile Include="GameObject\LogicTrap.cs" />

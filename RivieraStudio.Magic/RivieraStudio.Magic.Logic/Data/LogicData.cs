@@ -243,7 +243,7 @@
         /// <summary>
         ///     Gets the village type
         /// </summary>
-        public virtual int GetVillageType()
+        public int GetVillageType()
         {
             return this._villageType;
         }

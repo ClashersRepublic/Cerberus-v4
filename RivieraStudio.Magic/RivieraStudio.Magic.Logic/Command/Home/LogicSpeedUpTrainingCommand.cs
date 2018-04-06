@@ -109,8 +109,6 @@
 
                 if (playerAvatar.HasEnoughDiamonds(speedUpCost, true, level))
                 {
-                    Debugger.Print("LogicSpeedUpTrainingCommand::newTrainingUnit cost: " + speedUpCost);
-
                     playerAvatar.UseDiamonds(speedUpCost);
                     unitProduction.SpeedUp();
 

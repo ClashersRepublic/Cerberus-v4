@@ -38,7 +38,7 @@ namespace RivieraStudio.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
-            this._uiGroup = this.GetIntegerValue("UIGroup", 0);
+            this._villageType = this.GetIntegerValue("UIGroup", 0);
             this._diamondReward = this.GetIntegerValue("DiamondReward", 0);
             this._expReward = this.GetIntegerValue("ExpReward", 0);
             this._actionCount = this.GetIntegerValue("ActionCount", 0);
@@ -262,14 +262,6 @@ namespace RivieraStudio.Magic.Logic.Data
         public LogicCharacterData GetCharacterData()
         {
             return this._characterData;
-        }
-
-        /// <summary>
-        ///     Gets the village type.
-        /// </summary>
-        public override int GetVillageType()
-        {
-            return this._uiGroup;
         }
     }
 }

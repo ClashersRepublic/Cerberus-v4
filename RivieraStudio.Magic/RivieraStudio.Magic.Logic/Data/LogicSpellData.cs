@@ -4,6 +4,8 @@ namespace RivieraStudio.Magic.Logic.Data
 
     public class LogicSpellData : LogicCombatItemData
     {
+        private int _spellForgeLevel;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicSpellData" /> class.
         /// </summary>
@@ -13,7 +15,6 @@ namespace RivieraStudio.Magic.Logic.Data
 
         public string TID { get; protected set; }
         public string InfoTID { get; protected set; }
-        protected int[] SpellForgeLevel { get; set; }
         protected int[] DeployTimeMS { get; set; }
         protected int[] ChargingTimeMS { get; set; }
         protected int[] HitTimeMS { get; set; }
@@ -85,11 +86,31 @@ namespace RivieraStudio.Magic.Logic.Data
         public override void CreateReferences()
         {
             base.CreateReferences();
+            this._spellForgeLevel = this.GetIntegerValue("SpellForgeLevel", 0) - 1;
         }
 
-        public int GetSpellForgeLevel(int index)
+        /// <summary>
+        ///     Gets the required production house level.
+        /// </summary>
+        public override int GetRequiredProductionHouseLevel()
         {
-            return this.SpellForgeLevel[index];
+            return this._spellForgeLevel;
+        }
+
+        /// <summary>
+        ///     Gets if the item is unlocked for the specified production house level.
+        /// </summary>
+        public override bool IsUnlockedForProductionHouseLevel(int level)
+        {
+            return level >= this._spellForgeLevel;
+        }
+
+        /// <summary>
+        ///     Gets the building production data.
+        /// </summary>
+        public override LogicBuildingData GetProductionHouseData()
+        {
+            return LogicDataTables.GetBuildingByName(this.GetUnitOfType() == 1 ? "Mini Spell Factory" : "Spell Forge");
         }
 
         public int GetDeployTimeMS(int index)

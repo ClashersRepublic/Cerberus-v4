@@ -427,6 +427,12 @@
                         break;
                     }
 
+                    case 704:
+                    {
+                        command = new LogicCastSpellCommand();
+                        break;
+                    }
+
                     default:
                     {
                         Debugger.Error("LogicCommandManager::createCommand() - Unknown command type: " + type);

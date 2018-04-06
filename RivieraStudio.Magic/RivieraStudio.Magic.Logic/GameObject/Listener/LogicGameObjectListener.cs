@@ -97,7 +97,15 @@
         /// </summary>
         public virtual void CancelNotification()
         {
+            // CancelNotification.
+        }
 
+        /// <summary>
+        ///     Called when a unit was removed.
+        /// </summary>
+        public virtual void UnitRemoved(LogicCombatItemData data)
+        {
+            // UnitRemoved.
         }
     }
 }

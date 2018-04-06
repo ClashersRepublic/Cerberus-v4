@@ -230,10 +230,17 @@
         /// <summary>
         ///     Gets the movement component.
         /// </summary>
-        /// <returns></returns>
         public LogicMovementComponent GetMovementComponent()
         {
             return (LogicMovementComponent) this._components[4];
+        }
+
+        /// <summary>
+        ///     Gets the bunker component.
+        /// </summary>
+        public LogicBunkerComponent GetBunkerComponent()
+        {
+            return (LogicBunkerComponent) this._components[7];
         }
 
         /// <summary>

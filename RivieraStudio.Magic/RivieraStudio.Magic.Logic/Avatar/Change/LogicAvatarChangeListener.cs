@@ -45,6 +45,10 @@
         {
         }
 
+        public virtual void AllianceUnitRemoved(LogicCombatItemData data, int upgLevel)
+        {
+        }
+
         public virtual void SetAllianceCastleLevel(int count)
         {
         }
