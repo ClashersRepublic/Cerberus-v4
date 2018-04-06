@@ -141,6 +141,14 @@
         {
             return data.GetBoostCost(upgLevel); // TODO: Implement this.
         }
+
+        /// <summary>
+        ///     Gets the unit training cost.
+        /// </summary>
+        public int GetUnitTrainingCost(LogicCombatItemData data, int upgLevel)
+        {
+            return data.GetTrainingCost(upgLevel); // TODO: Implement this.
+        }
     }
 }
  

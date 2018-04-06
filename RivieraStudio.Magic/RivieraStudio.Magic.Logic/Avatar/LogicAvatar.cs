@@ -762,7 +762,7 @@
                 LogicDataSlot slot = this._spellCount[i];
                 LogicCombatItemData data = (LogicCombatItemData) slot.GetData();
 
-                cnt += data.GetHousingSpace() * this._spellCount[i].GetCount();
+                cnt += data.GetHousingSpace() * slot.GetCount();
             }
 
             return cnt;
@@ -780,7 +780,7 @@
                 LogicDataSlot slot = this._unitCount[i];
                 LogicCombatItemData data = (LogicCombatItemData) slot.GetData();
 
-                cnt += data.GetHousingSpace() * this._spellCount[i].GetCount();
+                cnt += data.GetHousingSpace() * slot.GetCount();
             }
 
             return cnt;

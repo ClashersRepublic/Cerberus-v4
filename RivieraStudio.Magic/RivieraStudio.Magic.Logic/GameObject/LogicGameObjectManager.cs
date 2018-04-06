@@ -113,7 +113,7 @@
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
-                this._unitProduction = new LogicUnitProduction(level, 2, this._villageType);
+                this._unitProduction = new LogicUnitProduction(level, 3, this._villageType);
                 this._spellProduction = new LogicUnitProduction(level, 25, this._villageType);
             }
         }
@@ -735,6 +735,22 @@
         public LogicBuilding GetTownHall()
         {
             return this._townHall;
+        }
+
+        /// <summary>
+        ///     Gets the spell production
+        /// </summary>
+        public LogicUnitProduction GetSpellProduction()
+        {
+            return this._spellProduction;
+        }
+
+        /// <summary>
+        ///     Gets the unit production
+        /// </summary>
+        public LogicUnitProduction GetUnitProduction()
+        {
+            return this._unitProduction;
         }
 
         /// <summary>

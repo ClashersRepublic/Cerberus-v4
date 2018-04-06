@@ -322,7 +322,7 @@
 
                 if (this._upgLevel >= maxLvl)
                 {
-                    Debugger.Warning(string.Format("LogicVillageObject::load() - Loaded upgrade level {0} is over max! (max = {1}) id {2} data id {3}",
+                    Debugger.Warning(string.Format("LogicTrap::load() - Loaded upgrade level {0} is over max! (max = {1}) id {2} data id {3}",
                         lvlObject.GetIntValue(),
                         maxLvl,
                         this._globalId,
@@ -333,13 +333,13 @@
                 {
                     if (this._upgLevel < -1)
                     {
-                        Debugger.Error("LogicVillageObject::load() - Loaded an illegal upgrade level!");
+                        Debugger.Error("LogicTrap::load() - Loaded an illegal upgrade level!");
                     }
                 }
             }
             else
             {
-                Debugger.Error("LogicVillageObject::load - Upgrade level was not found!");
+                Debugger.Error("LogicTrap::load - Upgrade level was not found!");
             }
 
             this._level.GetWorkerManagerAt(this._villageType).DeallocateWorker(this);

@@ -156,7 +156,7 @@ namespace RivieraStudio.Magic.Logic.Data
         /// </summary>
         public override bool IsUnlockedForProductionHouseLevel(int level)
         {
-            return this._unlockedBarrackLevel >= level;
+            return level >= this._unlockedBarrackLevel;
         }
 
         /// <summary>

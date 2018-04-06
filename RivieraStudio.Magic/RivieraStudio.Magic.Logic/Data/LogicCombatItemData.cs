@@ -221,6 +221,9 @@ namespace RivieraStudio.Magic.Logic.Data
             return this._upgradeLevelByTownHall[0] > 0;
         }
 
+        /// <summary>
+        ///     Gets the unit training time.
+        /// </summary>
         public int GetTrainingTime(int index, LogicLevel level, int additionalBarrackCount)
         {
             int trainingTime = this._trainingTime[index];
