@@ -1099,16 +1099,14 @@
                                 int constructionTime = this.GetBuildingData().GetConstructionTime(newUpgLevel, this._level, 0);
                                 int xpGain = LogicMath.Sqrt(constructionTime);
                                 this.SetUpgradeLevel(newUpgLevel);
-
-                                homeOwnerAvatar.XpGainHelper(xpGain);
+                                this.XpGainHelper(xpGain, homeOwnerAvatar, ignoreState);
                             }
                             else
                             {
                                 int constructionTime = this.GetBuildingData().GetConstructionTime(0, this._level, 0);
                                 int xpGain = LogicMath.Sqrt(constructionTime);
                                 this.SetUpgradeLevel(this._upgLevel);
-
-                                homeOwnerAvatar.XpGainHelper(xpGain);
+                                this.XpGainHelper(xpGain, homeOwnerAvatar, ignoreState);
                             }
 
                             if (this.GetComponent(10) != null)

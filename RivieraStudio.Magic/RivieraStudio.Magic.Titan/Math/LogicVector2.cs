@@ -123,9 +123,9 @@
         /// </summary>
         public int GetDistanceSquaredTo(int x, int y)
         {
-            int distance = 0x7FFFFFFF;
-
             x += this.X;
+
+            int distance = 0x7FFFFFFF;
 
             if (x + 46340 <= 0x16A08)
             {
@@ -133,7 +133,13 @@
 
                 if (y + 46340 <= 0x16A08)
                 {
-                    distance = x * x + y * y;
+                    int tmpX = x * x;
+                    int tmpY = y * y;
+
+                    if (tmpY < (tmpX ^ 0x7FFFFFFF))
+                    {
+                        return tmpX + tmpY;
+                    }
                 }
             }
 

@@ -403,6 +403,12 @@
                         break;
                     }
 
+                    case 584:
+                    {
+                        command = new LogicBoostTrainingCommand();
+                        break;
+                    }
+
                     case 585:
                     {
                         command = new LogicLockUnitProductionCommand();

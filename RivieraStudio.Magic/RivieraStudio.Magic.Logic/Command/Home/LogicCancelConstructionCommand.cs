@@ -6,7 +6,6 @@
     using RivieraStudio.Magic.Logic.Level;
 
     using RivieraStudio.Magic.Titan.DataStream;
-    using RivieraStudio.Magic.Titan.Util;
 
     public sealed class LogicCancelConstructionCommand : LogicCommand
     {

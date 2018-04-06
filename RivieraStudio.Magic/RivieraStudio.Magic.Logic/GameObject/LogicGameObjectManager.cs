@@ -911,7 +911,8 @@
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
-                
+                this._unitProduction.LoadingFinished();
+                this._spellProduction.LoadingFinished();
             }
         }
 

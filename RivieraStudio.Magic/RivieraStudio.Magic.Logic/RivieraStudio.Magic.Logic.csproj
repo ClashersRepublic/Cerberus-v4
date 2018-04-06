@@ -70,6 +70,7 @@
     <Compile Include="Command\Home\LogicBoostBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicDragUnitProductionCommand.cs" />
     <Compile Include="Command\Home\LogicLockUnitProductionCommand.cs" />
+    <Compile Include="Command\Home\LogicBoostTrainingCommand.cs" />
     <Compile Include="Command\Home\LogicSpeedUpTrainingCommand.cs" />
     <Compile Include="Command\Home\LogicSwapBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicUnlockBuildingCommand.cs" />

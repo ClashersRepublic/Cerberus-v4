@@ -62,6 +62,8 @@
         private int _barracksBoostSecs;
         private int _spellFactoryBoostSecs;
         private int _troopTrainingSpeedUpCostTutorial;
+        private int _newTrainingBoostBarracksCost;
+        private int _newTrainingBoostLaboratoryCost;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -179,6 +181,8 @@
             this._barracksBoostSecs = 60 * this.GetIntValue("BARRACKS_BOOST_MINS");
             this._spellFactoryBoostSecs = 60 * this.GetIntValue("SPELL_FACTORY_BOOST_MINS");
             this._troopTrainingSpeedUpCostTutorial = this.GetIntValue("TROOP_TRAINING_SPEED_UP_COST_TUTORIAL");
+            this._newTrainingBoostBarracksCost = this.GetIntValue("NEW_TRAINING_BOOST_BARRACKS_COST");
+            this._newTrainingBoostLaboratoryCost = this.GetIntValue("NEW_TRAINING_BOOST_LABORATORY_COST");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -488,6 +492,22 @@
         public int GetObstacleMaxCount()
         {
             return this._obstacleMaxCount;
+        }
+
+        /// <summary>
+        ///     Gets the new training boost barracks cost.
+        /// </summary>
+        public int GetNewTrainingBoostBarracksCost()
+        {
+            return this._newTrainingBoostBarracksCost;
+        }
+
+        /// <summary>
+        ///     Gets the new training boost laboratory cost.
+        /// </summary>
+        public int GetNewTrainingBoostLaboratoryCost()
+        {
+            return this._newTrainingBoostLaboratoryCost;
         }
 
         /// <summary>

@@ -143,6 +143,22 @@
         }
 
         /// <summary>
+        ///     Gets the new unit production boost cost.
+        /// </summary>
+        public int GetUnitProductionBoostCost()
+        {
+            return LogicDataTables.GetGlobals().GetNewTrainingBoostBarracksCost();
+        }
+
+        /// <summary>
+        ///     Gets the new spell production boost cost.
+        /// </summary>
+        public int GetSpellProductionBoostCost()
+        {
+            return LogicDataTables.GetGlobals().GetNewTrainingBoostLaboratoryCost();
+        }
+
+        /// <summary>
         ///     Gets the unit training cost.
         /// </summary>
         public int GetUnitTrainingCost(LogicCombatItemData data, int upgLevel)
