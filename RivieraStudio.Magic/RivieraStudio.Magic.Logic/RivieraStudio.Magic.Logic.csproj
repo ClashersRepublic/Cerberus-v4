@@ -64,9 +64,13 @@
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
     <Compile Include="Command\Home\LogicBuyTrapCommand.cs" />
+    <Compile Include="Command\Home\LogicCancelUnitProductionCommand.cs" />
     <Compile Include="Command\Home\LogicCancelConstructionCommand.cs" />
     <Compile Include="Command\Home\LogicEditModeShownCommand.cs" />
     <Compile Include="Command\Home\LogicBoostBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicDragUnitProductionCommand.cs" />
+    <Compile Include="Command\Home\LogicLockUnitProductionCommand.cs" />
+    <Compile Include="Command\Home\LogicSpeedUpTrainingCommand.cs" />
     <Compile Include="Command\Home\LogicSwapBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicUnlockBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicFreeWorkerCommand.cs" />

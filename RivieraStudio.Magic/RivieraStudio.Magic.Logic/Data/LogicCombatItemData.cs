@@ -254,7 +254,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
                                     if (barrack != null)
                                     {
-                                        if (barrack.GetBuildingData().GetProducesUnitsOfType() == this.GetCombatItemType())
+                                        if (barrack.GetBuildingData().GetProducesUnitsOfType() == this.GetUnitOfType())
                                         {
                                             if (barrack.GetUpgradeLevel() >= productionLevel)
                                             {
@@ -268,13 +268,13 @@ namespace RivieraStudio.Magic.Logic.Data
                                 } while (++idx != barrackCount);
                             }
 
-                            if (barrackCount + additionalBarrackCount <= 0)
+                            if (barrackFound + additionalBarrackCount <= 0)
                             {
                                 return trainingTime;
                             }
 
                             int[] barrackDivisor = LogicDataTables.GetGlobals().GetBarrackReduceTrainingDevisor();
-                            int divisor = barrackDivisor[LogicMath.Min(barrackDivisor.Length - 1, barrackCount + additionalBarrackCount - 1)];
+                            int divisor = barrackDivisor[LogicMath.Min(barrackDivisor.Length - 1, barrackFound + additionalBarrackCount - 1)];
 
                             if (divisor > 0)
                             {

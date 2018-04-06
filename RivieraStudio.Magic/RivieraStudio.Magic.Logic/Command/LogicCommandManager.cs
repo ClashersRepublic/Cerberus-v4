@@ -301,9 +301,21 @@
                         break;
                     }
 
+                    case 509:
+                    {
+                        command = new LogicCancelUnitProductionCommand();
+                        break;
+                    }
+
                     case 510:
                     {
                         command = new LogicBuyTrapCommand();
+                        break;
+                    }
+
+                    case 513:
+                    {
+                        command = new LogicSpeedUpTrainingCommand();
                         break;
                     }
 
@@ -379,9 +391,21 @@
                         break;
                     }
 
+                    case 576:
+                    {
+                        command = new LogicDragUnitProductionCommand();
+                        break;
+                    }
+
                     case 577:
                     {
                         command = new LogicSwapBuildingCommand();
+                        break;
+                    }
+
+                    case 585:
+                    {
+                        command = new LogicLockUnitProductionCommand();
                         break;
                     }
 

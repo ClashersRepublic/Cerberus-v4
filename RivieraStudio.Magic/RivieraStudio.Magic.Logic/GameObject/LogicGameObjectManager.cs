@@ -933,7 +933,7 @@
                 {
                     int maxSecs = secs;
 
-                    if (idx == 999)
+                    if (idx++ == 999)
                     {
                         Debugger.Warning("LogicGameObjectManager::fastForwardTime - Pass limit reached");
                     }

@@ -11,7 +11,7 @@
         private int _villageType;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicSpeedUpConstructionCommand" /> class.
         /// </summary>
         public LogicSpeedUpConstructionCommand()
         {
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicSpeedUpConstructionCommand" /> class.
         /// </summary>
         public LogicSpeedUpConstructionCommand(int gameObjectId)
         {

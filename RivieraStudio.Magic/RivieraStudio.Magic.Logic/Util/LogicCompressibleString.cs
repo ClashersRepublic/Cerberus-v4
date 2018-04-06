@@ -134,15 +134,7 @@
         {
             return this._stringValue == null && this._compressedLength != 0;
         }
-
-        /// <summary>
-        ///     Gets the compressed bytes.
-        /// </summary>
-        public byte[] GetCompressed()
-        {
-            return this._compressedData;
-        }
-
+        
         /// <summary>
         ///     Removes the compressed bytes.
         /// </summary>

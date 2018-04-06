@@ -212,7 +212,7 @@
 
                 AvatarProfileFullEntryMessage avatarProfileFullEntryMessage = new AvatarProfileFullEntryMessage();
                 AvatarProfileFullEntry entry = new AvatarProfileFullEntry();
-                LogicCompressibleString compressibleString = account.ClientHome.GetCompressibleHomeJSON();
+                LogicCompressibleString compressibleString = account.ClientHome.GetCompressibleHomeJSON().Clone();
 
                 if (!compressibleString.IsCompressed())
                 {
@@ -220,7 +220,7 @@
                 }
                 
                 entry.SetLogicClientAvatar(account.ClientAvatar);
-                entry.SetCompressedHomeJSON(compressibleString.GetCompressed());
+                entry.SetCompressedHomeJSON(compressibleString.RemoveCompressed());
                 avatarProfileFullEntryMessage.SetAvatarProfileFullEntry(entry);
                 
                 NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, avatarProfileFullEntryMessage);

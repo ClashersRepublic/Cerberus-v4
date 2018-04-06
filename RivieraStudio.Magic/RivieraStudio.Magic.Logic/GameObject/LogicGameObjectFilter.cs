@@ -91,7 +91,7 @@
             {
                 for (int i = 0; i < this._ignoreGameObjects.Count; i++)
                 {
-                    if (this._ignoreGameObjects[i].GetData() == gameObject.GetData())
+                    if (this._ignoreGameObjects[i] == gameObject)
                     {
                         return false;
                     }

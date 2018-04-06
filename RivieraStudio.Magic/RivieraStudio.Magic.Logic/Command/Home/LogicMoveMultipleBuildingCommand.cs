@@ -15,7 +15,7 @@
         private LogicArrayList<int> _gameObjectIds;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicMoveMultipleBuildingCommand" /> class.
         /// </summary>
         public LogicMoveMultipleBuildingCommand()
         {

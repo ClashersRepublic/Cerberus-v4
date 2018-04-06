@@ -61,6 +61,7 @@
         private int _resourceProductionBoostSecs;
         private int _barracksBoostSecs;
         private int _spellFactoryBoostSecs;
+        private int _troopTrainingSpeedUpCostTutorial;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -76,6 +77,8 @@
         private int _spellFactoryBoostMultiplier;
         private int _clockTowerSpeedUpMultiplier;
         private int _buildCancelMultiplier;
+        private int _spellCancelMultiplier;
+        private int _trainCancelMultiplier;
 
         private bool _useNewTraining;
         private bool _useTroopWalksOutFromTraining;
@@ -175,6 +178,7 @@
             this._resourceProductionBoostSecs = 60 * this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MINS");
             this._barracksBoostSecs = 60 * this.GetIntValue("BARRACKS_BOOST_MINS");
             this._spellFactoryBoostSecs = 60 * this.GetIntValue("SPELL_FACTORY_BOOST_MINS");
+            this._troopTrainingSpeedUpCostTutorial = this.GetIntValue("TROOP_TRAINING_SPEED_UP_COST_TUTORIAL");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -190,6 +194,8 @@
             this._spellFactoryBoostNewMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER_NEW");
             this._spellFactoryBoostMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER");
             this._buildCancelMultiplier = this.GetIntValue("BUILD_CANCEL_MULTIPLIER");
+            this._trainCancelMultiplier = this.GetIntValue("TRAIN_CANCEL_MULTIPLIER");
+            this._spellCancelMultiplier = this.GetIntValue("SPELL_CANCEL_MULTIPLIER");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
             this._useTroopWalksOutFromTraining = this.GetBoolValue("USE_TROOP_WALKS_OUT_FROM_TRAINING");
@@ -429,6 +435,22 @@
         public int GetBuildCancelMultiplier()
         {
             return this._buildCancelMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the train cancel multiplier.
+        /// </summary>
+        public int GetTrainCancelMultiplier()
+        {
+            return this._trainCancelMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the spell cancel multiplier.
+        /// </summary>
+        public int GetSpellCancelMultiplier()
+        {
+            return this._spellCancelMultiplier;
         }
 
         /// <summary>
@@ -832,6 +854,14 @@
             }
 
             return this._clockTowerBoostSecs[this._clockTowerBoostSecs.Length - 1];
+        }
+
+        /// <summary>
+        ///     Gets the tutorial training speed up cost.
+        /// </summary>
+        public int GetTutorialTrainingSpeedUpCost()
+        {
+            return this._troopTrainingSpeedUpCostTutorial;
         }
 
         /// <summary>

@@ -87,7 +87,6 @@
 
                     this._logicGameMode.SaveToJSON(jsonObject);
 
-                    this._zoneAccount.SetSaveTimestamp(this._logicGameMode.GetActiveTimestamp());
                     this._zoneAccount.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
                     this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
                     this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
@@ -409,6 +408,8 @@
             {
                 int currentTimestamp = LogicTimeUtil.GetTimestamp();
                 int calculateTimestamp = this._logicGameMode.GetCurrentTimestamp() + LogicTime.GetTicksInSeconds(subTick);
+
+                this._zoneAccount.SetSaveTimestamp(currentTimestamp);
 
                 if (currentTimestamp >= calculateTimestamp)
                 {
