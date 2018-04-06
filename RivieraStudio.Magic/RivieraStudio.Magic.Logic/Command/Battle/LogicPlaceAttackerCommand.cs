@@ -76,7 +76,7 @@
 
                 if (level.GetTileMap().GetTile(tileX, tileY) != null)
                 {
-                    if (level.GetTileMap().IsPassablePathFinder(this._x >> 8, this._y >> 8))
+                    // if (level.GetTileMap().IsPassablePathFinder(this._x >> 8, this._y >> 8))
                     {
                         if (level.GetTileMap().IsValidAttackPos(tileX, tileY))
                         {
@@ -117,7 +117,7 @@
                         return -4;
                     }
 
-                    return -2;
+                    // return -2;
                 }
 
                 return -3;
@@ -131,14 +131,7 @@
         /// </summary>
         public static LogicCharacter PlaceAttacker(LogicAvatar avatar, LogicCharacterData characterData, LogicLevel level, int x, int y)
         {
-            if (level.GetVillageType() == 1)
-            {
-                avatar.CommodityCountChangeHelper(7, characterData, -1);
-            }
-            else
-            {
-                // avatar.CommodityCountChangeHelper(0, characterData, -1);
-            }
+            avatar.CommodityCountChangeHelper(level.GetVillageType() == 1 ? 7 : 0, characterData, -1);
 
             LogicCharacter character = (LogicCharacter) LogicGameObjectFactory.CreateGameObject(characterData, level, level.GetVillageType());
             Int32 upgradeLevel = avatar.GetUnitUpgradeLevel(characterData);

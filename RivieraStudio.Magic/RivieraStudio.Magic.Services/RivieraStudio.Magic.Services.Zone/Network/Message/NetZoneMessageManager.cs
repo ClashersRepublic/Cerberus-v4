@@ -205,20 +205,24 @@
 
             if (ZoneAccountManager.TryGet(message.RemoveAvatarId(), out ZoneAccount account))
             {
+                if (account.GameMode.ExecutedCommandsSinceLastSave != 0)
+                {
+                    account.GameMode.Save();
+                }
+
                 AvatarProfileFullEntryMessage avatarProfileFullEntryMessage = new AvatarProfileFullEntryMessage();
                 AvatarProfileFullEntry entry = new AvatarProfileFullEntry();
-                LogicCompressibleString compressibleString = account.ClientHome.GetCompressibleHomeJSON().Clone();
+                LogicCompressibleString compressibleString = account.ClientHome.GetCompressibleHomeJSON();
 
                 if (!compressibleString.IsCompressed())
                 {
                     CompressibleStringHelper.Compress(compressibleString);
                 }
-
+                
                 entry.SetLogicClientAvatar(account.ClientAvatar);
-                entry.SetCompressedHomeJSON(compressibleString.RemoveCompressed());
+                entry.SetCompressedHomeJSON(compressibleString.GetCompressed());
                 avatarProfileFullEntryMessage.SetAvatarProfileFullEntry(entry);
-                compressibleString.Destruct();
-
+                
                 NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, avatarProfileFullEntryMessage);
             }
         }

@@ -197,22 +197,14 @@
         /// </summary>
         public LogicCombatItemData GetCurrentlyTrainedUnit()
         {
-            int index = -1;
-
             for (int i = 0; i < this._slots.Count; i++)
             {
                 if (!this._slots[i].IsTerminate())
                 {
-                    index = i;
-                    break;
+                    return (LogicCombatItemData) this._slots[i].GetData();
                 }
             }
-
-            if (index != -1)
-            {
-                return (LogicCombatItemData) this._slots[index].GetData();
-            }
-
+            
             return null;
         }
 
@@ -221,9 +213,25 @@
         /// </summary>
         public LogicUnitProductionSlot GetCurrentlyTrainedSlot()
         {
-            if (this._slots.Count > 0)
+            for (int i = 0; i < this._slots.Count; i++)
             {
-                LogicUnitProductionSlot slot = this._slots[0];
+                if (!this._slots[i].IsTerminate())
+                {
+                    return this._slots[i];
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the first slot.
+        /// </summary>
+        public LogicUnitProductionSlot GetTrainedSlot()
+        {
+            for (int i = 0; i < this._slots.Count; i++)
+            {
+                LogicUnitProductionSlot slot = this._slots[i];
 
                 if (slot.IsTerminate() ||
                     this._timer != null && this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
@@ -281,7 +289,7 @@
                 while (true)
                 {
                     LogicComponentManager componentManager = this._level.GetComponentManagerAt(this._villageType);
-                    LogicUnitProductionSlot trainedSlot = this.GetCurrentlyTrainedSlot();
+                    LogicUnitProductionSlot trainedSlot = this.GetTrainedSlot();
 
                     if (this._slots.Count <= 0)
                     {
@@ -358,6 +366,8 @@
                             }
                         }
 
+                        filter.Destruct();
+
                         break;
                     }
 
@@ -368,8 +378,8 @@
                     {
                         if (unitStorageComponent.CanAddUnit(unitData))
                         {
-                            success = true;
-
+                            Debugger.Print("LogicUnitProduction::productionCompleted");
+                            
                             this._level.GetHomeOwnerAvatar().CommodityCountChangeHelper(0, unitData, 1);
                             unitStorageComponent.AddUnit(unitData);
 
@@ -390,33 +400,35 @@
                                 this.StartProducingNextUnit();
                             }
 
-                            if (this._slots.Count > 0)
+                            success = this._slots.Count <= 0 || this._slots[0].GetCount() <= 0 || this._slots[0].GetData() == null;
+
+                            if (success)
                             {
-                                if (this._slots[0].IsTerminate())
-                                {
-                                    filter.Destruct();
-                                }
+                                filter.Destruct();
+                                break;
                             }
                         }
                         else
                         {
-                            if (this._timer != null)
+                            filter.AddIgnoreObject(productionHouse);
+                        }
+                    }
+                    else
+                    {
+                        if (this._timer != null)
+                        {
+                            if (this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
                             {
-                                if (this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
-                                {
-                                    success = this.TrainingFinished();
-                                }
+                                success = this.TrainingFinished();
                             }
                         }
 
                         break;
                     }
-                    else
-                    {
-                        filter.AddIgnoreObject(productionHouse);
-                    }
                 }
             }
+            
+            this._nextProduction = success ? 0 : 2000;
 
             return success;
         }
@@ -438,11 +450,6 @@
             }
             else
             {
-                if (this._slots.Count < 0)
-                {
-                    return false;
-                }
-
                 for (int i = 0; i < this._slots.Count; i++)
                 {
                     if (this._slots[i].GetData() == data)
@@ -460,24 +467,22 @@
             }
 
             int count = slot.GetCount();
-
-            if (count > 0)
+            
+            if (slot.GetCount() > 0)
             {
                 removed = true;
+                slot.SetCount(count - 1);
 
                 if (count == 1)
                 {
                     int currentProductionIndex = -1;
 
-                    if (this._slots.Count > -1)
+                    for (int i = 0; i < this._slots.Count; i++)
                     {
-                        for (int i = 0; i < this._slots.Count; i++)
+                        if (!this._slots[i].IsTerminate())
                         {
-                            if (!this._slots[i].IsTerminate())
-                            {
-                                currentProductionIndex = i;
-                                break;
-                            }
+                            currentProductionIndex = i;
+                            break;
                         }
                     }
 
@@ -492,21 +497,14 @@
 
                     this._slots[index].Destruct();
                     this._slots.Remove(index);
+
+                    Debugger.Print("LogicUnitProduction::removeUnit unit removed");
                 }
             }
 
             if (this._slots.Count > 0)
             {
-                LogicUnitProductionSlot productionSlot = null;
-
-                for (int i = 0; i < this._slots.Count; i++)
-                {
-                    if (!this._slots[i].IsTerminate())
-                    {
-                        productionSlot = this._slots[i];
-                        break;
-                    }
-                }
+                LogicUnitProductionSlot productionSlot = this.GetCurrentlyTrainedSlot();
 
                 if (productionSlot == null || this._timer != null)
                 {
@@ -519,6 +517,8 @@
                 }
                 else
                 {
+                    Debugger.Print("LogicUnitProduction::removeUnit start next production");
+
                     LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
                     LogicCombatItemData productionData = (LogicCombatItemData) productionSlot.GetData();
 
@@ -703,18 +703,7 @@
                     }
                 }
 
-                LogicCombatItemData nextProductionData = null;
-
-                for (int i = 0; i < this._slots.Count; i++)
-                {
-                    LogicUnitProductionSlot tmp = this._slots[i];
-
-                    if (!tmp.IsTerminate())
-                    {
-                        nextProductionData = (LogicCombatItemData) tmp.GetData();
-                        break;
-                    }
-                }
+                LogicCombatItemData nextProductionData = this.GetCurrentlyTrainedUnit();
 
                 if (nextProductionData != null)
                 {
@@ -753,6 +742,7 @@
                             {
                                 tmp.SetCount(tmp.GetCount() + 1);
                                 this.MergeSlots();
+
                                 return i;
                             }
                         }
@@ -763,25 +753,13 @@
 
                     if (this._slots.Count > 0)
                     {
-                        LogicCombatItemData productionData = null;
-                        int idx = 0;
-
-                        do
-                        {
-                            LogicUnitProductionSlot tmp = this._slots[idx];
-
-                            if (!tmp.IsTerminate())
-                            {
-                                productionData = (LogicCombatItemData)tmp.GetData();
-                                break;
-                            }
-                        } while (++idx < this._slots.Count);
+                        LogicCombatItemData productionData = this.GetCurrentlyTrainedUnit();
 
                         if (productionData != null && this._timer == null)
                         {
                             this._timer = new LogicTimer();
                             this._timer.StartTimer(productionData.GetTrainingTime(homeOwnerAvatar.GetUnitUpgradeLevel(productionData), this._level, 0),
-                                this._level.GetLogicTime(), false, -1);
+                                                   this._level.GetLogicTime(), false, -1);
                         }
                     }
                 }
@@ -804,18 +782,7 @@
                 if (this.CanAddUnitToQueue(data, ignoreCapacity))
                 {
                     LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
-                    LogicCombatItemData productionData = null;
-
-                    for (int i = 0; i < this._slots.Count; i++)
-                    {
-                        LogicUnitProductionSlot tmp = this._slots[i];
-
-                        if (!tmp.IsTerminate())
-                        {
-                            productionData = (LogicCombatItemData)tmp.GetData();
-                            break;
-                        }
-                    }
+                    LogicCombatItemData productionData = this.GetCurrentlyTrainedUnit();
 
                     this._slots.Add(index, new LogicUnitProductionSlot(data, 1, false));
                     this.MergeSlots();
@@ -832,7 +799,7 @@
 
                             if (!tmp.IsTerminate())
                             {
-                                productionData = (LogicCombatItemData)tmp.GetData();
+                                productionData = (LogicCombatItemData) tmp.GetData();
                                 break;
                             }
                         } while (++idx < this._slots.Count);
@@ -844,18 +811,7 @@
                     }
                     else
                     {
-                        int idx = 0;
-
-                        do
-                        {
-                            LogicUnitProductionSlot tmp = this._slots[idx];
-
-                            if (!tmp.IsTerminate())
-                            {
-                                productionData = (LogicCombatItemData)tmp.GetData();
-                                break;
-                            }
-                        } while (++idx < this._slots.Count);
+                        productionData = this.GetCurrentlyTrainedUnit();
                     }
 
                     if (this._timer != null)
@@ -999,7 +955,7 @@
 
             if (this._nextProduction == 0)
             {
-                if (this.GetCurrentlyTrainedSlot() != null || unitTrained)
+                if (this.GetTrainedSlot() != null || unitTrained)
                 {
                     this.ProductionCompleted(false);
                 }
@@ -1051,23 +1007,7 @@
                     break;
                 }
 
-                if (this._slots.Count <= 0)
-                {
-                    break;
-                }
-
-                LogicUnitProductionSlot productionSlot = null;
-
-                for (int i = 0; i < this._slots.Count; i++)
-                {
-                    LogicUnitProductionSlot tmp = this._slots[i];
-
-                    if (!tmp.IsTerminate())
-                    {
-                        productionSlot = tmp;
-                        break;
-                    }
-                }
+                LogicUnitProductionSlot productionSlot = this.GetCurrentlyTrainedSlot();
 
                 if (productionSlot == null)
                 {
@@ -1081,6 +1021,8 @@
                     this._timer = new LogicTimer();
                     this._timer.StartTimer(productionData.GetTrainingTime(this._level.GetHomeOwnerAvatar().GetUnitUpgradeLevel(productionData), this._level, 0),
                         this._level.GetLogicTime(), false, -1);
+
+                    Debugger.Print("LogicUnitProduction::fastForwardTime null timer, restart: " + this._timer.GetRemainingSeconds(this._level.GetLogicTime()));
                 }
 
                 int remainingSecs = this._timer.GetRemainingSeconds(this._level.GetLogicTime());
@@ -1168,19 +1110,7 @@
 
                 if (this._slots.Count > 0)
                 {
-                    Int32 idx = 0;
-                    LogicUnitProductionSlot slot = null;
-
-                    do
-                    {
-                        LogicUnitProductionSlot tmp = this._slots[idx];
-
-                        if (!tmp.IsTerminate())
-                        {
-                            slot = tmp;
-                            break;
-                        }
-                    } while (++idx != this._slots.Count);
+                    LogicUnitProductionSlot slot = this.GetCurrentlyTrainedSlot();
 
                     if (slot != null)
                     {
@@ -1204,6 +1134,8 @@
 
                             this._timer = new LogicTimer();
                             this._timer.StartTimer(combatItemData.GetTrainingTime(upgradeLevel, this._level, 0), this._level.GetLogicTime(), false, -1);
+                            
+                            Debugger.Print("LogicUnitProduction::load null timer, restart: " + this._timer.GetRemainingSeconds(this._level.GetLogicTime()));
                         }
                     }
                 }

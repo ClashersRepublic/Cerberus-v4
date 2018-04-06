@@ -1431,6 +1431,14 @@
                 {
                     this._lastLeagueRank = ((LogicClientAvatar) avatar).GetLeagueType();
                 }
+
+                if (this._battleLog != null)
+                {
+
+                }
+
+                this._gameObjectManagers[0].GetComponentManager().DivideAvatarUnitsToStorages(0);
+                this._gameObjectManagers[1].GetComponentManager().DivideAvatarUnitsToStorages(1);
             }
         }
 
@@ -1812,7 +1820,7 @@
         {
             for (int i = 0; i < 2; i++)
             {
-                this._gameObjectManagers[i].GetComponentManager().DevideAvatarResourcesToStorages();
+                this._gameObjectManagers[i].GetComponentManager().DivideAvatarResourcesToStorages();
             }
 
             this.RefreshResourceCaps();

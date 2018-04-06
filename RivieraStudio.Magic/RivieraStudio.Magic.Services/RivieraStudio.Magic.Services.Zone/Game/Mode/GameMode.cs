@@ -45,6 +45,11 @@
         }
 
         /// <summary>
+        ///     Gets the executed command count since last save.
+        /// </summary>
+        internal int ExecutedCommandsSinceLastSave { get; set; }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="GameMode"/> class.
         /// </summary>
         internal GameMode(ZoneAccount zoneAccount)
@@ -64,6 +69,8 @@
 
                 this._logicGameMode.Destruct();
                 this._logicGameMode = null;
+
+                DatabaseManagerNew.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
             }
         }
 
@@ -74,8 +81,6 @@
         {
             if (this._logicGameMode != null)
             {
-                Logging.Print("GameMode::save game saved");
-
                 if (this._logicGameMode.GetState() == 1 || this._logicGameMode.GetState() == 3)
                 {
                     LogicJSONObject jsonObject = new LogicJSONObject();
@@ -87,17 +92,14 @@
                     this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
                     this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
                     this._zoneAccount.ClientHome.SetNextMaintenanceSeconds(this._logicGameMode.GetMaintenanceRemainingSeconds());
-                    
-#if !DEBUG
-                    CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
-#endif
-                }
+                    this.ExecutedCommandsSinceLastSave = 0;
 
-                DatabaseManagerNew.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
+                    CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
+                }
             }
             else
             {
-                Logging.Print("GameMode::save called when m_logicGameMode is NULL");
+                Logging.Warning("GameMode::save called when m_logicGameMode is NULL");
             }
         }
 
@@ -146,10 +148,10 @@
             {
                 if (compressibleHomeJSON.Get() == null)
                 {
-                    Logging.Print("GameMode::init level JSON is NULL, load default");
+                    Logging.Warning("GameMode::init level JSON is NULL, load default");
                     compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
                 }
-
+                
                 CompressibleStringHelper.Compress(compressibleHomeJSON);
             }
 

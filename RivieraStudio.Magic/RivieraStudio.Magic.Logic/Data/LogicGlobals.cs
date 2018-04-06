@@ -104,6 +104,7 @@
         private bool _useTrapTriggerCommand;
         private bool _validateTroopUpgradeLevels;
         private bool _allowCancelBuildingConstruction;
+        private bool _village2TrainingOnlyUseRegularStorage;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
@@ -217,6 +218,7 @@
             this._useTrapTriggerCommand = this.GetBoolValue("USE_TRAP_TRIGGER_CMD");
             this._validateTroopUpgradeLevels = this.GetBoolValue("VALIDATE_TROOP_UPGRADE_LEVELS");
             this._allowCancelBuildingConstruction = this.GetBoolValue("ALLOW_CANCEL_BUILDING_CONSTRUCTION");
+            this._village2TrainingOnlyUseRegularStorage = this.GetBoolValue("V2_TRAINING_ONLY_USE_REGULAR_STORAGE");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -763,6 +765,10 @@
         public bool AllowCancelBuildingConstruction()
         {
             return this._allowCancelBuildingConstruction;
+        }
+        public bool Village2TrainingOnlyUseRegularStorage()
+        {
+            return this._village2TrainingOnlyUseRegularStorage;
         }
 
         /// <summary>

@@ -32,6 +32,8 @@
         /// </summary>
         public override void CommandExecuted(LogicCommand command)
         {
+            this._gameMode.ExecutedCommandsSinceLastSave += 1;
+
             if (command.IsServerCommand())
             {
                 LogicServerCommand serverCommand = (LogicServerCommand) command;

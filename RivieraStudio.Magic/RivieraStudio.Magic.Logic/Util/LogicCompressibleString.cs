@@ -136,6 +136,14 @@
         }
 
         /// <summary>
+        ///     Gets the compressed bytes.
+        /// </summary>
+        public byte[] GetCompressed()
+        {
+            return this._compressedData;
+        }
+
+        /// <summary>
         ///     Removes the compressed bytes.
         /// </summary>
         public byte[] RemoveCompressed()
