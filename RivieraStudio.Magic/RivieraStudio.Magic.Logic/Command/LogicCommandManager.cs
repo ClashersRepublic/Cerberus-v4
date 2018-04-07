@@ -343,6 +343,12 @@
                         break;
                     }
 
+                    case 522:
+                    {
+                        command = new LogicBuyShieldCommand();
+                        break;
+                    }
+                        
                     case 523:
                     {
                         command = new LogicClaimAchievementRewardCommand();

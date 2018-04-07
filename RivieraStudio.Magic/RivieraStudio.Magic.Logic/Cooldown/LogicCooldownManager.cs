@@ -78,7 +78,7 @@
                 for (int i = 0; i < size; i++)
                 {
                     LogicCooldown cooldown = new LogicCooldown();
-                    cooldown.Load(cooldownArray.GetJSONObject(size));
+                    cooldown.Load(cooldownArray.GetJSONObject(i));
                     this._cooldowns.Add(cooldown);
                 }
             }

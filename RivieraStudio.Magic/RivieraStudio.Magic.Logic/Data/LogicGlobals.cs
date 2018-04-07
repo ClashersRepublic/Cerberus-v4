@@ -64,6 +64,7 @@
         private int _troopTrainingSpeedUpCostTutorial;
         private int _newTrainingBoostBarracksCost;
         private int _newTrainingBoostLaboratoryCost;
+        private int _personalBreakLimitSeconds;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -184,6 +185,7 @@
             this._troopTrainingSpeedUpCostTutorial = this.GetIntValue("TROOP_TRAINING_SPEED_UP_COST_TUTORIAL");
             this._newTrainingBoostBarracksCost = this.GetIntValue("NEW_TRAINING_BOOST_BARRACKS_COST");
             this._newTrainingBoostLaboratoryCost = this.GetIntValue("NEW_TRAINING_BOOST_LABORATORY_COST");
+            this._personalBreakLimitSeconds = this.GetIntValue("PERSONAL_BREAK_LIMIT_SECONDS");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -510,6 +512,14 @@
         public int GetNewTrainingBoostLaboratoryCost()
         {
             return this._newTrainingBoostLaboratoryCost;
+        }
+
+        /// <summary>
+        ///     Gets the personal break limit in secs.
+        /// </summary>
+        public int GetPersonalBreakLimitSeconds()
+        {
+            return this._personalBreakLimitSeconds;
         }
 
         /// <summary>

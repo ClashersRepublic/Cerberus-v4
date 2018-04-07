@@ -399,6 +399,7 @@
 
                 while (true)
                 {
+                    LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
                     LogicComponentManager componentManager = this._level.GetComponentManagerAt(this._villageType);
                     LogicCombatItemData productionData = this.GetWaitingForSpaceUnit();
 
@@ -469,94 +470,63 @@
                         }
                     }
 
-                    if (productionHouse == null)
+                    if (productionHouse != null)
                     {
-                        if (this._timer != null)
+                        LogicUnitStorageComponent unitStorageComponent =
+                            (LogicUnitStorageComponent) componentManager.GetClosestComponent(productionHouse.GetX(), productionHouse.GetY(), filter);
+
+                        if (unitStorageComponent != null)
                         {
-                            if (this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
+                            if (unitStorageComponent.CanAddUnit(productionData))
                             {
-                                success = this.TrainingFinished();
-                            }
-                        }
+                                homeOwnerAvatar.CommodityCountChangeHelper(0, productionData, 1);
+                                unitStorageComponent.AddUnit(productionData);
 
-                        filter.Destruct();
-
-                        this._nextProduction = 2000;
-
-                        if (success)
-                        {
-                            this._nextProduction = 0;
-                        }
-
-                        break;
-                    }
-
-                    LogicUnitStorageComponent unitStorageComponent = (LogicUnitStorageComponent) componentManager.GetClosestComponent(productionHouse.GetX(), productionHouse.GetY(), filter);
-
-                    if (unitStorageComponent != null)
-                    {
-                        if (unitStorageComponent.CanAddUnit(productionData))
-                        {
-                            this._level.GetHomeOwnerAvatar().CommodityCountChangeHelper(0, productionData, 1);
-                            unitStorageComponent.AddUnit(productionData);
-
-                            if (this._level.GetState() == 1 || this._level.GetState() == 3)
-                            {
-                                if (unitStorageComponent.GetParentListener() != null)
+                                if (productionTerminate)
                                 {
-                                    // BLABLABLA
+                                    this.RemoveUnit(productionData, -1);
                                 }
-                            }
+                                else
+                                {
+                                    this.StartProducingNextUnit();
+                                }
 
-                            if (productionTerminate)
-                            {
-                                this.RemoveUnit(productionData, -1);
+                                success = true;
+
+                                if (this._slots.Count > 0 && this._slots[0].IsTerminate() && this._slots[0].GetCount() > 0)
+                                {
+                                    continue;
+                                }
+
+                                break;
                             }
                             else
                             {
-                                this.StartProducingNextUnit();
-                            }
-
-                            success = true;
-
-                            if (this._slots.Count <= 0)
-                            {
-                                end = true;
-                            }
-                            else
-                            {
-                                end = true;
-
-                                if (this._slots[0].IsTerminate())
-                                {
-                                    end = this._slots[0].GetCount() == 0;
-                                }
-                            }
-
-                            if (end)
-                            {
-                                filter.Destruct();
-                                this._nextProduction = 0;
-                                return true;
+                                filter.AddIgnoreObject(unitStorageComponent.GetParent());
+                                continue;
                             }
                         }
                         else
                         {
-                            filter.AddIgnoreObject(unitStorageComponent.GetParent());
-                        }
-                    }
-                    else
-                    {
-                        if (this._timer != null)
-                        {
-                            if (this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
+                            if (this._timer != null && this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0)
                             {
                                 success = this.TrainingFinished();
                             }
-                        }
 
-                        break;
+                            break;
+                        }
                     }
+                }
+
+                filter.Destruct();
+
+                if (success)
+                {
+                    this._nextProduction = 0;
+                }
+                else
+                {
+                    this._nextProduction = 2000;
                 }
             }
 
@@ -622,8 +592,6 @@
 
                     this._slots[index].Destruct();
                     this._slots.Remove(index);
-
-                    Debugger.Print("LogicUnitProduction::removeUnit unit removed");
                 }
             }
 
@@ -642,8 +610,6 @@
                 }
                 else
                 {
-                    Debugger.Print("LogicUnitProduction::removeUnit start next production");
-
                     LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
                     LogicCombatItemData productionData = (LogicCombatItemData) productionSlot.GetData();
 
@@ -793,22 +759,11 @@
 
             if (this._slots.Count > 0)
             {
-                LogicUnitProductionSlot nextProductionSlot = null;
+                LogicCombatItemData unitData = this.GetCurrentlyTrainedUnit();
 
-                for (int i = 0; i < this._slots.Count; i++)
+                if (unitData != null)
                 {
-                    LogicUnitProductionSlot tmp = this._slots[i];
-
-                    if (!tmp.IsTerminate())
-                    {
-                        nextProductionSlot = tmp;
-                        break;
-                    }
-                }
-
-                if (nextProductionSlot != null)
-                {
-                    this.RemoveUnit((LogicCombatItemData) nextProductionSlot.GetData(), -1);
+                    this.RemoveUnit(unitData, -1);
                 }
             }
         }
@@ -818,6 +773,8 @@
         /// </summary>
         public bool TrainingFinished()
         {
+            bool success = false;
+
             if (this._timer != null)
             {
                 this._timer.Destruct();
@@ -854,23 +811,26 @@
                     }
                 }
 
-                LogicCombatItemData nextProductionData = this.GetCurrentlyTrainedUnit();
-
-                if (nextProductionData != null)
+                if (this._slots.Count > 0)
                 {
-                    this._timer = new LogicTimer();
-                    this._timer.StartTimer(nextProductionData.GetTrainingTime(this._level.GetHomeOwnerAvatar().GetUnitUpgradeLevel(nextProductionData), this._level, 0),
-                        this._level.GetLogicTime(), false, -1);
+                    LogicCombatItemData nextProductionData = this.GetCurrentlyTrainedUnit();
 
-                    this.MergeSlots();
+                    if (nextProductionData != null && this._timer == null)
+                    {
+                        this._timer = new LogicTimer();
+                        this._timer.StartTimer(nextProductionData.GetTrainingTime(this._level.GetHomeOwnerAvatar().GetUnitUpgradeLevel(nextProductionData), this._level, 0),
+                            this._level.GetLogicTime(), false, -1);
 
-                    return true;
+                        this.MergeSlots();
+
+                        success = true;
+                    }
                 }
             }
 
             this.MergeSlots();
 
-            return false;
+            return success;
         }
 
         /// <summary>
@@ -1154,31 +1114,23 @@
         /// </summary>
         public void Tick()
         {
-            bool timerEnded = false;
-
-            if (this._timer != null)
+            if (this.GetRemainingBoostTimeSecs() > 0)
             {
-                if (this.GetRemainingBoostTimeSecs() > 0)
+                if (this._timer != null)
                 {
                     if (!this.IsBoostPaused())
                     {
                         this._timer.FastForwardSubticks(4 * this.GetBoostMultiplier() - 4);
                     }
                 }
-
-                timerEnded = this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0;
             }
+
+            Boolean prodCompleted = this._timer != null && this._timer.GetRemainingSeconds(this._level.GetLogicTime()) == 0;
+            LogicCombatItemData prodData = this.GetWaitingForSpaceUnit();
 
             if (this._nextProduction > 0)
             {
-                int nextProd = 0;
-
-                if (!timerEnded)
-                {
-                    nextProd = LogicMath.Max(this._nextProduction - 64, 0);
-                }
-
-                this._nextProduction = nextProd;
+                this._nextProduction = prodCompleted ? 0 : LogicMath.Max(this._nextProduction - 64, 0);
             }
 
             if (this._boostTimer != null && this._boostTimer.GetRemainingSeconds(this._level.GetLogicTime()) <= 0)
@@ -1187,9 +1139,9 @@
                 this._boostTimer = null;
             }
 
-            if (this._nextProduction == 0)
+            if (prodCompleted || prodData != null)
             {
-                if (this.GetWaitingForSpaceUnit() != null || timerEnded)
+                if (this._nextProduction == 0)
                 {
                     this.ProductionCompleted(false);
                 }

@@ -678,6 +678,14 @@
         }
 
         /// <summary>
+        ///     Gets the cooldown manager.
+        /// </summary>
+        public LogicCooldownManager GetCooldownManager()
+        {
+            return this._cooldownManager;
+        }
+
+        /// <summary>
         ///     Gets the tile map instance.
         /// </summary>
         public LogicTileMap GetTileMap()

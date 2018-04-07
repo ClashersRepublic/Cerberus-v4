@@ -22,6 +22,7 @@
         private int _shieldTime;
         private int _guardTime;
         private int _maintenanceTime;
+        private int _startGuardTime;
         private int _elapsedSecs;
         private int _skipPrepationSecs;
 
@@ -204,11 +205,54 @@
         }
 
         /// <summary>
+        ///     Sets the shield remaining seconds.
+        /// </summary>
+        public void SetShieldRemainingSeconds(int secs)
+        {
+            this._shieldTime = LogicTime.GetSecondsInTicks(secs) + this._level.GetLogicTime();
+
+            int logicTime = this._level.GetLogicTime();
+            int startGuardTime = logicTime;
+
+            if (this._shieldTime >= logicTime)
+            {
+                startGuardTime = this._shieldTime;
+            }
+
+            this._startGuardTime = startGuardTime;
+        }
+
+        /// <summary>
         ///     Gets the remaining guard time.
         /// </summary>
         public int GetGuardRemainingSeconds()
         {
-            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._guardTime - this._level.GetLogicTime()), 0);
+            int startTime = this._startGuardTime - this._level.GetLogicTime();
+
+            if (startTime <= 0)
+            {
+                startTime = 0;
+            }
+
+            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._guardTime + startTime), 0);
+        }
+
+        /// <summary>
+        ///     Sets the guard remaining seconds.
+        /// </summary>
+        public void SetGuardRemainingSeconds(int secs)
+        {
+            this._guardTime = LogicTime.GetSecondsInTicks(secs);
+
+            int logicTime = this._level.GetLogicTime();
+            int startGuardTime = logicTime;
+
+            if (this._shieldTime >= logicTime)
+            {
+                startGuardTime = this._shieldTime;
+            }
+
+            this._startGuardTime = startGuardTime;
         }
 
         /// <summary>
@@ -217,6 +261,14 @@
         public int GetMaintenanceRemainingSeconds()
         {
             return LogicMath.Max(LogicTime.GetTicksInSeconds(this._maintenanceTime - this._level.GetLogicTime()), 0);
+        }
+
+        /// <summary>
+        ///     Sets the maintenance remaining seconds.
+        /// </summary>
+        public void SetMaintenanceRemainingSeconds(int secs)
+        {
+            this._maintenanceTime = LogicTime.GetSecondsInTicks(secs) + this._level.GetLogicTime();
         }
         
         /// <summary>
@@ -431,6 +483,16 @@
                 this._guardTime = LogicTime.GetSecondsInTicks(home.GetGuardDurationSeconds());
                 this._maintenanceTime = LogicTime.GetSecondsInTicks(home.GetNextMaintenanceSeconds());
 
+                int logicTime = this._level.GetLogicTime();
+                int startGuardTime = logicTime;
+
+                if (this._shieldTime >= logicTime)
+                {
+                    startGuardTime = this._shieldTime;
+                }
+
+                this._startGuardTime = startGuardTime;
+                
                 if (LogicDataTables.GetGlobals().UseVillageObjects())
                 {
                     this._level.LoadVillageObjects();

@@ -64,6 +64,7 @@
     <Compile Include="Command\Battle\LogicCastSpellCommand.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicBuyShieldCommand.cs" />
     <Compile Include="Command\Home\LogicBuyTrapCommand.cs" />
     <Compile Include="Command\Home\LogicCancelUnitProductionCommand.cs" />
     <Compile Include="Command\Home\LogicCancelConstructionCommand.cs" />

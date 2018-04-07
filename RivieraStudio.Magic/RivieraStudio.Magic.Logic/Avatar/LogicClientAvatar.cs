@@ -496,6 +496,22 @@
         }
 
         /// <summary>
+        ///     Gets the shield cost amount.
+        /// </summary>
+        public int GetShieldCostAmount()
+        {
+            return this._shieldCostAmount;
+        }
+
+        /// <summary>
+        ///     Sets the shield cost amount.
+        /// </summary>
+        public void SetShieldCostAmount(int value)
+        {
+            this._shieldCostAmount = value;
+        }
+
+        /// <summary>
         ///     Gets the score.
         /// </summary>
         public int GetScore()

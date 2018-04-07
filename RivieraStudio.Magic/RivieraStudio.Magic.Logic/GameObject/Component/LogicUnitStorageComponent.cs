@@ -268,6 +268,8 @@
                     {
                         slot.SetCount(slot.GetCount() - count);
                     }
+
+                    Debugger.Print("LogicUnitStorageComponent::removeUnitsImpl remove " + count + " units");
                 }
                 else
                 {

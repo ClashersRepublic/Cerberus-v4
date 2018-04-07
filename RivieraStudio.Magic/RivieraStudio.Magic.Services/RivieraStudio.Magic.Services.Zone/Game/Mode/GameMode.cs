@@ -91,9 +91,10 @@
                     this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
                     this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
                     this._zoneAccount.ClientHome.SetNextMaintenanceSeconds(this._logicGameMode.GetMaintenanceRemainingSeconds());
+
                     this.ExecutedCommandsSinceLastSave = 0;
 
-                    CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
+                    // CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
                 }
             }
             else

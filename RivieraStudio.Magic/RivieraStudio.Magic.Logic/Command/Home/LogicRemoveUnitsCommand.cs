@@ -163,7 +163,7 @@
                         {
                             if (unitCount > 0)
                             {
-                                LogicUnitStorageComponent storageComponent = (LogicUnitStorageComponent) components[i];
+                                LogicUnitStorageComponent storageComponent = (LogicUnitStorageComponent) components[j];
                                 Int32 unitTypeIndex = storageComponent.GetUnitTypeIndex(data);
 
                                 if (unitTypeIndex != -1)
@@ -177,7 +177,7 @@
 
                                         int type = 2;
 
-                                        if (storageComponent.GetUnitCount(unitTypeIndex) == 0)
+                                        if (data.GetCombatItemType() == 0)
                                         {
                                             if (storageComponent.GetParentListener() != null)
                                             {
