@@ -110,7 +110,7 @@ namespace RivieraStudio.Magic.Logic.Data
         /// </summary>
         public override LogicBuildingData GetProductionHouseData()
         {
-            return LogicDataTables.GetBuildingByName(this.GetUnitOfType() == 1 ? "Mini Spell Factory" : "Spell Forge");
+            return LogicDataTables.GetBuildingByName(this.GetUnitOfType() == 1 ? "Spell Forge" : "Mini Spell Factory");
         }
 
         public int GetDeployTimeMS(int index)

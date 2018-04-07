@@ -1205,8 +1205,6 @@
                     this._timer = new LogicTimer();
                     this._timer.StartTimer(productionData.GetTrainingTime(this._level.GetHomeOwnerAvatar().GetUnitUpgradeLevel(productionData), this._level, 0),
                         this._level.GetLogicTime(), false, -1);
-
-                    Debugger.Print("LogicUnitProduction::fastForwardTime null timer, restart: " + this._timer.GetRemainingSeconds(this._level.GetLogicTime()));
                 }
 
                 int remainingSecs = this._timer.GetRemainingSeconds(this._level.GetLogicTime());
@@ -1220,11 +1218,6 @@
                 secs -= remainingSecs;
                 this._timer.StartTimer(0, this._level.GetLogicTime(), false, -1);
             } while (this.ProductionCompleted(false));
-
-            if (this._timer != null)
-            {
-                Debugger.Print("LogicUnitProduction::fastForwardTime time: " + this._timer.GetRemainingSeconds(this._level.GetLogicTime()));
-            }
         }
 
         /// <summary>
