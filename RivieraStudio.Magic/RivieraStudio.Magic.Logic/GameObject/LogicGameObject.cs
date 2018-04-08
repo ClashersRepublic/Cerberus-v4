@@ -532,9 +532,17 @@
         /// <summary>
         ///     Gets if the boost is paused.
         /// </summary>
-        public virtual bool GetBoostPaused()
+        public virtual bool IsBoostPaused()
         {
             return false;
+        }
+
+        /// <summary>
+        ///     Stops the boost.
+        /// </summary>
+        public virtual void StopBoost()
+        {
+            // StopBoost.
         }
 
         /// <summary>

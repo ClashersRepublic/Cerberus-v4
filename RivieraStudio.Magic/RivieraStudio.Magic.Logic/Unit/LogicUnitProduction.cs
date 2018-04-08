@@ -101,6 +101,14 @@
         }
 
         /// <summary>
+        ///     Sets if the boost is paused.
+        /// </summary>
+        public void SetBoostPause(bool state)
+        {
+            this._boostPause = state;
+        }
+
+        /// <summary>
         ///     Gets the remaining boost time in secs.
         /// </summary>
         public int GetRemainingBoostTimeSecs()
@@ -1078,6 +1086,20 @@
 
             this._boostTimer = new LogicTimer();
             this._boostTimer.StartTimer(this.GetMaxBoostTimeSecs(), this._level.GetLogicTime(), false, -1);
+        }
+
+        /// <summary>
+        ///     Stops the boost.
+        /// </summary>
+        public void StopBoost()
+        {
+            if (this._boostTimer != null)
+            {
+                if (!this._boostPause)
+                {
+                    this._boostPause = true;
+                }
+            }
         }
 
         /// <summary>

@@ -46,6 +46,11 @@
         internal int SaveTimestamp { get; private set; }
 
         /// <summary>
+        ///     Gets the unload timestamp.
+        /// </summary>
+        internal int UnloadTimestamp { get; private set; }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="ZoneAccount"/> class.
         /// </summary>
         public ZoneAccount()
@@ -84,6 +89,14 @@
         }
 
         /// <summary>
+        ///     Sets the unload timestamp.
+        /// </summary>
+        internal void SetUnloadTimestamp(int timestamp)
+        {
+            this.UnloadTimestamp = timestamp;
+        }
+
+        /// <summary>
         ///     Sets the <see cref="LogicClientAvatar"/> instance.
         /// </summary>
         internal void SetClientAvatar(LogicClientAvatar instance)
@@ -118,7 +131,8 @@
 
             jsonObject.Put("id_hi", new LogicJSONNumber(this.Id.GetHigherInt()));
             jsonObject.Put("id_lo", new LogicJSONNumber(this.Id.GetLowerInt()));
-            jsonObject.Put("last_save", new LogicJSONNumber(this.SaveTimestamp));
+            jsonObject.Put("save_time", new LogicJSONNumber(this.SaveTimestamp));
+            jsonObject.Put("unload_time", new LogicJSONNumber(this.UnloadTimestamp));
             jsonObject.Put("avatar", this.ClientAvatar.Save());
             jsonObject.Put("home", this.ClientHome.Save());
 
@@ -131,20 +145,18 @@
         internal void Load(string json)
         {
             LogicJSONObject jsonObject = (LogicJSONObject) LogicJSONParser.Parse(json);
+            LogicJSONNumber saveTime = jsonObject.GetJSONNumber("save_time");
+            LogicJSONNumber unloadTime = jsonObject.GetJSONNumber("unload_time");
+
+            if (saveTime == null)
+            {
+                saveTime = jsonObject.GetJSONNumber("last_save");
+            }
 
             this.Id = new LogicLong(LogicJSONHelper.GetJSONNumber(jsonObject, "id_hi"), LogicJSONHelper.GetJSONNumber(jsonObject, "id_lo"));
 
-            LogicJSONNumber lastSaveObject = jsonObject.GetJSONNumber("last_save");
-
-            if (lastSaveObject != null)
-            {
-                this.SaveTimestamp = lastSaveObject.GetIntValue();
-            }
-            else
-            {
-                Logging.Warning("ZoneAccount::load save timestamp is not set");
-                this.SaveTimestamp = LogicTimeUtil.GetTimestamp();
-            }
+            this.SaveTimestamp = saveTime != null ? saveTime.GetIntValue() : LogicTimeUtil.GetTimestamp();
+            this.UnloadTimestamp = unloadTime != null ? unloadTime.GetIntValue() : -1;
 
             LogicJSONObject avatarObject = jsonObject.GetJSONObject("avatar");
 

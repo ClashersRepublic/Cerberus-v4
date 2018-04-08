@@ -9,6 +9,7 @@
 
     using RivieraStudio.Magic.Titan.Json;
     using RivieraStudio.Magic.Titan.Math;
+    using RivieraStudio.Magic.Titan.Util;
 
     internal static class ZoneAccountManager
     {
@@ -110,6 +111,19 @@
             DatabaseManagerNew.Insert(0, homeId, LogicJSONParser.CreateJSONString(home.Save()));
             
             return home;
+        }
+
+        /// <summary>
+        ///     Called when the service is closed.
+        /// </summary>
+        internal static void OnQuit()
+        {
+            int timeStamp = LogicTimeUtil.GetTimestamp();
+
+            for (int i = 0; i < DatabaseManager.GetDatabaseCount(0); i++)
+            {
+                DatabaseManager.GetDatabaseAt(0, i).ExecuteQueryCommand("UPDATE `%BUCKET_NAME%` SET unload_time=" + timeStamp);
+            }
         }
     }
 }

@@ -397,6 +397,12 @@
                         break;
                     }
 
+                    case 551:
+                    {
+                        command = new LogicResumeBoostTrainingCommand();
+                        break;
+                    }
+
                     case 576:
                     {
                         command = new LogicDragUnitProductionCommand();

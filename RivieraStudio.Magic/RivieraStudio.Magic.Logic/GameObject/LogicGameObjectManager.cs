@@ -928,11 +928,22 @@
 
             if (secs > 0)
             {
+                int secsSinceLastMaintenance = this._level.GetGameMode().GetSecondsSinceLastMaintenance();
+                int offlineServerTime = -1;
+
+                if (secsSinceLastMaintenance > 0)
+                {
+                    offlineServerTime = secs - secsSinceLastMaintenance;
+                }
+
                 int idx = 0;
 
                 do
                 {
-                    int maxSecs = secs;
+                    bool stopBoost = false;
+
+                    int maxFastForwardTime = secs;
+                    int fastForwardTime = 1;
 
                     if (idx++ == 999)
                     {
@@ -946,14 +957,40 @@
 
                             for (int j = 0; j < gameObjects.Count; j++)
                             {
-                                int maxFastForwardTime = gameObjects[j].GetMaxFastForwardTime();
+                                int tmp = gameObjects[j].GetMaxFastForwardTime();
 
-                                if (maxFastForwardTime >= 0)
+                                if (tmp >= 0)
                                 {
-                                    maxSecs = LogicMath.Min(maxFastForwardTime, maxSecs);
+                                    maxFastForwardTime = LogicMath.Min(maxFastForwardTime, maxFastForwardTime);
                                 }
                             }
                         }
+                    }
+
+                    if (offlineServerTime <= 0)
+                    {
+                        stopBoost = offlineServerTime == 0;
+
+                        if (offlineServerTime < 0)
+                        {
+                            offlineServerTime = -1;
+                        }
+                    }
+                    else
+                    {
+                        maxFastForwardTime = LogicMath.Min(maxFastForwardTime, offlineServerTime);
+                        offlineServerTime -= maxFastForwardTime;
+                        stopBoost = false;
+                    }
+
+                    if (maxFastForwardTime > 0)
+                    {
+                        fastForwardTime = maxFastForwardTime;
+                    }
+
+                    if (fastForwardTime > secs)
+                    {
+                        fastForwardTime = secs;
                     }
 
                     for (int i = 0; i < 9; i++)
@@ -962,7 +999,14 @@
 
                         for (int j = 0; j < gameObjects.Count; j++)
                         {
-                            gameObjects[j].FastForwardTime(maxSecs);
+                            LogicGameObject gameObject = gameObjects[j];
+
+                            if (stopBoost)
+                            {
+                                gameObject.StopBoost();
+                            }
+
+                            gameObjects[j].FastForwardTime(fastForwardTime);
                         }
                     }
 
@@ -970,16 +1014,22 @@
 
                     for (int i = 0; i < buildings.Count; i++)
                     {
-                        buildings[i].FastForwardBoost(maxSecs);
+                        buildings[i].FastForwardBoost(fastForwardTime);
                     }
 
                     if (LogicDataTables.GetGlobals().UseNewTraining())
                     {
-                        this._unitProduction.FastForwardTime(maxSecs);
-                        this._spellProduction.FastForwardTime(maxSecs);
-                    }
+                        if (stopBoost)
+                        {
+                            this._unitProduction.StopBoost();
+                            this._spellProduction.StopBoost();
+                        }
 
-                    secs -= maxSecs;
+                        this._unitProduction.FastForwardTime(fastForwardTime);
+                        this._spellProduction.FastForwardTime(fastForwardTime);
+                    }
+                    
+                    secs -= fastForwardTime;
                 } while (secs > 0);
             }
 

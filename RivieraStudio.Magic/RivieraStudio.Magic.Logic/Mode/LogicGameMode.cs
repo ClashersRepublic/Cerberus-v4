@@ -23,7 +23,7 @@
         private int _guardTime;
         private int _maintenanceTime;
         private int _startGuardTime;
-        private int _elapsedSecs;
+        private int _secondsSinceLastMaintenance;
         private int _skipPrepationSecs;
 
         private LogicTimer _battleTimer;
@@ -174,11 +174,11 @@
         }
 
         /// <summary>
-        ///     Gets the elapsed seconds.
+        ///     Gets the seconds since last maintenance.
         /// </summary>
-        public int GetElapsedSeconds()
+        public int GetSecondsSinceLastMaintenance()
         {
-            return this._elapsedSecs;
+            return this._secondsSinceLastMaintenance;
         }
 
         /// <summary>
@@ -428,7 +428,7 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int secondsSinceLastMaintenance)
         {
             if (home != null)
             {
@@ -460,7 +460,7 @@
                     }
                 }
 
-                this._elapsedSecs = elapsedSecs;
+                this._secondsSinceLastMaintenance = secondsSinceLastMaintenance;
                 this._currentTimestamp = currentTimestamp;
                 this._configuration.Load((LogicJSONObject) LogicJSONParser.Parse(home.GetGlobalJSON()));
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
@@ -503,7 +503,7 @@
         /// <summary>
         ///     Loads the npc attack state.
         /// </summary>
-        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
+        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
         {
             if (this._state == 1)
             {
@@ -512,7 +512,6 @@
             else
             {
                 this._state = 2;
-                this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 
@@ -547,7 +546,7 @@
         /// <summary>
         ///     Loads the npc duel state.
         /// </summary>
-        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
+        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
         {
         }
     }

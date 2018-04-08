@@ -134,6 +134,17 @@
 
             int currentTimestamp = LogicTimeUtil.GetTimestamp();
             int secondsSinceLastSave = currentTimestamp - this._zoneAccount.SaveTimestamp;
+            int secondsSinceLastMaintenance = -1;
+
+            if (this._zoneAccount.UnloadTimestamp != -1)
+            {
+                secondsSinceLastMaintenance = currentTimestamp - this._zoneAccount.UnloadTimestamp;
+
+                if (secondsSinceLastMaintenance < 0)
+                {
+                    secondsSinceLastMaintenance = 0;
+                }
+            }
 
             if (secondsSinceLastSave < 0)
             {
@@ -163,14 +174,14 @@
 
             OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
 
-            ownHomeDataMessage.SetElapsedSecs(-1);
-            ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
+            ownHomeDataMessage.SetSecondsSinceLastMaintenance(secondsSinceLastMaintenance);
             ownHomeDataMessage.SetSecondsSinceLastSave(secondsSinceLastSave);
+            ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
             ownHomeDataMessage.SetLogicClientAvatar(homeOwnerAvatar);
             ownHomeDataMessage.SetLogicClientHome(clientHome);
             ownHomeDataMessage.Encode();
 
-            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, -1, 0, GAME.HOME_STATE);
+            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, secondsSinceLastMaintenance, 0, GAME.HOME_STATE);
             this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, ownHomeDataMessage);
         }
 
@@ -212,7 +223,7 @@
         /// <summary>
         ///     Sets the gamemode.
         /// </summary>
-        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs, int state, GAME mode)
+        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int secondsSinceLastMaintenance, int state, GAME mode)
         {
             if (this._logicGameMode != null)
             {
@@ -246,7 +257,7 @@
                 switch (mode)
                 {
                     case GAME.HOME_STATE:
-                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
+                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, secondsSinceLastMaintenance);
                         break;
                     case GAME.ATTACK_STATE:
                         if (homeOwnerAvatar.IsNpcAvatar())
@@ -254,10 +265,10 @@
                             switch (state)
                             {
                                 case 8:
-                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
+                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
                                     break;
                                 default:
-                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
+                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
                                     break;
                             }
                         }

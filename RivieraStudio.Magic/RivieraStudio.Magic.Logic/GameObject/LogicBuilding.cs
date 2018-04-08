@@ -291,9 +291,17 @@
         /// <summary>
         ///     Gets if the boost of this <see cref="LogicBuilding"/> instance is paused.
         /// </summary>
-        public bool IsBoostPaused()
+        public override bool IsBoostPaused()
         {
             return this._boostPause;
+        }
+
+        /// <summary>
+        ///     Sets if the boost is paused.
+        /// </summary>
+        public void SetBoostPause(bool state)
+        {
+            this._boostPause = state;
         }
 
         /// <summary>
@@ -685,6 +693,17 @@
         }
 
         /// <summary>
+        ///     Stops the boost.
+        /// </summary>
+        public override void StopBoost()
+        {
+            if (this._boostTimer != null && this.CanStopBoost() && !this._boostPause)
+            {
+                this._boostPause = true;
+            }
+        }
+
+        /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
         public override void FastForwardTime(int secs)
@@ -984,6 +1003,14 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///     Gets if the boost can be stopped.
+        /// </summary>
+        public bool CanStopBoost()
+        {
+            return this.GetComponent(3) != null || this.GetComponent(10) != null || this.GetBuildingData().IsClockTower();
         }
 
         /// <summary>
