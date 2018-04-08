@@ -6,7 +6,7 @@
     using RivieraStudio.Magic.Services.Core;
     using RivieraStudio.Magic.Services.Core.Database;
     using RivieraStudio.Magic.Services.Core.Network;
-
+    using RivieraStudio.Magic.Services.Core.Utils;
     using RivieraStudio.Magic.Titan.Json;
     using RivieraStudio.Magic.Titan.Math;
     using RivieraStudio.Magic.Titan.Util;
@@ -122,7 +122,8 @@
 
             for (int i = 0; i < DatabaseManager.GetDatabaseCount(0); i++)
             {
-                DatabaseManager.GetDatabaseAt(0, i).ExecuteQueryCommand("UPDATE `%BUCKET_NAME%` SET unload_time=" + timeStamp);
+                DatabaseManager.GetDatabaseAt(0, i).ExecuteQueryCommand(string.Format("UPDATE `%BUCKET_NAME%` SET unload_time={0} WHERE (id_lo - 1) % {1} == {2}", timeStamp,
+                    NetManager.GetServerCount(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER), ServiceCore.ServiceNodeId));
             }
         }
     }
