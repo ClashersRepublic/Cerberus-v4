@@ -1340,11 +1340,11 @@
                         LogicData data = buildingTable.GetItemAt(i);
 
                         int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
-                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+                        int previousTotalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel - 1);
 
-                        if (shopUnlockCount > 0)
+                        if (totalShopUnlock > previousTotalShopUnlock)
                         {
-                            this._newShopBuildings[i] += shopUnlockCount;
+                            this._newShopBuildings[i] += totalShopUnlock - previousTotalShopUnlock;
                         }
                     }
 
@@ -1355,11 +1355,11 @@
                         LogicData data = obstacleData.GetItemAt(i);
 
                         int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
-                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+                        int previousTotalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel - 1);
 
-                        if (shopUnlockCount > 0)
+                        if (totalShopUnlock > previousTotalShopUnlock)
                         {
-                            this._newShopTraps[i] += shopUnlockCount;
+                            this._newShopTraps[i] += totalShopUnlock - previousTotalShopUnlock;
                         }
                     }
                 }

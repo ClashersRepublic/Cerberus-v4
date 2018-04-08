@@ -144,6 +144,8 @@
                 {
                     secondsSinceLastMaintenance = 0;
                 }
+
+                this._zoneAccount.SetUnloadTimestamp(-1);
             }
 
             if (secondsSinceLastSave < 0)
