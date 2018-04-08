@@ -86,9 +86,9 @@
         private bool _androidClient;
         private bool _battleStarted;
         private bool _battleEndPending;
-        private bool _isWarLevel;
-        private bool _isDirectLevel;
-        private bool _isDirectVillage2Level;
+        private bool _warLevel;
+        private bool _directLevel;
+        private bool _directVillage2Level;
         private bool _invulverabilityEnabled;
 
         private string _warRequestMessage;
@@ -715,7 +715,7 @@
         }
 
         /// <summary>
-        ///     Gets the visitor45- avatar.
+        ///     Gets the visitor avatar.
         /// </summary>
         public LogicAvatar GetVisitorAvatar()
         {
@@ -914,11 +914,11 @@
 
             if (directObject != null)
             {
-                this._isDirectLevel = !directObject.IsTrue();
+                this._directLevel = !directObject.IsTrue();
             }
             else
             {
-                this._isDirectLevel = true;
+                this._directLevel = true;
             }
 
             LogicJSONBoolean direct2Object = this._levelJSON.GetJSONBoolean("direct2");

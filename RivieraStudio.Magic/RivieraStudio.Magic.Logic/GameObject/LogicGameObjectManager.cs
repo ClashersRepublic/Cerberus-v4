@@ -962,9 +962,15 @@
 
                         for (int j = 0; j < gameObjects.Count; j++)
                         {
-                            gameObjects[j].FastForwardBoost(maxSecs);
                             gameObjects[j].FastForwardTime(maxSecs);
                         }
+                    }
+
+                    LogicArrayList<LogicGameObject> buildings = this._gameObjects[0];
+
+                    for (int i = 0; i < buildings.Count; i++)
+                    {
+                        buildings[i].FastForwardBoost(maxSecs);
                     }
 
                     if (LogicDataTables.GetGlobals().UseNewTraining())

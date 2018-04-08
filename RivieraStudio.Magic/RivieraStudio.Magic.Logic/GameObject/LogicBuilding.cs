@@ -215,6 +215,11 @@
                 if (this.GetComponent(3) != null)
                 {
                     LogicUnitProductionComponent unitProductionComponent = this.GetUnitProductionComponent();
+
+                    if (this.GetRemainingBoostTime() <= 0 || this.GetBoostMultiplier() <= 0 || this._boostPause)
+                    {
+
+                    }
                 }
             }
 
@@ -856,6 +861,58 @@
         }
 
         /// <summary>
+        ///     Gets the boost multiplier.
+        /// </summary>
+        public int GetBoostMultiplier()
+        {
+            if (this.GetComponent(5) != null)
+            {
+                return LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier();
+            }
+
+            if (this.GetComponent(3) == null)
+            {
+                if (this.GetComponent(10) != null)
+                {
+                    return LogicDataTables.GetGlobals().GetHeroRestBoostMultiplier();
+                }
+
+                if (this.GetBuildingData().IsClockTower())
+                {
+                    return LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier();
+                }
+            }
+            else
+            {
+                if (this.GetComponent(3) != null)
+                {
+                    LogicUnitProductionComponent unitProductionComponent = (LogicUnitProductionComponent)this.GetComponent(3);
+
+                    if (unitProductionComponent.GetProductionType() == 1)
+                    {
+                        if (LogicDataTables.GetGlobals().UseNewTraining())
+                        {
+                            return LogicDataTables.GetGlobals().GetSpellFactoryBoostMultiplier();
+                        }
+
+                        return LogicDataTables.GetGlobals().GetSpellFactoryBoostMultiplier();
+                    }
+                    else if (unitProductionComponent.GetProductionType() == 0)
+                    {
+                        if (LogicDataTables.GetGlobals().UseNewTraining())
+                        {
+                            return LogicDataTables.GetGlobals().GetBarracksBoostNewMultiplier();
+                        }
+
+                        return LogicDataTables.GetGlobals().GetBarracksBoostMultiplier();
+                    }
+                }
+            }
+
+            return 1;
+        }
+
+        /// <summary>
         ///     Gets the required townhall level for unlock.
         /// </summary>
         public bool CanUnlock(bool canCallListener)
@@ -936,6 +993,7 @@
         {
             return this._level.GetGameMode().GetCalendar().GetBuildingBoostCost(this.GetBuildingData(), this._upgLevel);
         }
+
 
         /// <summary>
         ///     Speed up the construction.

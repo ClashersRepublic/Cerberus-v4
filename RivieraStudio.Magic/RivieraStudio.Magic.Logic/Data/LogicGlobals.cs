@@ -79,6 +79,7 @@
         private int _spellFactoryBoostNewMultiplier;
         private int _spellFactoryBoostMultiplier;
         private int _clockTowerSpeedUpMultiplier;
+        private int _heroRestBoostMultiplier;
         private int _buildCancelMultiplier;
         private int _spellCancelMultiplier;
         private int _trainCancelMultiplier;
@@ -200,6 +201,7 @@
             this._barracksBoostNewMultiplier = this.GetIntValue("BARRACKS_BOOST_MULTIPLIER_NEW");
             this._spellFactoryBoostNewMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER_NEW");
             this._spellFactoryBoostMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER");
+            this._heroRestBoostMultiplier = this.GetIntValue("HERO_REST_BOOST_MULTIPLIER");
             this._buildCancelMultiplier = this.GetIntValue("BUILD_CANCEL_MULTIPLIER");
             this._trainCancelMultiplier = this.GetIntValue("TRAIN_CANCEL_MULTIPLIER");
             this._spellCancelMultiplier = this.GetIntValue("SPELL_CANCEL_MULTIPLIER");
@@ -678,6 +680,14 @@
         public int GetVillage2StartUnitLevel()
         {
             return this._village2StartUnitLevel;
+        }
+
+        /// <summary>
+        ///     Gets the multiplier of hero rest.
+        /// </summary>
+        public int GetHeroRestBoostMultiplier()
+        {
+            return this._heroRestBoostMultiplier;
         }
 
         /// <summary>
