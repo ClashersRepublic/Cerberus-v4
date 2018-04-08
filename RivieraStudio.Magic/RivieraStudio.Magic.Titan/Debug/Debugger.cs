@@ -1,77 +1,70 @@
 ﻿namespace RivieraStudio.Magic.Titan.Debug
 {
-    using System.IO;
-    using System.Runtime.CompilerServices;
-
     public static class Debugger
     {
         public delegate void DebugEventHandler(object sender, DebugEventArgs args);
 
         public static event DebugEventHandler HudPrintEvent;
-        public static event DebugEventHandler LogEvent;
+        public static event DebugEventHandler PrintEvent;
         public static event DebugEventHandler WarningEvent;
         public static event DebugEventHandler ErrorEvent;
 
         /// <summary>
         ///     Do assert the specified message.
         /// </summary>
-        public static bool DoAssert(bool assertion, string assertionError, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
+        public static bool DoAssert(bool assertion, string assertionError)
         {
             if (!assertion)
             {
-                Debugger.ErrorEvent(typeof(Debugger), new DebugEventArgs(assertionError, Path.GetFileName(callerFilePath), callerLineNumber));
+                Debugger.ErrorEvent(typeof(Debugger), new DebugEventArgs(assertionError));
             }
 
             return assertion;
         }
 
         /// <summary>
-        ///     Logs the specified message.
+        ///     Print the specified message to hud.
         /// </summary>
         public static void HudPrint(string log)
         {
-            Debugger.HudPrintEvent(typeof(Debugger), new DebugEventArgs(log, null, -1));
+            Debugger.HudPrintEvent(typeof(Debugger), new DebugEventArgs(log));
         }
 
         /// <summary>
-        ///     Logs the specified message.
+        ///     Print the specified message.
         /// </summary>
-        public static void Log(string log, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
+        public static void Print(string log)
         {
-            Debugger.LogEvent(typeof(Debugger), new DebugEventArgs(log, Path.GetFileName(callerFilePath), callerLineNumber));
+            Debugger.PrintEvent(typeof(Debugger), new DebugEventArgs(log));
         }
 
         /// <summary>
         ///     Logs the specified warning message.
         /// </summary>
-        public static void Warning(string log, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
+        public static void Warning(string log)
         {
-            Debugger.WarningEvent(typeof(Debugger), new DebugEventArgs(log, Path.GetFileName(callerFilePath), callerLineNumber));
+            Debugger.WarningEvent(typeof(Debugger), new DebugEventArgs(log));
         }
 
         /// <summary>
         ///     Logs the specified error message.
         /// </summary>
-        public static void Error(string log, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
+        public static void Error(string log)
         {
-            Debugger.ErrorEvent(typeof(Debugger), new DebugEventArgs(log, Path.GetFileName(callerFilePath), callerLineNumber));
+            Debugger.ErrorEvent(typeof(Debugger), new DebugEventArgs(log));
         }
     }
 
     public class DebugEventArgs
     {
-        public string Text;
-        public string FileName;
-        public int Line;
+        public string Text { get; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DebugEventArgs" /> class.
         /// </summary>
-        public DebugEventArgs(string text, string fileName, int line)
+        public DebugEventArgs(string text)
         {
             this.Text = text;
-            this.FileName = fileName;
-            this.Line = line;
         }
     }
 }

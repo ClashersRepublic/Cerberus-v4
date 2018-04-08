@@ -3,9 +3,8 @@
     using RivieraStudio.Magic.Logic.Data;
     using RivieraStudio.Magic.Logic.GameObject;
     using RivieraStudio.Magic.Logic.GameObject.Component;
-    using RivieraStudio.Magic.Logic.Helper;
     using RivieraStudio.Magic.Logic.Level;
-    using RivieraStudio.Magic.Logic.Mission;
+
     using RivieraStudio.Magic.Titan.DataStream;
     using RivieraStudio.Magic.Titan.Debug;
     using RivieraStudio.Magic.Titan.Util;
@@ -23,7 +22,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicMissionData" /> class.
+        ///     Initializes a new instance of the <see cref="LogicCollectResourcesCommand" /> class.
         /// </summary>
         public LogicCollectResourcesCommand(int gameObjectId)
         {
@@ -88,7 +87,7 @@
 
                                 bool storageIsFull = baseAvailableResources > 0 && baseCollectedResources == 0;
 
-                                Debugger.Log("Collected: " + baseCollectedResources);
+                                Debugger.Print("Collected: " + baseCollectedResources);
 
                                 LogicArrayList<LogicComponent> components = level.GetComponentManager().GetComponents(resourceProductionComponent.GetComponentType());
 

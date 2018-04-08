@@ -1,10 +1,6 @@
 ﻿namespace RivieraStudio.Magic.Logic.Command.Home
 {
-    using RivieraStudio.Magic.Logic.Avatar;
-    using RivieraStudio.Magic.Logic.Data;
-    using RivieraStudio.Magic.Logic.Helper;
     using RivieraStudio.Magic.Logic.Level;
-
     using RivieraStudio.Magic.Titan.DataStream;
 
     public sealed class LogicEditModeShownCommand : LogicCommand

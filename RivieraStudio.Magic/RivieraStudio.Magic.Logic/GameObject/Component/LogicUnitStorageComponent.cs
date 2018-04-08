@@ -224,21 +224,21 @@
         /// </summary>
         public void RemoveUnits(LogicCombatItemData data, int count)
         {
-            this.RemoveUnitsImpl(data, count, -1);
+            this.RemoveUnitsImpl(data, -1, count);
         }
 
         /// <summary>
         ///     Removes the number of specified units.
         /// </summary>
-        public void RemoveUnits(LogicCombatItemData data, int count, int upgLevel)
+        public void RemoveUnits(LogicCombatItemData data, int upgLevel, int count)
         {
-            this.RemoveUnitsImpl(data, count, upgLevel);
+            this.RemoveUnitsImpl(data, upgLevel, count);
         }
 
         /// <summary>
         ///     Implementation to remove units.
         /// </summary>
-        private void RemoveUnitsImpl(LogicCombatItemData data, int count, int upgLevel)
+        private void RemoveUnitsImpl(LogicCombatItemData data, int upgLevel, int count)
         {
             if (data != null)
             {
@@ -259,7 +259,7 @@
                 {
                     LogicUnitSlot slot = this._slots[index];
 
-                    if (slot.GetCount() <= 0)
+                    if (slot.GetCount() - count <= 0)
                     {
                         this._slots[index].Destruct();
                         this._slots.Remove(index);
@@ -268,15 +268,17 @@
                     {
                         slot.SetCount(slot.GetCount() - count);
                     }
+
+                    Debugger.Print("LogicUnitStorageComponent::removeUnitsImpl remove " + count + " units");
                 }
                 else
                 {
-                    Debugger.Warning("LogicUnitStorageComponent::removeUnitsImpl No units with the given type found");
+                    Debugger.Error("LogicUnitStorageComponent::removeUnitsImpl No units with the given type found");
                 }
             }
             else
             {
-                Debugger.Warning("LogicUnitStorageComponent::removeUnits called with CharacterData NULL");
+                Debugger.Error("LogicUnitStorageComponent::removeUnits called with CharacterData NULL");
             }
         }
 
@@ -291,9 +293,9 @@
         /// <summary>
         ///     Gets the unit type.
         /// </summary>
-        public LogicUnitSlot GetUnitType(int idx)
+        public LogicCombatItemData GetUnitType(int idx)
         {
-            return this._slots[idx];
+            return (LogicCombatItemData) this._slots[idx].GetData();
         }
 
         /// <summary>

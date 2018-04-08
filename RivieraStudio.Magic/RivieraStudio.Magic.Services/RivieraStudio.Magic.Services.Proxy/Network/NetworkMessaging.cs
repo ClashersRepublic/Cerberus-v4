@@ -191,7 +191,7 @@
                         }
                         finally
                         {
-                            Logging.Debug("NetworkMessaging::receive message " + message.GetType().Name + " received");
+                            Logging.Print("NetworkMessaging::receive message " + message.GetType().Name + " received");
                         }
                     }
                     else
@@ -339,7 +339,7 @@
             this.WriteHeader(message, packet, encodingLength);
             this.Connection.SendData(packet, encodingLength + 7);
 
-            Logging.Debug("NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
+            Logging.Print("NetworkMessaging::onWakeup message " + message.GetType().Name + " sent");
         }
 
         /// <summary>

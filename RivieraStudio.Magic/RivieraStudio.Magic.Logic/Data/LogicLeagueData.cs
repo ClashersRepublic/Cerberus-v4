@@ -39,6 +39,7 @@ namespace RivieraStudio.Magic.Logic.Data
         public bool PromoteEnabled { get; protected set; }
         public int AllocateAmount { get; protected set; }
         public int SaverCount { get; protected set; }
+        public int VillageGuardInMins { get; protected set; }
 
         /// <summary>
         ///     Called when all instances has been loaded for initialized members in instance.

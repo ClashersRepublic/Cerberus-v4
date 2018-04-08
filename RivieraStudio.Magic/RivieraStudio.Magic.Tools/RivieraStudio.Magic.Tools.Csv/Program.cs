@@ -20,9 +20,9 @@
 
             Directory.CreateDirectory("Output");
 
-            Debugger.LogEvent += (sender, eventArgs) => Console.WriteLine("[LOG] " + eventArgs.FileName + ":" + eventArgs.Line + " : " + eventArgs.Text);
-            Debugger.WarningEvent += (sender, eventArgs) => Console.WriteLine("[WARNING] " + eventArgs.FileName + ":" + eventArgs.Line + " : " + eventArgs.Text);
-            Debugger.ErrorEvent += (sender, eventArgs) => Console.WriteLine("[ERROR] " + eventArgs.FileName + ":" + eventArgs.Line + " : " + eventArgs.Text);
+            Debugger.PrintEvent += (sender, eventArgs) => Console.WriteLine("[LOG] " + eventArgs.Text);
+            Debugger.WarningEvent += (sender, eventArgs) => Console.WriteLine("[WARNING] " + eventArgs.Text);
+            Debugger.ErrorEvent += (sender, eventArgs) => Console.WriteLine("[ERROR] " + eventArgs.Text);
 
             if (Directory.Exists("Assets"))
             {

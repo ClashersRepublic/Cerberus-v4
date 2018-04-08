@@ -11,7 +11,7 @@
         private int _villageType;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicSpeedUpConstructionCommand" /> class.
         /// </summary>
         public LogicSpeedUpConstructionCommand()
         {
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicSpeedUpConstructionCommand" /> class.
         /// </summary>
         public LogicSpeedUpConstructionCommand(int gameObjectId)
         {
@@ -83,7 +83,7 @@
                         }
                         if (gameObject.GetGameObjectType() == 4)
                         {
-                            return -1;
+                            return ((LogicTrap) gameObject).SpeedUpConstruction() ? 0 : -1;
                         }
                         if (gameObject.GetGameObjectType() == 8)
                         {

@@ -241,6 +241,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicEffectData"/> instance by name.
+        /// </summary>
+        public static LogicEffectData GetEffectByName(string name)
+        {
+            return (LogicEffectData) LogicDataTables._dataTables[8].GetDataByName(name);
+        }
+
+        /// <summary>
         ///     Gets the data by instance.
         /// </summary>
         public static LogicData GetDataByName(string name)

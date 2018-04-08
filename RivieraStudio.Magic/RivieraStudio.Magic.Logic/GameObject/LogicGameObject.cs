@@ -230,10 +230,17 @@
         /// <summary>
         ///     Gets the movement component.
         /// </summary>
-        /// <returns></returns>
         public LogicMovementComponent GetMovementComponent()
         {
             return (LogicMovementComponent) this._components[4];
+        }
+
+        /// <summary>
+        ///     Gets the bunker component.
+        /// </summary>
+        public LogicBunkerComponent GetBunkerComponent()
+        {
+            return (LogicBunkerComponent) this._components[7];
         }
 
         /// <summary>
@@ -300,9 +307,45 @@
 
                 this._position.Set(x, y);
 
+                if (this._components[13] != null)
+                {
+                    LogicLayoutComponent layoutComponent = (LogicLayoutComponent)this._components[13];
+
+                    if (layoutComponent.IsEnabled())
+                    {
+                        if (this._level != null)
+                        {
+                            layoutComponent.SetPositionLayout(this._level.GetActiveLayout(), x >> 9, y >> 9);
+                        }
+                    }
+                }
+
                 if (this._globalId != -1)
                 {
                     this._level.GetTileMap().GameObjectMoved(this, oldX, oldY);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the gameobject position in layout.
+        /// </summary>
+        public void SetPositionLayoutXY(int tileX, int tileY, int activeLayout, bool editMode)
+        {
+            if (this._components[13] != null)
+            {
+                LogicLayoutComponent layoutComponent = (LogicLayoutComponent) this._components[13];
+
+                if (layoutComponent.IsEnabled())
+                {
+                    if (editMode)
+                    {
+                        layoutComponent.SetEditModePositionLayout(activeLayout, tileX, tileY);
+                    }
+                    else
+                    {
+                        layoutComponent.SetPositionLayout(activeLayout, tileX, tileY);
+                    }
                 }
             }
         }
@@ -321,6 +364,24 @@
         public void SetSeed(int seed)
         {
             this._seed = seed;
+        }
+
+        /// <summary>
+        ///     Gets a random number.
+        /// </summary>
+        public int Rand(int rnd)
+        {
+            int seed = this._seed + rnd;
+
+            if (seed == 0)
+            {
+                seed = -1;
+            }
+
+            int tmp1 = seed ^ (seed << 14) ^ ((seed ^ (seed << 14)) >> 16);
+            int tmp2 = (tmp1 ^ 32 * tmp1) & 0x7FFFFFFF;
+
+            return tmp2;
         }
 
         /// <summary>
@@ -358,6 +419,19 @@
         public virtual void SetInitialPosition(int x, int y)
         {
             this._position.Set(x, y);
+
+            if (this._components[13] != null)
+            {
+                LogicLayoutComponent layoutComponent = (LogicLayoutComponent) this._components[13];
+
+                if (layoutComponent.IsEnabled())
+                {
+                    if (this._level != null)
+                    {
+                        layoutComponent.SetPositionLayout(this._level.GetActiveLayout(), x >> 9, y >> 9);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -458,9 +532,17 @@
         /// <summary>
         ///     Gets if the boost is paused.
         /// </summary>
-        public virtual bool GetBoostPaused()
+        public virtual bool IsBoostPaused()
         {
             return false;
+        }
+
+        /// <summary>
+        ///     Stops the boost.
+        /// </summary>
+        public virtual void StopBoost()
+        {
+            // StopBoost.
         }
 
         /// <summary>
@@ -482,7 +564,7 @@
         /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
-        public virtual void FastForwardTime(int time)
+        public virtual void FastForwardTime(int secs)
         {
             for (int i = 0; i < this._components.Count; i++)
             {
@@ -492,10 +574,18 @@
                 {
                     if (component.IsEnabled())
                     {
-                        component.FastForwardTime(time);
+                        component.FastForwardTime(secs);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        ///     Creates a fast forward of boost.
+        /// </summary>
+        public virtual void FastForwardBoost(int secs)
+        {
+            // FastForwardBoost.
         }
 
         /// <summary>

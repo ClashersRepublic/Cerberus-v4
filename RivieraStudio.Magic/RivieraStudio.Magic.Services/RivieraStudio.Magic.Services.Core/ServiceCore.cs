@@ -1,18 +1,11 @@
 ﻿namespace RivieraStudio.Magic.Services.Core
 {
-    using System.IO;
-
     using RivieraStudio.Magic.Services.Core.Message;
     using RivieraStudio.Magic.Services.Core.Network;
     using RivieraStudio.Magic.Services.Core.Web;
-
-    using RivieraStudio.Magic.Titan.Json;
-
+    
     public static class ServiceCore
     {
-        private static bool _initialized;
-        private static bool _started;
-
         /// <summary>
         ///     Gets the service node type.
         /// </summary>
@@ -29,37 +22,82 @@
         public static string ServiceEnvironment { get; private set; }
         
         /// <summary>
+        ///     Gets the configuration server.
+        /// </summary>
+        public static string ConfigurationServer { get; private set; }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         public static void Initialize(int serviceNodeType, NetMessageManager messageManager, string[] args)
         {
-            if (ServiceCore._initialized)
-            {
-                return;
-            }
-
-            ServiceCore._initialized = true;
             ServiceCore.ServiceNodeType = serviceNodeType;
+            ServiceCore.ServiceEnvironment = "internal";
+            ServiceCore.ConfigurationServer = "http://127.0.0.1/";
+            ServiceCore.ServiceNodeId = 0;
 
             if (args.Length > 0)
             {
-                ServiceCore.ServiceEnvironment = args[0];
-
-                if (!string.IsNullOrEmpty(ServiceCore.ServiceEnvironment))
+                if (args.Length % 2 == 0)
                 {
-                    ServiceCore.ServiceEnvironment = "internal";
+                    for (int i = 0; i < args.Length; i += 2)
+                    {
+                        string name = args[i];
+                        string value = args[i + 1];
+                        
+                        switch (name)
+                        {
+                            case "-env":
+                                if (!value.Equals("integration") &&
+                                    !value.StartsWith("integration-") &&
+                                    !value.Equals("stage") &&
+                                    !value.Equals("prod") &&
+                                    !value.Equals("internal") &&
+                                    !value.Equals("content-stage"))
+                                {
+                                    Logging.Warning("ServiceCore::initialize unknown server environment: " + ServiceCore.ServiceEnvironment);
+                                }
+
+                                ServiceCore.ServiceEnvironment = value;
+                                break;
+                            case "-conf":
+                                if (value.Length > 0)
+                                {
+                                    if (value.StartsWith("http://") || value.StartsWith("https://"))
+                                    {
+                                        if (!value.EndsWith("/"))
+                                        {
+                                            value += "/";
+                                        }
+
+                                        ServiceCore.ConfigurationServer = value;
+                                    }
+                                    else
+                                    {
+                                        Logging.Warning("ServiceCore::initialize invalid server url: " + value);
+                                    }
+                                }
+                                else
+                                {
+                                    Logging.Warning("ServiceCore::initialize server url is empty");
+                                }
+
+                                break;
+                            case "-id":
+                                ServiceCore.ServiceNodeId = int.Parse(value);
+                                break;
+                            default:
+                                Logging.Warning("ServiceCore::initialize invalid args name");
+                                break;
+                        }
+                    }
                 }
-
-                if (args.Length > 1)
+                else
                 {
-                    ServiceCore.ServiceNodeId = int.Parse(args[1]);
+                    Logging.Warning("ServiceCore::initialize invalid args length");
                 }
             }
-            else
-            {
-                ServiceCore.ServiceEnvironment = "internal";
-            }
-            
+
             WebManager.Initialize();
 
             ServiceCore.InitConfig();
@@ -72,11 +110,6 @@
         /// </summary>
         public static void Start()
         {
-            if (ServiceCore._started)
-            {
-                return;
-            }
-            
             NetManager.Start();
         }
 

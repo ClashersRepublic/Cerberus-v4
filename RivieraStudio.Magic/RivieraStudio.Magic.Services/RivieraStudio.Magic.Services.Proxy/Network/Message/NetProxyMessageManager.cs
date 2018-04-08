@@ -52,7 +52,7 @@
                     break;
 
                 default:
-                    Logging.Debug("NetProxyMessageManager::receiveMessage no case for message type " + message.GetMessageType());
+                    Logging.Print("NetProxyMessageManager::receiveMessage no case for message type " + message.GetMessageType());
                     break;
             }
         }
@@ -74,7 +74,7 @@
 
             if (NetProxySessionManager.TryGet(sessionId, out NetProxySession session))
             {
-                Logging.Debug("loginClientFailedMessageReceived login failed, error code: " + message.GetErrorCode());
+                Logging.Print("loginClientFailedMessageReceived login failed, error code: " + message.GetErrorCode());
 
                 if (session.Client.State != 6 && session.Client.State != -1)
                 {

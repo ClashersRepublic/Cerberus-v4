@@ -73,7 +73,7 @@
                         }
                         else
                         {
-                            Logging.Debug("MessageManager::receiveMessage no server for service " + message.GetServiceNodeType());
+                            Logging.Print("MessageManager::receiveMessage no server for service " + message.GetServiceNodeType());
                         }
 
                         return;

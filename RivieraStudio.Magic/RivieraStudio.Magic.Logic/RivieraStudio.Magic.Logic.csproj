@@ -61,9 +61,20 @@
     <Compile Include="Calendar\LogicCalendar.cs" />
     <Compile Include="Calendar\LogicCalendarEvent.cs" />
     <Compile Include="Calendar\LogicCalendarEventFactory.cs" />
+    <Compile Include="Command\Battle\LogicCastSpellCommand.cs" />
     <Compile Include="Command\Battle\LogicPlaceAttackerCommand.cs" />
     <Compile Include="Command\Debug\LogicDebugCommand.cs" />
+    <Compile Include="Command\Home\LogicResumeBoostTrainingCommand.cs" />
+    <Compile Include="Command\Home\LogicBuyShieldCommand.cs" />
+    <Compile Include="Command\Home\LogicBuyTrapCommand.cs" />
+    <Compile Include="Command\Home\LogicCancelUnitProductionCommand.cs" />
+    <Compile Include="Command\Home\LogicCancelConstructionCommand.cs" />
     <Compile Include="Command\Home\LogicEditModeShownCommand.cs" />
+    <Compile Include="Command\Home\LogicBoostBuildingCommand.cs" />
+    <Compile Include="Command\Home\LogicDragUnitProductionCommand.cs" />
+    <Compile Include="Command\Home\LogicLockUnitProductionCommand.cs" />
+    <Compile Include="Command\Home\LogicBoostTrainingCommand.cs" />
+    <Compile Include="Command\Home\LogicSpeedUpTrainingCommand.cs" />
     <Compile Include="Command\Home\LogicSwapBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicUnlockBuildingCommand.cs" />
     <Compile Include="Command\Home\LogicFreeWorkerCommand.cs" />
@@ -150,6 +161,7 @@
     <Compile Include="GameObject\Component\LogicComponentFilter.cs" />
     <Compile Include="GameObject\Component\LogicComponentManager.cs" />
     <Compile Include="GameObject\Component\LogicCombatComponent.cs" />
+    <Compile Include="GameObject\Component\LogicLayoutComponent.cs" />
     <Compile Include="GameObject\Component\LogicMovementComponent.cs" />
     <Compile Include="GameObject\Component\LogicWarResourceStorageComponent.cs" />
     <Compile Include="GameObject\Component\LogicResourceStorageComponent.cs" />
@@ -163,8 +175,10 @@
     <Compile Include="GameObject\Component\LogicUnitProductionComponent.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectListener.cs" />
     <Compile Include="GameObject\Listener\LogicGameObjectManagerListener.cs" />
+    <Compile Include="GameObject\LogicSpell.cs" />
     <Compile Include="GameObject\LogicCharacter.cs" />
     <Compile Include="GameObject\LogicGameObjectFilter.cs" />
+    <Compile Include="GameObject\LogicTrap.cs" />
     <Compile Include="GameObject\LogicVillageObject.cs" />
     <Compile Include="GameObject\LogicObstacle.cs" />
     <Compile Include="GameObject\LogicBuilding.cs" />
@@ -244,6 +258,7 @@
     <Compile Include="Util\LogicPathFinderNew.cs" />
     <Compile Include="Util\LogicPathFinder.cs" />
     <Compile Include="Util\LogicSavedPath.cs" />
+    <Compile Include="Util\LogicUnitProductionSlot.cs" />
     <Compile Include="Util\LogicUnitSlot.cs" />
     <Compile Include="Worker\LogicWorkerManager.cs" />
   </ItemGroup>

@@ -96,7 +96,7 @@ namespace RivieraStudio.Magic.Logic.Data
                 {
                     if (cap == 0)
                     {
-                        cap = previousItem._buildingCaps[i];
+                        cap = previousItem._trapCaps[i];
                     }
                 }
 

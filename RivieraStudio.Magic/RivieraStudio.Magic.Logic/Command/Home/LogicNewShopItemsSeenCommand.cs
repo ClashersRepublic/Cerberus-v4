@@ -1,9 +1,6 @@
 ﻿namespace RivieraStudio.Magic.Logic.Command.Home
 {
-    using RivieraStudio.Magic.Logic.Avatar;
     using RivieraStudio.Magic.Logic.Data;
-    using RivieraStudio.Magic.Logic.GameObject;
-    using RivieraStudio.Magic.Logic.Helper;
     using RivieraStudio.Magic.Logic.Level;
     using RivieraStudio.Magic.Titan.DataStream;
 
@@ -15,7 +12,7 @@
 
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicNewShopItemsSeenCommand" /> class.
         /// </summary>
         public LogicNewShopItemsSeenCommand()
         {
@@ -23,7 +20,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicBuyBuildingCommand" /> class.
+        ///     Initializes a new instance of the <see cref="LogicNewShopItemsSeenCommand" /> class.
         /// </summary>
         public LogicNewShopItemsSeenCommand(int index, int type, int count)
         {

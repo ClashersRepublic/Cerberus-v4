@@ -73,6 +73,27 @@
         }
 
         /// <summary>
+        ///     Adds the specified item to list.
+        /// </summary>
+        public void Add(int index, T item)
+        {
+            int size = this._items.Length;
+
+            if (size == this.Count)
+            {
+                this.EnsureCapacity(size != 0 ? size * 2 : 5);
+            }
+
+            if (this.Count > index)
+            {
+                Array.Copy(this._items, index, this._items, index + 1, this.Count - index);
+            }
+
+            this._items[index] = item;
+            this.Count += 1;
+        }
+
+        /// <summary>
         ///     Gets the index of specified item.
         /// </summary>
         public int IndexOf(T item)

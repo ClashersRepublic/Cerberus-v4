@@ -157,7 +157,7 @@
             {
                 if (session.PiranhaMessageManager == null)
                 {
-                    Logging.Debug("NetZoneMessage::forwardPiranhaMessageReceived session disposed");
+                    Logging.Print("NetZoneMessage::forwardPiranhaMessageReceived session disposed");
                     return;
                 }
 
@@ -205,6 +205,11 @@
 
             if (ZoneAccountManager.TryGet(message.RemoveAvatarId(), out ZoneAccount account))
             {
+                if (account.GameMode.ExecutedCommandsSinceLastSave != 0)
+                {
+                    account.GameMode.Save();
+                }
+
                 AvatarProfileFullEntryMessage avatarProfileFullEntryMessage = new AvatarProfileFullEntryMessage();
                 AvatarProfileFullEntry entry = new AvatarProfileFullEntry();
                 LogicCompressibleString compressibleString = account.ClientHome.GetCompressibleHomeJSON().Clone();
@@ -213,12 +218,11 @@
                 {
                     CompressibleStringHelper.Compress(compressibleString);
                 }
-
+                
                 entry.SetLogicClientAvatar(account.ClientAvatar);
                 entry.SetCompressedHomeJSON(compressibleString.RemoveCompressed());
                 avatarProfileFullEntryMessage.SetAvatarProfileFullEntry(entry);
-                compressibleString.Destruct();
-
+                
                 NetMessageManager.SendMessage(message.GetServiceNodeType(), message.GetServiceNodeId(), sessionId, avatarProfileFullEntryMessage);
             }
         }
@@ -242,27 +246,31 @@
                             ZoneAccount account = session.ZoneAccount;
                             NetZoneSessionManager.Remove(sessionId);
 
-                            session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new OutOfSyncMessage());
+                            session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_ZONE_CONTAINER, new OutOfSyncMessage());
+                            session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
+
+                            NetZoneSessionManager.Remove(sessionId);
+
                             session.ZoneAccount.GameMode.DeInit();
-                            session.ZoneAccount.SetSession(null);
                             session.Destruct();
 
                             ZoneAccountManager.UpdateZoneAccount(account.Id, new ZoneAccount(account.Id));
                             break;
                         case 1001:
                             LogicDiamondsAddedCommand diamondsAddedCommand = new LogicDiamondsAddedCommand();
+
                             diamondsAddedCommand.SetData(true, 14000, -1, false, 0, null);
                             session.ZoneAccount.GameMode.AddAvailableServerCommand(diamondsAddedCommand);
 
                             break;
                         default:
-                            Logging.Debug(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
+                            Logging.Print(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
                             break;
                     }
                 }
                 else
                 {
-                    Logging.Debug(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
+                    Logging.Print(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
                 }
             }
         }

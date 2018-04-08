@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using RivieraStudio.Magic.Services.Zone.Game;
 
     internal class ExitHandler
     {
@@ -34,6 +35,7 @@
         /// </summary>
         internal static void OnQuit()
         {
+            ZoneAccountManager.OnQuit();
             Environment.Exit(0);
         }
 

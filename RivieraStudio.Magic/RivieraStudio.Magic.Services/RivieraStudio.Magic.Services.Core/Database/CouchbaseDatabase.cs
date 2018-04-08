@@ -37,6 +37,14 @@
         }
 
         /// <summary>
+        ///     Executes a query command to database.
+        /// </summary>
+        public void ExecuteQueryCommand(string cmd)
+        {
+            this._bucket.Query<dynamic>(new QueryRequest().Statement(cmd.Replace("%BUCKET_NAME%", this._bucketName)));
+        }
+
+        /// <summary>
         ///     Gets the higher id.
         /// </summary>
         public int GetHigherId()

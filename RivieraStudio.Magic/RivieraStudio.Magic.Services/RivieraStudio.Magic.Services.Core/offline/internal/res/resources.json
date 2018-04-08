@@ -1,0 +1,13 @@
+{
+  "content": [
+    "http://176.159.83.126/assets/",
+    "http://176.159.83.126/assets-chronos/"
+  ],
+  "chronosContent": [
+  ],
+  "appstore": [
+    "APPSTORE_LINK",
+    "GOOGLE_LINK",
+    "KUNLUN_LINK"
+  ]
+}

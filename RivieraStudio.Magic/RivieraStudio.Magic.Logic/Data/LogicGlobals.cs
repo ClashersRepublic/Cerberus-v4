@@ -58,6 +58,13 @@
         private int _attackPreparationLengthSecs;
         private int _attackLengthSecs;
         private int _village2StartUnitLevel;
+        private int _resourceProductionBoostSecs;
+        private int _barracksBoostSecs;
+        private int _spellFactoryBoostSecs;
+        private int _troopTrainingSpeedUpCostTutorial;
+        private int _newTrainingBoostBarracksCost;
+        private int _newTrainingBoostLaboratoryCost;
+        private int _personalBreakLimitSeconds;
 
         private int _clockTowerBoostMultiplier;
         private int _resourceProductionBoostMultiplier;
@@ -67,9 +74,18 @@
         private int _troopRequestSpeedUpCostMultiplier;
         private int _troopTrainingCostMultiplier;
         private int _speedUpBoostCooldownCostMultiplier;
+        private int _barracksBoostNewMultiplier;
+        private int _barracksBoostMultiplier;
+        private int _spellFactoryBoostNewMultiplier;
+        private int _spellFactoryBoostMultiplier;
         private int _clockTowerSpeedUpMultiplier;
+        private int _heroRestBoostMultiplier;
+        private int _buildCancelMultiplier;
+        private int _spellCancelMultiplier;
+        private int _trainCancelMultiplier;
 
         private bool _useNewTraining;
+        private bool _useTroopWalksOutFromTraining;
         private bool _useVillageObjects;
         private bool _moreAccurateTime;
         private bool _dragInTraining;
@@ -94,12 +110,16 @@
         private bool _useTeslaTriggerCommand;
         private bool _useTrapTriggerCommand;
         private bool _validateTroopUpgradeLevels;
+        private bool _allowCancelBuildingConstruction;
+        private bool _village2TrainingOnlyUseRegularStorage;
+        private bool _enableTroopDeletion;
 
         private int[] _village2TroopHousingBuildCost;
         private int[] _village2TroopHousingBuildTimeSecs;
         private int[] _lootMultiplierByTownHallDifference;
         private int[] _barrackReduceTrainingDivisor;
         private int[] _darkBarrackReduceTrainingDivisor;
+        private int[] _clockTowerBoostSecs;
 
         private LogicResourceData _allianceCreateResourceData;
 
@@ -160,6 +180,13 @@
             this._attackPreparationLengthSecs = this.GetIntValue("ATTACK_PREPARATION_LENGTH_SEC");
             this._attackLengthSecs = this.GetIntValue("ATTACK_LENGTH_SEC");
             this._village2StartUnitLevel = this.GetIntValue("VILLAGE2_START_UNIT_LEVEL");
+            this._resourceProductionBoostSecs = 60 * this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MINS");
+            this._barracksBoostSecs = 60 * this.GetIntValue("BARRACKS_BOOST_MINS");
+            this._spellFactoryBoostSecs = 60 * this.GetIntValue("SPELL_FACTORY_BOOST_MINS");
+            this._troopTrainingSpeedUpCostTutorial = this.GetIntValue("TROOP_TRAINING_SPEED_UP_COST_TUTORIAL");
+            this._newTrainingBoostBarracksCost = this.GetIntValue("NEW_TRAINING_BOOST_BARRACKS_COST");
+            this._newTrainingBoostLaboratoryCost = this.GetIntValue("NEW_TRAINING_BOOST_LABORATORY_COST");
+            this._personalBreakLimitSeconds = this.GetIntValue("PERSONAL_BREAK_LIMIT_SECONDS");
 
             this._clockTowerBoostMultiplier = this.GetIntValue("CLOCK_TOWER_BOOST_MULTIPLIER");
             this._resourceProductionBoostMultiplier = this.GetIntValue("RESOURCE_PRODUCTION_BOOST_MULTIPLIER");
@@ -170,8 +197,17 @@
             this._troopTrainingCostMultiplier = this.GetIntValue("TROOP_TRAINING_COST_MULTIPLIER");
             this._speedUpBoostCooldownCostMultiplier = this.GetIntValue("SPEEDUP_BOOST_COOLDOWN_COST_MULTIPLIER");
             this._clockTowerSpeedUpMultiplier = this.GetIntValue("CHALLENGE_BASE_COOLDOWN_ENABLED_ON_TH");
+            this._barracksBoostMultiplier = this.GetIntValue("BARRACKS_BOOST_MULTIPLIER");
+            this._barracksBoostNewMultiplier = this.GetIntValue("BARRACKS_BOOST_MULTIPLIER_NEW");
+            this._spellFactoryBoostNewMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER_NEW");
+            this._spellFactoryBoostMultiplier = this.GetIntValue("SPELL_FACTORY_BOOST_MULTIPLIER");
+            this._heroRestBoostMultiplier = this.GetIntValue("HERO_REST_BOOST_MULTIPLIER");
+            this._buildCancelMultiplier = this.GetIntValue("BUILD_CANCEL_MULTIPLIER");
+            this._trainCancelMultiplier = this.GetIntValue("TRAIN_CANCEL_MULTIPLIER");
+            this._spellCancelMultiplier = this.GetIntValue("SPELL_CANCEL_MULTIPLIER");
 
             this._useNewPathFinder = this.GetBoolValue("USE_NEW_PATH_FINDER");
+            this._useTroopWalksOutFromTraining = this.GetBoolValue("USE_TROOP_WALKS_OUT_FROM_TRAINING");
             this._useVillageObjects = this.GetBoolValue("USE_VILLAGE_OBJECTS");
             this._moreAccurateTime = this.GetBoolValue("MORE_ACCURATE_TIME");
             this._useNewTraining = this.GetBoolValue("USE_NEW_TRAINING");
@@ -196,6 +232,9 @@
             this._useTeslaTriggerCommand = this.GetBoolValue("USE_TESLA_TRIGGER_CMD");
             this._useTrapTriggerCommand = this.GetBoolValue("USE_TRAP_TRIGGER_CMD");
             this._validateTroopUpgradeLevels = this.GetBoolValue("VALIDATE_TROOP_UPGRADE_LEVELS");
+            this._allowCancelBuildingConstruction = this.GetBoolValue("ALLOW_CANCEL_BUILDING_CONSTRUCTION");
+            this._village2TrainingOnlyUseRegularStorage = this.GetBoolValue("V2_TRAINING_ONLY_USE_REGULAR_STORAGE");
+            this._enableTroopDeletion = this.GetBoolValue("ENABLE_TROOP_DELETION");
 
             this._allianceCreateResourceData = LogicDataTables.GetResourceByName(this.GetGlobalData("ALLIANCE_CREATE_RESOURCE").TextValue);
 
@@ -242,6 +281,15 @@
             for (int i = 0; i < this._darkBarrackReduceTrainingDivisor.Length; i++)
             {
                 this._darkBarrackReduceTrainingDivisor[i] = darkBarrackReduceTrainingDivisorObject.GetNumberArray(i);
+            }
+
+            LogicGlobalData clockTowerBoostObject = this.GetGlobalData("CLOCK_TOWER_BOOST_MINS");
+
+            this._clockTowerBoostSecs = new int[clockTowerBoostObject.GetNumberArraySize()];
+
+            for (int i = 0; i < this._clockTowerBoostSecs.Length; i++)
+            {
+                this._clockTowerBoostSecs[i] = clockTowerBoostObject.GetNumberArray(i);
             }
         }
 
@@ -344,6 +392,86 @@
         }
 
         /// <summary>
+        ///     Gets the resource production boost time.
+        /// </summary>
+        public int GetResourceProductionBoostSecs()
+        {
+            return this._resourceProductionBoostSecs;
+        }
+
+        /// <summary>
+        ///     Gets the spell factory boost multiplier.
+        /// </summary>
+        public int GetSpellFactoryBoostMultiplier()
+        {
+            return this._spellFactoryBoostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the spell factory boost new multiplier.
+        /// </summary>
+        public int GetSpellFactoryBoostNewMultiplier()
+        {
+            return this._spellFactoryBoostNewMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the spell factory boost time.
+        /// </summary>
+        public int GetSpellFactoryBoostSecs()
+        {
+            return this._spellFactoryBoostSecs;
+        }
+
+        /// <summary>
+        ///     Gets the barrack boost new multiplier.
+        /// </summary>
+        public int GetBarracksBoostNewMultiplier()
+        {
+            return this._barracksBoostNewMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the barrack boost multiplier.
+        /// </summary>
+        public int GetBarracksBoostMultiplier()
+        {
+            return this._barracksBoostMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the build cancel multiplier.
+        /// </summary>
+        public int GetBuildCancelMultiplier()
+        {
+            return this._buildCancelMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the train cancel multiplier.
+        /// </summary>
+        public int GetTrainCancelMultiplier()
+        {
+            return this._trainCancelMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the spell cancel multiplier.
+        /// </summary>
+        public int GetSpellCancelMultiplier()
+        {
+            return this._spellCancelMultiplier;
+        }
+
+        /// <summary>
+        ///     Gets the barrack boost time.
+        /// </summary>
+        public int GetBarracksBoostSecs()
+        {
+            return this._barracksBoostSecs;
+        }
+
+        /// <summary>
         ///     Gets the clock tower boost cooldown mins.
         /// </summary>
         public int GetClockTowerBoostCooldownSecs()
@@ -370,6 +498,30 @@
         public int GetObstacleMaxCount()
         {
             return this._obstacleMaxCount;
+        }
+
+        /// <summary>
+        ///     Gets the new training boost barracks cost.
+        /// </summary>
+        public int GetNewTrainingBoostBarracksCost()
+        {
+            return this._newTrainingBoostBarracksCost;
+        }
+
+        /// <summary>
+        ///     Gets the new training boost laboratory cost.
+        /// </summary>
+        public int GetNewTrainingBoostLaboratoryCost()
+        {
+            return this._newTrainingBoostLaboratoryCost;
+        }
+
+        /// <summary>
+        ///     Gets the personal break limit in secs.
+        /// </summary>
+        public int GetPersonalBreakLimitSeconds()
+        {
+            return this._personalBreakLimitSeconds;
         }
 
         /// <summary>
@@ -531,6 +683,14 @@
         }
 
         /// <summary>
+        ///     Gets the multiplier of hero rest.
+        /// </summary>
+        public int GetHeroRestBoostMultiplier()
+        {
+            return this._heroRestBoostMultiplier;
+        }
+
+        /// <summary>
         ///     Gets a value indicating whether the time is more accurate.
         /// </summary>
         public bool MoreAccurateTime()
@@ -544,6 +704,11 @@
         public bool UseNewTraining()
         {
             return this._useNewTraining;
+        }
+
+        public bool UseTroopWalksOutFromTraining()
+        {
+            return this._useTroopWalksOutFromTraining;
         }
 
         public bool UseVillageObjects()
@@ -661,6 +826,21 @@
             return this._validateTroopUpgradeLevels;
         }
 
+        public bool AllowCancelBuildingConstruction()
+        {
+            return this._allowCancelBuildingConstruction;
+        }
+
+        public bool Village2TrainingOnlyUseRegularStorage()
+        {
+            return this._village2TrainingOnlyUseRegularStorage;
+        }
+
+        public bool EnableTroopDeletion()
+        {
+            return this._enableTroopDeletion;
+        }
+
         /// <summary>
         ///     Gets the alliance create <see cref="LogicResourceData" /> data.
         /// </summary>
@@ -709,6 +889,27 @@
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets the clock tower boost time.
+        /// </summary>
+        public int GetClockTowerBoostSecs(int upgLevel)
+        {
+            if (this._clockTowerBoostSecs.Length > upgLevel)
+            {
+                return this._clockTowerBoostSecs[upgLevel];
+            }
+
+            return this._clockTowerBoostSecs[this._clockTowerBoostSecs.Length - 1];
+        }
+
+        /// <summary>
+        ///     Gets the tutorial training speed up cost.
+        /// </summary>
+        public int GetTutorialTrainingSpeedUpCost()
+        {
+            return this._troopTrainingSpeedUpCostTutorial;
         }
 
         /// <summary>

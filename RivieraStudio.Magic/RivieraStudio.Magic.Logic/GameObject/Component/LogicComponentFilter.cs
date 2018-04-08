@@ -13,6 +13,14 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public override void Destruct()
+        {
+            base.Destruct();
+        }
+
+        /// <summary>
         ///     Sets the component type.
         /// </summary>
         public void SetComponentType(int type)

@@ -269,6 +269,14 @@
         }
 
         /// <summary>
+        ///     Gets the experience points.
+        /// </summary>
+        public int GetExpPoints()
+        {
+            return this._expPoints;
+        }
+
+        /// <summary>
         ///     Gets the id.
         /// </summary>
         public LogicLong GetId()
@@ -485,6 +493,22 @@
                 this._redPackageState = state;
                 // Listener.
             }
+        }
+
+        /// <summary>
+        ///     Gets the shield cost amount.
+        /// </summary>
+        public int GetShieldCostAmount()
+        {
+            return this._shieldCostAmount;
+        }
+
+        /// <summary>
+        ///     Sets the shield cost amount.
+        /// </summary>
+        public void SetShieldCostAmount(int value)
+        {
+            this._shieldCostAmount = value;
         }
 
         /// <summary>

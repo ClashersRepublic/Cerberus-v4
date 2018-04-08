@@ -159,9 +159,25 @@ namespace RivieraStudio.Magic.Logic.Data
         /// <summary>
         ///     Gets the required production level.
         /// </summary>
-        public virtual int GetRequiredProductionLevel()
+        public virtual int GetRequiredProductionHouseLevel()
         {
             return 0;
+        }
+
+        /// <summary>
+        ///     Gets if the item is unlocked for the specified production house level.
+        /// </summary>
+        public virtual bool IsUnlockedForProductionHouseLevel(int level)
+        {
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the building production data.
+        /// </summary>
+        public virtual LogicBuildingData GetProductionHouseData()
+        {
+            return null;
         }
 
         /// <summary>
@@ -205,6 +221,9 @@ namespace RivieraStudio.Magic.Logic.Data
             return this._upgradeLevelByTownHall[0] > 0;
         }
 
+        /// <summary>
+        ///     Gets the unit training time.
+        /// </summary>
         public int GetTrainingTime(int index, LogicLevel level, int additionalBarrackCount)
         {
             int trainingTime = this._trainingTime[index];
@@ -226,7 +245,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
                             if (barrackCount > 0)
                             {
-                                int productionLevel = this.GetRequiredProductionLevel();
+                                int productionLevel = this.GetRequiredProductionHouseLevel();
                                 int idx = 0;
 
                                 do
@@ -235,7 +254,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
                                     if (barrack != null)
                                     {
-                                        if (barrack.GetBuildingData().GetProducesUnitsOfType() == this.GetCombatItemType())
+                                        if (barrack.GetBuildingData().GetProducesUnitsOfType() == this.GetUnitOfType())
                                         {
                                             if (barrack.GetUpgradeLevel() >= productionLevel)
                                             {
@@ -249,13 +268,13 @@ namespace RivieraStudio.Magic.Logic.Data
                                 } while (++idx != barrackCount);
                             }
 
-                            if (barrackCount + additionalBarrackCount <= 0)
+                            if (barrackFound + additionalBarrackCount <= 0)
                             {
                                 return trainingTime;
                             }
 
                             int[] barrackDivisor = LogicDataTables.GetGlobals().GetBarrackReduceTrainingDevisor();
-                            int divisor = barrackDivisor[LogicMath.Min(barrackDivisor.Length - 1, barrackCount + additionalBarrackCount - 1)];
+                            int divisor = barrackDivisor[LogicMath.Min(barrackDivisor.Length - 1, barrackFound + additionalBarrackCount - 1)];
 
                             if (divisor > 0)
                             {
@@ -272,7 +291,7 @@ namespace RivieraStudio.Magic.Logic.Data
 
                             if (barrackCount > 0)
                             {
-                                int productionLevel = this.GetRequiredProductionLevel();
+                                int productionLevel = this.GetRequiredProductionHouseLevel();
                                 int idx = 0;
 
                                 do

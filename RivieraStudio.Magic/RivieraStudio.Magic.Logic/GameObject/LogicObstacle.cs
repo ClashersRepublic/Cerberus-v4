@@ -368,6 +368,20 @@
         }
 
         /// <summary>
+        ///     Cancels the clearing of obstacle.
+        /// </summary>
+        public void CancelClearing()
+        {
+            this._level.GetWorkerManagerAt(this._data.GetVillageType()).DeallocateWorker(this);
+
+            if (this._clearTimer != null)
+            {
+                this._clearTimer.Destruct();
+                this._clearTimer = null;
+            }
+        }
+
+        /// <summary>
         ///     Called when the clearing of this <see cref="LogicObstacle"/> instance is finished.
         /// </summary>
         public void ClearingFinished(bool ignoreState)
@@ -415,23 +429,16 @@
 
                                 if (this._lootMultiplyVersion >= 2)
                                 {
-                                    lootMultipler = this._lootMultiplyVersion;
+                                    lootMultipler = obstacleData.GetLootMultiplierVersion2();
                                 }
 
-                                int diamondsCount = 0;
-
-                                if (obstacleData.GetName().Equals("Bonus Gembox"))
-                                {
-                                    diamondsCount = lootCount * lootMultipler;
-                                }
-                                else
-                                {
-                                    diamondsCount = this._level.GetGameObjectManagerAt(this._villageType).IncreaseObstacleClearCounter(lootMultipler);
-                                }
-
+                                int diamondsCount = obstacleData.GetName().Equals("Bonus Gembox")
+                                    ? lootCount * lootMultipler
+                                    : this._level.GetGameObjectManagerAt(this._villageType).IncreaseObstacleClearCounter(lootMultipler);
+                                
                                 if (diamondsCount > 0)
                                 {
-                                    Debugger.Log("LogicObstacle::clearingFinished diamonds reward: " + diamondsCount);
+                                    Debugger.Print("LogicObstacle::clearingFinished diamonds reward: " + diamondsCount);
 
                                     homeOwnerAvatar.SetDiamonds(homeOwnerAvatar.GetDiamonds() + diamondsCount);
                                     homeOwnerAvatar.SetFreeDiamonds(homeOwnerAvatar.GetFreeDiamonds() + diamondsCount);

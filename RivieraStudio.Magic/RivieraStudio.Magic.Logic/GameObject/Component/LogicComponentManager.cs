@@ -4,6 +4,7 @@
     using RivieraStudio.Magic.Logic.Avatar;
     using RivieraStudio.Magic.Logic.Data;
     using RivieraStudio.Magic.Logic.Level;
+    using RivieraStudio.Magic.Logic.Util;
     using RivieraStudio.Magic.Titan.Debug;
     using RivieraStudio.Magic.Titan.Math;
     using RivieraStudio.Magic.Titan.Util;
@@ -12,6 +13,7 @@
     {
         private readonly LogicLevel _level;
         private readonly LogicArrayList<LogicComponent>[] _components;
+        private readonly LogicArrayList<LogicDataSlot> _units;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicComponentManager" /> class.
@@ -19,6 +21,7 @@
         public LogicComponentManager(LogicLevel level)
         {
             this._level = level;
+            this._units = new LogicArrayList<LogicDataSlot>();
             this._components = new LogicArrayList<LogicComponent>[17];
 
             for (int i = 0; i < 17; i++)
@@ -177,9 +180,9 @@
         }
 
         /// <summary>
-        ///     Devides the avatar resources to storages.
+        ///     Divides the avatar resources to storages.
         /// </summary>
-        public void DevideAvatarResourcesToStorages()
+        public void DivideAvatarResourcesToStorages()
         {
             // TODO: Implement LogicComponentManager::divideAvatarResourcesToStorages();
         }
@@ -474,7 +477,159 @@
         {
             if (this._level.GetHomeOwnerAvatar() != null)
             {
+                if (villageType == 1)
+                {
+                    // TODO: Implement divideAvatarUnitsToStorages(vType) for village type 1.
+                }
+                else
+                {
+                    if (this._units.Count != 0)
+                    {
+                        do
+                        {
+                            this._units[0].Destruct();
+                            this._units.Remove(0);
+                        } while (this._units.Count != 0);
+                    }
 
+                    LogicArrayList<LogicComponent> components = this._components[0];
+
+                    for (int i = 0; i < components.Count; i++)
+                    {
+                        LogicUnitStorageComponent storageComponent = (LogicUnitStorageComponent) components[i];
+
+                        for (int j = 0; j < storageComponent.GetUnitTypeCount(); j++)
+                        {
+                            LogicCombatItemData unitType = storageComponent.GetUnitType(j);
+                            Int32 unitCount = storageComponent.GetUnitCount(j);
+                            Int32 index = -1;
+
+                            for (int k = 0; k < this._units.Count; k++)
+                            {
+                                LogicDataSlot tmp = this._units[k];
+
+                                if (tmp.GetData() == unitType)
+                                {
+                                    index = k;
+                                    break;
+                                }
+                            }
+
+                            if (index != -1)
+                            {
+                                this._units[index].SetCount(this._units[index].GetCount() - unitCount);
+                            }
+                            else
+                            {
+                                this._units.Add(new LogicDataSlot(unitType, -unitCount));
+                            }
+                        }
+                    }
+
+                    LogicArrayList<LogicDataSlot> units = this._level.GetHomeOwnerAvatar().GetUnits();
+
+                    for (int i = 0; i < units.Count; i++)
+                    {
+                        LogicDataSlot slot = units[i];
+                        Int32 index = -1;
+
+                        for (int j = 0; j < this._units.Count; j++)
+                        {
+                            LogicDataSlot tmp = this._units[j];
+
+                            if (tmp.GetData() == slot.GetData())
+                            {
+                                index = j;
+                                break;
+                            }
+                        }
+
+                        if (index != -1)
+                        {
+                            this._units[index].SetCount(this._units[index].GetCount() + slot.GetCount());
+                        }
+                        else
+                        {
+                            this._units.Add(new LogicDataSlot(slot.GetData(), slot.GetCount()));
+                        }
+                    }
+
+                    LogicArrayList<LogicDataSlot> spells = this._level.GetHomeOwnerAvatar().GetSpells();
+
+                    for (int i = 0; i < spells.Count; i++)
+                    {
+                        LogicDataSlot slot = spells[i];
+                        Int32 index = -1;
+
+                        for (int j = 0; j < this._units.Count; j++)
+                        {
+                            LogicDataSlot tmp = this._units[j];
+
+                            if (tmp.GetData() == slot.GetData())
+                            {
+                                index = j;
+                                break;
+                            }
+                        }
+
+                        if (index != -1)
+                        {
+                            this._units[index].SetCount(this._units[index].GetCount() + slot.GetCount());
+                        }
+                        else
+                        {
+                            this._units.Add(new LogicDataSlot(slot.GetData(), slot.GetCount()));
+                        }
+                    }
+
+                    for (int i = 0; i < this._units.Count; i++)
+                    {
+                        LogicDataSlot slot = this._units[i];
+                        LogicCombatItemData data = (LogicCombatItemData) slot.GetData();
+                        Int32 unitCount = slot.GetCount();
+
+                        if (unitCount != 0)
+                        {
+                            for (int j = 0; j < components.Count; j++)
+                            {
+                                LogicUnitStorageComponent unitStorageComponent = (LogicUnitStorageComponent) components[j];
+
+                                if (unitCount >= 0)
+                                {
+                                    while (unitStorageComponent.CanAddUnit(data))
+                                    {
+                                        unitStorageComponent.AddUnit(data);
+
+                                        if (--unitCount <= 0)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    int idx = unitStorageComponent.GetUnitTypeIndex(data);
+
+                                    if (idx != -1)
+                                    {
+                                        int count = unitStorageComponent.GetUnitCount(idx);
+
+                                        if (count < -unitCount)
+                                        {
+                                            unitStorageComponent.RemoveUnits(data, count);
+                                            unitCount += count;
+                                        }
+                                        else
+                                        {
+                                            unitStorageComponent.RemoveUnits(data, -unitCount);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

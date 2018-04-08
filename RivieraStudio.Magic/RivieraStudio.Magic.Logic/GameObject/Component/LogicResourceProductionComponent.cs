@@ -190,7 +190,7 @@
             int remainingSeconds = this._resourceTimer.GetRemainingSeconds(this._parent.GetLevel().GetLogicTime());
             int boostTime = this._parent.GetRemainingBoostTime();
 
-            if (boostTime > 0 && LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() > 1 && !this._parent.GetBoostPaused())
+            if (boostTime > 0 && LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() > 1 && !this._parent.IsBoostPaused())
             {
                 time += (LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() - 1) * LogicMath.Min(time, boostTime);
             }
@@ -299,6 +299,25 @@
             else
             {
                 this._availableLoot = 0;
+            }
+        }
+
+        /// <summary>
+        ///     Ticks for update this instance.
+        /// </summary>
+        public override void Tick()
+        {
+            if (this._parent.GetRemainingBoostTime() > 0 && !this._parent.IsBoostPaused())
+            {
+                this._resourceTimer.FastForwardSubticks(4 * LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier() - 4);
+            }
+
+            if (this._parent.GetLevel().GetRemainingClockTowerBoostTime() > 0)
+            {
+                if (this._parent.GetData().GetVillageType() == 1)
+                {
+                    this._resourceTimer.FastForwardSubticks(4 * LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 4);
+                }
             }
         }
     }

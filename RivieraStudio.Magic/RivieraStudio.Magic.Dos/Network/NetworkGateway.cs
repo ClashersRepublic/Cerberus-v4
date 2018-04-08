@@ -134,7 +134,7 @@
                     }
                     catch (Exception exception)
                     {
-                        Logging.Error(this, "NetworkGateway::onReceiveCompleted array handle exception, trace: " + exception);
+                        Logging.Error("NetworkGateway::onReceiveCompleted array handle exception, trace: " + exception);
                     }
                 }
             }

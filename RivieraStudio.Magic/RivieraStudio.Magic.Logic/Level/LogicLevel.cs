@@ -59,6 +59,7 @@
 
         private int _liveReplayUpdateFrequency;
 
+        private int _loadingVillageType;
         private int _villageType;
         private int _warLayout;
         private int _activeLayout;
@@ -85,9 +86,9 @@
         private bool _androidClient;
         private bool _battleStarted;
         private bool _battleEndPending;
-        private bool _isWarLevel;
-        private bool _isDirectLevel;
-        private bool _isDirectVillage2Level;
+        private bool _warLevel;
+        private bool _directLevel;
+        private bool _directVillage2Level;
         private bool _invulverabilityEnabled;
 
         private string _warRequestMessage;
@@ -103,6 +104,7 @@
             this._troopRequestMessage = string.Empty;
             this._warRequestMessage = string.Empty;
             this._lastSeenNews = -1;
+            this._loadingVillageType = -1;
 
             this._time = new LogicTime();
             this._gameListener = new LogicGameListener();
@@ -307,6 +309,19 @@
         }
 
         /// <summary>
+        ///     Gets the active layout.
+        /// </summary>
+        public int GetActiveLayout()
+        {
+            if (this._loadingVillageType != -1)
+            {
+                return this._loadingVillageType == 0 ? this._activeLayout : this._activeLayoutVillage2;
+            }
+
+            return this._villageType == 0 ? this._activeLayout : this._activeLayoutVillage2;
+        }
+
+        /// <summary>
         ///     Sets the layout cooldown.
         /// </summary>
         public void SetLayoutCooldownSecs(int index, int secs)
@@ -323,6 +338,14 @@
         public int GetLayoutCooldown(int index)
         {
             return this._layoutCooldown[index];
+        }
+
+        /// <summary>
+        ///     Gets the layout state.
+        /// </summary>
+        public int GetLayoutState(int idx, int villageType)
+        {
+            return villageType != 1 ? this._layoutState[idx] : this._layoutStateVillage2[idx];
         }
 
         /// <summary>
@@ -643,7 +666,7 @@
         /// </summary>
         public LogicComponentManager GetComponentManager()
         {
-            return this._gameObjectManagers[this._villageType].GetComponentManager();
+            return this._gameObjectManagers[this._loadingVillageType < 0 ? this._villageType : this._loadingVillageType].GetComponentManager();
         }
 
         /// <summary>
@@ -652,6 +675,14 @@
         public LogicComponentManager GetComponentManagerAt(int villageType)
         {
             return this._gameObjectManagers[villageType].GetComponentManager();
+        }
+
+        /// <summary>
+        ///     Gets the cooldown manager.
+        /// </summary>
+        public LogicCooldownManager GetCooldownManager()
+        {
+            return this._cooldownManager;
         }
 
         /// <summary>
@@ -684,7 +715,7 @@
         }
 
         /// <summary>
-        ///     Gets the visitor45- avatar.
+        ///     Gets the visitor avatar.
         /// </summary>
         public LogicAvatar GetVisitorAvatar()
         {
@@ -883,11 +914,11 @@
 
             if (directObject != null)
             {
-                this._isDirectLevel = !directObject.IsTrue();
+                this._directLevel = !directObject.IsTrue();
             }
             else
             {
-                this._isDirectLevel = true;
+                this._directLevel = true;
             }
 
             LogicJSONBoolean direct2Object = this._levelJSON.GetJSONBoolean("direct2");
@@ -918,11 +949,14 @@
             this._aliveBuildingCount = this.GetBuildingCount(false, true);
             this._destructibleBuildingCount = this.GetBuildingCount(true, false);
 
-            for (int i = 0; i < 2; i++)
-            {
-                this._gameObjectManagers[i].Load(this._levelJSON);
-            }
+            this._loadingVillageType = 0;
 
+            do
+            {
+                this._gameObjectManagers[this._loadingVillageType++].Load(this._levelJSON);
+            } while (this._loadingVillageType < 2);
+
+            this._loadingVillageType = -1;
             this._cooldownManager.Load(this._levelJSON);
             this._offerManager.Load(this._levelJSON);
         }
@@ -1306,11 +1340,11 @@
                         LogicData data = buildingTable.GetItemAt(i);
 
                         int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
-                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+                        int previousTotalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel - 1);
 
-                        if (shopUnlockCount > 0)
+                        if (totalShopUnlock > previousTotalShopUnlock)
                         {
-                            this._newShopBuildings[i] += shopUnlockCount;
+                            this._newShopBuildings[i] += totalShopUnlock - previousTotalShopUnlock;
                         }
                     }
 
@@ -1321,11 +1355,11 @@
                         LogicData data = obstacleData.GetItemAt(i);
 
                         int totalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel);
-                        int shopUnlockCount = totalShopUnlock - this.GetShopUnlockCount(data, upgradeLevel - 1);
+                        int previousTotalShopUnlock = this.GetShopUnlockCount(data, upgradeLevel - 1);
 
-                        if (shopUnlockCount > 0)
+                        if (totalShopUnlock > previousTotalShopUnlock)
                         {
-                            this._newShopTraps[i] += shopUnlockCount;
+                            this._newShopTraps[i] += totalShopUnlock - previousTotalShopUnlock;
                         }
                     }
                 }
@@ -1405,6 +1439,14 @@
                 {
                     this._lastLeagueRank = ((LogicClientAvatar) avatar).GetLeagueType();
                 }
+
+                if (this._battleLog != null)
+                {
+
+                }
+
+                this._gameObjectManagers[0].GetComponentManager().DivideAvatarUnitsToStorages(0);
+                this._gameObjectManagers[1].GetComponentManager().DivideAvatarUnitsToStorages(1);
             }
         }
 
@@ -1597,7 +1639,7 @@
         /// <summary>
         ///     Gets if the cap of specified building is reached.
         /// </summary>
-        public bool IsBuildingCapReached(LogicBuildingData data, bool updateListener)
+        public bool IsBuildingCapReached(LogicBuildingData data, bool canCallListener)
         {
             int townHallLevel = 0;
 
@@ -1609,9 +1651,32 @@
             bool reached = this._gameObjectManagers[this._villageType].GetGameObjectCountByData(data) >=
                            LogicDataTables.GetTownHallLevel(townHallLevel).GetUnlockedBuildingCount(data);
 
-            if (!reached && updateListener)
+            if (!reached && canCallListener)
             {
-                // TODO: Implement this.
+                this._gameListener.BuildingCapReached(data);
+            }
+
+            return reached;
+        }
+
+        /// <summary>
+        ///     Gets if the cap of specified trap is reached.
+        /// </summary>
+        public bool IsTrapCapReached(LogicTrapData data, bool canCallListener)
+        {
+            int townHallLevel = 0;
+
+            if (this._gameObjectManagers[this._villageType].GetTownHall() != null)
+            {
+                townHallLevel = this._gameObjectManagers[this._villageType].GetTownHall().GetUpgradeLevel();
+            }
+
+            bool reached = this._gameObjectManagers[this._villageType].GetGameObjectCountByData(data) >=
+                           LogicDataTables.GetTownHallLevel(townHallLevel).GetUnlockedTrapCount(data);
+
+            if (!reached && canCallListener)
+            {
+                this._gameListener.TrapCapReached(data);
             }
 
             return reached;
@@ -1763,7 +1828,7 @@
         {
             for (int i = 0; i < 2; i++)
             {
-                this._gameObjectManagers[i].GetComponentManager().DevideAvatarResourcesToStorages();
+                this._gameObjectManagers[i].GetComponentManager().DivideAvatarResourcesToStorages();
             }
 
             this.RefreshResourceCaps();
@@ -1783,11 +1848,11 @@
             {
                 if (this._matchType == 1)
                 {
-                    Debugger.Log("matchmaking");
+                    Debugger.Print("matchmaking");
                 }
                 else if (this._matchType == 8)
                 {
-                    Debugger.Log("matchmakingv2");
+                    Debugger.Print("matchmakingv2");
                 }
             }
 
@@ -1906,6 +1971,19 @@
         /// </summary>
         public void SubTick()
         {
+            if (this._gameObjectManagers[1].GetClockTower() != null)
+            {
+                LogicBuilding clockTower = this._gameObjectManagers[1].GetClockTower();
+
+                if (clockTower.IsBoostPaused())
+                {
+                    if (!clockTower.IsConstructing())
+                    {
+                        this._remainingClockTowerBoostTime = clockTower.GetRemainingBoostTime();
+                    }
+                }
+            }
+
             for (int i = 0; i < 2; i++)
             {
                 this._gameObjectManagers[i].SubTick();

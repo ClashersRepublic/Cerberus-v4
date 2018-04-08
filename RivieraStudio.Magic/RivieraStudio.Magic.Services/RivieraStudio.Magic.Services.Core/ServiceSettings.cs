@@ -34,7 +34,7 @@
         /// </summary>
         private static void LoadConfig()
         {
-            string json = WebManager.DownloadFileFromConfigServer("/core/services.json");
+            string json = WebManager.DownloadConfigString("/core/services.json");
 
             if (json != null)
             {

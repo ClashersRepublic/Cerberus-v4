@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LogicMissionData" /> class.
+        ///     Initializes a new instance of the <see cref="LogicMissionProgressCommand" /> class.
         /// </summary>
         public LogicMissionProgressCommand(LogicMissionData missionData)
         {

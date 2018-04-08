@@ -239,13 +239,13 @@
                     switch (adminCommand.GetCommandType())
                     {
                         default:
-                            Logging.Debug(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
+                            Logging.Print(string.Format("executeAdminCommandMessageReceived unknown debug command received ({0})", adminCommand.GetCommandType()));
                             break;
                     }
                 }
                 else
                 {
-                    Logging.Debug(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
+                    Logging.Print(string.Format("executeAdminCommandMessageReceived invalid debug command received ({0})", adminCommand.GetCommandType()));
                 }
             }
         }

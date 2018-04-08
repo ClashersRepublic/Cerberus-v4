@@ -100,7 +100,7 @@
         /// </summary>
         internal void LoginFailedMessageReceived(LoginFailedMessage message)
         {
-            Logging.Debug(this, "MessageManager::loginFailedMessageReceived errorCode: " + message.ErrorCode);
+            Logging.Print("MessageManager::loginFailedMessageReceived errorCode: " + message.ErrorCode);
         }
 
         /// <summary>

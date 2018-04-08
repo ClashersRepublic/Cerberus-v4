@@ -108,7 +108,7 @@
 
                                     LogicBuilding building = (LogicBuilding) LogicGameObjectFactory.CreateGameObject(this._buildingData, level, villageType);
                                     building.SetPositionXY(this._x << 9, this._y << 9);
-                                    level.GetGameObjectManager().AddGameObject(building);
+                                    level.GetGameObjectManager().AddGameObject(building, -1);
                                     building.StartConstructing(false);
 
                                     if (this._buildingData.IsWall() && level.IsBuildingCapReached(this._buildingData, false))

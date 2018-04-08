@@ -24,6 +24,12 @@
                 case 7:
                     gameObject = new LogicObstacle(data, level, villageType);
                     break;
+                case 11:
+                    gameObject = new LogicTrap(data, level, villageType);
+                    break;
+                case 25:
+                    gameObject = new LogicSpell(data, level, villageType);
+                    break;
                 case 38:
                     gameObject = new LogicVillageObject(data, level, villageType);
                     break;

@@ -134,7 +134,7 @@
         {
             return this._stringValue == null && this._compressedLength != 0;
         }
-
+        
         /// <summary>
         ///     Removes the compressed bytes.
         /// </summary>

@@ -11,6 +11,7 @@ namespace RivieraStudio.Magic.Logic.Data
         private int _clearCost;
         private int _clearTimeSecs;
         private int _respawnWeight;
+        private int _lootMultiplierVersion2;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogicObstacleData" /> class.
@@ -32,7 +33,6 @@ namespace RivieraStudio.Magic.Logic.Data
         public string PickUpEffect { get; protected set; }
         public bool IsTombstone { get; protected set; }
         public int TombGroup { get; protected set; }
-        public int LootMultiplierForVersion2 { get; protected set; }
         public int AppearancePeriodHours { get; protected set; }
         public int MinRespawnTimeHours { get; protected set; }
         public string SpawnObstacle { get; protected set; }
@@ -84,6 +84,13 @@ namespace RivieraStudio.Magic.Logic.Data
                 this._lootResourceData = LogicDataTables.GetResourceByName(lootResourceName);
                 this._lootCount = this.GetIntegerValue("LootCount", 0);
             }
+
+            this._lootMultiplierVersion2 = this.GetIntegerValue("LootMultiplierForVersion2", 0);
+
+            if (this._lootMultiplierVersion2 == 0)
+            {
+                this._lootMultiplierVersion2 = 1;
+            }
         }
 
         /// <summary>
@@ -132,6 +139,14 @@ namespace RivieraStudio.Magic.Logic.Data
         public int GetClearCost()
         {
             return this._clearCost;
+        }
+
+        /// <summary>
+        ///     Gets the loot multiplier of the version 2.
+        /// </summary>
+        public int GetLootMultiplierVersion2()
+        {
+            return this._lootMultiplierVersion2;
         }
 
         public bool IsLootCart()

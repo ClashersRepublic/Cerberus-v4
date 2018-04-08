@@ -185,14 +185,14 @@
                         }
                         catch (Exception exception)
                         {
-                            Logging.Error(this, "Client::onReceive message decode exception, trace: " + exception);
+                            Logging.Error("Client::onReceive message decode exception, trace: " + exception);
                         }
 
-                        Logging.Debug(this, "Client::sendMessage message " + message.GetType().Name + " received");
+                        Logging.Print("Client::sendMessage message " + message.GetType().Name + " received");
                     }
                     else
                     {
-                        Logging.Warning(this, "NetworkMessaging::onReceive Ignoring message of unknown type " + messageType);
+                        Logging.Warning("NetworkMessaging::onReceive Ignoring message of unknown type " + messageType);
                     }
 
                     return messageLength + 7;
@@ -207,7 +207,7 @@
         /// </summary>
         internal void OnConnectFailed()
         {
-            Logging.Log(this, "Client::onConnectFailed unable to connect to server");
+            Logging.Print("Client::onConnectFailed unable to connect to server");
         }
 
         /// <summary>
@@ -245,7 +245,7 @@
             this.WriteHeader(message, packet, encodingLength);
             this._networkGateway.Send(packet, encodingLength + 7);
 
-            Logging.Debug(this, "Client::sendMessage message " + message.GetType().Name + " sent");
+            Logging.Print("Client::sendMessage message " + message.GetType().Name + " sent");
         }
 
         /// <summary>

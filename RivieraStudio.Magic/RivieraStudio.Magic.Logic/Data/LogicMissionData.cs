@@ -17,7 +17,6 @@ namespace RivieraStudio.Magic.Logic.Data
         private int _customData;
         private int _rewardXp;
         private int _rewardCharacterCount;
-        private int _villageType;
         private int _delay;
 
         private bool _openAchievements;
@@ -59,6 +58,8 @@ namespace RivieraStudio.Magic.Logic.Data
         /// </summary>
         public override void CreateReferences()
         {
+            base.CreateVillageReferences();
+
             for (int i = 0; i < this.GetArraySize("Dependencies"); i++)
             {
                 LogicMissionData dependency = LogicDataTables.GetMissionByName(this.GetValue("Dependencies", i));
@@ -460,14 +461,6 @@ namespace RivieraStudio.Magic.Logic.Data
         public int GetMissionCategory()
         {
             return this._missionCategory;
-        }
-
-        /// <summary>
-        ///     Gets the village type.
-        /// </summary>
-        public override int GetVillageType()
-        {
-            return this._villageType;
         }
     }
 }

@@ -16,6 +16,7 @@
     using RivieraStudio.Magic.Services.Core;
     using RivieraStudio.Magic.Services.Core.Database;
     using RivieraStudio.Magic.Services.Core.Message.Avatar;
+    using RivieraStudio.Magic.Services.Core.Message.Session;
     using RivieraStudio.Magic.Services.Core.Utils;
     using RivieraStudio.Magic.Services.Zone.Game.Command;
     using RivieraStudio.Magic.Services.Zone.Network.Session;
@@ -44,6 +45,11 @@
         }
 
         /// <summary>
+        ///     Gets the executed command count since last save.
+        /// </summary>
+        internal int ExecutedCommandsSinceLastSave { get; set; }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="GameMode"/> class.
         /// </summary>
         internal GameMode(ZoneAccount zoneAccount)
@@ -63,6 +69,8 @@
 
                 this._logicGameMode.Destruct();
                 this._logicGameMode = null;
+
+                DatabaseManagerNew.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
             }
         }
 
@@ -73,30 +81,25 @@
         {
             if (this._logicGameMode != null)
             {
-                Logging.Debug("GameMode::save game saved");
-
                 if (this._logicGameMode.GetState() == 1 || this._logicGameMode.GetState() == 3)
                 {
                     LogicJSONObject jsonObject = new LogicJSONObject();
 
                     this._logicGameMode.SaveToJSON(jsonObject);
 
-                    this._zoneAccount.SetSaveTimestamp(this._logicGameMode.GetActiveTimestamp());
                     this._zoneAccount.ClientHome.SetHomeJSON(LogicJSONParser.CreateJSONString(jsonObject));
                     this._zoneAccount.ClientHome.SetShieldDurationSeconds(this._logicGameMode.GetShieldRemainingSeconds());
                     this._zoneAccount.ClientHome.SetGuardDurationSeconds(this._logicGameMode.GetGuardRemainingSeconds());
                     this._zoneAccount.ClientHome.SetNextMaintenanceSeconds(this._logicGameMode.GetMaintenanceRemainingSeconds());
-                    
-#if !DEBUG
-                    CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
-#endif
-                }
 
-                DatabaseManagerNew.Update(0, this._zoneAccount.Id, LogicJSONParser.CreateJSONString(this._zoneAccount.Save()));
+                    this.ExecutedCommandsSinceLastSave = 0;
+
+                    // CompressibleStringHelper.Compress(this._zoneAccount.ClientHome.GetCompressibleHomeJSON());
+                }
             }
             else
             {
-                Logging.Debug("GameMode::save called when m_logicGameMode is NULL");
+                Logging.Warning("GameMode::save called when m_logicGameMode is NULL");
             }
         }
 
@@ -131,6 +134,19 @@
 
             int currentTimestamp = LogicTimeUtil.GetTimestamp();
             int secondsSinceLastSave = currentTimestamp - this._zoneAccount.SaveTimestamp;
+            int secondsSinceLastMaintenance = -1;
+
+            if (this._zoneAccount.UnloadTimestamp != -1)
+            {
+                secondsSinceLastMaintenance = currentTimestamp - this._zoneAccount.UnloadTimestamp;
+
+                if (secondsSinceLastMaintenance < 0)
+                {
+                    secondsSinceLastMaintenance = 0;
+                }
+
+                this._zoneAccount.SetUnloadTimestamp(-1);
+            }
 
             if (secondsSinceLastSave < 0)
             {
@@ -145,10 +161,10 @@
             {
                 if (compressibleHomeJSON.Get() == null)
                 {
-                    Logging.Debug("GameMode::init level JSON is NULL, load default");
+                    Logging.Warning("GameMode::init level JSON is NULL, load default");
                     compressibleHomeJSON.Set(HomeResourceManager.GetStartingHomeJSON());
                 }
-
+                
                 CompressibleStringHelper.Compress(compressibleHomeJSON);
             }
 
@@ -160,14 +176,14 @@
 
             OwnHomeDataMessage ownHomeDataMessage = new OwnHomeDataMessage();
 
-            ownHomeDataMessage.SetElapsedSecs(-1);
-            ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
+            ownHomeDataMessage.SetSecondsSinceLastMaintenance(secondsSinceLastMaintenance);
             ownHomeDataMessage.SetSecondsSinceLastSave(secondsSinceLastSave);
+            ownHomeDataMessage.SetCurrentTimestamp(currentTimestamp);
             ownHomeDataMessage.SetLogicClientAvatar(homeOwnerAvatar);
             ownHomeDataMessage.SetLogicClientHome(clientHome);
             ownHomeDataMessage.Encode();
 
-            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, -1, 0, GAME.HOME_STATE);
+            this.SetGameMode(clientHome, homeOwnerAvatar, null, currentTimestamp, secondsSinceLastSave, secondsSinceLastMaintenance, 0, GAME.HOME_STATE);
             this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, ownHomeDataMessage);
         }
 
@@ -209,7 +225,7 @@
         /// <summary>
         ///     Sets the gamemode.
         /// </summary>
-        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs, int state, GAME mode)
+        private void SetGameMode(LogicClientHome clientHome, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int secondsSinceLastMaintenance, int state, GAME mode)
         {
             if (this._logicGameMode != null)
             {
@@ -243,7 +259,7 @@
                 switch (mode)
                 {
                     case GAME.HOME_STATE:
-                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
+                        this._logicGameMode.LoadHomeState(clientHome, homeOwnerAvatar, currentTimestamp, secondsSinceLastSave, secondsSinceLastMaintenance);
                         break;
                     case GAME.ATTACK_STATE:
                         if (homeOwnerAvatar.IsNpcAvatar())
@@ -251,10 +267,10 @@
                             switch (state)
                             {
                                 case 8:
-                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
+                                    this._logicGameMode.LoadNpcDuelState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
                                     break;
                                 default:
-                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave, elapsedSecs);
+                                    this._logicGameMode.LoadNpcAttackState(clientHome, homeOwnerAvatar, visitorAvatar, currentTimestamp, secondsSinceLastSave);
                                     break;
                             }
                         }
@@ -334,7 +350,7 @@
                         this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, availableServerCommand);
                     }
 
-                    Logging.Debug(string.Format("GameMode::addAvailableServerCommand cmd: {0} id: {1}", serverCommand.GetCommandType(), serverCommand.GetId()));
+                    Logging.Print(string.Format("GameMode::addAvailableServerCommand cmd: {0} id: {1}", serverCommand.GetCommandType(), serverCommand.GetId()));
                 }
             }
         }
@@ -357,7 +373,7 @@
                         return true;
                     }
 
-                    Logging.Debug("GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
+                    Logging.Print("GameMode::isBufferedServerCommand a buffered server command exist but the command type is mismatched with the specified server command");
                 }
             }
 
@@ -406,6 +422,8 @@
             {
                 int currentTimestamp = LogicTimeUtil.GetTimestamp();
                 int calculateTimestamp = this._logicGameMode.GetCurrentTimestamp() + LogicTime.GetTicksInSeconds(subTick);
+
+                this._zoneAccount.SetSaveTimestamp(currentTimestamp);
 
                 if (currentTimestamp >= calculateTimestamp)
                 {
@@ -480,20 +498,26 @@
                                 if (serverChecksum != checksum)
                                 {
                                     OutOfSyncMessage outOfSyncMessage = new OutOfSyncMessage();
+
                                     outOfSyncMessage.SetClientChecksum(checksum);
                                     outOfSyncMessage.SetClientChecksum(serverChecksum);
 
-                                    this.DeInit();
-                                    this.Session.SendErrorPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
+                                    this.Session.SendPiranhaMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, outOfSyncMessage);
+                                    this.Session.SendMessage(NetUtils.SERVICE_NODE_TYPE_PROXY_CONTAINER, new UnbindServerMessage());
 
-                                    Logging.Debug(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
+                                    NetZoneSessionManager.Remove(this.Session.SessionId);
+
+                                    this.DeInit();
+                                    this.Session.Destruct();
+
+                                    Logging.Print(string.Format("GameMode::clientTurnReceived out of sync, checksum: {0} server checksum: {1}", checksum, serverChecksum));
 
                                     return;
                                 }
                             }
                         }
 
-                        Logging.Debug(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
+                        Logging.Print(string.Format("GameMode::clientTurnReceived clientTurn received, tick: {0} checksum: {1}", subTick, checksum));
                     }
                     else
                     {

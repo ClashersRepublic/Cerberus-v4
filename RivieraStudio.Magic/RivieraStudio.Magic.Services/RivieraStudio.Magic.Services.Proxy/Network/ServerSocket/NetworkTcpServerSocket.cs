@@ -13,7 +13,7 @@
         /// </summary>
         internal NetworkTcpServerGateway(int port) : base(port)
         {
-            Logging.Debug("NetworkTcpServerGateway::ctor server listens on tcp port " + port);
+            Logging.Print("NetworkTcpServerGateway::ctor server listens on tcp port " + port);
 
             SocketAsyncEventArgs acceptEvent = new SocketAsyncEventArgs();
             acceptEvent.Completed += this.OnAcceptCompleted;

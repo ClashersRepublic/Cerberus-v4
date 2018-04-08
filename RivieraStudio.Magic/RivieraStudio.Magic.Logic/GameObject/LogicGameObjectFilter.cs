@@ -20,6 +20,25 @@
         }
 
         /// <summary>
+        ///     Destructs this instance.
+        /// </summary>
+        public virtual void Destruct()
+        {
+            this._gameObjectTypes = null;
+
+            if (this._ignoreGameObjects != null)
+            {
+                if (this._ignoreGameObjects.Count != 0)
+                {
+                    do
+                    {
+                        this._ignoreGameObjects.Remove(0);
+                    } while (this._ignoreGameObjects.Count != 0);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Initializes the game object types array.
         /// </summary>
         public void InitGameObjectTypes()
@@ -72,7 +91,7 @@
             {
                 for (int i = 0; i < this._ignoreGameObjects.Count; i++)
                 {
-                    if (this._ignoreGameObjects[i].GetData() == gameObject.GetData())
+                    if (this._ignoreGameObjects[i] == gameObject)
                     {
                         return false;
                     }

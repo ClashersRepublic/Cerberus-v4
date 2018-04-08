@@ -1,5 +1,6 @@
 ﻿namespace RivieraStudio.Magic.Logic.GameObject
 {
+    using System;
     using RivieraStudio.Magic.Logic.Avatar;
     using RivieraStudio.Magic.Logic.Data;
     using RivieraStudio.Magic.Logic.GameObject.Component;
@@ -9,6 +10,7 @@
     using RivieraStudio.Magic.Titan.Json;
     using RivieraStudio.Magic.Titan.Math;
     using RivieraStudio.Magic.Logic.Helper;
+    using RivieraStudio.Magic.Logic.Mode;
     using RivieraStudio.Magic.Logic.Util;
 
     public sealed class LogicBuilding : LogicGameObject
@@ -22,7 +24,7 @@
         private bool _isHidden;
         private bool _gearing;
         private bool _upgrading;
-        private bool _boostPaused;
+        private bool _boostPause;
 
         private LogicTimer _constructionTimer;
         private LogicTimer _boostCooldownTimer;
@@ -76,7 +78,7 @@
                 this.AddComponent(unitProductionComponent);
             }
 
-            if(buildingData.GetUnitStorageCapacity(0) > 0)
+            if (buildingData.GetUnitStorageCapacity(0) > 0)
             {
                 if (buildingData.IsAllianceCastle())
                 {
@@ -106,6 +108,8 @@
                     this.AddComponent(new LogicResourceStorageComponent(this));
                 }
             }
+
+            this.AddComponent(new LogicLayoutComponent(this));
         }
 
         /// <summary>
@@ -125,6 +129,14 @@
         }
 
         /// <summary>
+        ///     Gets the <see cref="LogicUnitProductionComponent"/> instance.
+        /// </summary>
+        public LogicUnitProductionComponent GetUnitProductionComponent()
+        {
+            return (LogicUnitProductionComponent) this.GetComponent(3);
+        }
+
+        /// <summary>
         ///     Gets the remaining construction time.
         /// </summary>
         public int GetRemainingConstructionTime()
@@ -132,6 +144,19 @@
             if (this._constructionTimer != null)
             {
                 return this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime());
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///     Gets the remaining construction time in ms.
+        /// </summary>
+        public int GetRemainingConstructionTimeMS()
+        {
+            if (this._constructionTimer != null)
+            {
+                return this._constructionTimer.GetRemainingMS(this._level.GetLogicTime());
             }
 
             return 0;
@@ -189,11 +214,54 @@
 
                 if (this.GetComponent(3) != null)
                 {
-                    // TODO: Implement this.
+                    LogicUnitProductionComponent unitProductionComponent = this.GetUnitProductionComponent();
+
+                    if (this.GetRemainingBoostTime() <= 0 || this.GetBoostMultiplier() <= 0 || this._boostPause)
+                    {
+
+                    }
                 }
             }
 
             return -1;
+        }
+
+        /// <summary>
+        ///     Gets the max boost time.
+        /// </summary>
+        public int GetMaxBoostTime()
+        {
+            if (this.GetComponent(5) != null)
+            {
+                return LogicDataTables.GetGlobals().GetResourceProductionBoostSecs();
+            }
+
+            if (this.GetComponent(3) != null)
+            {
+                if (this.GetUnitProductionComponent().GetProductionType() == 0)
+                {
+                    return LogicDataTables.GetGlobals().GetBarracksBoostSecs();
+                }
+
+                return LogicDataTables.GetGlobals().GetSpellFactoryBoostSecs();
+            }
+
+            if (this.GetComponent(10) != null)
+            {
+                // TODO: Implement this.
+            }
+
+            if (this.GetComponent(10) != null)
+            {
+                // TODO: Implement this.
+            }
+
+            if (this.GetBuildingData().IsClockTower())
+            {
+                return LogicDataTables.GetGlobals().GetClockTowerBoostSecs(this._upgLevel);
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -223,9 +291,17 @@
         /// <summary>
         ///     Gets if the boost of this <see cref="LogicBuilding"/> instance is paused.
         /// </summary>
-        public bool IsBoostPaused()
+        public override bool IsBoostPaused()
         {
-            return this._boostPaused;
+            return this._boostPause;
+        }
+
+        /// <summary>
+        ///     Sets if the boost is paused.
+        /// </summary>
+        public void SetBoostPause(bool state)
+        {
+            this._boostPause = state;
         }
 
         /// <summary>
@@ -280,8 +356,8 @@
                 this._constructionTimer.Destruct();
                 this._constructionTimer = null;
             }
-			
-			if (this._boostCooldownTimer != null)
+
+            if (this._boostCooldownTimer != null)
             {
                 this._boostCooldownTimer.Destruct();
                 this._boostCooldownTimer = null;
@@ -399,7 +475,7 @@
                 jsonObject.Put("boost_t", new LogicJSONNumber(this._boostTimer.GetRemainingSeconds(this._level.GetLogicTime())));
             }
 
-            if (this._boostPaused)
+            if (this._boostPause)
             {
                 jsonObject.Put("boost_pause", new LogicJSONBoolean(true));
             }
@@ -460,7 +536,7 @@
                 Debugger.Error("LogicBuilding::load - Upgrade level was not found!");
                 this._upgLevel = 0;
             }
-            
+
             this._level.GetWorkerManagerAt(1).DeallocateWorker(this);
             this._level.GetWorkerManagerAt(this._villageType).DeallocateWorker(this);
 
@@ -556,14 +632,14 @@
 
             if (boostPauseObject != null)
             {
-                this._boostPaused = boostPauseObject.IsTrue();
+                this._boostPause = boostPauseObject.IsTrue();
             }
 
             if (this._boostTimer == null)
             {
                 if (LogicDataTables.GetGlobals().StopBoostPauseWhenBoostTimeZeroOnLoad())
                 {
-                    this._boostPaused = false;
+                    this._boostPause = false;
                 }
             }
 
@@ -617,6 +693,17 @@
         }
 
         /// <summary>
+        ///     Stops the boost.
+        /// </summary>
+        public override void StopBoost()
+        {
+            if (this._boostTimer != null && this.CanStopBoost() && !this._boostPause)
+            {
+                this._boostPause = true;
+            }
+        }
+
+        /// <summary>
         ///     Creates a fast forward of time.
         /// </summary>
         public override void FastForwardTime(int secs)
@@ -656,7 +743,8 @@
                 {
                     if (this._data.GetVillageType() == 1)
                     {
-                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() + 60 * LogicMath.Min(secs, maxClockTowerFastForward) * (LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 1));
+                        this._constructionTimer.FastForward(this._constructionTimer.GetFastForward() +
+                                                            60 * LogicMath.Min(secs, maxClockTowerFastForward) * (LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier() - 1));
                     }
                 }
 
@@ -683,6 +771,79 @@
         }
 
         /// <summary>
+        ///     Creates a fast forward of boost.
+        /// </summary>
+        public override void FastForwardBoost(int secs)
+        {
+            base.FastForwardBoost(secs);
+
+            if (this.GetBuildingData().IsClockTower())
+            {
+                if (this._boostCooldownTimer != null)
+                {
+                    int remainingSecs = this._boostCooldownTimer.GetRemainingSeconds(this._level.GetLogicTime());
+
+                    if (remainingSecs <= secs)
+                    {
+                        this._boostCooldownTimer.Destruct();
+                        this._boostCooldownTimer = null;
+
+                        if (this._listener != null)
+                        {
+                            this._listener.RefreshState();
+                        }
+                    }
+                    else
+                    {
+                        this._boostCooldownTimer.StartTimer(remainingSecs - secs, this._level.GetLogicTime(), false, -1);
+                    }
+                }
+            }
+
+            if (this._boostTimer != null)
+            {
+                if (!this._boostPause)
+                {
+                    int remainingSecs = this._boostTimer.GetRemainingSeconds(this._level.GetLogicTime());
+
+                    if (remainingSecs <= secs)
+                    {
+                        this._boostTimer.Destruct();
+                        this._boostTimer = null;
+
+                        if (this.GetBuildingData().IsClockTower())
+                        {
+                            if (secs - remainingSecs < 0)
+                            {
+                                Debugger.Warning("boost timer run out during FF -> start cooldown, but timeToFF < 0");
+                            }
+
+                            this._boostCooldownTimer = new LogicTimer();
+                            this._boostCooldownTimer.StartTimer(LogicDataTables.GetGlobals().GetClockTowerBoostCooldownSecs(), this._level.GetLogicTime(), false, -1);
+                        }
+
+                        if (this._listener != null)
+                        {
+                            this._listener.RefreshState();
+                        }
+                    }
+                    else
+                    {
+                        this._boostTimer.StartTimer(remainingSecs - secs, this._level.GetLogicTime(), false, -1);
+                    }
+                }
+
+                if (this._boostTimer != null)
+                {
+                    if (this.GetBuildingData().IsClockTower())
+                    {
+                        this._boostPause = false;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Updates the hidden state.
         /// </summary>
         public void UpdateHidden()
@@ -691,7 +852,7 @@
         }
 
         /// <summary>
-        ///     Gets if this building is maxed.
+        ///     Gets if this <see cref="LogicBuilding"/> is maxed.
         /// </summary>
         public bool IsMaxUpgradeLevel()
         {
@@ -716,6 +877,58 @@
         public int GetRequiredTownHallLevelForUpgrade()
         {
             return this.GetBuildingData().GetRequiredTownHallLevel(LogicMath.Min(this._upgLevel + 1, this.GetBuildingData().GetUpgradeLevelCount()));
+        }
+
+        /// <summary>
+        ///     Gets the boost multiplier.
+        /// </summary>
+        public int GetBoostMultiplier()
+        {
+            if (this.GetComponent(5) != null)
+            {
+                return LogicDataTables.GetGlobals().GetResourceProductionBoostMultiplier();
+            }
+
+            if (this.GetComponent(3) == null)
+            {
+                if (this.GetComponent(10) != null)
+                {
+                    return LogicDataTables.GetGlobals().GetHeroRestBoostMultiplier();
+                }
+
+                if (this.GetBuildingData().IsClockTower())
+                {
+                    return LogicDataTables.GetGlobals().GetClockTowerBoostMultiplier();
+                }
+            }
+            else
+            {
+                if (this.GetComponent(3) != null)
+                {
+                    LogicUnitProductionComponent unitProductionComponent = (LogicUnitProductionComponent)this.GetComponent(3);
+
+                    if (unitProductionComponent.GetProductionType() == 1)
+                    {
+                        if (LogicDataTables.GetGlobals().UseNewTraining())
+                        {
+                            return LogicDataTables.GetGlobals().GetSpellFactoryBoostMultiplier();
+                        }
+
+                        return LogicDataTables.GetGlobals().GetSpellFactoryBoostMultiplier();
+                    }
+                    else if (unitProductionComponent.GetProductionType() == 0)
+                    {
+                        if (LogicDataTables.GetGlobals().UseNewTraining())
+                        {
+                            return LogicDataTables.GetGlobals().GetBarracksBoostNewMultiplier();
+                        }
+
+                        return LogicDataTables.GetGlobals().GetBarracksBoostMultiplier();
+                    }
+                }
+            }
+
+            return 1;
         }
 
         /// <summary>
@@ -750,11 +963,64 @@
                     return true;
                 }
 
-                this._level.GetGameListener().TownHallLevelTooLow(this.GetRequiredTownHallLevelForUpgrade());
+                if (canCallListener)
+                {
+                    this._level.GetGameListener().TownHallLevelTooLow(this.GetRequiredTownHallLevelForUpgrade());
+                }
             }
 
             return false;
         }
+
+        /// <summary>
+        ///     Gets if this <see cref="LogicBuilding"/> can be boosted.
+        /// </summary>
+        public bool CanBeBoosted()
+        {
+            if (this._boostCooldownTimer != null && this._boostCooldownTimer.GetRemainingSeconds(this._level.GetLogicTime()) > 0)
+            {
+                return false;
+            }
+
+            if (this._data.GetVillageType() == 1)
+            {
+                if (this.GetBuildingData().IsClockTower())
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (this._boostTimer == null)
+                {
+                    int maxBoostTime = this.GetMaxBoostTime();
+
+                    if (maxBoostTime > 0)
+                    {
+                        return this._level.GetGameMode().GetCalendar().GetBuildingBoostCost(this.GetBuildingData(), this._upgLevel) > 0 || this.GetBuildingData().FreeBoost;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets if the boost can be stopped.
+        /// </summary>
+        public bool CanStopBoost()
+        {
+            return this.GetComponent(3) != null || this.GetComponent(10) != null || this.GetBuildingData().IsClockTower();
+        }
+
+        /// <summary>
+        ///     Gets the boost cost.
+        /// </summary>
+        public int GetBoostCost()
+        {
+            return this._level.GetGameMode().GetCalendar().GetBuildingBoostCost(this.GetBuildingData(), this._upgLevel);
+        }
+
 
         /// <summary>
         ///     Speed up the construction.
@@ -763,11 +1029,11 @@
         {
             if (this._constructionTimer != null)
             {
-                int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._constructionTimer?.GetRemainingSeconds(this._level.GetLogicTime()) ?? 0, 0, this._villageType);
+                int speedUpCost = LogicGamePlayUtil.GetSpeedUpCost(this._constructionTimer.GetRemainingSeconds(this._level.GetLogicTime()), 0, this._villageType);
 
                 if (this._level.GetPlayerAvatar().HasEnoughDiamonds(speedUpCost, true, this._level))
                 {
-                    Debugger.Log("LogicBuilding::speedUpConstruction speedup cost: " + speedUpCost);
+                    Debugger.Print("LogicBuilding::speedUpConstruction speedup cost: " + speedUpCost);
 
                     this._level.GetPlayerAvatar().UseDiamonds(speedUpCost);
                     this.FinishConstruction(true);
@@ -811,6 +1077,24 @@
         }
 
         /// <summary>
+        ///     Destructs the boost.
+        /// </summary>
+        public void DestructBoost()
+        {
+            if (this._boostTimer != null)
+            {
+                this._boostTimer.Destruct();
+                this._boostTimer = null;
+
+                if (this.GetBuildingData().IsClockTower())
+                {
+                    this._boostCooldownTimer = new LogicTimer();
+                    this._boostCooldownTimer.StartTimer(LogicDataTables.GetGlobals().GetClockTowerBoostCooldownSecs(), this._level.GetLogicTime(), false, -1);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Starts the construction of the <see cref="LogicBuilding"/>.
         /// </summary>
         public void StartUpgrading(bool ignoreState, bool gearup)
@@ -820,6 +1104,8 @@
                 this._constructionTimer.Destruct();
                 this._constructionTimer = null;
             }
+
+            this.DestructBoost();
 
             int constructionTime;
 
@@ -898,16 +1184,14 @@
                                 int constructionTime = this.GetBuildingData().GetConstructionTime(newUpgLevel, this._level, 0);
                                 int xpGain = LogicMath.Sqrt(constructionTime);
                                 this.SetUpgradeLevel(newUpgLevel);
-
-                                homeOwnerAvatar.XpGainHelper(xpGain);
+                                this.XpGainHelper(xpGain, homeOwnerAvatar, ignoreState);
                             }
                             else
                             {
                                 int constructionTime = this.GetBuildingData().GetConstructionTime(0, this._level, 0);
                                 int xpGain = LogicMath.Sqrt(constructionTime);
                                 this.SetUpgradeLevel(this._upgLevel);
-
-                                homeOwnerAvatar.XpGainHelper(xpGain);
+                                this.XpGainHelper(xpGain, homeOwnerAvatar, ignoreState);
                             }
 
                             if (this.GetComponent(10) != null)
@@ -950,6 +1234,90 @@
                 }
 
                 Debugger.Warning("LogicBuilding::finishCostruction failed - Avatar is null or not client avatar");
+            }
+        }
+
+        /// <summary>
+        ///     Cancel the construction.
+        /// </summary>
+        public void CancelConstruction()
+        {
+            LogicAvatar homeOwnerAvatar = this._level.GetHomeOwnerAvatar();
+
+            if (homeOwnerAvatar != null && homeOwnerAvatar.IsClientAvatar())
+            {
+                if (this._constructionTimer != null)
+                {
+                    this._constructionTimer.Destruct();
+                    this._constructionTimer = null;
+
+                    int upgLevel = this._upgLevel;
+
+                    if (this._upgrading)
+                    {
+                        this.SetUpgradeLevel(this._upgLevel);
+                        upgLevel += 1;
+                    }
+
+                    LogicBuildingData data = this.GetBuildingData();
+                    LogicResourceData buildResourceData = data.GetBuildResource(upgLevel);
+                    Int32 buildCost = data.GetBuildCost(upgLevel, this._level);
+
+                    if (this._gearing)
+                    {
+                        buildResourceData = data.GetGearUpResource();
+                        buildCost = data.GetGearUpCost(this._upgLevel);
+                    }
+
+                    Int32 refundedCount = LogicMath.Max(LogicDataTables.GetGlobals().GetBuildCancelMultiplier() * buildCost / 100, 0);
+                    Debugger.Print("LogicBuilding::cancelConstruction refunds: " + refundedCount);
+                    homeOwnerAvatar.CommodityCountChangeHelper(0, buildResourceData, refundedCount);
+
+                    if (this._gearing)
+                    {
+                        this._level.GetWorkerManagerAt(1).DeallocateWorker(this);
+                    }
+                    else
+                    {
+                        this._level.GetWorkerManagerAt(this._villageType).DeallocateWorker(this);
+
+                        if (upgLevel == 0)
+                        {
+                            this.GetGameObjectManager().RemoveGameObject(this);
+                            return;
+                        }
+                    }
+
+                    if (this._listener != null)
+                    {
+                        this._listener.RefreshState();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Boosts the building.
+        /// </summary>
+        public void Boost()
+        {
+            if (this._boostTimer != null)
+            {
+                this._boostTimer.Destruct();
+                this._boostTimer = null;
+            }
+
+            this._boostTimer = new LogicTimer();
+            this._boostTimer.StartTimer(this.GetMaxBoostTime(), this._level.GetLogicTime(), false, -1);
+
+            if (this.GetBuildingData().IsClockTower())
+            {
+                LogicGameListener gameListener = this._level.GetGameListener();
+
+                if (gameListener != null)
+                {
+                    // Listener.
+                }
             }
         }
 
@@ -1034,7 +1402,7 @@
                         hitpointComponent.SetMaxRegenerationTime(buildingData.GetRegenerationTime(this._upgLevel));
                     }
                 }
-                
+
                 if (this.GetComponent(5) != null)
                 {
                     LogicResourceProductionComponent resourceProductionComponent = (LogicResourceProductionComponent) this.GetComponent(5);

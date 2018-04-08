@@ -22,7 +22,8 @@
         private int _shieldTime;
         private int _guardTime;
         private int _maintenanceTime;
-        private int _elapsedSecs;
+        private int _startGuardTime;
+        private int _secondsSinceLastMaintenance;
         private int _skipPrepationSecs;
 
         private LogicTimer _battleTimer;
@@ -173,11 +174,11 @@
         }
 
         /// <summary>
-        ///     Gets the elapsed seconds.
+        ///     Gets the seconds since last maintenance.
         /// </summary>
-        public int GetElapsedSeconds()
+        public int GetSecondsSinceLastMaintenance()
         {
-            return this._elapsedSecs;
+            return this._secondsSinceLastMaintenance;
         }
 
         /// <summary>
@@ -204,11 +205,54 @@
         }
 
         /// <summary>
+        ///     Sets the shield remaining seconds.
+        /// </summary>
+        public void SetShieldRemainingSeconds(int secs)
+        {
+            this._shieldTime = LogicTime.GetSecondsInTicks(secs) + this._level.GetLogicTime();
+
+            int logicTime = this._level.GetLogicTime();
+            int startGuardTime = logicTime;
+
+            if (this._shieldTime >= logicTime)
+            {
+                startGuardTime = this._shieldTime;
+            }
+
+            this._startGuardTime = startGuardTime;
+        }
+
+        /// <summary>
         ///     Gets the remaining guard time.
         /// </summary>
         public int GetGuardRemainingSeconds()
         {
-            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._guardTime - this._level.GetLogicTime()), 0);
+            int startTime = this._startGuardTime - this._level.GetLogicTime();
+
+            if (startTime <= 0)
+            {
+                startTime = 0;
+            }
+
+            return LogicMath.Max(LogicTime.GetTicksInSeconds(this._guardTime + startTime), 0);
+        }
+
+        /// <summary>
+        ///     Sets the guard remaining seconds.
+        /// </summary>
+        public void SetGuardRemainingSeconds(int secs)
+        {
+            this._guardTime = LogicTime.GetSecondsInTicks(secs);
+
+            int logicTime = this._level.GetLogicTime();
+            int startGuardTime = logicTime;
+
+            if (this._shieldTime >= logicTime)
+            {
+                startGuardTime = this._shieldTime;
+            }
+
+            this._startGuardTime = startGuardTime;
         }
 
         /// <summary>
@@ -217,6 +261,14 @@
         public int GetMaintenanceRemainingSeconds()
         {
             return LogicMath.Max(LogicTime.GetTicksInSeconds(this._maintenanceTime - this._level.GetLogicTime()), 0);
+        }
+
+        /// <summary>
+        ///     Sets the maintenance remaining seconds.
+        /// </summary>
+        public void SetMaintenanceRemainingSeconds(int secs)
+        {
+            this._maintenanceTime = LogicTime.GetSecondsInTicks(secs) + this._level.GetLogicTime();
         }
         
         /// <summary>
@@ -239,6 +291,11 @@
 
             this._commandManager.SubTick();
             this._level.SubTick();
+
+            if (this._replay != null)
+            {
+                this._replay.SubTick();
+            }
         }
 
         /// <summary>
@@ -251,11 +308,6 @@
             if (this._state != 2 || !this._battleOver)
             {
                 this.SubTick();
-
-                // if (this._replay != null)
-                // {
-                //     this._replay.SubTick();
-                // }
 
                 if (time.IsFullTick())
                 {
@@ -376,7 +428,7 @@
         /// <summary>
         ///     Loads the home state.
         /// </summary>
-        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
+        public void LoadHomeState(LogicClientHome home, LogicAvatar homeOwnerAvatar, int currentTimestamp, int secondsSinceLastSave, int secondsSinceLastMaintenance)
         {
             if (home != null)
             {
@@ -408,7 +460,7 @@
                     }
                 }
 
-                this._elapsedSecs = elapsedSecs;
+                this._secondsSinceLastMaintenance = secondsSinceLastMaintenance;
                 this._currentTimestamp = currentTimestamp;
                 this._configuration.Load((LogicJSONObject) LogicJSONParser.Parse(home.GetGlobalJSON()));
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
@@ -431,6 +483,16 @@
                 this._guardTime = LogicTime.GetSecondsInTicks(home.GetGuardDurationSeconds());
                 this._maintenanceTime = LogicTime.GetSecondsInTicks(home.GetNextMaintenanceSeconds());
 
+                int logicTime = this._level.GetLogicTime();
+                int startGuardTime = logicTime;
+
+                if (this._shieldTime >= logicTime)
+                {
+                    startGuardTime = this._shieldTime;
+                }
+
+                this._startGuardTime = startGuardTime;
+                
                 if (LogicDataTables.GetGlobals().UseVillageObjects())
                 {
                     this._level.LoadVillageObjects();
@@ -441,7 +503,7 @@
         /// <summary>
         ///     Loads the npc attack state.
         /// </summary>
-        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int elapsedSecs)
+        public void LoadNpcAttackState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
         {
             if (this._state == 1)
             {
@@ -450,7 +512,6 @@
             else
             {
                 this._state = 2;
-                this._elapsedSecs = elapsedSecs;
                 this._currentTimestamp = currentTimestamp;
                 this._calendar.Load(home.GetCalendarJSON(), currentTimestamp);
 
@@ -485,7 +546,7 @@
         /// <summary>
         ///     Loads the npc duel state.
         /// </summary>
-        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave, int seed)
+        public void LoadNpcDuelState(LogicClientHome home, LogicAvatar homeOwnerAvatar, LogicAvatar visitorAvatar, int currentTimestamp, int secondsSinceLastSave)
         {
         }
     }

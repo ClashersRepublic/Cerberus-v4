@@ -1,7 +1,6 @@
 ﻿namespace RivieraStudio.Magic.Logic.GameObject
 {
     using RivieraStudio.Magic.Logic.Data;
-    using RivieraStudio.Magic.Logic.Helper;
     using RivieraStudio.Magic.Logic.Level;
     using RivieraStudio.Magic.Logic.Time;
     using RivieraStudio.Magic.Titan.Debug;
@@ -25,7 +24,7 @@
         }
 
         /// <summary>
-        ///     Gets the <see cref="LogicObstacleData"/> instance.
+        ///     Gets the <see cref="LogicVillageObjectData"/> instance.
         /// </summary>
         public LogicVillageObjectData GetVillageObjectData()
         {

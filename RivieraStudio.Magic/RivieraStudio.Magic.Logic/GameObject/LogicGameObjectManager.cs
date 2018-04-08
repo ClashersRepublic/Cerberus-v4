@@ -113,8 +113,8 @@
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
-                this._unitProduction = new LogicUnitProduction(level, 2);
-                this._spellProduction = new LogicUnitProduction(level, 25);
+                this._unitProduction = new LogicUnitProduction(level, 3, this._villageType);
+                this._spellProduction = new LogicUnitProduction(level, 25, this._villageType);
             }
         }
 
@@ -193,9 +193,8 @@
         /// <summary>
         ///     Adds the specified gameobject to this instance.
         /// </summary>
-        public void AddGameObject(LogicGameObject gameObject)
+        public void AddGameObject(LogicGameObject gameObject, int globalId)
         {
-            int globalId = gameObject.GetGlobalID();
             int gameObjectType = gameObject.GetGameObjectType();
 
             if (gameObject.GetData().GetVillageType() != this._villageType)
@@ -508,6 +507,41 @@
         }
 
         /// <summary>
+        ///     Gets the gameobject by index.
+        /// </summary>
+        public LogicGameObject GetGameObjectByIndex(int idx)
+        {
+            for (int i = 0, sum = 0; i < 9; i++)
+            {
+                LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[i];
+
+                if (sum + gameObjects.Count > idx)
+                {
+                    return gameObjects[idx - sum];
+                }
+
+                sum += gameObjects.Count;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the number of gameobjects.
+        /// </summary>
+        public int GetNumGameObjects()
+        {
+            int count = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                count += this._gameObjects[i].Count;
+            }
+
+            return count;
+        }
+
+        /// <summary>
         ///     Gets the gameobject count by data.
         /// </summary>
         public int GetGameObjectCountByData(LogicData data)
@@ -616,7 +650,7 @@
             {
                 if (gameObjects[i].GetData() == data)
                 {
-                    LogicBuilding building = (LogicBuilding) gameObjects[i];
+                    LogicBuilding building = (LogicBuilding)gameObjects[i];
 
                     if (building.IsConstructing())
                     {
@@ -644,6 +678,50 @@
         }
 
         /// <summary>
+        ///     Gets the highest building.
+        /// </summary>
+        public LogicBuilding GetHighestBuilding(LogicBuildingData data)
+        {
+            LogicArrayList<LogicGameObject> gameObjects = this._gameObjects[0];
+            LogicBuilding highestBuilding = null;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (gameObjects[i].GetData() == data)
+                {
+                    LogicBuilding building = (LogicBuilding) gameObjects[i];
+
+                    if (building.IsConstructing())
+                    {
+                        if (building.IsUpgrading())
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!building.IsLocked())
+                    {
+                        int upgLevel = building.GetUpgradeLevel();
+
+                        if (highestBuilding != null)
+                        {
+                            if (upgLevel > highestBuilding.GetUpgradeLevel())
+                            {
+                                highestBuilding = building;
+                            }
+                        }
+                        else
+                        {
+                            highestBuilding = building;
+                        }
+                    }
+                }
+            }
+
+            return highestBuilding;
+        }
+
+        /// <summary>
         ///     Gets the component manager instance.
         /// </summary>
         public LogicComponentManager GetComponentManager()
@@ -657,6 +735,22 @@
         public LogicBuilding GetTownHall()
         {
             return this._townHall;
+        }
+
+        /// <summary>
+        ///     Gets the spell production
+        /// </summary>
+        public LogicUnitProduction GetSpellProduction()
+        {
+            return this._spellProduction;
+        }
+
+        /// <summary>
+        ///     Gets the unit production
+        /// </summary>
+        public LogicUnitProduction GetUnitProduction()
+        {
+            return this._unitProduction;
         }
 
         /// <summary>
@@ -753,7 +847,7 @@
                 {
                     LogicVillageObject villageObject = (LogicVillageObject) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
                     villageObject.SetInitialPosition((data.TileX100 << 9) / 100, (data.TileY100 << 9) / 100);
-                    this.AddGameObject(villageObject);
+                    this.AddGameObject(villageObject, -1);
                 }
             }
         }
@@ -817,7 +911,8 @@
 
             if (LogicDataTables.GetGlobals().UseNewTraining())
             {
-                
+                this._unitProduction.LoadingFinished();
+                this._spellProduction.LoadingFinished();
             }
         }
 
@@ -833,13 +928,24 @@
 
             if (secs > 0)
             {
+                int secsSinceLastMaintenance = this._level.GetGameMode().GetSecondsSinceLastMaintenance();
+                int offlineServerTime = -1;
+
+                if (secsSinceLastMaintenance > 0)
+                {
+                    offlineServerTime = secs - secsSinceLastMaintenance;
+                }
+
                 int idx = 0;
 
                 do
                 {
-                    int maxSecs = secs;
+                    bool stopBoost = false;
 
-                    if (idx == 999)
+                    int maxFastForwardTime = secs;
+                    int fastForwardTime = 1;
+
+                    if (idx++ == 999)
                     {
                         Debugger.Warning("LogicGameObjectManager::fastForwardTime - Pass limit reached");
                     }
@@ -851,14 +957,40 @@
 
                             for (int j = 0; j < gameObjects.Count; j++)
                             {
-                                int maxFastForwardTime = gameObjects[j].GetMaxFastForwardTime();
+                                int tmp = gameObjects[j].GetMaxFastForwardTime();
 
-                                if (maxFastForwardTime >= 0)
+                                if (tmp >= 0)
                                 {
-                                    maxSecs = LogicMath.Min(maxFastForwardTime, maxSecs);
+                                    maxFastForwardTime = LogicMath.Min(maxFastForwardTime, maxFastForwardTime);
                                 }
                             }
                         }
+                    }
+
+                    if (offlineServerTime <= 0)
+                    {
+                        stopBoost = offlineServerTime == 0;
+
+                        if (offlineServerTime < 0)
+                        {
+                            offlineServerTime = -1;
+                        }
+                    }
+                    else
+                    {
+                        maxFastForwardTime = LogicMath.Min(maxFastForwardTime, offlineServerTime);
+                        offlineServerTime -= maxFastForwardTime;
+                        stopBoost = false;
+                    }
+
+                    if (maxFastForwardTime > 0)
+                    {
+                        fastForwardTime = maxFastForwardTime;
+                    }
+
+                    if (fastForwardTime > secs)
+                    {
+                        fastForwardTime = secs;
                     }
 
                     for (int i = 0; i < 9; i++)
@@ -867,17 +999,37 @@
 
                         for (int j = 0; j < gameObjects.Count; j++)
                         {
-                            gameObjects[j].FastForwardTime(maxSecs);
+                            LogicGameObject gameObject = gameObjects[j];
+
+                            if (stopBoost)
+                            {
+                                gameObject.StopBoost();
+                            }
+
+                            gameObjects[j].FastForwardTime(fastForwardTime);
                         }
+                    }
+
+                    LogicArrayList<LogicGameObject> buildings = this._gameObjects[0];
+
+                    for (int i = 0; i < buildings.Count; i++)
+                    {
+                        buildings[i].FastForwardBoost(fastForwardTime);
                     }
 
                     if (LogicDataTables.GetGlobals().UseNewTraining())
                     {
-                        this._unitProduction.FastForwardTime(maxSecs);
-                        this._spellProduction.FastForwardTime(maxSecs);
-                    }
+                        if (stopBoost)
+                        {
+                            this._unitProduction.StopBoost();
+                            this._spellProduction.StopBoost();
+                        }
 
-                    secs -= maxSecs;
+                        this._unitProduction.FastForwardTime(fastForwardTime);
+                        this._spellProduction.FastForwardTime(fastForwardTime);
+                    }
+                    
+                    secs -= fastForwardTime;
                 } while (secs > 0);
             }
 
@@ -1116,7 +1268,7 @@
 
                         obstacle.SetInitialPosition(x << 9, y << 9);
 
-                        this.AddGameObject(obstacle);
+                        this.AddGameObject(obstacle, -1);
 
                         return true;
                     }
@@ -1161,7 +1313,7 @@
                     {
                         LogicObstacle obstacle = (LogicObstacle) LogicGameObjectFactory.CreateGameObject(data, this._level, this._villageType);
                         obstacle.SetInitialPosition(x << 9, y << 9);
-                        this.AddGameObject(obstacle);
+                        this.AddGameObject(obstacle, -1);
 
                         return true;
                     }
@@ -1271,6 +1423,12 @@
         public void SubTick()
         {
             this._componentManager.SubTick();
+
+            if (LogicDataTables.GetGlobals().UseNewTraining())
+            {
+                this._unitProduction.SubTick();
+                this._spellProduction.SubTick();
+            }
 
             LogicArrayList<LogicGameObject> buildings = this._gameObjects[0];
             LogicArrayList<LogicGameObject> characters = this._gameObjects[1];
@@ -1586,11 +1744,11 @@
 
                 if (jsonObject != null)
                 {
-                    LogicJSONNumber jsonData = jsonObject.GetJSONNumber("data");
+                    LogicJSONNumber dataObject = jsonObject.GetJSONNumber("data");
 
-                    if (jsonData != null)
+                    if (dataObject != null)
                     {
-                        LogicData data = LogicDataTables.GetDataById(jsonData.GetIntValue());
+                        LogicData data = LogicDataTables.GetDataById(dataObject.GetIntValue());
 
                         if (data != null)
                         {
@@ -1609,16 +1767,17 @@
 
                             if (gameObject != null)
                             {
-                                LogicJSONNumber jsonId = jsonObject.GetJSONNumber("id");
+                                LogicJSONNumber idObject = jsonObject.GetJSONNumber("id");
+                                Int32 globalId = -1;
 
-                                if (jsonId != null)
+                                if (idObject != null)
                                 {
-                                    gameObject.SetGlobalID(jsonId.GetIntValue());
+                                    globalId = idObject.GetIntValue();
                                 }
 
                                 gameObject.Load(jsonObject);
 
-                                this.AddGameObject(gameObject);
+                                this.AddGameObject(gameObject, globalId);
                             }
                         }
                         else
